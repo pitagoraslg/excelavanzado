@@ -163,7 +163,8 @@
   .ctrl-btn:disabled{opacity:.35; cursor:not-allowed;}
   .ctrl-btn.reveal{background:var(--green); border-color:var(--green);}
   .ctrl-btn.reveal:hover{background:#248050;}
-  .ctrl-indicator{font-family:'IBM Plex Mono',monospace; font-size:.9rem; color:rgba(255,255,255,.75); min-width:118px; text-align:center;}
+  .ctrl-indicator{font-family:'IBM Plex Mono',monospace; font-size:.9rem; color:rgba(255,255,255,.75); min-width:150px; text-align:center;}
+  .ctrl-hint{display:block; margin-top:3px; font-size:.72rem; font-family:'IBM Plex Sans',sans-serif; opacity:.8; color:var(--white);}
 
   /* reveal items */
   .reveal-list{display:flex; flex-direction:column; gap:14px;}
@@ -1404,6 +1405,15 @@
     var atLastStage = S.stage>=slide.maxStage;
     var atFirstSlide = S.step===0;
     var atLastSlide = S.step===SLIDES.length-1;
+    var stageHint, revealLabel;
+    if(S.stage < slide.interactiveStage){
+      var left = slide.interactiveStage - S.stage;
+      stageHint = 'Pregunta se activa en '+left+' clic'+(left===1?'':'s')+' más';
+      revealLabel = (left===1) ? 'Revelar ▸ (activa pregunta)' : 'Revelar ▸';
+    } else {
+      stageHint = '🟢 Pregunta activa para estudiantes';
+      revealLabel = 'Revelar ▸';
+    }
 
     var html = '<div class="fac-root">'
       + '<div class="reaction-overlay" id="reaction-overlay"></div>'
@@ -1422,9 +1432,9 @@
           + '<button class="ctrl-btn" id="ctrl-prev-slide" '+(atFirstSlide?'disabled':'')+'>◂◂ Diapositiva</button>'
           + '<button class="ctrl-btn" id="ctrl-prev-stage" '+(atFirstStage?'disabled':'')+'>◂ Ocultar</button>'
         + '</div>'
-        + '<span class="ctrl-indicator">'+slide.ref+' · '+S.stage+'/'+slide.maxStage+'</span>'
+        + '<span class="ctrl-indicator">'+slide.ref+' · '+S.stage+'/'+slide.maxStage+'<span class="ctrl-hint">'+stageHint+'</span></span>'
         + '<div class="grp">'
-          + '<button class="ctrl-btn reveal" id="ctrl-next-stage" '+(atLastStage?'disabled':'')+'>Revelar ▸</button>'
+          + '<button class="ctrl-btn reveal" id="ctrl-next-stage" '+(atLastStage?'disabled':'')+'>'+revealLabel+'</button>'
           + '<button class="ctrl-btn" id="ctrl-next-slide" '+(atLastSlide?'disabled':'')+'>Diapositiva ▸▸</button>'
         + '</div>'
       + '</div>'
