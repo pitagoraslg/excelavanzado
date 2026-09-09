@@ -292,6 +292,14 @@
   .part-name{font-size:.85rem; color:var(--ink-soft); font-weight:600;}
   .part-body{flex:1; display:flex; align-items:center; justify-content:center; padding:22px 22px 84px;}
   .part-card{width:100%; max-width:440px;}
+  /* participants also join from tablets/laptops, not only phones — give the
+     card more room and slightly larger type once there's space for it */
+  @media (min-width:820px){
+    .part-card{max-width:560px;}
+    .mirror-content .slide-title{font-size:1.8rem;}
+    .mirror-content .slide-subtitle{font-size:1.05rem;}
+    .mc-opt{font-size:1.05rem; padding:17px 20px;}
+  }
   .waiting-wrap{text-align:center; padding:20px 0;}
   .pulse-dot{
     width:14px; height:14px; border-radius:50%; background:var(--green); margin:0 auto 18px;
