@@ -426,6 +426,20 @@
   }
   function genCode(){ return String(Math.floor(1000 + Math.random()*9000)); }
   function genId(){ return 'p' + Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4); }
+  function getJoinLink(code){
+    return location.origin + location.pathname + '?code=' + code;
+  }
+  function copyToClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      return navigator.clipboard.writeText(text);
+    }
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+    return Promise.resolve();
+  }
 
   /* ---------- reveal sound (synthesized, no audio files) ---------- */
   var audioCtx = null;
@@ -475,6 +489,10 @@
     allResponses: {},
     participantCount: 0
   };
+  var urlJoinCode = (function(){
+    var m = /[?&]code=(\d{4})/.exec(location.search);
+    return m ? m[1] : null;
+  })();
 
   var app = document.getElementById('app');
 
@@ -1194,7 +1212,10 @@
      RENDER: ROOT DISPATCH
      ============================================================ */
   function render(){
-    if(!S.role){ renderRoleScreen(); return; }
+    if(!S.role){
+      if(urlJoinCode){ renderQuickJoin(urlJoinCode); return; }
+      renderRoleScreen(); return;
+    }
     if(S.role==='facilitator'){ renderFacilitatorApp(); return; }
     renderParticipantApp();
   }
@@ -1309,6 +1330,7 @@
         + '<div class="row-gap" style="align-items:center;">'
           + '<span class="badge"><span class="dot"></span>Código <strong class="mono">&nbsp;'+S.code+'</strong></span>'
           + '<span class="badge" id="participant-badge">'+S.participantCount+' conectados</span>'
+          + '<button class="btn" id="btn-copy-link" style="padding:7px 14px; font-size:.85rem; border-radius:999px;">Copiar enlace para estudiantes</button>'
         + '</div>'
       + '</div>'
       + '<div class="fac-stage"><div class="slide-shell stage-pop" id="live-widget-host">'+body+'</div></div>'
@@ -1331,6 +1353,15 @@
     if((b=document.getElementById('ctrl-next-slide'))) b.addEventListener('click', function(){ changeSlide(1); });
     if((b=document.getElementById('ctrl-prev-stage'))) b.addEventListener('click', function(){ changeStage(-1); });
     if((b=document.getElementById('ctrl-next-stage'))) b.addEventListener('click', function(){ changeStage(1); });
+    if((b=document.getElementById('btn-copy-link'))){
+      b.addEventListener('click', function(){
+        copyToClipboard(getJoinLink(S.code)).then(function(){
+          var original = b.textContent;
+          b.textContent = '¡Enlace copiado!';
+          setTimeout(function(){ b.textContent = original; }, 1800);
+        });
+      });
+    }
   }
 
   function changeSlide(dir){
@@ -1350,6 +1381,22 @@
     renderFacilitatorApp();
   }
 
+  /* ---------- PARTICIPANT QUICK JOIN (via ?code= link) ---------- */
+  function renderQuickJoin(code){
+    var html = brandline()
+      + '<h1 style="font-size:1.4rem;">Unirse a la sesión</h1>'
+      + '<div class="field"><label>Código de sesión</label>'
+      + '<div class="xl-cell selected code-cell" style="margin:6px auto 0;">'+escapeHtml(code)+'</div></div>'
+      + '<div class="field" style="margin-top:16px;"><label>Tu nombre</label>'
+      + '<input id="join-name" placeholder="Escribe tu nombre" maxlength="30"></div>'
+      + '<button class="btn btn-primary btn-block" id="join-btn" style="margin-top:18px;">Estoy listo</button>'
+      + '<p class="error-msg" id="join-error" style="display:none;"></p>'
+      + '<p class="muted small" style="margin-top:16px;"><a href="#" id="manual-code" style="color:var(--ink-soft);">¿No es tu código? Escríbelo manualmente</a></p>';
+    app.innerHTML = screenWrap(html);
+    document.getElementById('manual-code').addEventListener('click', function(e){ e.preventDefault(); urlJoinCode = null; renderParticipantEntry(); });
+    document.getElementById('join-btn').addEventListener('click', function(){ doJoin(code); });
+  }
+
   /* ---------- PARTICIPANT ENTRY ---------- */
   function renderParticipantEntry(){
     var html = brandline()
@@ -1363,14 +1410,15 @@
       + '<p class="muted small" style="margin-top:16px;"><a href="#" id="back-role2" style="color:var(--ink-soft);">← Volver</a></p>';
     app.innerHTML = screenWrap(html);
     document.getElementById('back-role2').addEventListener('click', function(e){ e.preventDefault(); renderRoleScreen(); });
-    document.getElementById('join-btn').addEventListener('click', doJoin);
+    document.getElementById('join-btn').addEventListener('click', function(){ doJoin(); });
   }
   function showJoinError(msg){
     var el = document.getElementById('join-error');
     if(el){ el.textContent = msg; el.style.display = 'block'; }
   }
-  function doJoin(){
-    var code = (document.getElementById('join-code').value||'').trim();
+  function doJoin(fixedCode){
+    var codeEl = document.getElementById('join-code');
+    var code = fixedCode || (codeEl ? (codeEl.value||'').trim() : '');
     var name = (document.getElementById('join-name').value||'').trim();
     if(code.length!==4){ showJoinError('Escribe el código de 4 dígitos que dio el facilitador.'); return; }
     if(!name){ showJoinError('Escribe tu nombre.'); return; }
