@@ -289,7 +289,7 @@
     background:rgba(255,255,255,.7);
   }
   .part-name{font-size:.85rem; color:var(--ink-soft); font-weight:600;}
-  .part-body{flex:1; display:flex; align-items:center; justify-content:center; padding:22px;}
+  .part-body{flex:1; display:flex; align-items:center; justify-content:center; padding:22px 22px 84px;}
   .part-card{width:100%; max-width:440px;}
   .waiting-wrap{text-align:center; padding:20px 0;}
   .pulse-dot{
@@ -304,6 +304,41 @@
   }
   .num-input-row{display:flex; gap:10px; margin-top:16px;}
   .num-input-row input{flex:1;}
+
+  /* ---------- timer badge ---------- */
+  .timer-badge{
+    display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono',monospace; font-weight:700;
+    font-size:.95rem; padding:6px 13px; border-radius:999px; background:var(--white); border:1.5px solid var(--grid-line);
+    color:var(--ink);
+  }
+  .timer-badge.timer-low{border-color:#c0392b; color:#c0392b; animation:pulse 1s ease-in-out infinite;}
+  .timer-badge.timer-done{border-color:#c0392b; background:#c0392b; color:var(--white); animation:none;}
+  .timer-expired-note{color:#c0392b; font-weight:600;}
+
+  /* ---------- reactions ---------- */
+  .reaction-bar{
+    position:fixed; left:50%; bottom:14px; transform:translateX(-50%); display:flex; gap:8px;
+    background:rgba(255,255,255,.92); border:1.5px solid var(--grid-line); border-radius:999px;
+    padding:8px 10px; box-shadow:var(--shadow); z-index:600; backdrop-filter:blur(6px);
+  }
+  .reaction-btn{
+    width:40px; height:40px; border-radius:50%; border:none; background:transparent; font-size:1.3rem;
+    display:flex; align-items:center; justify-content:center; transition:transform .15s ease; cursor:pointer;
+  }
+  .reaction-btn:hover{background:var(--green-tint);}
+  .reaction-btn.pop{transform:scale(1.4);}
+  .reaction-overlay{
+    position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:400;
+  }
+  .floating-emoji{
+    position:absolute; bottom:70px; font-size:2.4rem; animation-name:float-up; animation-timing-function:ease-out;
+    animation-fill-mode:forwards; will-change:transform, opacity;
+  }
+  @keyframes float-up{
+    0%{ transform:translateY(0) scale(.6); opacity:0; }
+    15%{ opacity:1; transform:translateY(-40px) scale(1); }
+    100%{ transform:translateY(-420px) scale(1.1); opacity:0; }
+  }
 
   @media (prefers-reduced-motion:reduce){
     *{animation-duration:.01ms !important; transition-duration:.01ms !important;}
@@ -487,7 +522,9 @@
     stage: 0,
     myResponses: {},    // step -> value already submitted (local lock)
     allResponses: {},
-    participantCount: 0
+    participantCount: 0,
+    timerEndsAt: null,
+    _timerLockedFor: null
   };
   var urlJoinCode = (function(){
     var m = /[?&]code=(\d{4})/.exec(location.search);
@@ -636,6 +673,7 @@
       {id:'libro', label:'Libro'}
     ],
     mcCorrect:'celda',
+    timerSeconds:20,
     mcQuestion:'¿Cuál es la intersección de una fila y una columna?',
     chain:['Libro','Hoja','Columnas + Filas','Celdas','Datos / Fórmulas'],
     facRender:function(stage, agg){
@@ -804,6 +842,7 @@
       {id:'5000', label:'5,000'}
     ],
     mcCorrect:'50',
+    timerSeconds:20,
     mcQuestion:'Si A1 = 100 y B1 = 50, ¿cuál es el resultado de =A1-B1?',
     ops:[
       {sym:'+', name:'Suma', ex:'=A1+B1'},
@@ -865,6 +904,7 @@
       {id:'max', label:'=MAX()'}
     ],
     mcCorrect:'suma',
+    timerSeconds:20,
     mcQuestion:'Quieres sumar las edades de todos tus empleados. ¿Qué función usas?',
     items:[
       {h:'=SUMA(A1:A10)', p:'Suma todos los valores del rango.'},
@@ -926,6 +966,7 @@
       {id:'ninguna', label:'No importa'}
     ],
     mcCorrect:'absoluta',
+    timerSeconds:15,
     mcQuestion:'Tienes una tasa de ITBIS fija en la celda F1, que usarás en una columna entera de fórmulas. ¿Qué tipo de referencia usas para F1?',
     facRender:function(stage, agg){
       var html = '<h1 class="slide-title">Referencias de celda</h1>';
@@ -1277,8 +1318,8 @@
     var code = genCode();
     dbGetOnce('session/'+code).then(function(exists){
       if(exists && tries < 6){ tryGenerateCode(tries+1); return; }
-      S.code = code; S.role='facilitator'; S.step=0; S.stage=0;
-      dbSet('session/'+code, {step:0, stage:0, createdAt: Date.now()}).then(function(){
+      S.code = code; S.role='facilitator'; S.step=0; S.stage=0; S.timerEndsAt=null;
+      dbSet('session/'+code, {step:0, stage:0, createdAt: Date.now(), timerEndsAt:null}).then(function(){
         attachFacilitatorListeners();
         render();
       });
@@ -1287,7 +1328,7 @@
   function resumeSession(code){
     dbGetOnce('session/'+code).then(function(s){
       if(!s){ showFacError('No existe una sesión activa con ese código.'); return; }
-      S.code = code; S.role='facilitator'; S.step=s.step||0; S.stage=s.stage||0;
+      S.code = code; S.role='facilitator'; S.step=s.step||0; S.stage=s.stage||0; S.timerEndsAt=s.timerEndsAt||null;
       attachFacilitatorListeners();
       render();
     });
@@ -1304,6 +1345,11 @@
     db.ref('responses/'+S.code).on('value', function(snap){
       S.allResponses = snap.val() || {};
       updateLiveWidget();
+    });
+    var reactionsSince = Date.now();
+    db.ref('reactions/'+S.code).orderByChild('t').startAt(reactionsSince).on('child_added', function(snap){
+      spawnFloatingReaction(snap.val());
+      snap.ref.remove();
     });
   }
   function getAggArray(step){
@@ -1325,11 +1371,13 @@
     var atLastSlide = S.step===SLIDES.length-1;
 
     var html = '<div class="fac-root">'
+      + '<div class="reaction-overlay" id="reaction-overlay"></div>'
       + '<div class="fac-topbar">'
         + brandline()
         + '<div class="row-gap" style="align-items:center;">'
           + '<span class="badge"><span class="dot"></span>Código <strong class="mono">&nbsp;'+S.code+'</strong></span>'
           + '<span class="badge" id="participant-badge">'+S.participantCount+' conectados</span>'
+          + (S.timerEndsAt ? '<span class="timer-badge" id="timer-badge">⏱ --</span>' : '')
           + '<button class="btn" id="btn-copy-link" style="padding:7px 14px; font-size:.85rem; border-radius:999px;">Copiar enlace para estudiantes</button>'
         + '</div>'
       + '</div>'
@@ -1367,8 +1415,8 @@
   function changeSlide(dir){
     var next = S.step + dir;
     if(next < 0 || next >= SLIDES.length) return;
-    S.step = next; S.stage = 0;
-    dbSet('session/'+S.code, {step:S.step, stage:S.stage, createdAt: Date.now()});
+    S.step = next; S.stage = 0; S.timerEndsAt = null; S._timerLockedFor = null;
+    dbSet('session/'+S.code, {step:S.step, stage:S.stage, createdAt: Date.now(), timerEndsAt:null});
     renderFacilitatorApp();
   }
   function changeStage(dir){
@@ -1377,7 +1425,9 @@
     if(next < 0 || next > slide.maxStage) return;
     S.stage = next;
     if(dir > 0) playRevealSound();
-    dbSet('session/'+S.code, {step:S.step, stage:S.stage, createdAt: Date.now()});
+    S.timerEndsAt = (slide.timerSeconds && next === slide.interactiveStage) ? (Date.now() + slide.timerSeconds*1000) : null;
+    S._timerLockedFor = null;
+    dbSet('session/'+S.code, {step:S.step, stage:S.stage, createdAt: Date.now(), timerEndsAt:S.timerEndsAt});
     renderFacilitatorApp();
   }
 
@@ -1428,7 +1478,7 @@
       var pid = genId();
       dbSet('participants/'+code+'/'+pid, {name:name, joinedAt: Date.now()}).then(function(){
         S.code = code; S.pid = pid; S.name = name; S.role = 'participant';
-        S.step = s.step||0; S.stage = s.stage||0;
+        S.step = s.step||0; S.stage = s.stage||0; S.timerEndsAt = s.timerEndsAt||null;
         attachParticipantListener();
         render();
       });
@@ -1440,7 +1490,10 @@
     db.ref('session/'+S.code).on('value', function(snap){
       var s = snap.val();
       if(!s) return;
-      if(s.step !== S.step || s.stage !== S.stage){
+      var changed = (s.step !== S.step || s.stage !== S.stage);
+      S.timerEndsAt = s.timerEndsAt || null;
+      S._timerLockedFor = null;
+      if(changed){
         S.step = s.step; S.stage = s.stage;
         renderParticipantApp();
       }
@@ -1451,14 +1504,83 @@
     var mine = S.myResponses[S.step];
     var body = slide.partRender.call(slide, S.stage, mine);
     var html = '<div class="part-root">'
-      + '<div class="part-topbar"><span class="cell-ref-tag">'+slide.ref+'</span><span class="part-name">'+escapeHtml(S.name)+'</span></div>'
+      + '<div class="part-topbar"><span class="cell-ref-tag">'+slide.ref+'</span>'
+        + (S.timerEndsAt ? '<span class="timer-badge" id="timer-badge">⏱ --</span>' : '')
+        + '<span class="part-name">'+escapeHtml(S.name)+'</span></div>'
       + '<div class="part-body"><div class="part-card">'+body+'</div></div>'
+      + renderReactionBar()
       + '</div>';
     app.innerHTML = html;
     if(typeof slide.partBind === 'function'){
       slide.partBind.call(slide, app);
     }
+    bindReactionBar();
   }
+
+  /* ---------- REACTIONS (participant side) ---------- */
+  var REACTION_EMOJIS = ['👍','🎉','😂','🤔','❤️','✋'];
+  function renderReactionBar(){
+    return '<div class="reaction-bar">' + REACTION_EMOJIS.map(function(e){
+      return '<button type="button" class="reaction-btn" data-emoji="'+e+'">'+e+'</button>';
+    }).join('') + '</div>';
+  }
+  function bindReactionBar(){
+    document.querySelectorAll('.reaction-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        sendReaction(btn.getAttribute('data-emoji'));
+        btn.classList.add('pop');
+        setTimeout(function(){ btn.classList.remove('pop'); }, 250);
+      });
+    });
+  }
+  var lastReactionAt = 0;
+  function sendReaction(emoji){
+    var now = Date.now();
+    if(now - lastReactionAt < 400) return;
+    lastReactionAt = now;
+    db.ref('reactions/'+S.code).push({emoji: emoji, name: S.name, t: now});
+  }
+
+  /* ---------- REACTIONS (facilitator side) ---------- */
+  function spawnFloatingReaction(data){
+    var overlay = document.getElementById('reaction-overlay');
+    if(!overlay || !data) return;
+    var el = document.createElement('div');
+    el.className = 'floating-emoji';
+    el.textContent = data.emoji || '👍';
+    el.style.left = (8 + Math.random()*80) + '%';
+    el.style.animationDuration = (2.2 + Math.random()*1.2) + 's';
+    overlay.appendChild(el);
+    el.addEventListener('animationend', function(){ el.remove(); });
+  }
+
+  /* ---------- TIMER (shared) ---------- */
+  function lockAnswering(){
+    var opts = document.querySelectorAll('.mc-opt:not(:disabled)');
+    if(!opts.length) return;
+    opts.forEach(function(btn){ btn.disabled = true; });
+    var host = document.querySelector('.part-card');
+    if(host && !host.querySelector('.timer-expired-note')){
+      var note = document.createElement('p');
+      note.className = 'timer-expired-note';
+      note.style.marginTop = '12px';
+      note.textContent = '⏰ Se acabó el tiempo.';
+      host.appendChild(note);
+    }
+  }
+  function tickTimer(){
+    var el = document.getElementById('timer-badge');
+    if(!el || !S.timerEndsAt) return;
+    var remaining = Math.max(0, Math.ceil((S.timerEndsAt - Date.now())/1000));
+    el.textContent = '⏱ ' + remaining + 's';
+    el.classList.toggle('timer-low', remaining>0 && remaining<=5);
+    el.classList.toggle('timer-done', remaining<=0);
+    if(remaining<=0 && S._timerLockedFor !== S.timerEndsAt){
+      S._timerLockedFor = S.timerEndsAt;
+      if(S.role==='participant') lockAnswering();
+    }
+  }
+  setInterval(tickTimer, 300);
 
   function submitResponse(value){
     S.myResponses[S.step] = value;
