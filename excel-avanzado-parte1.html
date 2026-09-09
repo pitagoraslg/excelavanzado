@@ -758,8 +758,11 @@
       return html;
     },
     partRender:function(stage, mine){
-      if(stage < 2){
+      if(stage===0){
         return mirrorFacContent(this, stage);
+      }
+      if(stage===1){
+        return waitingBlock('🎯 Prepárate: en un momento vas a tocar una celda en tu propia pantalla.');
       }
       if(mine!==undefined){
         return confirmedBlock('Marcaste: ' + mine.split(',')[0] + mine.split(',')[1]);
@@ -1415,18 +1418,16 @@
   function renderFacilitatorApp(){
     var slide = SLIDES[S.step];
     var body = slide.facRender.call(slide, S.stage, getAggArray(S.step));
-    var atFirstStage = S.stage===0;
-    var atLastStage = S.stage>=slide.maxStage;
-    var atFirstSlide = S.step===0;
-    var atLastSlide = S.step===SLIDES.length-1;
-    var stageHint, revealLabel;
+    var atVeryStart = (S.step===0 && S.stage===0);
+    var atVeryEnd = (S.step===SLIDES.length-1 && S.stage>=slide.maxStage);
+    var stageHint, forwardLabel;
     if(S.stage < slide.interactiveStage){
       var left = slide.interactiveStage - S.stage;
       stageHint = 'Pregunta se activa en '+left+' clic'+(left===1?'':'s')+' más';
-      revealLabel = (left===1) ? 'Revelar ▸ (activa pregunta)' : 'Revelar ▸';
+      forwardLabel = (left===1) ? 'Siguiente ▸ (activa pregunta)' : 'Siguiente ▸';
     } else {
       stageHint = '🟢 Pregunta activa para estudiantes';
-      revealLabel = 'Revelar ▸';
+      forwardLabel = 'Siguiente ▸';
     }
 
     var html = '<div class="fac-root">'
@@ -1442,24 +1443,16 @@
       + '</div>'
       + '<div class="fac-stage"><div class="slide-shell stage-pop" id="live-widget-host">'+body+'</div></div>'
       + '<div class="fac-controlbar">'
-        + '<div class="grp">'
-          + '<button class="ctrl-btn" id="ctrl-prev-slide" '+(atFirstSlide?'disabled':'')+'>◂◂ Diapositiva</button>'
-          + '<button class="ctrl-btn" id="ctrl-prev-stage" '+(atFirstStage?'disabled':'')+'>◂ Ocultar</button>'
-        + '</div>'
+        + '<button class="ctrl-btn" id="ctrl-back" '+(atVeryStart?'disabled':'')+'>◂ Atrás</button>'
         + '<span class="ctrl-indicator">'+slide.ref+' · '+S.stage+'/'+slide.maxStage+'<span class="ctrl-hint">'+stageHint+'</span></span>'
-        + '<div class="grp">'
-          + '<button class="ctrl-btn reveal" id="ctrl-next-stage" '+(atLastStage?'disabled':'')+'>'+revealLabel+'</button>'
-          + '<button class="ctrl-btn" id="ctrl-next-slide" '+(atLastSlide?'disabled':'')+'>Diapositiva ▸▸</button>'
-        + '</div>'
+        + '<button class="ctrl-btn reveal" id="ctrl-forward" '+(atVeryEnd?'disabled':'')+'>'+forwardLabel+'</button>'
       + '</div>'
       + '</div>';
     app.innerHTML = html;
 
     var b;
-    if((b=document.getElementById('ctrl-prev-slide'))) b.addEventListener('click', function(){ changeSlide(-1); });
-    if((b=document.getElementById('ctrl-next-slide'))) b.addEventListener('click', function(){ changeSlide(1); });
-    if((b=document.getElementById('ctrl-prev-stage'))) b.addEventListener('click', function(){ changeStage(-1); });
-    if((b=document.getElementById('ctrl-next-stage'))) b.addEventListener('click', function(){ changeStage(1); });
+    if((b=document.getElementById('ctrl-back'))) b.addEventListener('click', function(){ advance(-1); });
+    if((b=document.getElementById('ctrl-forward'))) b.addEventListener('click', function(){ advance(1); });
     if((b=document.getElementById('btn-copy-link'))){
       b.addEventListener('click', function(){
         copyToClipboard(getJoinLink(S.code)).then(function(){
@@ -1471,20 +1464,31 @@
     }
   }
 
-  function changeSlide(dir){
-    var next = S.step + dir;
-    if(next < 0 || next >= SLIDES.length) return;
-    S.step = next; S.stage = 0; S.timerEndsAt = null; S._timerLockedFor = null;
-    dbSet('session/'+S.code, {step:S.step, stage:S.stage, createdAt: Date.now(), timerEndsAt:null});
-    renderFacilitatorApp();
-  }
-  function changeStage(dir){
+  /* Navegación unificada: un solo par Atrás/Adelante que recorre
+     la secuencia completa (etapas dentro de una diapositiva y luego
+     la siguiente diapositiva), en vez de dos controles separados. */
+  function advance(dir){
     var slide = SLIDES[S.step];
-    var next = S.stage + dir;
-    if(next < 0 || next > slide.maxStage) return;
-    S.stage = next;
-    if(dir > 0) playRevealSound();
-    S.timerEndsAt = (slide.timerSeconds && next === slide.interactiveStage) ? (Date.now() + slide.timerSeconds*1000) : null;
+    if(dir > 0){
+      if(S.stage < slide.maxStage){
+        S.stage += 1;
+      } else if(S.step < SLIDES.length - 1){
+        S.step += 1; S.stage = 0;
+      } else {
+        return;
+      }
+      playRevealSound();
+    } else {
+      if(S.stage > 0){
+        S.stage -= 1;
+      } else if(S.step > 0){
+        S.step -= 1; S.stage = SLIDES[S.step].maxStage;
+      } else {
+        return;
+      }
+    }
+    var curSlide = SLIDES[S.step];
+    S.timerEndsAt = (curSlide.timerSeconds && S.stage === curSlide.interactiveStage) ? (Date.now() + curSlide.timerSeconds*1000) : null;
     S._timerLockedFor = null;
     dbSet('session/'+S.code, {step:S.step, stage:S.stage, createdAt: Date.now(), timerEndsAt:S.timerEndsAt});
     renderFacilitatorApp();
