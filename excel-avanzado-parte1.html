@@ -1011,39 +1011,96 @@
     }
   },
 
-  /* 8 — MINI RETO (fórmula sobre dos celdas) */
+  /* 8 — DETECTA EL ERROR */
   {
     ref:'A9',
+    title:'Detecta el error',
+    maxStage:2,
+    interactiveStage:1,
+    responseType:'mc',
+    mcOptions:[
+      {id:'fila', label:'La fila de C está mal: debería ser C2, no C3'},
+      {id:'funcion', label:'Debió usar la función SUMA en vez de multiplicar'},
+      {id:'columna', label:'La columna está mal: debería ser D2, no C2'},
+      {id:'signo', label:'Le falta el símbolo $ para fijar la celda'}
+    ],
+    mcCorrect:'fila',
+    timerSeconds:20,
+    mcQuestion:'¿Cuál es el error en esta fórmula?',
+    facRender:function(stage, agg){
+      var html = '<h1 class="slide-title">Detecta el error</h1>'
+        + '<p class="slide-subtitle">Alguien calculó el Total de la fila 2 (Laptop) y le dio mal.</p>';
+      if(stage===0){
+        html += '<p class="placeholder-row">Toca "Revelar" para ver el caso…</p>';
+        return html;
+      }
+      html += '<div class="reveal-list">'
+        + '<div class="reveal-item"><span class="num mono">B2</span><div><h3 class="mono">2</h3><p>Cantidad — Fila 2 (Laptop)</p></div></div>'
+        + '<div class="reveal-item"><span class="num mono">C2</span><div><h3 class="mono">35,000</h3><p>Precio — Fila 2 (Laptop)</p></div></div>'
+        + '<div class="reveal-item"><span class="num mono">C3</span><div><h3 class="mono">12,000</h3><p>Precio — Fila 3 (Monitor), no de la Laptop</p></div></div>'
+        + '</div>'
+        + '<div style="margin:18px 0;padding:16px 18px;background:#fdecea;border:1.5px solid #e0a199;border-radius:var(--radius-sm);">'
+        + '<p class="cell-ref-tag" style="margin-bottom:6px;">Fórmula escrita en D2</p>'
+        + '<p class="mono" style="font-size:1.3rem;font-weight:700;color:#c0392b;">=B2*C3</p>'
+        + '<p class="muted small" style="margin-top:6px;">Resultado: RD$24,000 — incorrecto</p>'
+        + '</div>';
+      var vals = (agg||[]).map(function(r){return r.v;});
+      html += '<p class="cell-ref-tag" style="margin-bottom:10px;">'+this.mcQuestion+'</p>'
+        + renderPollBars(vals, this.mcOptions, stage>=2?this.mcCorrect:null);
+      if(stage>=2){
+        html += '<p style="margin-top:14px;color:var(--green-deep);font-weight:600;">✓ El error: usó C3 en vez de C2 — la fila no coincide con la de Cantidad.</p>';
+      }
+      return html;
+    },
+    partRender:function(stage, mine){
+      if(stage < 1) return waitingBlock('Observa la presentación.');
+      if(mine!==undefined){
+        var correct = mine===this.mcCorrect;
+        return confirmedBlock(stage>=2 ? (correct?'✓ ¡Correcto! El error era la fila de C3.' : 'Tu respuesta: '+labelFor(this.mcOptions,mine)+'. El error real era la fila de C3.') : 'Respuesta enviada. Esperando…');
+      }
+      return '<h3>'+escapeHtml(this.mcQuestion)+'</h3>'
+        + '<p class="muted small" style="margin:6px 0 14px;">Fórmula en D2: <span class="mono">=B2*C3</span></p>'
+        + '<div class="mc-grid">' + this.mcOptions.map(function(o){return '<button class="mc-opt" data-val="'+o.id+'">'+escapeHtml(o.label)+'</button>';}).join('') + '</div>';
+    },
+    partBind:function(container){
+      container.querySelectorAll('.mc-opt').forEach(function(btn){
+        btn.addEventListener('click', function(){ submitResponse(btn.getAttribute('data-val')); });
+      });
+    }
+  },
+
+  /* 9 — MINI RETO (elige la fórmula correcta) */
+  {
+    ref:'A10',
     title:'Mini reto',
     maxStage:3,
     interactiveStage:2,
-    responseType:'formula',
-    sheetRows:[
-      {num:1, cells:['Producto','Cantidad','Precio','Total']},
-      {num:2, cells:['Laptop','2','35,000', null]},
-      {num:3, cells:['Monitor','3','12,000','']},
-      {num:4, cells:['Teclado','5','1,500','']},
-      {num:5, cells:['Mouse','8','800','']}
+    responseType:'mc',
+    mcOptions:[
+      {id:'correcta', label:'=B2*C2'},
+      {id:'suma', label:'=B2+C2'},
+      {id:'funcion', label:'=SUMA(B2:C2)'},
+      {id:'fila', label:'=B3*C2'}
     ],
-    targetLabel:'D2',
-    correctResult:70000,
+    mcCorrect:'correcta',
+    timerSeconds:20,
+    mcQuestion:'¿Cuál es la fórmula correcta para el Total (D2)?',
     facRender:function(stage, agg){
       var html = '<h1 class="slide-title">Mini reto</h1>'
-        + '<p class="slide-subtitle">Observa la tabla y coloca la fórmula que falta.</p>';
+        + '<p class="slide-subtitle">Observa la tabla y elige la fórmula correcta.</p>';
       if(stage===0){
         html += '<p class="placeholder-row">Toca "Revelar" para mostrar la tabla…</p>';
         return html;
       }
       html += renderMiniSheet(stage>=3);
       if(stage===1){
-        html += '<p class="cell-ref-tag" style="margin-top:16px;">Fila 2 (Laptop): multiplica Cantidad (B2) por Precio (C2) y colócalo en D2</p>';
+        html += '<p class="cell-ref-tag" style="margin-top:16px;">Fila 2 (Laptop): el Total (D2) debe ser Cantidad (B2) por Precio (C2)</p>';
       } else {
         var vals = (agg||[]).map(function(r){return r.v;});
-        html += '<div style="margin-top:20px;"><p class="cell-ref-tag" style="margin-bottom:10px;">Fórmulas recibidas para D2</p>'
-          + renderFormulaChips(vals, stage>=3) + '</div>';
+        html += '<div style="margin-top:20px;"><p class="cell-ref-tag" style="margin-bottom:10px;">'+this.mcQuestion+'</p>'
+          + renderPollBars(vals, this.mcOptions, stage>=3?this.mcCorrect:null) + '</div>';
         if(stage>=3){
-          var correctN = vals.filter(function(v){return checkFormulaCorrect(v);}).length;
-          html += '<p style="margin-top:14px;color:var(--green-deep);font-weight:600;">✓ Fórmula correcta: =B2*C2 → RD$70,000 — '+correctN+' de '+vals.length+' acertaron.</p>';
+          html += '<p style="margin-top:14px;color:var(--green-deep);font-weight:600;">✓ Fórmula correcta: =B2*C2 → RD$70,000</p>';
         }
       }
       return html;
@@ -1051,29 +1108,22 @@
     partRender:function(stage, mine){
       if(stage < 2) return waitingBlock('Observa la tabla en la pantalla principal.');
       if(mine!==undefined){
-        var correct = checkFormulaCorrect(mine);
-        return confirmedBlock(stage>=3 ? (correct?'✓ ¡Correcto! =B2*C2 = RD$70,000' : 'Tu fórmula: '+escapeHtml(mine)+'. La correcta era =B2*C2.') : 'Fórmula enviada: '+escapeHtml(mine));
+        var correct = mine===this.mcCorrect;
+        return confirmedBlock(stage>=3 ? (correct?'✓ ¡Correcto! =B2*C2 = RD$70,000':'Tu respuesta: '+labelFor(this.mcOptions,mine)+'. La correcta era =B2*C2.') : 'Respuesta enviada. Esperando…');
       }
-      return '<h3>Calcula el Total de la fila 2 (Laptop)</h3>'
-        + '<p class="muted small" style="margin-top:6px;">B2 = Cantidad (2) · C2 = Precio (35,000)</p>'
-        + '<div class="field" style="margin-top:14px;"><label>Fórmula para D2</label>'
-        + '<input id="formula-input" class="mono" placeholder="=B2*C2" autocomplete="off"></div>'
-        + '<button class="btn btn-primary btn-block" style="margin-top:12px;" id="formula-submit">Enviar fórmula</button>';
+      return '<h3>'+escapeHtml(this.mcQuestion)+'</h3>'
+        + '<div class="mc-grid">' + this.mcOptions.map(function(o){return '<button class="mc-opt mono" data-val="'+o.id+'">'+escapeHtml(o.label)+'</button>';}).join('') + '</div>';
     },
     partBind:function(container){
-      var btn = container.querySelector('#formula-submit');
-      if(!btn) return;
-      btn.addEventListener('click', function(){
-        var v = (container.querySelector('#formula-input').value||'').trim();
-        if(!v) return;
-        submitResponse(v);
+      container.querySelectorAll('.mc-opt').forEach(function(btn){
+        btn.addEventListener('click', function(){ submitResponse(btn.getAttribute('data-val')); });
       });
     }
   },
 
-  /* 9 — CIERRE */
+  /* 10 — CIERRE */
   {
-    ref:'A10',
+    ref:'A11',
     title:'Cierre',
     maxStage:3,
     interactiveStage:2,
@@ -1175,21 +1225,6 @@
     values.forEach(function(v){
       var ok = (correctVal!==null && correctVal!==undefined && Number(v)===Number(correctVal));
       html += '<span class="chip '+(ok?'chip-correct':'')+'">RD$'+Number(v).toLocaleString('es-DO')+'</span>';
-    });
-    html += '</div>';
-    return html;
-  }
-  function checkFormulaCorrect(raw){
-    var s = String(raw).toUpperCase().replace(/\s+/g,'');
-    if(s.charAt(0)==='=') s = s.slice(1);
-    return s==='B2*C2' || s==='C2*B2';
-  }
-  function renderFormulaChips(values, revealCorrect){
-    if(!values.length) return '<p class="muted">Esperando respuestas…</p>';
-    var html = '<div class="chips">';
-    values.forEach(function(v){
-      var ok = revealCorrect && checkFormulaCorrect(v);
-      html += '<span class="chip mono '+(ok?'chip-correct':'')+'">'+escapeHtml(v)+'</span>';
     });
     html += '</div>';
     return html;
