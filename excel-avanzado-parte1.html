@@ -306,6 +306,16 @@
   .num-input-row{display:flex; gap:10px; margin-top:16px;}
   .num-input-row input{flex:1;}
 
+  /* ---------- mirrored facilitator content (participant, pre-question stages) ---------- */
+  .mirror-note{
+    font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; font-weight:700;
+    color:var(--ink-soft); margin-bottom:12px;
+  }
+  .mirror-content .slide-title{font-size:1.4rem; margin-bottom:6px;}
+  .mirror-content .slide-subtitle{font-size:.92rem; margin-bottom:16px;}
+  .mirror-content .reveal-list{display:flex; flex-direction:column; gap:10px;}
+  .mirror-content .placeholder-row{font-size:.9rem;}
+
   /* ---------- timer badge ---------- */
   .timer-badge{
     display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono',monospace; font-weight:700;
@@ -639,7 +649,7 @@
     },
     partRender:function(stage, mine){
       if(stage < 7){
-        return waitingBlock('Observa la presentación. En un momento podrás participar.');
+        return mirrorFacContent(this, stage);
       }
       if(mine!==undefined){
         return confirmedBlock('Tu palabra: "' + escapeHtml(mine) + '"');
@@ -702,7 +712,7 @@
     },
     partRender:function(stage, mine){
       if(stage < 6){
-        return waitingBlock('Observa la presentación.');
+        return mirrorFacContent(this, stage);
       }
       if(mine!==undefined){
         var correct = (mine === this.mcCorrect);
@@ -749,7 +759,7 @@
     },
     partRender:function(stage, mine){
       if(stage < 2){
-        return waitingBlock('Observa la presentación. Prepárate para un reto rápido.');
+        return mirrorFacContent(this, stage);
       }
       if(mine!==undefined){
         return confirmedBlock('Marcaste: ' + mine.split(',')[0] + mine.split(',')[1]);
@@ -816,7 +826,7 @@
       return html;
     },
     partRender:function(stage, mine){
-      if(stage < 6) return waitingBlock('Observa la presentación.');
+      if(stage < 6) return mirrorFacContent(this, stage);
       if(mine!==undefined) return confirmedBlock('Elegiste: ' + labelFor(this.mcOptions, mine));
       var opts=this.mcOptions;
       return '<h3>'+escapeHtml(this.mcQuestion)+'</h3>'
@@ -875,7 +885,7 @@
       return html;
     },
     partRender:function(stage, mine){
-      if(stage < 7) return waitingBlock('Observa la presentación.');
+      if(stage < 7) return mirrorFacContent(this, stage);
       if(mine!==undefined){
         var correct = mine===this.mcCorrect;
         return confirmedBlock(stage>=8 ? (correct?'✓ ¡Correcto!':'Tu respuesta: '+mine+'. La correcta era 50.') : 'Respuesta enviada. Esperando…');
@@ -937,7 +947,7 @@
       return html;
     },
     partRender:function(stage, mine){
-      if(stage < 7) return waitingBlock('Observa la presentación.');
+      if(stage < 7) return mirrorFacContent(this, stage);
       if(mine!==undefined){
         var correct = mine===this.mcCorrect;
         return confirmedBlock(stage>=8 ? (correct?'✓ ¡Correcto!':'Tu respuesta: '+labelFor(this.mcOptions,mine)+'. La correcta era =SUMA().') : 'Respuesta enviada. Esperando…');
@@ -996,7 +1006,7 @@
       return html;
     },
     partRender:function(stage, mine){
-      if(stage < 3) return waitingBlock('Observa la presentación.');
+      if(stage < 3) return mirrorFacContent(this, stage);
       if(mine!==undefined){
         var correct = mine===this.mcCorrect;
         return confirmedBlock(stage>=4 ? (correct?'✓ ¡Correcto!':'Tu respuesta: '+labelFor(this.mcOptions,mine)+'. La correcta era Absoluta.') : 'Respuesta enviada. Esperando…');
@@ -1054,7 +1064,7 @@
       return html;
     },
     partRender:function(stage, mine){
-      if(stage < 1) return waitingBlock('Observa la presentación.');
+      if(stage < 1) return mirrorFacContent(this, stage);
       if(mine!==undefined){
         var correct = mine===this.mcCorrect;
         return confirmedBlock(stage>=2 ? (correct?'✓ ¡Correcto! El error era la fila de C3.' : 'Tu respuesta: '+labelFor(this.mcOptions,mine)+'. El error real era la fila de C3.') : 'Respuesta enviada. Esperando…');
@@ -1107,7 +1117,7 @@
       return html;
     },
     partRender:function(stage, mine){
-      if(stage < 2) return waitingBlock('Observa la tabla en la pantalla principal.');
+      if(stage < 2) return mirrorFacContent(this, stage);
       if(mine!==undefined){
         var correct = mine===this.mcCorrect;
         return confirmedBlock(stage>=3 ? (correct?'✓ ¡Correcto! =B2*C2 = RD$70,000':'Tu respuesta: '+labelFor(this.mcOptions,mine)+'. La correcta era =B2*C2.') : 'Respuesta enviada. Esperando…');
@@ -1149,7 +1159,7 @@
       return html;
     },
     partRender:function(stage, mine){
-      if(stage===0) return waitingBlock('Terminamos la Parte I.');
+      if(stage===0) return mirrorFacContent(this, stage);
       if(stage>=2 && mine===undefined) return confirmedBlock('Nos vemos en el Kahoot.');
       if(mine!==undefined) return confirmedBlock('Enviado: "'+escapeHtml(mine)+'"');
       return '<h3>¿Qué fue lo que más te costó hoy?</h3>'
@@ -1181,6 +1191,10 @@
   }
   function confirmedBlock(msg){
     return '<div class="confirm-wrap"><div class="confirm-check">✓</div><p style="font-weight:600;">'+msg+'</p></div>';
+  }
+  function mirrorFacContent(slide, stage){
+    return '<div class="mirror-note">👀 Sigue la presentación</div>'
+      + '<div class="mirror-content">' + slide.facRender.call(slide, stage, []) + '</div>';
   }
   function renderWordCloud(words){
     var freq = {};
