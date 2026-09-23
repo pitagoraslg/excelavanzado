@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas para gestionar datos</title>
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#12384F;
+    --navy-deep:#0B2534;
+    --orange:#E8622A;
+    --orange-soft:#FCE6DC;
+    --teal:#1BA7B4;
+    --teal-soft:#DDF2F4;
+    --ivory:#FAF7F0;
+    --ivory-deep:#F3EFE4;
+    --ink:#232A2E;
+    --ink-soft:#5B6469;
+    --line:#E3DED0;
+    --xl-green:#217346;
+    --grid:#D9D9D9;
+    --grid-head:#F2F2F2;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--ivory); color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif; -webkit-font-smoothing:antialiased; line-height:1.55;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  h1,h2,h3{font-family:'Newsreader',serif; font-weight:500; margin:0; line-height:1.15;}
+  p{margin:0;}
+  a{color:inherit;}
+  button{font-family:inherit;}
+  ::selection{background:var(--teal); color:var(--ivory);}
+  :focus-visible{outline:2.5px solid var(--teal); outline-offset:3px;}
+
+  .brand-strip{height:5px; flex-shrink:0; background:linear-gradient(90deg, var(--navy) 0 40%, var(--orange) 40% 70%, var(--teal) 70% 100%);}
+
+  /* ---------- TOP BAR ---------- */
+  .topbar{
+    flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:16px; min-width:0; max-width:100vw;
+    padding:10px clamp(16px,3vw,40px); border-bottom:1px solid var(--line); background:var(--ivory);
+  }
+  .topbar .left{display:flex; align-items:center; gap:12px; min-width:0;}
+  .topbar .left img{width:34px; height:34px; object-fit:contain; flex-shrink:0;}
+  .topbar .crumb{font-size:.86rem; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0;}
+  .topbar .crumb strong{color:var(--navy); font-weight:600;}
+  .topbar .right{display:flex; align-items:center; gap:14px; flex-shrink:0;}
+  .section-tag{font-size:.8rem; font-weight:600; color:var(--teal); text-transform:uppercase; letter-spacing:.06em;}
+  .icon-btn{
+    background:none; border:1.5px solid var(--line); border-radius:3px; width:34px; height:34px;
+    display:inline-flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink-soft);
+  }
+  .icon-btn:hover{border-color:var(--navy); color:var(--navy);}
+  .icon-btn svg{width:16px; height:16px;}
+
+  /* ---------- STAGE ---------- */
+  .stage{flex:1; position:relative; overflow:hidden;}
+  .slide{
+    position:absolute; inset:0; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding:clamp(24px,4.5vh,56px) clamp(16px,4vw,64px) 40px;
+    opacity:0; visibility:hidden; transform:translateX(24px);
+    transition:opacity .28s ease, transform .28s ease, visibility 0s linear .28s;
+  }
+  .slide.active{opacity:1; visibility:visible; transform:none; transition:opacity .28s ease, transform .28s ease;}
+  .slide.left{transform:translateX(-24px);}
+  .slide-inner{max-width:1180px; margin:0 auto; min-height:100%; display:flex; flex-direction:column; justify-content:center;}
+
+  .kicker{font-size:.9rem; font-weight:600; color:var(--teal); margin-bottom:12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .kicker .num{
+    background:var(--navy); color:var(--ivory); font-family:'Newsreader',serif; font-size:1rem;
+    min-width:30px; height:30px; padding:0 8px; border-radius:15px; display:inline-flex; align-items:center; justify-content:center;
+  }
+  .slide h2{font-size:clamp(1.8rem,3.6vw,2.8rem); color:var(--navy); max-width:24ch;}
+  .slide .lede{margin-top:14px; font-size:clamp(1rem,1.5vw,1.18rem); color:var(--ink-soft); max-width:62ch;}
+  .hint{font-size:.82rem; color:var(--ink-soft); font-style:italic; font-family:'Newsreader',serif; margin-top:10px;}
+
+  .two-col{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(24px,4vw,56px); align-items:start; margin-top:30px;}
+  .two-col > *{min-width:0;}
+
+  .kbd{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:.82em; font-weight:500;
+    background:#fff; border:1px solid #CFC9B8; border-bottom-width:3px; border-radius:4px; padding:0 7px; line-height:1.6;
+    color:var(--navy); white-space:nowrap;
+  }
+  .path{
+    display:inline-flex; flex-wrap:wrap; align-items:center; gap:4px; background:var(--teal-soft); color:var(--navy);
+    padding:1px 9px; border-radius:3px; font-size:.9em; font-weight:500;
+  }
+  .path i{font-style:normal; color:var(--teal); font-weight:600;}
+  .val{font-family:'IBM Plex Mono',monospace; font-size:.86em; background:var(--ivory-deep); padding:1px 6px; border-radius:3px;}
+
+  /* ficha de herramienta */
+  .facts{display:flex; flex-direction:column; border-top:1px solid var(--line);}
+  .fact{display:grid; grid-template-columns:120px 1fr; gap:16px; padding:14px 0; border-bottom:1px solid var(--line); font-size:clamp(.96rem,1.3vw,1.04rem);}
+  .fact dt, .fact .k{font-size:.78rem; font-weight:600; color:var(--teal); text-transform:uppercase; letter-spacing:.06em; padding-top:3px;}
+  .fact p + p{margin-top:6px;}
+
+  .note{
+    margin-top:20px; border-left:3px solid var(--orange); background:#fff; padding:14px 18px; font-size:.95rem; max-width:64ch;
+  }
+  .note strong{color:var(--orange);}
+  .note.good{border-left-color:var(--teal);}
+  .note.good strong{color:var(--teal);}
+
+  /* ventajas: fichas para revelar */
+  .tiles-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:12px;}
+  .tiles-head h3{font-family:'IBM Plex Sans',sans-serif; font-size:.78rem; font-weight:600; color:var(--orange); text-transform:uppercase; letter-spacing:.07em;}
+  .reveal-all{background:none; border:none; color:var(--teal); font-weight:600; font-size:.84rem; cursor:pointer; padding:0;}
+  .tiles{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .tile{
+    text-align:left; background:#fff; border:1.5px solid var(--line); border-radius:4px; padding:14px 16px; cursor:pointer;
+    display:flex; flex-direction:column; gap:6px; min-height:74px; transition:border-color .15s ease, background .15s ease; color:var(--ink);
+  }
+  .tile:hover{border-color:var(--teal);}
+  .tile .th{font-weight:600; color:var(--navy); font-size:1rem; display:flex; justify-content:space-between; gap:10px; align-items:flex-start;}
+  .tile .th::after{content:'+'; color:var(--teal); font-size:1.2rem; line-height:1; font-weight:500;}
+  .tile .tb{font-size:.9rem; color:var(--ink-soft); display:none;}
+  .tile.open{background:var(--teal-soft); border-color:var(--teal);}
+  .tile.open .th::after{content:'–';}
+  .tile.open .tb{display:block;}
+
+  /* control segmentado */
+  .seg{display:inline-flex; border:1.5px solid var(--navy); border-radius:3px; overflow:hidden; flex-wrap:wrap;}
+  .seg button{background:transparent; border:none; padding:9px 16px; font-weight:600; font-size:.9rem; color:var(--navy); cursor:pointer;}
+  .seg button + button{border-left:1.5px solid var(--navy);}
+  .seg button.on{background:var(--navy); color:var(--ivory);}
+
+  /* ---------- PORTADA ---------- */
+  .cover .slide-inner{align-items:flex-start;}
+  .cover-logo{width:min(420px,100%); height:auto; margin-bottom:clamp(14px,3vh,30px);}
+  .cover .eyebrow{font-size:.95rem; font-weight:600; color:var(--teal); margin-bottom:14px;}
+  .cover h1{font-size:clamp(2.2rem,4.6vw,3.4rem); line-height:1.07; color:var(--navy); max-width:17ch; letter-spacing:-.01em;}
+  .cover .lede{font-family:'Newsreader',serif; font-style:italic; font-size:clamp(1.1rem,2vw,1.4rem); max-width:44ch; margin-top:14px; color:var(--ink-soft);}
+  .presenter{display:flex; align-items:center; gap:16px; margin-top:clamp(18px,3.5vh,34px); padding-top:18px; border-top:1px solid var(--line); width:100%; max-width:640px;}
+  .presenter .mark{width:60px; height:60px; border-radius:50%; background:var(--navy); color:var(--ivory); font-family:'Newsreader',serif; font-size:1.35rem; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .presenter small{display:block; color:var(--ink-soft); font-size:.85rem;}
+  .presenter strong{display:block; font-size:1.15rem; color:var(--navy);}
+  .presenter span.role{display:block; font-size:.88rem; color:var(--teal); font-weight:600;}
+
+  /* ---------- AGENDA ---------- */
+  .agenda{display:grid; grid-template-columns:repeat(3,1fr); gap:0; margin-top:30px; border-top:2px solid var(--navy);}
+  .ag{padding:18px 18px 18px 0; border-bottom:1px solid var(--line);}
+  .ag:not(:nth-child(3n+1)){padding-left:18px; border-left:1px solid var(--line);}
+  .ag .n{font-family:'Newsreader',serif; font-size:1.8rem; color:var(--teal); line-height:1;}
+  .ag h3{font-family:'IBM Plex Sans',sans-serif; font-size:1rem; font-weight:600; color:var(--navy); margin:8px 0 4px;}
+  .ag p{font-size:.9rem; color:var(--ink-soft);}
+
+  /* ---------- CUALIDADES ---------- */
+  .qualities{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:28px;}
+  .q{
+    background:#fff; border:1.5px solid var(--line); border-radius:4px; padding:16px 14px; cursor:pointer; text-align:left;
+    display:flex; flex-direction:column; gap:6px; color:var(--ink); transition:border-color .15s ease, background .15s ease, transform .15s ease;
+  }
+  .q:hover{border-color:var(--teal);}
+  .q .qn{font-family:'Newsreader',serif; font-size:1.5rem; color:var(--orange); line-height:1;}
+  .q .qt{font-weight:600; color:var(--navy);}
+  .q .qs{font-size:.84rem; color:var(--ink-soft);}
+  .q.on{background:var(--navy); border-color:var(--navy);}
+  .q.on .qt{color:var(--ivory);} .q.on .qs{color:rgba(250,247,240,.75);} .q.on .qn{color:var(--teal);}
+  .q-detail{margin-top:18px; background:#fff; border:1px solid var(--line); border-radius:4px; padding:20px 22px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:22px; min-height:150px;}
+  .q-detail h4{margin:0 0 6px; font-size:.78rem; font-weight:600; color:var(--teal); text-transform:uppercase; letter-spacing:.06em;}
+  .q-detail p{font-size:.95rem;}
+  .q-detail .chips{display:flex; flex-wrap:wrap; gap:6px;}
+  .chip{background:var(--teal-soft); color:var(--navy); font-size:.85rem; font-weight:600; padding:3px 10px; border-radius:12px;}
+  .q-empty{grid-column:1/-1; align-self:center; color:var(--ink-soft); font-style:italic; font-family:'Newsreader',serif; font-size:1.05rem;}
+
+  /* ---------- MINI CUADRÍCULAS (conceptuales) ---------- */
+  .grid-demo{background:#fff; border:1px solid #C8C8C8; border-radius:4px; overflow:hidden; font-family:'Segoe UI',Calibri,Arial,sans-serif; font-size:.9rem; box-shadow:0 10px 30px rgba(18,56,79,.08);}
+  .grid-demo table{border-collapse:collapse; width:100%;}
+  .grid-demo td, .grid-demo th{border:1px solid var(--grid); padding:6px 10px; text-align:left; transition:background .2s ease, color .2s ease;}
+  .grid-demo th{background:var(--grid-head); font-weight:600; color:#444;}
+  .grid-demo td.hit{background:#FFC7CE; color:#9C0006;}
+  .grid-demo td.match{background:#FFF2A8;}
+  .grid-demo td.r{text-align:right;}
+  .grid-demo tr.gone td{opacity:.35; text-decoration:line-through;}
+  .demo-cap{font-size:.86rem; color:var(--ink-soft); margin-top:10px; min-height:2.6em;}
+
+  /* comparación rango/tabla */
+  .compare{margin-top:18px; display:flex; flex-direction:column; border-top:1px solid var(--line);}
+  .cmp-row{display:grid; grid-template-columns:1fr auto; gap:14px; padding:11px 0; border-bottom:1px solid var(--line); font-size:.95rem; align-items:center;}
+  .cmp-row .st{font-weight:600; font-size:.85rem; white-space:nowrap;}
+  .st.yes{color:var(--teal);} .st.no{color:var(--orange);}
+
+  /* simulador buscar */
+  .opts{display:flex; flex-direction:column; gap:10px; margin:16px 0;}
+  .switch{display:flex; align-items:center; gap:12px; cursor:pointer; font-size:.98rem; background:none; border:none; padding:0; text-align:left; color:var(--ink);}
+  .switch .track{width:40px; height:22px; border-radius:11px; background:#CFC9B8; position:relative; flex-shrink:0; transition:background .15s ease;}
+  .switch .track::after{content:''; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:#fff; transition:left .15s ease;}
+  .switch[aria-checked="true"] .track{background:var(--teal);}
+  .switch[aria-checked="true"] .track::after{left:21px;}
+  .search-box{display:inline-flex; align-items:center; gap:10px; font-size:.95rem;}
+  .search-box span{font-family:'IBM Plex Mono',monospace; border:1px solid #8A8A8A; padding:3px 10px; background:#fff; border-radius:2px;}
+
+  /* valor vs formato */
+  .format-stage{background:#fff; border:1px solid var(--line); border-radius:4px; padding:clamp(18px,3vw,30px);}
+  .cell-big{
+    font-family:'Segoe UI',Calibri,Arial,sans-serif; font-size:clamp(1.4rem,3vw,2.1rem); border:2px solid var(--xl-green); padding:12px 18px; background:#fff;
+    text-align:right; min-height:1.9em; margin:14px 0 10px; box-shadow:0 0 0 1px var(--xl-green) inset; overflow-wrap:anywhere;
+  }
+  .formula-bar{display:flex; align-items:center; gap:10px; border:1px solid var(--grid); background:var(--grid-head); padding:6px 10px; font-family:'Segoe UI',Calibri,Arial,sans-serif; font-size:.95rem;}
+  .formula-bar b{font-family:'Newsreader',serif; font-style:italic; color:#777; font-weight:400;}
+  .formula-bar span{font-family:'IBM Plex Mono',monospace; color:var(--navy);}
+  .fmt-btns{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px;}
+  .fmt-btns button{border:1.5px solid var(--line); background:var(--ivory); border-radius:3px; padding:7px 12px; font-size:.86rem; font-weight:600; color:var(--navy); cursor:pointer;}
+  .fmt-btns button.on{background:var(--navy); border-color:var(--navy); color:var(--ivory);}
+
+  /* ordenar */
+  .levels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px;}
+  .lvl-col{background:#fff; border:1px solid var(--line); border-radius:4px; padding:12px;}
+  .lvl-col h4{margin:0 0 10px; font-size:.78rem; font-weight:600; color:var(--teal); text-transform:uppercase; letter-spacing:.06em;}
+  .lvl-row{display:flex; align-items:center; gap:8px; padding:5px 8px; border-radius:3px; font-size:.9rem; margin-bottom:4px; font-family:'IBM Plex Mono',monospace;}
+  .g1{background:#DDF2F4;} .g2{background:#FCE6DC;} .g3{background:#E6E3F5;}
+  .dot{width:10px; height:10px; border-radius:50%; flex-shrink:0;}
+  .g1 .dot{background:var(--teal);} .g2 .dot{background:var(--orange);} .g3 .dot{background:#6B5FB5;}
+  .asc{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px;}
+  .asc div{background:#fff; border:1px solid var(--line); border-radius:4px; padding:12px 14px;}
+  .asc b{display:block; color:var(--navy); margin-bottom:4px;}
+  .asc span{font-size:.9rem; color:var(--ink-soft);}
+
+  /* escritorio vs web */
+  .vs{width:100%; border-collapse:collapse; margin-top:26px; font-size:clamp(.88rem,1.2vw,.98rem);}
+  .vs th{text-align:left; font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); padding:0 12px 10px 0; border-bottom:2px solid var(--navy);}
+  .vs td{padding:12px 12px 12px 0; border-bottom:1px solid var(--line); vertical-align:top;}
+  .vs td:first-child{font-weight:600; color:var(--navy);}
+  .vs .x{color:var(--orange); font-weight:600;}
+
+  /* ---------- QUIZ ---------- */
+  .quiz{margin-top:24px; background:#fff; border:1px solid var(--line); border-radius:4px; padding:clamp(18px,3vw,30px); max-width:820px;}
+  .quiz-top{display:flex; justify-content:space-between; gap:12px; font-size:.84rem; color:var(--ink-soft); margin-bottom:12px;}
+  .quiz-top b{color:var(--navy);}
+  .quiz-q{font-family:'Newsreader',serif; font-size:clamp(1.25rem,2.2vw,1.6rem); color:var(--navy); line-height:1.25; margin-bottom:18px;}
+  .quiz-opts{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .quiz-opts button{
+    text-align:left; border:1.5px solid var(--line); background:var(--ivory); border-radius:4px; padding:13px 16px; font-size:.98rem; cursor:pointer; color:var(--ink);
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .quiz-opts button:hover:not(:disabled){border-color:var(--navy);}
+  .quiz-opts button.right{background:var(--teal-soft); border-color:var(--teal); color:#0E5E66; font-weight:600;}
+  .quiz-opts button.wrong{background:var(--orange-soft); border-color:var(--orange); color:#9A3A10;}
+  .quiz-opts button:disabled{cursor:default;}
+  .quiz-fb{margin-top:16px; font-size:.95rem; min-height:1.5em;}
+  .quiz-fb.ok strong{color:var(--teal);} .quiz-fb.bad strong{color:var(--orange);}
+  .quiz-actions{display:flex; justify-content:flex-end; margin-top:14px;}
+  .btn{display:inline-flex; align-items:center; gap:8px; border-radius:3px; padding:11px 20px; font-weight:600; font-size:.95rem; cursor:pointer; border:1.5px solid var(--navy); background:var(--navy); color:var(--ivory); text-decoration:none;}
+  .btn:hover{background:var(--navy-deep);}
+  .btn.orange{background:var(--orange); border-color:var(--orange);}
+  .btn.orange:hover{background:#D2551F;}
+  .btn[hidden]{display:none;}
+  .score{font-family:'Newsreader',serif; font-size:3rem; color:var(--teal); line-height:1;}
+
+  /* cierre */
+  .summary{display:grid; grid-template-columns:repeat(2,1fr); gap:0 36px; margin-top:24px;}
+  .sum{display:grid; grid-template-columns:auto 1fr; gap:14px; padding:12px 0; border-bottom:1px solid var(--line); font-size:.96rem; align-items:baseline;}
+  .sum b{color:var(--navy); white-space:nowrap;}
+  .sum span{color:var(--ink-soft);}
+
+  /* ---------- NAV ---------- */
+  .navbar{
+    flex-shrink:0; border-top:1px solid var(--line); background:var(--ivory); max-width:100vw;
+    padding:10px clamp(16px,3vw,40px) calc(10px + env(safe-area-inset-bottom));
+    display:grid; grid-template-columns:auto 1fr auto; gap:18px; align-items:center;
+  }
+  .nav-btn{
+    display:inline-flex; align-items:center; gap:8px; border-radius:3px; padding:11px 20px; font-weight:600; font-size:.95rem; cursor:pointer;
+    border:1.5px solid var(--navy); background:transparent; color:var(--navy); transition:background .15s ease, color .15s ease, opacity .15s ease;
+  }
+  .nav-btn:hover:not(:disabled){background:var(--navy); color:var(--ivory);}
+  .nav-btn.next{background:var(--orange); border-color:var(--orange); color:var(--ivory);}
+  .nav-btn.next:hover:not(:disabled){background:#D2551F; border-color:#D2551F;}
+  .nav-btn:disabled{opacity:.35; cursor:default;}
+  .progress{display:flex; flex-direction:column; gap:6px; min-width:0;}
+  .bars{display:flex; gap:4px;}
+  .bars button{flex:1; height:6px; border:none; padding:0; border-radius:3px; background:var(--line); cursor:pointer;}
+  .bars button.done{background:var(--teal);}
+  .bars button.cur{background:var(--orange);}
+  .counter{font-size:.8rem; color:var(--ink-soft); text-align:center;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:980px){
+    .qualities{grid-template-columns:repeat(3,1fr);}
+  }
+  @media (max-width:900px){
+    .two-col{grid-template-columns:1fr;}
+    .agenda{grid-template-columns:1fr 1fr;}
+    .ag:not(:nth-child(3n+1)){padding-left:0; border-left:none;}
+    .ag:nth-child(even){padding-left:18px; border-left:1px solid var(--line);}
+    .q-detail{grid-template-columns:1fr;}
+    .summary{grid-template-columns:1fr;}
+    .slide-inner{justify-content:flex-start;}
+  }
+  @media (max-width:560px){
+    .topbar .section-tag{display:none;}
+    .agenda{grid-template-columns:1fr;}
+    .ag:nth-child(even){padding-left:0; border-left:none;}
+    .qualities{grid-template-columns:1fr 1fr;}
+    .tiles{grid-template-columns:1fr;}
+    .fact{grid-template-columns:1fr; gap:4px;}
+    .levels, .asc, .quiz-opts{grid-template-columns:1fr;}
+    .vs thead{display:none;}
+    .vs tr{display:block; padding:10px 0; border-bottom:1px solid var(--line);}
+    .vs td{display:block; border:none; padding:3px 0;}
+    .vs td[data-l]::before{content:attr(data-l) ': '; font-weight:600; color:var(--teal); font-size:.8rem; text-transform:uppercase;}
+    .nav-btn{padding:10px 14px;}
+    .nav-btn .lbl{display:none;}
+  }
+  @media (prefers-reduced-motion:reduce){ .slide{transition:none !important;} }
+</style>
+</head>
+<body>
+
+<div class="brand-strip"></div>
+<header class="topbar">
+  <div class="left">
+    <img src="img/icadep-escudo.png" alt="ICADEP-XXI">
+    <p class="crumb"><strong>Conceptos</strong> · Módulo 1 — Fundamentos y gestión avanzada de datos</p>
+  </div>
+  <div class="right">
+    <span class="section-tag" id="section-tag"></span>
+    <button class="icon-btn" id="btn-full" title="Pantalla completa (F)" aria-label="Pantalla completa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="stage" id="stage">
+
+  <!-- 1 · PORTADA -->
+  <section class="slide cover" data-tag="Inicio">
+    <div class="slide-inner">
+      <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
+      <p class="eyebrow">Excel Avanzado · Módulo 1</p>
+      <h1>Herramientas para gestionar y depurar datos</h1>
+      <p class="lede">Qué son, para qué sirven y qué ventajas tienen las opciones de Excel que usaremos para dejar una base de datos confiable.</p>
+      <div class="presenter">
+        <div class="mark">JF</div>
+        <div>
+          <small>Presentado por</small>
+          <strong>Jarlin Figueroa, MA</strong>
+          <span class="role">Facilitador · Instituto ICADEP-XXI</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · AGENDA -->
+  <section class="slide" data-tag="Agenda">
+    <div class="slide-inner">
+      <p class="kicker">Lo que veremos hoy</p>
+      <h2>Primero entendemos las herramientas; después las aplicamos</h2>
+      <p class="lede">Esta sesión es conceptual: vamos a conocer cada herramienta, su propósito y sus ventajas. La práctica guiada viene en la actividad.</p>
+      <div class="agenda">
+        <div class="ag"><div class="n">01</div><h3>Datos confiables</h3><p>Las cinco cualidades que buscamos en una base de datos.</p></div>
+        <div class="ag"><div class="n">02</div><h3>Estructura</h3><p>Tablas de Excel y cómo tratar los duplicados.</p></div>
+        <div class="ag"><div class="n">03</div><h3>Consistencia</h3><p>Filtros, Buscar y reemplazar y el relleno múltiple.</p></div>
+        <div class="ag"><div class="n">04</div><h3>Formato</h3><p>La diferencia entre el valor de una celda y cómo se ve.</p></div>
+        <div class="ag"><div class="n">05</div><h3>Organización</h3><p>Ordenar por uno o varios niveles.</p></div>
+        <div class="ag"><div class="n">06</div><h3>Repaso</h3><p>Escritorio vs. web y un reto rápido de conceptos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · CUALIDADES -->
+  <section class="slide" data-tag="Datos confiables">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">01</span>Datos confiables</p>
+      <h2>Las cinco cualidades de una base de datos confiable</h2>
+      <p class="lede">Depurar datos es asegurar estas cinco cualidades. Toca cada una para ver qué significa y qué herramientas la resuelven.</p>
+      <div class="qualities" id="qualities">
+        <button class="q" data-q="0"><span class="qn">1</span><span class="qt">Únicos</span><span class="qs">Cada registro aparece una sola vez</span></button>
+        <button class="q" data-q="1"><span class="qn">2</span><span class="qt">Consistentes</span><span class="qs">Lo mismo se escribe igual</span></button>
+        <button class="q" data-q="2"><span class="qn">3</span><span class="qt">Con formato correcto</span><span class="qs">Fechas y montos reconocibles</span></button>
+        <button class="q" data-q="3"><span class="qn">4</span><span class="qt">Completos</span><span class="qs">Sin huecos sin explicar</span></button>
+        <button class="q" data-q="4"><span class="qn">5</span><span class="qt">Organizados</span><span class="qs">En un orden útil</span></button>
+      </div>
+      <div class="q-detail" id="q-detail" aria-live="polite"><p class="q-empty">Selecciona una cualidad.</p></div>
+    </div>
+  </section>
+
+  <!-- 4 · TABLA -->
+  <section class="slide" data-tag="Estructura">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">02</span>Estructura · Herramienta 1</p>
+      <h2>Tabla de Excel</h2>
+      <div class="two-col">
+        <div>
+          <dl class="facts" style="margin:0;">
+            <div class="fact"><dt>Qué es</dt><dd style="margin:0;"><p>Un rango de datos al que Excel reconoce como <b>una sola unidad</b>: sabe dónde empieza, dónde termina y cuáles son sus encabezados.</p></dd></div>
+            <div class="fact"><dt>Para qué</dt><dd style="margin:0;"><p>Es la base de todo lo demás: filtrar, ordenar, quitar duplicados y, más adelante, tablas dinámicas y gráficos.</p></dd></div>
+            <div class="fact"><dt>Dónde</dt><dd style="margin:0;"><p><span class="kbd">Ctrl</span> + <span class="kbd">T</span> o <span class="path">Insertar <i>›</i> Tabla</span></p></dd></div>
+          </dl>
+          <p style="margin-top:22px; font-weight:600; color:var(--navy);">Compara: ¿qué puede hacer cada uno?</p>
+          <div class="seg" style="margin-top:10px;" id="seg-tabla">
+            <button class="on" data-v="rango">Rango normal</button>
+            <button data-v="tabla">Tabla de Excel</button>
+          </div>
+          <div class="compare" id="cmp-tabla"></div>
+        </div>
+        <div>
+          <div class="tiles-head"><h3>Ventajas</h3><button class="reveal-all">Mostrar todas</button></div>
+          <div class="tiles">
+            <button class="tile"><span class="th">Crece sola</span><span class="tb">Al escribir en la fila siguiente, la tabla se amplía automáticamente.</span></button>
+            <button class="tile"><span class="th">Filtros integrados</span><span class="tb">Cada encabezado trae su botón de filtro y ordenamiento.</span></button>
+            <button class="tile"><span class="th">Fácil de leer</span><span class="tb">Filas en bandas de color y encabezados que se mantienen visibles al desplazarte.</span></button>
+            <button class="tile"><span class="th">Fórmulas que se copian</span><span class="tb">Una fórmula escrita en una columna se rellena sola en todas las filas.</span></button>
+            <button class="tile"><span class="th">Tiene nombre</span><span class="tb">Puedes llamarla, por ejemplo, <span class="val">tblVentas</span> y usar ese nombre en fórmulas.</span></button>
+            <button class="tile"><span class="th">Lista para analizar</span><span class="tb">Es la fuente ideal para tablas dinámicas, gráficos y Power Query.</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · DUPLICADOS -->
+  <section class="slide" data-tag="Estructura">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">02</span>Estructura · Herramientas 2 y 3</p>
+      <h2>Duplicados: primero verlos, luego quitarlos</h2>
+      <div class="two-col">
+        <div>
+          <dl class="facts" style="margin:0;">
+            <div class="fact"><dt>Resaltar</dt><dd style="margin:0;"><p><b>Formato condicional › Valores duplicados</b> pinta las celdas repetidas. <b>No borra nada</b>: sirve para revisar antes de decidir.</p><p><span class="path">Inicio <i>›</i> Formato condicional <i>›</i> Reglas para resaltar celdas</span></p></dd></div>
+            <div class="fact"><dt>Quitar</dt><dd style="margin:0;"><p><b>Quitar duplicados</b> elimina las filas repetidas y conserva la primera aparición. Al final te dice cuántas quitó.</p><p><span class="path">Datos <i>›</i> Quitar duplicados</span> o <span class="path">Diseño de tabla <i>›</i> Quitar duplicados</span></p></dd></div>
+            <div class="fact"><dt>La clave</dt><dd style="margin:0;"><p>Tú decides <b>qué columnas</b> deben coincidir para considerar que una fila está repetida.</p></dd></div>
+          </dl>
+        </div>
+        <div>
+          <p style="font-weight:600; color:var(--navy); margin-bottom:10px;">¿Qué cuenta como duplicado?</p>
+          <div class="seg" id="seg-dup">
+            <button class="on" data-v="fila">Toda la fila</button>
+            <button data-v="col">Solo la columna «Grupo»</button>
+          </div>
+          <div class="grid-demo" style="margin-top:14px;">
+            <table>
+              <thead><tr><th>Código</th><th>Grupo</th><th>Valor</th></tr></thead>
+              <tbody id="dup-body">
+                <tr><td>A-01</td><td>Rojo</td><td class="r">10</td></tr>
+                <tr><td>A-02</td><td>Azul</td><td class="r">25</td></tr>
+                <tr><td>A-01</td><td>Rojo</td><td class="r">10</td></tr>
+                <tr><td>A-03</td><td>Rojo</td><td class="r">40</td></tr>
+                <tr><td>A-04</td><td>Azul</td><td class="r">15</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="demo-cap" id="dup-cap"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · FILTRO -->
+  <section class="slide" data-tag="Consistencia">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">03</span>Consistencia · Herramienta 4</p>
+      <h2>El filtro: mostrar solo lo que necesitas</h2>
+      <div class="two-col">
+        <div>
+          <dl class="facts" style="margin:0;">
+            <div class="fact"><dt>Qué es</dt><dd style="margin:0;"><p>Un botón en cada encabezado que <b>oculta temporalmente</b> las filas que no cumplen un criterio. No borra ni cambia datos.</p></dd></div>
+            <div class="fact"><dt>Para qué</dt><dd style="margin:0;"><p>Revisar un grupo de registros, encontrar celdas vacías y descubrir <b>todas las formas distintas</b> en que se escribió un dato.</p></dd></div>
+            <div class="fact"><dt>Dónde</dt><dd style="margin:0;"><p><span class="path">Datos <i>›</i> Filtro</span> o <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">L</span>. En una tabla ya viene activado.</p></dd></div>
+          </dl>
+          <p class="note"><strong>Dos detalles:</strong> la lista del filtro no distingue mayúsculas (dos textos que solo cambian en mayúsculas salen como una opción), y los números de fila se ven en azul mientras hay un filtro activo.</p>
+        </div>
+        <div>
+          <div class="tiles-head"><h3>Ventajas</h3><button class="reveal-all">Mostrar todas</button></div>
+          <div class="tiles">
+            <button class="tile"><span class="th">Es un diagnóstico</span><span class="tb">La lista muestra cada valor distinto una sola vez: las inconsistencias saltan a la vista.</span></button>
+            <button class="tile"><span class="th">No es destructivo</span><span class="tb">Quitas el filtro y todo vuelve a estar como antes.</span></button>
+            <button class="tile"><span class="th">Encuentra vacíos</span><span class="tb">La opción <b>(Vacías)</b> muestra solo las filas sin dato en esa columna.</span></button>
+            <button class="tile"><span class="th">Se combina</span><span class="tb">Puedes filtrar varias columnas a la vez y cada filtro reduce el resultado.</span></button>
+            <button class="tile"><span class="th">Trabaja con lo visible</span><span class="tb">Lo que escribas o rellenes sobre filas filtradas afecta solo a las visibles.</span></button>
+            <button class="tile"><span class="th">Muestra totales</span><span class="tb">La barra de estado cuenta y suma solo las celdas visibles seleccionadas.</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · BUSCAR Y REEMPLAZAR -->
+  <section class="slide" data-tag="Consistencia">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">03</span>Consistencia · Herramienta 5</p>
+      <h2>Buscar y reemplazar: corregir en bloque</h2>
+      <div class="two-col">
+        <div>
+          <dl class="facts" style="margin:0;">
+            <div class="fact"><dt>Qué es</dt><dd style="margin:0;"><p>Localiza un texto y lo sustituye por otro en todas las celdas seleccionadas de una sola vez.</p></dd></div>
+            <div class="fact"><dt>Dónde</dt><dd style="margin:0;"><p><span class="kbd">Ctrl</span> + <span class="kbd">H</span> o <span class="path">Inicio <i>›</i> Buscar y seleccionar <i>›</i> Reemplazar</span></p></dd></div>
+            <div class="fact"><dt>Ventajas</dt><dd style="margin:0;"><p>Rápido, exacto y se puede limitar a una columna. También sirve para <b>quitar</b> caracteres (reemplazar por nada) o cambiar separadores.</p></dd></div>
+            <div class="fact"><dt>Ojo</dt><dd style="margin:0;"><p>Excel <b>recuerda las opciones</b> que marcaste la última vez. Revísalas antes de cada reemplazo.</p></dd></div>
+          </dl>
+        </div>
+        <div>
+          <p style="font-weight:600; color:var(--navy);">Prueba las opciones: ¿qué celdas encuentra?</p>
+          <div class="opts">
+            <div class="search-box">Buscar: <span>casa</span></div>
+            <button class="switch" role="switch" aria-checked="false" id="opt-case"><span class="track"></span>Coincidir mayúsculas y minúsculas</button>
+            <button class="switch" role="switch" aria-checked="false" id="opt-whole"><span class="track"></span>Coincidir con el contenido de toda la celda</button>
+          </div>
+          <div class="grid-demo">
+            <table><tbody id="find-body"></tbody></table>
+          </div>
+          <p class="demo-cap" id="find-cap"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · CTRL+ENTER E IR A ESPECIAL -->
+  <section class="slide" data-tag="Consistencia">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">03</span>Consistencia · Herramientas 6 y 7</p>
+      <h2>Escribir una vez, llenar muchas celdas</h2>
+      <div class="two-col">
+        <div>
+          <h3 style="font-size:1.5rem; color:var(--navy); margin-bottom:12px;">Relleno múltiple <span class="kbd" style="font-size:.7em;">Ctrl</span> + <span class="kbd" style="font-size:.7em;">Enter</span></h3>
+          <dl class="facts" style="margin:0;">
+            <div class="fact"><dt>Qué es</dt><dd style="margin:0;"><p>Escribe el mismo contenido en <b>todas las celdas seleccionadas</b> al mismo tiempo, en lugar de solo en la celda activa.</p></dd></div>
+            <div class="fact"><dt>Ventaja</dt><dd style="margin:0;"><p>Combinado con un filtro, rellena solo las filas visibles. Ideal para corregir o completar grupos de celdas.</p></dd></div>
+          </dl>
+        </div>
+        <div>
+          <h3 style="font-size:1.5rem; color:var(--navy); margin-bottom:12px;">Ir a Especial</h3>
+          <dl class="facts" style="margin:0;">
+            <div class="fact"><dt>Qué es</dt><dd style="margin:0;"><p>Selecciona automáticamente celdas de un tipo: en blanco, con fórmulas, con constantes, visibles…</p></dd></div>
+            <div class="fact"><dt>Dónde</dt><dd style="margin:0;"><p><span class="kbd">F5</span> › <b>Especial</b> o <span class="path">Inicio <i>›</i> Buscar y seleccionar <i>›</i> Ir a Especial</span></p></dd></div>
+            <div class="fact"><dt>Ventaja</dt><dd style="margin:0;"><p>Encuentra todos los vacíos de varias columnas en un paso. Junto con <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span>, los completa todos a la vez.</p></dd></div>
+          </dl>
+          <p class="note"><strong>Solo en Excel de escritorio.</strong> Excel para la web no tiene Ir a Especial; ahí se usa el filtro <b>(Vacías)</b>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · VALOR VS FORMATO -->
+  <section class="slide" data-tag="Formato">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">04</span>Formato · El concepto clave</p>
+      <h2>Una celda tiene un valor… y una forma de mostrarlo</h2>
+      <div class="two-col">
+        <div>
+          <p class="lede" style="margin-top:0;">El <b>formato</b> cambia cómo se ve el dato, <b>no el dato</b>. Para Excel, una fecha es un número: la cantidad de días desde el 1 de enero de 1900.</p>
+          <dl class="facts" style="margin-top:22px;">
+            <div class="fact"><dt>Dónde</dt><dd style="margin:0;"><p><span class="kbd">Ctrl</span> + <span class="kbd">1</span> › <b>Número</b> (Formato de celdas)</p></dd></div>
+            <div class="fact"><dt>Por qué importa</dt><dd style="margin:0;"><p>Solo los valores reales se pueden sumar, comparar y ordenar correctamente. Un texto que «parece» fecha o número no lo es.</p></dd></div>
+            <div class="fact"><dt>Pista visual</dt><dd style="margin:0;"><p>Números y fechas reales se alinean a la <b>derecha</b>; el texto, a la <b>izquierda</b>.</p></dd></div>
+          </dl>
+        </div>
+        <div class="format-stage">
+          <div class="seg" id="seg-fmt">
+            <button class="on" data-v="fecha">Una fecha</button>
+            <button data-v="monto">Un monto</button>
+          </div>
+          <div class="cell-big" id="fmt-cell"></div>
+          <div class="formula-bar"><b>fx</b><span id="fmt-real"></span><em style="margin-left:auto; font-size:.8rem; color:#777;">← valor real (no cambia)</em></div>
+          <div class="fmt-btns" id="fmt-btns"></div>
+          <p class="demo-cap" id="fmt-cap"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · MONEDA -->
+  <section class="slide" data-tag="Formato">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">04</span>Formato · Herramienta 8</p>
+      <h2>Formatos para montos: Moneda, Contabilidad y Personalizado</h2>
+      <div class="two-col">
+        <div>
+          <div class="seg" id="seg-cur">
+            <button class="on" data-v="0">Moneda</button>
+            <button data-v="1">Contabilidad</button>
+            <button data-v="2">Personalizado</button>
+          </div>
+          <dl class="facts" style="margin-top:16px;" id="cur-facts"></dl>
+        </div>
+        <div>
+          <div class="grid-demo">
+            <table>
+              <thead><tr><th id="cur-head">Moneda</th></tr></thead>
+              <tbody id="cur-body"></tbody>
+            </table>
+          </div>
+          <p class="note good"><strong>Regla de oro:</strong> nunca escribas el símbolo a mano. El número va en la celda; el símbolo lo pone el formato.</p>
+          <p class="note"><strong>Peso dominicano:</strong> en Excel de escritorio aparece como <span class="val">RD$ Español (República Dominicana)</span>; en Excel para la web, como <span class="val">$ Español (República Dominicana)</span>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · ORDENAR -->
+  <section class="slide" data-tag="Organización">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">05</span>Organización · Herramienta 9</p>
+      <h2>Ordenar: uno o varios niveles</h2>
+      <div class="two-col">
+        <div>
+          <dl class="facts" style="margin:0;">
+            <div class="fact"><dt>Rápido</dt><dd style="margin:0;"><p>Los botones <b>A→Z</b> y <b>Z→A</b> ordenan por una sola columna.</p></dd></div>
+            <div class="fact"><dt>Varios niveles</dt><dd style="margin:0;"><p><span class="path">Datos <i>›</i> Ordenar</span> (en la web: <b>Orden personalizado</b>). El primer nivel agrupa; el segundo ordena <b>dentro</b> de cada grupo.</p></dd></div>
+            <div class="fact"><dt>Ventaja</dt><dd style="margin:0;"><p>En una tabla, cada fila se mueve completa: los datos de un registro nunca se separan.</p></dd></div>
+          </dl>
+          <p style="font-weight:600; color:var(--navy); margin-top:22px;">¿Qué significa «ascendente»?</p>
+          <div class="asc">
+            <div><b>Texto</b><span>A → Z</span></div>
+            <div><b>Números</b><span>Menor → mayor</span></div>
+            <div><b>Fechas</b><span>Más antigua → más reciente</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="seg" id="seg-sort">
+            <button class="on" data-v="0">Sin ordenar</button>
+            <button data-v="1">1 nivel: Grupo</button>
+            <button data-v="2">2 niveles: Grupo + Número</button>
+          </div>
+          <div class="lvl-col" style="margin-top:14px;">
+            <div id="sort-list"></div>
+          </div>
+          <p class="demo-cap" id="sort-cap"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 · ESCRITORIO VS WEB -->
+  <section class="slide" data-tag="Repaso">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">06</span>Repaso · Versiones de Excel</p>
+      <h2>Excel de escritorio vs. Excel para la web</h2>
+      <p class="lede">Las herramientas son las mismas, pero algunos nombres y opciones cambian. Tenlo presente según la versión que uses.</p>
+      <table class="vs">
+        <thead><tr><th>Herramienta</th><th>Escritorio</th><th>Web (Microsoft 365)</th></tr></thead>
+        <tbody>
+          <tr><td>Ordenar por varios niveles</td><td data-l="Escritorio">Datos › Ordenar · «A a Z»</td><td data-l="Web">Orden personalizado · «Orden ascendente»</td></tr>
+          <tr><td>Seleccionar celdas vacías</td><td data-l="Escritorio">F5 › Especial › Celdas en blanco</td><td data-l="Web"><span class="x">No disponible</span> · usar filtro (Vacías)</td></tr>
+          <tr><td>Símbolo del peso dominicano</td><td data-l="Escritorio">RD$ Español (República Dominicana)</td><td data-l="Web">$ Español (República Dominicana)</td></tr>
+          <tr><td>Formato personalizado</td><td data-l="Escritorio">Ctrl+1 › Personalizada</td><td data-l="Web">Limitado · abrir en la aplicación de escritorio si hace falta</td></tr>
+          <tr><td>Tablas, filtros, Buscar y reemplazar, Quitar duplicados</td><td data-l="Escritorio">Disponibles</td><td data-l="Web">Disponibles</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 13 · QUIZ -->
+  <section class="slide" data-tag="Reto">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">06</span>Repaso · Reto rápido</p>
+      <h2>¿Qué herramienta usarías?</h2>
+      <div class="quiz" id="quiz"></div>
+    </div>
+  </section>
+
+  <!-- 14 · CIERRE -->
+  <section class="slide" data-tag="Cierre">
+    <div class="slide-inner">
+      <p class="kicker">Cierre</p>
+      <h2>Nueve herramientas, un objetivo: datos confiables</h2>
+      <div class="summary">
+        <div class="sum"><b>Tabla de Excel</b><span>Estructura y base de todo</span></div>
+        <div class="sum"><b>Formato condicional</b><span>Ver duplicados sin borrar</span></div>
+        <div class="sum"><b>Quitar duplicados</b><span>Eliminar filas repetidas</span></div>
+        <div class="sum"><b>Filtro</b><span>Diagnosticar y aislar grupos</span></div>
+        <div class="sum"><b>Buscar y reemplazar</b><span>Corregir en bloque</span></div>
+        <div class="sum"><b>Ctrl + Enter</b><span>Llenar muchas celdas a la vez</span></div>
+        <div class="sum"><b>Ir a Especial</b><span>Seleccionar vacíos (escritorio)</span></div>
+        <div class="sum"><b>Formato de celdas</b><span>Fechas y montos uniformes</span></div>
+        <div class="sum"><b>Ordenar</b><span>Organizar por uno o varios niveles</span></div>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; align-items:center;">
+        <a class="btn orange" href="actividad-depuracion-datos.html">Ir a la actividad &rarr;</a>
+        <span style="color:var(--ink-soft); font-size:.92rem;">Jarlin Figueroa, MA · Instituto ICADEP-XXI</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<nav class="navbar" aria-label="Navegación de diapositivas">
+  <button class="nav-btn" id="btn-prev" aria-label="Anterior">&larr; <span class="lbl">Atrás</span></button>
+  <div class="progress">
+    <div class="bars" id="bars"></div>
+    <div class="counter" id="counter" aria-live="polite"></div>
+  </div>
+  <button class="nav-btn next" id="btn-next" aria-label="Siguiente"><span class="lbl">Siguiente</span> &rarr;</button>
+</nav>
+
+<script>
+(function(){
+  "use strict";
+  function $(s, r){ return (r || document).querySelector(s); }
+  function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  /* segmented controls */
+  function seg(id, onChange){
+    var host = document.getElementById(id);
+    $$('button', host).forEach(function(b){
+      b.addEventListener('click', function(){
+        $$('button', host).forEach(function(x){ x.classList.toggle('on', x === b); });
+        onChange(b.getAttribute('data-v'));
+      });
+    });
+    onChange($('button.on', host).getAttribute('data-v'));
+  }
+
+  /* ventajas: fichas */
+  $$('.tile').forEach(function(t){ t.addEventListener('click', function(){ t.classList.toggle('open'); }); });
+  $$('.reveal-all').forEach(function(b){
+    b.addEventListener('click', function(){
+      var tiles = $$('.tile', b.closest('div').parentNode);
+      var allOpen = tiles.every(function(t){ return t.classList.contains('open'); });
+      tiles.forEach(function(t){ t.classList.toggle('open', !allOpen); });
+      b.textContent = allOpen ? 'Mostrar todas' : 'Ocultar todas';
+    });
+  });
+
+  /* cualidades */
+  var QUAL = [
+    { what:'Cada registro aparece una sola vez.', risk:'Los totales y conteos salen inflados.', tools:['Tabla de Excel','Formato condicional','Quitar duplicados'] },
+    { what:'Un mismo dato se escribe siempre igual: mismas mayúsculas, tildes y abreviaturas.', risk:'Excel trata cada variante como una categoría distinta y los resúmenes se fragmentan.', tools:['Filtro','Buscar y reemplazar','Ctrl + Enter'] },
+    { what:'Fechas y montos son valores reales, con una presentación uniforme.', risk:'No se pueden sumar, comparar ni ordenar correctamente.', tools:['Formato de celdas','Buscar y reemplazar'] },
+    { what:'No hay celdas vacías sin explicación; si falta el dato, se indica.', risk:'No sabes si el dato no existe o si alguien olvidó escribirlo.', tools:['Filtro (Vacías)','Ir a Especial','Ctrl + Enter'] },
+    { what:'Los registros siguen un orden lógico para quien los consulta.', risk:'Encontrar y comparar información toma mucho más tiempo.', tools:['Ordenar','Tabla de Excel'] }
+  ];
+  var qDetail = document.getElementById('q-detail');
+  $$('#qualities .q').forEach(function(b){
+    b.addEventListener('click', function(){
+      $$('#qualities .q').forEach(function(x){ x.classList.toggle('on', x === b); });
+      var q = QUAL[+b.getAttribute('data-q')];
+      qDetail.innerHTML = '<div><h4>Qué significa</h4><p>' + q.what + '</p></div>'
+        + '<div><h4>Si falla…</h4><p>' + q.risk + '</p></div>'
+        + '<div><h4>Herramientas</h4><div class="chips">' + q.tools.map(function(t){ return '<span class="chip">' + t + '</span>'; }).join('') + '</div></div>';
+    });
+  });
+
+  /* rango vs tabla */
+  var CMP = [
+    ['Botones de filtro en cada encabezado', false, true],
+    ['Se amplía al agregar filas', false, true],
+    ['Filas en bandas de color automáticas', false, true],
+    ['Fórmulas que se copian solas en la columna', false, true],
+    ['Nombre propio para usar en fórmulas', false, true],
+    ['Guarda datos, admite fórmulas y formatos', true, true]
+  ];
+  seg('seg-tabla', function(v){
+    var i = v === 'rango' ? 1 : 2;
+    document.getElementById('cmp-tabla').innerHTML = CMP.map(function(r){
+      return '<div class="cmp-row"><span>' + r[0] + '</span><span class="st ' + (r[i] ? 'yes">✓ Sí' : 'no">✕ No') + '</span></div>';
+    }).join('');
+  });
+
+  /* duplicados */
+  seg('seg-dup', function(v){
+    var rows = $$('#dup-body tr');
+    rows.forEach(function(tr){ tr.classList.remove('gone'); $$('td', tr).forEach(function(td){ td.classList.remove('hit'); }); });
+    var cap = document.getElementById('dup-cap');
+    if(v === 'fila'){
+      $$('td', rows[2]).forEach(function(td){ td.classList.add('hit'); });
+      rows[2].classList.add('gone');
+      cap.innerHTML = 'Solo la fila 3 es idéntica a otra. Se elimina <b>1</b> fila y los datos quedan correctos.';
+    } else {
+      [2,3,4].forEach(function(i){ rows[i].classList.add('gone'); rows[i].children[1].classList.add('hit'); });
+      cap.innerHTML = 'Si solo se compara «Grupo», Excel deja un Rojo y un Azul: se eliminan <b>3</b> filas, incluidas algunas que no estaban repetidas.';
+    }
+  });
+
+  /* buscar y reemplazar */
+  var WORDS = ['casa', 'Casa', 'CASA', 'casa grande', 'Mi casa', 'casita'];
+  var optCase = document.getElementById('opt-case'), optWhole = document.getElementById('opt-whole');
+  function renderFind(){
+    var mc = optCase.getAttribute('aria-checked') === 'true', wh = optWhole.getAttribute('aria-checked') === 'true';
+    var n = 0;
+    document.getElementById('find-body').innerHTML = WORDS.map(function(w){
+      var a = mc ? w : w.toLowerCase(), q = 'casa';
+      var hit = wh ? a === q : a.indexOf(q) !== -1;
+      if(hit) n++;
+      return '<tr><td' + (hit ? ' class="match"' : '') + '>' + esc(w) + '</td></tr>';
+    }).join('');
+    var msg = !mc && !wh ? 'Sin opciones, busca «casa» dentro de cualquier texto y sin importar mayúsculas.'
+      : mc && !wh ? 'Solo coinciden las celdas escritas exactamente en minúsculas, aunque tengan más texto.'
+      : !mc && wh ? 'Solo coinciden las celdas cuyo contenido completo es «casa», con cualquier combinación de mayúsculas.'
+      : 'Solo coincide la celda que es exactamente «casa», en minúsculas y sin nada más.';
+    document.getElementById('find-cap').innerHTML = '<b>' + n + '</b> de ' + WORDS.length + ' celdas coinciden. ' + msg;
+  }
+  [optCase, optWhole].forEach(function(s){
+    s.addEventListener('click', function(){ s.setAttribute('aria-checked', s.getAttribute('aria-checked') === 'true' ? 'false' : 'true'); renderFind(); });
+  });
+  renderFind();
+
+  /* valor vs formato */
+  var FMT = {
+    fecha: { real:'45761', opts:[
+      ['General', '45761', 'Sin formato, ves el número de serie: 45 761 días desde 1900.'],
+      ['Fecha corta', '14/04/2025', 'dd/mm/aaaa: el formato estándar en República Dominicana.'],
+      ['Fecha larga', 'lunes, 14 de abril de 2025', 'El mismo valor, con el día de la semana y el mes escritos.'],
+      ['aaaa-mm-dd', '2025-04-14', 'Formato internacional (ISO), común en sistemas y bases de datos.'],
+      ['d-mmm-aa', '14-abr-25', 'Formato abreviado.']
+    ]},
+    monto: { real:'4848.5', opts:[
+      ['General', '4848.5', 'Excel muestra el número tal como está guardado.'],
+      ['Número', '4,848.50', 'Separador de miles y dos decimales.'],
+      ['Moneda', 'RD$4,848.50', 'Agrega el símbolo pegado al número.'],
+      ['Porcentaje', '484850.00%', 'Multiplica la presentación por 100: por eso hay que elegir bien el formato.']
+    ]}
+  };
+  var curFmt = 'fecha';
+  function renderFmt(i){
+    var set = FMT[curFmt], o = set.opts[i];
+    document.getElementById('fmt-cell').textContent = o[1];
+    document.getElementById('fmt-real').textContent = set.real;
+    document.getElementById('fmt-cap').textContent = o[2];
+    $$('#fmt-btns button').forEach(function(b, k){ b.classList.toggle('on', k === i); });
+  }
+  seg('seg-fmt', function(v){
+    curFmt = v;
+    var host = document.getElementById('fmt-btns');
+    host.innerHTML = FMT[v].opts.map(function(o, k){ return '<button data-i="' + k + '">' + o[0] + '</button>'; }).join('');
+    $$('button', host).forEach(function(b){ b.addEventListener('click', function(){ renderFmt(+b.getAttribute('data-i')); }); });
+    renderFmt(v === 'fecha' ? 1 : 2);
+  });
+
+  /* moneda */
+  var CUR = [
+    { name:'Moneda', rows:['RD$1,250.00','RD$18,400.50','-RD$300.00','RD$0.00'], align:'r',
+      facts:[['Cómo se ve','El símbolo va pegado al número.'],['Cuándo usarlo','Montos individuales: precios, reclamaciones, pagos.'],['Dónde','Ctrl+1 › Número › Moneda']] },
+    { name:'Contabilidad', rows:['RD$&nbsp;&nbsp;&nbsp;&nbsp;1,250.00','RD$&nbsp;&nbsp;18,400.50','RD$&nbsp;&nbsp;&nbsp;&nbsp;(300.00)','RD$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-'], align:'r',
+      facts:[['Cómo se ve','Símbolos alineados en columna, ceros como guion y negativos entre paréntesis.'],['Cuándo usarlo','Reportes financieros y estados contables.'],['Dónde','Ctrl+1 › Número › Contabilidad']] },
+    { name:'Personalizado', rows:['RD$1,250.00','RD$18,400.50','-RD$300.00','RD$0.00'], align:'r',
+      facts:[['Cómo se ve','Exactamente como lo defines con un código, por ejemplo <span class="val">"RD$"#,##0.00</span>.'],['Cuándo usarlo','Cuando el formato que necesitas no aparece en la lista.'],['Dónde','Ctrl+1 › Número › Personalizada']] }
+  ];
+  seg('seg-cur', function(v){
+    var c = CUR[+v];
+    document.getElementById('cur-head').textContent = c.name;
+    document.getElementById('cur-body').innerHTML = c.rows.map(function(r){ return '<tr><td class="r" style="font-family:\'IBM Plex Mono\',monospace; white-space:pre;">' + r + '</td></tr>'; }).join('');
+    document.getElementById('cur-facts').innerHTML = c.facts.map(function(f){ return '<div class="fact"><dt>' + f[0] + '</dt><dd style="margin:0;"><p>' + f[1] + '</p></dd></div>'; }).join('');
+  });
+
+  /* ordenar */
+  var ITEMS = [['B',30,'g2'],['A',50,'g1'],['C',20,'g3'],['A',10,'g1'],['B',5,'g2'],['C',40,'g3'],['A',35,'g1']];
+  var SORT_CAP = [
+    'Los registros están en el orden en que se capturaron.',
+    'El primer nivel agrupa por Grupo (A → Z). Dentro de cada grupo, los números quedan en cualquier orden.',
+    'El segundo nivel ordena los números de menor a mayor dentro de cada grupo.'
+  ];
+  seg('seg-sort', function(v){
+    var list = ITEMS.slice();
+    if(v === '1') list = list.map(function(x, i){ return [x, i]; }).sort(function(a, b){ return a[0][0] < b[0][0] ? -1 : a[0][0] > b[0][0] ? 1 : a[1] - b[1]; }).map(function(x){ return x[0]; });
+    if(v === '2') list.sort(function(a, b){ return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : a[1] - b[1]; });
+    document.getElementById('sort-list').innerHTML = '<div class="lvl-row" style="font-family:inherit; font-weight:600; color:#666;"><span style="width:10px"></span><span style="width:70px">Grupo</span><span>Número</span></div>'
+      + list.map(function(x){ return '<div class="lvl-row ' + x[2] + '"><span class="dot"></span><span style="width:70px">' + x[0] + '</span><span>' + x[1] + '</span></div>'; }).join('');
+    document.getElementById('sort-cap').textContent = SORT_CAP[+v];
+  });
+
+  /* quiz */
+  var QUIZ = [
+    { q:'Quieres ver qué valores se repiten, sin borrar nada todavía.', o:['Quitar duplicados','Formato condicional › Valores duplicados','Ordenar','Ctrl + Enter'], a:1, why:'El formato condicional solo resalta; Quitar duplicados elimina.' },
+    { q:'Necesitas conocer todas las formas distintas en que se escribió un dato en una columna.', o:['Buscar y reemplazar','Formato de celdas','La lista del filtro','Ir a Especial'], a:2, why:'La lista del filtro muestra cada valor distinto una sola vez.' },
+    { q:'Una misma palabra está mal escrita en cientos de celdas y quieres corregirla de una vez.', o:['Buscar y reemplazar','Ordenar','Tabla de Excel','Formato condicional'], a:0, why:'Buscar y reemplazar corrige todas las coincidencias en un solo paso.' },
+    { q:'Seleccionaste varias celdas y quieres escribir el mismo texto en todas a la vez.', o:['Enter','Ctrl + T','Ctrl + Enter','Ctrl + 1'], a:2, why:'Ctrl + Enter escribe el contenido en toda la selección.' },
+    { q:'Quieres que una fecha se muestre como dd/mm/aaaa sin cambiar su valor.', o:['Buscar y reemplazar','Formato de celdas (Ctrl + 1)','Quitar duplicados','Filtro'], a:1, why:'El formato cambia la presentación, no el valor.' },
+    { q:'Quieres agrupar por categoría y, dentro de cada categoría, ordenar por fecha.', o:['Botón A→Z','Ordenar con dos niveles','Filtro','Formato condicional'], a:1, why:'El primer nivel agrupa y el segundo ordena dentro de cada grupo.' },
+    { q:'Quieres que tu rango tenga filtros, filas en bandas y que crezca solo al agregar datos.', o:['Ctrl + T (Tabla)','Ctrl + 1','Ctrl + H','F5'], a:0, why:'Eso es exactamente lo que aporta una Tabla de Excel.' },
+    { q:'Estás en Excel para la web y necesitas encontrar las celdas vacías de una columna.', o:['F5 › Especial','Filtro › (Vacías)','Quitar duplicados','Ordenar Z→A'], a:1, why:'Ir a Especial no existe en la web; el filtro (Vacías) sí.' }
+  ];
+  var quiz = document.getElementById('quiz'), qi = 0, score = 0;
+  function renderQuiz(){
+    if(qi >= QUIZ.length){
+      quiz.innerHTML = '<div class="score">' + score + ' / ' + QUIZ.length + '</div>'
+        + '<p class="quiz-q" style="margin-top:12px;">' + (score === QUIZ.length ? '¡Excelente! Dominas los conceptos.' : score >= 6 ? 'Muy bien. Ya estás listo para la actividad.' : 'Buen intento. Repasa las herramientas y vuelve a intentarlo.') + '</p>'
+        + '<div class="quiz-actions" style="justify-content:flex-start;"><button class="btn" id="quiz-again">Intentar de nuevo</button></div>';
+      document.getElementById('quiz-again').addEventListener('click', function(){ qi = 0; score = 0; renderQuiz(); });
+      return;
+    }
+    var it = QUIZ[qi];
+    quiz.innerHTML = '<div class="quiz-top"><span>Pregunta <b>' + (qi + 1) + '</b> de ' + QUIZ.length + '</span><span>Aciertos: <b>' + score + '</b></span></div>'
+      + '<p class="quiz-q">' + it.q + '</p>'
+      + '<div class="quiz-opts">' + it.o.map(function(o, k){ return '<button data-k="' + k + '">' + o + '</button>'; }).join('') + '</div>'
+      + '<p class="quiz-fb" id="quiz-fb" aria-live="polite"></p>'
+      + '<div class="quiz-actions"><button class="btn orange" id="quiz-next" hidden>' + (qi === QUIZ.length - 1 ? 'Ver resultado' : 'Siguiente pregunta') + ' &rarr;</button></div>';
+    $$('.quiz-opts button', quiz).forEach(function(b){
+      b.addEventListener('click', function(){
+        var k = +b.getAttribute('data-k'), ok = k === it.a;
+        if(ok) score++;
+        $$('.quiz-opts button', quiz).forEach(function(x, j){ x.disabled = true; if(j === it.a) x.classList.add('right'); });
+        if(!ok) b.classList.add('wrong');
+        var fb = document.getElementById('quiz-fb');
+        fb.className = 'quiz-fb ' + (ok ? 'ok' : 'bad');
+        fb.innerHTML = '<strong>' + (ok ? 'Correcto.' : 'No exactamente.') + '</strong> ' + it.why;
+        var nx = document.getElementById('quiz-next');
+        nx.hidden = false; nx.focus();
+        nx.addEventListener('click', function(){ qi++; renderQuiz(); });
+      });
+    });
+  }
+  renderQuiz();
+
+  /* ---------- navegación de diapositivas ---------- */
+  var slides = $$('.slide');
+  var bars = document.getElementById('bars');
+  var counter = document.getElementById('counter');
+  var tag = document.getElementById('section-tag');
+  var prev = document.getElementById('btn-prev');
+  var next = document.getElementById('btn-next');
+  var cur = -1;
+
+  slides.forEach(function(s, i){
+    var b = document.createElement('button');
+    b.setAttribute('aria-label', 'Ir a la diapositiva ' + (i + 1));
+    b.addEventListener('click', function(){ go(i); });
+    bars.appendChild(b);
+  });
+
+  function go(i){
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    if(i === cur) return;
+    slides.forEach(function(s, k){
+      s.classList.toggle('active', k === i);
+      s.classList.toggle('left', k < i);
+    });
+    Array.prototype.forEach.call(bars.children, function(b, k){
+      b.className = k < i ? 'done' : (k === i ? 'cur' : '');
+    });
+    slides[i].scrollTop = 0;
+    cur = i;
+    counter.textContent = (i + 1) + ' / ' + slides.length;
+    tag.textContent = slides[i].getAttribute('data-tag') || '';
+    prev.disabled = i === 0;
+    next.disabled = i === slides.length - 1;
+    if(history.replaceState) history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  prev.addEventListener('click', function(){ go(cur - 1); });
+  next.addEventListener('click', function(){ go(cur + 1); });
+
+  document.addEventListener('keydown', function(e){
+    if(e.altKey || e.ctrlKey || e.metaKey) return;
+    if(e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); go(cur + 1); }
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); go(cur - 1); }
+    else if(e.key === 'Home'){ go(0); }
+    else if(e.key === 'End'){ go(slides.length - 1); }
+    else if(e.key === 'f' || e.key === 'F'){ toggleFull(); }
+  });
+
+  var sx = null, sy = null;
+  var stage = document.getElementById('stage');
+  stage.addEventListener('touchstart', function(e){ sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, {passive:true});
+  stage.addEventListener('touchend', function(e){
+    if(sx === null) return;
+    var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.6) go(cur + (dx < 0 ? 1 : -1));
+    sx = sy = null;
+  });
+
+  function toggleFull(){
+    if(!document.fullscreenElement){ if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); }
+    else if(document.exitFullscreen){ document.exitFullscreen(); }
+  }
+  document.getElementById('btn-full').addEventListener('click', toggleFull);
+
+  var start = parseInt((location.hash || '').replace('#', ''), 10);
+  go(isNaN(start) ? 0 : start - 1);
+})();
+</script>
+</body>
+</html>
