@@ -269,7 +269,8 @@
       title: 'Fundamentos y gestión avanzada de datos',
       status: 'Disponible',
       items: [
-        { label:'Presentación', href:'excel-avanzado-parte1.html' }
+        { label:'Presentación', href:'excel-avanzado-parte1.html' },
+        { label:'Actividad', href:'actividad-depuracion-datos.html', icon:'activity' }
       ]
     },
     { num:2, title:'Próximamente', status:'En preparación', items: [] },
@@ -281,6 +282,7 @@
   ];
 
   var presentationIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.4"></rect><path d="M8 20h8M12 16v4"></path></svg>';
+  var activityIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="1.4"></rect><path d="M9 3.5h6v2.5H9zM8.5 12l2.2 2.2 4.3-4.4M8.5 17h7"></path></svg>';
 
   function buildModuleList(){
     var host = document.getElementById('module-list');
@@ -295,7 +297,7 @@
         + '<div class="module-panel"><div class="module-panel-inner">';
       if(m.items.length){
         m.items.forEach(function(it){
-          html += '<a class="item-btn" href="'+it.href+'" target="_blank" rel="noopener">'+presentationIcon+'<span>'+it.label+'</span></a>';
+          html += '<a class="item-btn" href="'+it.href+'" target="_blank" rel="noopener">'+(it.icon === 'activity' ? activityIcon : presentationIcon)+'<span>'+it.label+'</span></a>';
         });
       } else {
         html += '<p class="module-empty">Contenido próximamente.</p>';

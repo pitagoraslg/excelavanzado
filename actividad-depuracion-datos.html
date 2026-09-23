@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad — Depuración de datos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#12384F;
+    --navy-deep:#0B2534;
+    --orange:#E8622A;
+    --orange-soft:#FCE6DC;
+    --teal:#1BA7B4;
+    --teal-soft:#DDF2F4;
+    --ivory:#FAF7F0;
+    --ivory-deep:#F3EFE4;
+    --ink:#232A2E;
+    --ink-soft:#5B6469;
+    --line:#E3DED0;
+    --xl-green:#217346;
+    --grid:#D9D9D9;
+    --grid-head:#F2F2F2;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--ivory); color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif; -webkit-font-smoothing:antialiased; line-height:1.55;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  h1,h2,h3{font-family:'Newsreader',serif; font-weight:500; margin:0; line-height:1.15;}
+  p{margin:0;}
+  a{color:inherit;}
+  ::selection{background:var(--teal); color:var(--ivory);}
+  :focus-visible{outline:2.5px solid var(--teal); outline-offset:3px;}
+
+  .brand-strip{height:5px; flex-shrink:0; background:linear-gradient(90deg, var(--navy) 0 40%, var(--orange) 40% 70%, var(--teal) 70% 100%);}
+
+  /* ---------- TOP BAR ---------- */
+  .topbar{
+    flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:12px clamp(16px,3vw,40px); border-bottom:1px solid var(--line); background:var(--ivory);
+  }
+  .topbar .crumb{font-size:.86rem; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .topbar .crumb strong{color:var(--navy); font-weight:600;}
+  .topbar .right{display:flex; align-items:center; gap:14px; flex-shrink:0;}
+  .section-tag{font-size:.8rem; font-weight:600; color:var(--teal); text-transform:uppercase; letter-spacing:.06em;}
+  .icon-btn{
+    background:none; border:1.5px solid var(--line); border-radius:3px; width:34px; height:34px;
+    display:inline-flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink-soft);
+  }
+  .icon-btn:hover{border-color:var(--navy); color:var(--navy);}
+  .icon-btn svg{width:16px; height:16px;}
+
+  /* ---------- STAGE ---------- */
+  .stage{flex:1; position:relative; overflow:hidden;}
+  .slide{
+    position:absolute; inset:0; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding:clamp(24px,4.5vh,56px) clamp(16px,4vw,64px) 40px;
+    opacity:0; visibility:hidden; transform:translateX(24px);
+    transition:opacity .28s ease, transform .28s ease, visibility 0s linear .28s;
+  }
+  .slide.active{opacity:1; visibility:visible; transform:none; transition:opacity .28s ease, transform .28s ease;}
+  .slide.left{transform:translateX(-24px);}
+  .slide-inner{max-width:1180px; margin:0 auto; min-height:100%; display:flex; flex-direction:column; justify-content:center;}
+
+  .kicker{font-size:.9rem; font-weight:600; color:var(--teal); margin-bottom:12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .kicker .num{
+    background:var(--navy); color:var(--ivory); font-family:'Newsreader',serif; font-size:1rem;
+    width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+  }
+  .slide h2{font-size:clamp(1.8rem,3.6vw,2.8rem); color:var(--navy); max-width:22ch;}
+  .slide .lede{margin-top:14px; font-size:clamp(1rem,1.5vw,1.18rem); color:var(--ink-soft); max-width:60ch;}
+
+  .two-col{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.05fr); gap:clamp(24px,4vw,56px); align-items:center; margin-top:30px;}
+  .two-col.even{grid-template-columns:1fr 1fr;}
+
+  /* steps list */
+  .steps{list-style:none; margin:0; padding:0; counter-reset:st; display:flex; flex-direction:column; gap:14px;}
+  .steps li{counter-increment:st; display:grid; grid-template-columns:30px 1fr; gap:12px; font-size:clamp(.98rem,1.35vw,1.08rem);}
+  .steps li::before{
+    content:counter(st); width:26px; height:26px; border-radius:50%; border:1.5px solid var(--teal); color:var(--teal);
+    font-size:.82rem; font-weight:600; display:inline-flex; align-items:center; justify-content:center; margin-top:1px;
+  }
+  .steps li small{display:block; color:var(--ink-soft); font-size:.9em; margin-top:2px;}
+
+  .kbd{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:.82em; font-weight:500;
+    background:#fff; border:1px solid #CFC9B8; border-bottom-width:3px; border-radius:4px; padding:0 7px; line-height:1.6;
+    color:var(--navy); white-space:nowrap;
+  }
+  .path{
+    display:inline-flex; flex-wrap:wrap; align-items:center; gap:4px; background:var(--teal-soft); color:var(--navy);
+    padding:1px 9px; border-radius:3px; font-size:.9em; font-weight:500;
+  }
+  .path i{font-style:normal; color:var(--teal); font-weight:600;}
+  code, .val{
+    font-family:'IBM Plex Mono',monospace; font-size:.86em; background:var(--ivory-deep); padding:1px 6px; border-radius:3px; color:var(--ink);
+  }
+
+  .note{
+    margin-top:22px; border-left:3px solid var(--orange); background:#fff; padding:14px 18px; font-size:.95rem; color:var(--ink);
+    max-width:64ch;
+  }
+  .note strong{color:var(--orange);}
+  .note.good{border-left-color:var(--teal);}
+  .note.good strong{color:var(--teal);}
+
+  /* ---------- EXCEL MOCKS ---------- */
+  .xl{
+    background:#fff; border:1px solid #C8C8C8; box-shadow:0 10px 30px rgba(18,56,79,.10); border-radius:4px; overflow:hidden;
+    font-family:'Segoe UI',Calibri,Arial,sans-serif; font-size:clamp(.72rem,1.05vw,.86rem); color:#222;
+  }
+  .xl-scroll{overflow-x:auto;}
+  .xl table{border-collapse:collapse; width:100%; white-space:nowrap;}
+  .xl th, .xl td{border:1px solid var(--grid); padding:4px 8px; text-align:left;}
+  .xl thead th{background:var(--grid-head); color:#555; font-weight:400; text-align:center; font-size:.9em;}
+  .xl td.rn{background:var(--grid-head); color:#555; text-align:center; width:30px; padding:4px 4px;}
+  .xl td.rn.blue{color:#1F5FBF; font-weight:600;}
+  .xl tr.hdr td:not(.rn){font-weight:700;}
+  .xl td.r{text-align:right;}
+  .xl td.bad{background:var(--orange-soft); color:#9A3A10;}
+  .xl td.ok{background:var(--teal-soft); color:#0E5E66; font-weight:600;}
+  .xl td.dup{background:#FFC7CE; color:#9C0006;}
+  .xl td.empty{background:var(--orange-soft);}
+  .xl .tbl-hdr td:not(.rn){background:#4472C4; color:#fff; font-weight:700;}
+  .xl .tbl-hdr td .fb{display:inline-block; margin-left:6px; width:13px; height:13px; background:#fff; border-radius:2px; vertical-align:-2px; position:relative;}
+  .xl .tbl-hdr td .fb::after{content:''; position:absolute; left:3px; top:4px; border:3.5px solid transparent; border-top-color:#444;}
+  .xl .band td:not(.rn){background:#D9E1F2;}
+  .xl-cap{font-size:.82rem; color:var(--ink-soft); margin-top:10px;}
+
+  /* dialog mock */
+  .dlg{
+    background:#fff; border:1px solid #BDBDBD; border-radius:6px; box-shadow:0 14px 34px rgba(18,56,79,.16);
+    font-family:'Segoe UI',Calibri,Arial,sans-serif; font-size:clamp(.8rem,1.1vw,.9rem); color:#222; max-width:460px; width:100%;
+  }
+  .dlg-title{padding:10px 14px; border-bottom:1px solid #E5E5E5; font-weight:600; display:flex; justify-content:space-between;}
+  .dlg-title span:last-child{color:#888; font-weight:400;}
+  .dlg-body{padding:14px 16px; display:flex; flex-direction:column; gap:10px;}
+  .dlg-row{display:flex; align-items:center; gap:10px;}
+  .dlg-row label{min-width:96px; color:#444;}
+  .dlg-input{flex:1; border:1px solid #8A8A8A; border-radius:2px; padding:4px 8px; font-family:'IBM Plex Mono',monospace; font-size:.92em; min-height:28px; background:#fff;}
+  .dlg-input.focus{border-color:var(--xl-green); box-shadow:0 0 0 1px var(--xl-green);}
+  .chk{display:flex; align-items:center; gap:8px;}
+  .chk::before{content:''; width:14px; height:14px; border:1px solid #666; border-radius:2px; flex-shrink:0; background:#fff;}
+  .chk.on::before{background:var(--xl-green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3 3 7-7' stroke='white' stroke-width='2' fill='none'/%3E%3C/svg%3E") center/12px no-repeat; border-color:var(--xl-green);}
+  .chk.hl{background:#FFF4C2; margin:0 -6px; padding:2px 6px; border-radius:3px;}
+  .dlg-foot{padding:10px 16px 14px; display:flex; justify-content:flex-end; gap:8px;}
+  .btn-x{border:1px solid #9A9A9A; background:#F3F3F3; border-radius:3px; padding:4px 16px; font-size:.92em;}
+  .btn-x.pri{border-color:var(--xl-green); background:var(--xl-green); color:#fff;}
+  .dlg-list{border:1px solid #CFCFCF; padding:8px 10px; display:flex; flex-direction:column; gap:5px; max-height:none;}
+  .msg{
+    display:flex; gap:10px; align-items:flex-start; background:#fff; border:1px solid #BDBDBD; border-radius:6px; padding:12px 14px;
+    font-family:'Segoe UI',Calibri,Arial,sans-serif; font-size:clamp(.8rem,1.1vw,.9rem); box-shadow:0 8px 20px rgba(18,56,79,.1); max-width:460px; margin-top:14px;
+  }
+  .msg .i{width:22px; height:22px; border-radius:50%; background:#1F5FBF; color:#fff; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; font-size:.8rem;}
+
+  .ba{display:grid; grid-template-columns:1fr auto 1fr; gap:14px; align-items:center;}
+  .ba .arrow{font-size:1.6rem; color:var(--teal);}
+  .ba-label{font-size:.78rem; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;}
+  .ba-label.b{color:var(--orange);} .ba-label.a{color:var(--teal);}
+
+  /* ---------- COVER ---------- */
+  .slide.cover{background:var(--navy); color:var(--ivory);}
+  .slide.cover .kicker{color:var(--teal);}
+  .cover h1{font-size:clamp(2.4rem,6vw,4.4rem); line-height:1.06; max-width:14ch; letter-spacing:-.01em;}
+  .cover .lede{color:rgba(250,247,240,.82); font-family:'Newsreader',serif; font-style:italic; font-size:clamp(1.1rem,2.1vw,1.45rem); max-width:36ch; margin-top:22px;}
+  .cover-meta{display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:40px; padding-top:22px; border-top:1px solid rgba(255,255,255,.16); font-size:.95rem; color:rgba(250,247,240,.75);}
+  .cover-meta strong{display:block; color:var(--ivory); font-size:1.4rem; font-family:'Newsreader',serif; font-weight:500;}
+  .cta{
+    display:inline-flex; align-items:center; gap:10px; background:var(--orange); color:var(--ivory); border:none; padding:14px 26px;
+    border-radius:3px; font-family:inherit; font-weight:600; font-size:1rem; cursor:pointer; text-decoration:none; transition:background .15s ease;
+  }
+  .cta:hover{background:#D2551F;}
+  .cta-row{display:flex; flex-wrap:wrap; gap:12px; margin-top:34px;}
+  .cta.ghost{background:transparent; border:1.5px solid rgba(255,255,255,.3);}
+  .cta.ghost:hover{background:rgba(255,255,255,.07);}
+
+  /* problems grid */
+  .problems{display:grid; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid var(--line);}
+  .problem{padding:18px 18px 18px 0; border-bottom:1px solid var(--line);}
+  .problem:nth-child(odd){border-right:1px solid var(--line);}
+  .problem:nth-child(even){padding-left:18px;}
+  .problem .big{font-family:'Newsreader',serif; font-size:2rem; color:var(--orange); line-height:1;}
+  .problem h3{font-family:'IBM Plex Sans',sans-serif; font-size:1rem; font-weight:600; margin:6px 0 2px;}
+  .problem p{font-size:.9rem; color:var(--ink-soft);}
+
+  /* roadmap */
+  .roadmap{display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin-top:36px; border-top:2px solid var(--navy);}
+  .road{padding:20px 18px 6px 0;}
+  .road + .road{padding-left:18px; border-left:1px solid var(--line);}
+  .road .n{font-family:'Newsreader',serif; font-size:2.4rem; color:var(--teal); line-height:1;}
+  .road h3{font-family:'IBM Plex Sans',sans-serif; font-size:1.05rem; font-weight:600; margin:8px 0 8px; color:var(--navy);}
+  .road ul{margin:0; padding-left:18px; font-size:.93rem; color:var(--ink-soft);}
+  .road li{margin-bottom:4px;}
+
+  /* equivalence table */
+  .eq{display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(16px,2.5vw,32px); margin-top:26px;}
+  .eq h3{font-family:'IBM Plex Sans',sans-serif; font-size:.82rem; text-transform:uppercase; letter-spacing:.07em; color:var(--teal); font-weight:600; padding-bottom:8px; border-bottom:2px solid var(--navy);}
+  .eq-row{display:grid; grid-template-columns:auto 1fr; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); font-size:.9rem; align-items:baseline;}
+  .eq-row b{color:var(--navy); font-weight:600; white-space:nowrap;}
+  .eq-row span{color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; font-size:.82em;}
+
+  /* filter dropdown mock */
+  .filter{
+    background:#fff; border:1px solid #BDBDBD; border-radius:4px; box-shadow:0 14px 34px rgba(18,56,79,.16);
+    font-family:'Segoe UI',Calibri,Arial,sans-serif; font-size:clamp(.8rem,1.1vw,.9rem); width:100%; max-width:320px;
+  }
+  .filter .fhead{padding:8px 12px; border-bottom:1px solid #E5E5E5; color:#444; display:flex; flex-direction:column; gap:4px;}
+  .filter .fhead div{padding:2px 0;}
+  .filter .fsearch{margin:8px 12px; border:1px solid #BDBDBD; padding:4px 8px; color:#999;}
+  .filter .flist{margin:0 12px 10px; border:1px solid #CFCFCF; padding:6px 8px; display:flex; flex-direction:column; gap:3px; max-height:280px; overflow:auto;}
+  .filter .flist .chk.warn{color:#9A3A10;}
+  .filter .flist .chk.good{color:#0E5E66; font-weight:600;}
+
+  /* checklist */
+  .checklist{list-style:none; margin:26px 0 0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:0 36px;}
+  .checklist li{display:grid; grid-template-columns:26px 1fr; gap:12px; padding:14px 0; border-bottom:1px solid var(--line); font-size:.98rem;}
+  .checklist li::before{content:''; width:22px; height:22px; border-radius:50%; background:var(--teal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-6.5' stroke='white' stroke-width='2' fill='none'/%3E%3C/svg%3E") center/13px no-repeat; margin-top:1px;}
+  .checklist li small{display:block; color:var(--ink-soft); font-size:.88em;}
+
+  /* resources */
+  .res-list{display:flex; flex-direction:column; margin-top:26px; border-top:1px solid var(--line);}
+  .res{display:grid; grid-template-columns:44px 1fr auto; gap:16px; align-items:center; padding:16px 0; border-bottom:1px solid var(--line); text-decoration:none;}
+  .res .ic{width:44px; height:44px; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:.78rem;}
+  .res .t{font-weight:600; color:var(--navy);}
+  .res .d{font-size:.88rem; color:var(--ink-soft);}
+  .res .go{font-size:.88rem; font-weight:600; color:var(--teal); white-space:nowrap;}
+  .res:hover .t{color:var(--teal);}
+  .deliver{background:var(--navy); color:var(--ivory); padding:24px 26px; border-radius:4px;}
+  .deliver h3{font-size:1.4rem; margin-bottom:12px;}
+  .deliver ul{margin:0; padding-left:18px; color:rgba(250,247,240,.85);}
+  .deliver li{margin-bottom:8px;}
+  .deliver strong{color:var(--ivory);}
+
+  /* ---------- BOTTOM NAV ---------- */
+  .navbar{
+    flex-shrink:0; border-top:1px solid var(--line); background:var(--ivory);
+    padding:10px clamp(16px,3vw,40px) calc(10px + env(safe-area-inset-bottom));
+    display:grid; grid-template-columns:auto 1fr auto; gap:18px; align-items:center;
+  }
+  .nav-btn{
+    display:inline-flex; align-items:center; gap:8px; border-radius:3px; padding:11px 20px; font-family:inherit; font-weight:600; font-size:.95rem; cursor:pointer;
+    border:1.5px solid var(--navy); background:transparent; color:var(--navy); transition:background .15s ease, color .15s ease, opacity .15s ease;
+  }
+  .nav-btn:hover:not(:disabled){background:var(--navy); color:var(--ivory);}
+  .nav-btn.next{background:var(--orange); border-color:var(--orange); color:var(--ivory);}
+  .nav-btn.next:hover:not(:disabled){background:#D2551F; border-color:#D2551F;}
+  .nav-btn:disabled{opacity:.35; cursor:default;}
+  .progress{display:flex; flex-direction:column; gap:6px; min-width:0;}
+  .bars{display:flex; gap:4px;}
+  .bars button{flex:1; height:6px; border:none; padding:0; border-radius:3px; background:var(--line); cursor:pointer;}
+  .bars button.done{background:var(--teal);}
+  .bars button.cur{background:var(--orange);}
+  .counter{font-size:.8rem; color:var(--ink-soft); text-align:center;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:900px){
+    .two-col, .two-col.even{grid-template-columns:1fr;}
+    .roadmap{grid-template-columns:1fr 1fr;}
+    .road:nth-child(3){padding-left:0; border-left:none;}
+    .road:nth-child(n+3){border-top:1px solid var(--line);}
+    .eq{grid-template-columns:1fr;}
+    .checklist{grid-template-columns:1fr;}
+    .slide-inner{justify-content:flex-start;}
+  }
+  @media (max-width:560px){
+    .topbar .section-tag{display:none;}
+    .problems{grid-template-columns:1fr;}
+    .problem:nth-child(odd){border-right:none;}
+    .problem:nth-child(even){padding-left:0;}
+    .roadmap{grid-template-columns:1fr;}
+    .road + .road{padding-left:0; border-left:none; border-top:1px solid var(--line);}
+    .nav-btn{padding:10px 14px;}
+    .nav-btn .lbl{display:none;}
+    .ba{grid-template-columns:1fr;}
+    .ba .arrow{transform:rotate(90deg); justify-self:center;}
+    .res{grid-template-columns:40px 1fr;}
+    .res .go{grid-column:2;}
+  }
+  /* evita que tablas y textos largos ensanchen la página en pantallas pequeñas */
+  .topbar .crumb, .two-col > *, .ba > div, .steps li > span, .progress, .problem, .eq > div{min-width:0;}
+  .topbar{min-width:0; max-width:100vw;}
+  .navbar{max-width:100vw;}
+  @media (prefers-reduced-motion:reduce){ .slide{transition:none !important;} }
+</style>
+</head>
+<body>
+
+<div class="brand-strip"></div>
+<header class="topbar">
+  <p class="crumb"><strong>Actividad</strong> · Módulo 1 — Fundamentos y gestión avanzada de datos</p>
+  <div class="right">
+    <span class="section-tag" id="section-tag"></span>
+    <button class="icon-btn" id="btn-full" title="Pantalla completa (F)" aria-label="Pantalla completa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="stage" id="stage">
+
+  <!-- 1 · PORTADA -->
+  <section class="slide cover" data-tag="Inicio">
+    <div class="slide-inner">
+      <p class="kicker">Práctica en Excel · SISALRIL</p>
+      <h1>Depuración y organización de datos</h1>
+      <p class="lede">Una guía paso a paso para dejar una base de reclamaciones limpia, estandarizada y lista para analizar.</p>
+      <div class="cta-row">
+        <button class="cta" data-go="next">Comenzar la guía &rarr;</button>
+        <a class="cta ghost" href="demo-depuracion-datos.xlsx" download>Descargar archivo de práctica</a>
+      </div>
+      <div class="cover-meta">
+        <div><strong>4 pasos</strong>Estructura, texto, formatos y orden</div>
+        <div><strong>8 técnicas</strong>Todas nativas de Excel, sin fórmulas complejas</div>
+        <div><strong>1 entrega</strong>Tu archivo depurado en la tarea</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · EL CASO -->
+  <section class="slide" data-tag="El caso">
+    <div class="slide-inner">
+      <p class="kicker">El punto de partida</p>
+      <h2>Una base de datos que parece ordenada… pero no lo está</h2>
+      <p class="lede">La SISALRIL recibió reclamaciones de varias entidades de salud. Cada una capturó los datos a su manera, y el resultado se ve así:</p>
+      <div class="two-col">
+        <div class="xl"><div class="xl-scroll">
+          <table>
+            <thead><tr><th></th><th>A</th><th>D</th><th>E</th><th>F</th><th>H</th><th>I</th></tr></thead>
+            <tbody>
+              <tr class="hdr"><td class="rn">1</td><td>ID Reclamación</td><td>ARS</td><td>Provincia</td><td>Tipo de Servicio</td><td>Fecha de Servicio</td><td>Monto Reclamado</td></tr>
+              <tr><td class="rn">2</td><td>REC-1126</td><td>Primera ARS</td><td class="empty"></td><td class="bad">Emerg.</td><td class="r">14/04/2025</td><td class="r">13,248.00</td></tr>
+              <tr><td class="rn">3</td><td>REC-1322</td><td class="bad">Se Na Sa</td><td class="bad">Santiago&nbsp;</td><td>Emergencia</td><td class="r bad">16-feb-25</td><td class="r">14629</td></tr>
+              <tr><td class="rn">4</td><td>REC-1098</td><td>MAPFRE Salud ARS</td><td class="bad">distrito nacional</td><td>Emergencia</td><td class="r bad">2025-06-13</td><td class="r">16018.5</td></tr>
+              <tr><td class="rn">5</td><td class="dup">REC-1210</td><td class="bad">ARS HUMANO</td><td class="bad">D.N.</td><td>Emergencia</td><td class="bad">26.04.2025</td><td class="r">4848.5</td></tr>
+              <tr><td class="rn">6</td><td>REC-1077</td><td class="bad">Humano</td><td class="bad">PUERTO PLATA</td><td class="bad">hospitalización</td><td class="r bad">3/2/25</td><td class="r">155647.0</td></tr>
+              <tr><td class="rn">7</td><td>REC-1035</td><td>Primera ARS</td><td class="empty"></td><td>Hospitalización</td><td class="r bad">25-ene-25</td><td class="r">129,905.00</td></tr>
+              <tr><td class="rn">8</td><td class="dup">REC-1210</td><td class="bad">ARS HUMANO</td><td class="bad">D.N.</td><td>Emergencia</td><td class="bad">26.04.2025</td><td class="r">4848.5</td></tr>
+            </tbody>
+          </table>
+        </div></div>
+        <div class="problems">
+          <div class="problem"><div class="big">6</div><h3>Registros duplicados</h3><p>La misma reclamación aparece dos veces e infla los totales.</p></div>
+          <div class="problem"><div class="big">91</div><h3>Nombres inconsistentes</h3><p><span class="val">Humano</span>, <span class="val">ARS HUMANO</span> y <span class="val">ars humano</span> son la misma ARS.</p></div>
+          <div class="problem"><div class="big">6</div><h3>Formatos de fecha distintos</h3><p>Y además, algunas fechas no son fechas: son texto.</p></div>
+          <div class="problem"><div class="big">11</div><h3>Celdas vacías</h3><p>En provincia, tipo de servicio y prestador.</p></div>
+        </div>
+      </div>
+      <p class="xl-cap">Las cifras corresponden al archivo de demostración de esta guía (56 filas).</p>
+    </div>
+  </section>
+
+  <!-- 3 · RUTA -->
+  <section class="slide" data-tag="La ruta">
+    <div class="slide-inner">
+      <p class="kicker">La ruta de trabajo</p>
+      <h2>Cuatro pasos, en este orden</h2>
+      <p class="lede">El orden importa: cada paso prepara el siguiente. Por ejemplo, no puedes ordenar por fecha si las fechas todavía son texto.</p>
+      <div class="roadmap">
+        <div class="road"><div class="n">1</div><h3>Estructura y limpieza</h3><ul><li>Convertir en Tabla <span class="kbd">Ctrl</span>+<span class="kbd">T</span></li><li>Quitar duplicados</li></ul></div>
+        <div class="road"><div class="n">2</div><h3>Estandarizar texto</h3><ul><li>Unificar las ARS</li><li>Unificar provincias y tipos de servicio</li></ul></div>
+        <div class="road"><div class="n">3</div><h3>Formatos de celda</h3><ul><li>Fecha corta <span class="val">dd/mm/aaaa</span></li><li>Moneda RD$</li></ul></div>
+        <div class="road"><div class="n">4</div><h3>Completar y ordenar</h3><ul><li>Vacíos &rarr; <span class="val">No Registrado</span></li><li>Ordenar por ARS y fecha</li></ul></div>
+      </div>
+      <p class="note good"><strong>Antes de empezar:</strong> guarda una copia del archivo original (<span class="path">Archivo <i>›</i> Guardar como</span>). Si algo sale mal, siempre puedes volver a empezar.</p>
+    </div>
+  </section>
+
+  <!-- 4 · PASO 1.1 TABLA -->
+  <section class="slide" data-tag="Paso 1 · Estructura">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">1</span>Estructura y limpieza · Parte A</p>
+      <h2>Convierte el rango en una Tabla de Excel</h2>
+      <div class="two-col">
+        <div>
+          <ol class="steps">
+            <li><span>Haz clic en <b>cualquier celda</b> dentro de los datos (por ejemplo, <span class="val">A2</span>).</span></li>
+            <li><span>Presiona <span class="kbd">Ctrl</span> + <span class="kbd">T</span>.<small>O por la cinta: <span class="path">Insertar <i>›</i> Tabla</span></small></span></li>
+            <li><span>Verifica que el rango abarque todos los datos y marca <b>«La tabla tiene encabezados»</b>.</span></li>
+            <li><span>Pulsa <b>Aceptar</b>.</span></li>
+            <li><span>Ponle un nombre: <span class="path">Diseño de tabla <i>›</i> Nombre de la tabla</span> &rarr; <span class="val">tblReclamaciones</span></span></li>
+          </ol>
+          <p class="note good"><strong>¿Por qué una tabla?</strong> Agrega filtros a cada encabezado, crece sola al añadir filas y te da acceso a <em>Quitar duplicados</em> con un clic. Todo lo que sigue se apoya en ella.</p>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:18px;">
+          <div class="dlg">
+            <div class="dlg-title"><span>Crear tabla</span><span>?&nbsp;&nbsp;✕</span></div>
+            <div class="dlg-body">
+              <div>¿Dónde están los datos de la tabla?</div>
+              <div class="dlg-input focus">=$A$1:$I$57</div>
+              <div class="chk on hl">La tabla tiene encabezados</div>
+            </div>
+            <div class="dlg-foot"><span class="btn-x pri">Aceptar</span><span class="btn-x">Cancelar</span></div>
+          </div>
+          <div class="xl" style="width:100%;"><div class="xl-scroll">
+            <table>
+              <tbody>
+                <tr class="tbl-hdr"><td class="rn">1</td><td>ID Reclamación<span class="fb"></span></td><td>Afiliado<span class="fb"></span></td><td>ARS<span class="fb"></span></td></tr>
+                <tr><td class="rn">2</td><td>REC-1126</td><td>Yudelka Ureña Pérez</td><td>Primera ARS</td></tr>
+                <tr class="band"><td class="rn">3</td><td>REC-1322</td><td>Yudelka Féliz Gómez</td><td>Se Na Sa</td></tr>
+                <tr><td class="rn">4</td><td>REC-1098</td><td>Carmen Jiménez Castillo</td><td>MAPFRE Salud ARS</td></tr>
+              </tbody>
+            </table>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · PASO 1.2 DUPLICADOS -->
+  <section class="slide" data-tag="Paso 1 · Estructura">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">1</span>Estructura y limpieza · Parte B</p>
+      <h2>Identifica y elimina los registros duplicados</h2>
+      <div class="two-col">
+        <div>
+          <p style="font-weight:600; color:var(--navy); margin-bottom:10px;">Primero, míralos (opcional pero recomendado):</p>
+          <ol class="steps">
+            <li><span>Selecciona la columna <b>ID Reclamación</b>.</span></li>
+            <li><span><span class="path">Inicio <i>›</i> Formato condicional <i>›</i> Reglas para resaltar celdas <i>›</i> Valores duplicados</span><small>Los ID repetidos se pintan de rojo.</small></span></li>
+          </ol>
+          <p style="font-weight:600; color:var(--navy); margin:22px 0 10px;">Después, elimínalos:</p>
+          <ol class="steps" style="counter-reset:st 2;">
+            <li><span>Con una celda de la tabla activa: <span class="path">Diseño de tabla <i>›</i> Quitar duplicados</span></span></li>
+            <li><span>Deja <b>todas las columnas marcadas</b> y pulsa <b>Aceptar</b>.</span></li>
+          </ol>
+        </div>
+        <div>
+          <div class="dlg">
+            <div class="dlg-title"><span>Quitar duplicados</span><span>?&nbsp;&nbsp;✕</span></div>
+            <div class="dlg-body">
+              <div>Para eliminar valores duplicados, seleccione una o más columnas que contengan duplicados.</div>
+              <div class="dlg-row" style="gap:8px;"><span class="btn-x">Seleccionar todo</span><span class="btn-x">Anular selección</span></div>
+              <div class="dlg-list">
+                <div class="chk on">ID Reclamación</div><div class="chk on">Afiliado</div><div class="chk on">Cédula</div>
+                <div class="chk on">ARS</div><div class="chk on">Provincia</div><div class="chk on">…</div>
+              </div>
+            </div>
+            <div class="dlg-foot"><span class="btn-x pri">Aceptar</span><span class="btn-x">Cancelar</span></div>
+          </div>
+          <div class="msg"><span class="i">i</span><span>Se encontraron y quitaron <b>6</b> valores duplicados; quedan <b>50</b> valores únicos.</span></div>
+        </div>
+      </div>
+      <p class="note"><strong>Cuidado:</strong> si marcas solo la columna <span class="val">ARS</span>, Excel dejará una fila por ARS y borrará casi toda la base. Duplicado significa <em>toda la fila repetida</em>.</p>
+    </div>
+  </section>
+
+  <!-- 6 · PASO 2.1 DETECTAR -->
+  <section class="slide" data-tag="Paso 2 · Texto">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">2</span>Estandarización de texto · Diagnóstico</p>
+      <h2>El filtro es tu detector de inconsistencias</h2>
+      <div class="two-col">
+        <div>
+          <ol class="steps">
+            <li><span>Haz clic en la flecha de filtro del encabezado <b>ARS</b>.</span></li>
+            <li><span>Lee la lista: Excel muestra <b>cada valor distinto una sola vez</b>.</span></li>
+            <li><span>Cada entrada que sobra es una variante que hay que corregir.</span></li>
+          </ol>
+          <p class="note good"><strong>La meta:</strong> que la lista de ARS quede con exactamente <b>5</b> opciones. Repite el diagnóstico en <b>Provincia</b> y <b>Tipo de Servicio</b>.</p>
+          <p class="note"><strong>Lo que el filtro no te muestra:</strong> no distingue mayúsculas, así que <span class="val">ARS HUMANO</span>, <span class="val">ars humano</span> y <span class="val">ARS Humano</span> aparecen como una sola opción. Esas se corrigen con el Método A. En cambio, <span class="val">Santiago␣</span> (con un espacio al final) sí sale aparte, aunque se vea igual.</p>
+        </div>
+        <div style="display:flex; justify-content:center;">
+          <div class="filter">
+            <div class="fhead"><div>↑ Ordenar de A a Z</div><div>↓ Ordenar de Z a A</div></div>
+            <div class="fsearch">Buscar</div>
+            <div class="flist">
+              <div class="chk on">(Seleccionar todo)</div>
+              <div class="chk on good">ARS Humano</div>
+              <div class="chk on warn">ARS Primera</div>
+              <div class="chk on good">ARS Universal</div>
+              <div class="chk on warn">Humano</div>
+              <div class="chk on warn">Mapfre</div>
+              <div class="chk on warn">Mapfre Salud</div>
+              <div class="chk on good">MAPFRE Salud ARS</div>
+              <div class="chk on warn">Primera</div>
+              <div class="chk on good">Primera ARS</div>
+              <div class="chk on warn">Se Na Sa</div>
+              <div class="chk on good">SeNaSa</div>
+              <div class="chk on warn">Universal</div>
+              <div class="chk on warn">Universal ARS</div>
+            </div>
+            <div class="dlg-foot"><span class="btn-x pri">Aceptar</span><span class="btn-x">Cancelar</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · PASO 2.2 CTRL+H -->
+  <section class="slide" data-tag="Paso 2 · Texto">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">2</span>Estandarización de texto · Método A</p>
+      <h2>Buscar y reemplazar para corregir en bloque</h2>
+      <div class="two-col">
+        <div>
+          <ol class="steps">
+            <li><span>Selecciona solo la columna que vas a corregir (clic en una celda de la columna y <span class="kbd">Ctrl</span>+<span class="kbd">Espacio</span>).</span></li>
+            <li><span>Presiona <span class="kbd">Ctrl</span> + <span class="kbd">H</span> y haz clic en <b>Opciones &gt;&gt;</b>.</span></li>
+            <li><span>Marca <b>«Coincidir con el contenido de toda la celda»</b>.</span></li>
+            <li><span>Escribe la variante en <b>Buscar</b> y el nombre correcto en <b>Reemplazar con</b>.</span></li>
+            <li><span>Pulsa <b>Reemplazar todos</b>. Repite con cada variante.</span></li>
+          </ol>
+          <p class="note good"><strong>Truco:</strong> Buscar no distingue mayúsculas. Si buscas <span class="val">ARS Humano</span> y reemplazas con <span class="val">ARS Humano</span>, corriges de una vez <span class="val">ARS HUMANO</span> y <span class="val">ars humano</span>. Hazlo con cada nombre estándar.</p>
+        </div>
+        <div>
+          <div class="dlg">
+            <div class="dlg-title"><span>Buscar y reemplazar</span><span>?&nbsp;&nbsp;✕</span></div>
+            <div class="dlg-body">
+              <div class="dlg-row"><label>Buscar:</label><div class="dlg-input focus">primera</div></div>
+              <div class="dlg-row"><label>Reemplazar con:</label><div class="dlg-input">Primera ARS</div></div>
+              <div class="chk">Coincidir mayúsculas y minúsculas</div>
+              <div class="chk on hl">Coincidir con el contenido de toda la celda</div>
+            </div>
+            <div class="dlg-foot"><span class="btn-x pri">Reemplazar todos</span><span class="btn-x">Cerrar</span></div>
+          </div>
+          <p class="note" style="max-width:460px;"><strong>¿Por qué «toda la celda»?</strong> Sin esa opción, reemplazar <span class="val">Primera</span> por <span class="val">Primera ARS</span> convierte las celdas correctas en <span class="val">Primera ARS ARS</span>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · PASO 2.3 FILTRO + CTRL+ENTER -->
+  <section class="slide" data-tag="Paso 2 · Texto">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">2</span>Estandarización de texto · Método B</p>
+      <h2>Filtrar las variantes y sobrescribirlas de una vez</h2>
+      <p class="lede">Ideal cuando una variante tiene espacios ocultos o cuando quieres corregir varias variantes al mismo tiempo.</p>
+      <div class="two-col">
+        <div>
+          <ol class="steps">
+            <li><span>Abre el filtro de la columna y desmarca <b>(Seleccionar todo)</b>.</span></li>
+            <li><span>Marca <b>solo las variantes incorrectas</b> de un mismo valor (ej.: <span class="val">Primera</span> y <span class="val">ARS Primera</span>). <b>Aceptar</b>.</span></li>
+            <li><span>Selecciona las celdas visibles de esa columna.</span></li>
+            <li><span>Escribe el nombre correcto y confirma con <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span>.<small>Se escribe en todas las celdas seleccionadas y visibles a la vez.</small></span></li>
+            <li><span>Quita el filtro: <span class="path">Datos <i>›</i> Borrar</span></span></li>
+          </ol>
+        </div>
+        <div class="ba">
+          <div>
+            <p class="ba-label b">Filtrado</p>
+            <div class="xl"><div class="xl-scroll"><table><tbody>
+              <tr class="tbl-hdr"><td class="rn">1</td><td>ARS<span class="fb"></span></td></tr>
+              <tr><td class="rn blue">12</td><td class="bad">ARS Primera</td></tr>
+              <tr><td class="rn blue">29</td><td class="bad">Primera</td></tr>
+              <tr><td class="rn blue">38</td><td class="bad">ARS Primera</td></tr>
+            </tbody></table></div></div>
+          </div>
+          <span class="arrow">&rarr;</span>
+          <div>
+            <p class="ba-label a">Ctrl + Enter</p>
+            <div class="xl"><div class="xl-scroll"><table><tbody>
+              <tr class="tbl-hdr"><td class="rn">1</td><td>ARS<span class="fb"></span></td></tr>
+              <tr><td class="rn blue">12</td><td class="ok">Primera ARS</td></tr>
+              <tr><td class="rn blue">29</td><td class="ok">Primera ARS</td></tr>
+              <tr><td class="rn blue">38</td><td class="ok">Primera ARS</td></tr>
+            </tbody></table></div></div>
+          </div>
+        </div>
+      </div>
+      <p class="note good"><strong>Los números de fila en azul</strong> te avisan que hay un filtro activo: las filas ocultas no se tocan.</p>
+    </div>
+  </section>
+
+  <!-- 9 · TABLA DE EQUIVALENCIAS -->
+  <section class="slide" data-tag="Paso 2 · Texto">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">2</span>Estandarización de texto · Referencia</p>
+      <h2>Tabla de equivalencias</h2>
+      <p class="lede">Nombre estándar a la izquierda y las variantes que debes reemplazar a la derecha. Estas son las variantes del archivo de demostración; las de tu archivo pueden cambiar.</p>
+      <div class="eq">
+        <div>
+          <h3>ARS</h3>
+          <div class="eq-row"><b>SeNaSa</b><span>Senasa · senasa · Se Na Sa</span></div>
+          <div class="eq-row"><b>Primera ARS</b><span>PRIMERA ARS · ARS Primera · Primera</span></div>
+          <div class="eq-row"><b>ARS Universal</b><span>ars universal · Universal ARS · Universal</span></div>
+          <div class="eq-row"><b>ARS Humano</b><span>ARS HUMANO · ars humano · Humano</span></div>
+          <div class="eq-row"><b>MAPFRE Salud ARS</b><span>mapfre salud ars · Mapfre Salud · Mapfre · MAPFRE</span></div>
+        </div>
+        <div>
+          <h3>Provincia</h3>
+          <div class="eq-row"><b>Distrito Nacional</b><span>distrito nacional · D.N. · Dist. Nacional</span></div>
+          <div class="eq-row"><b>Santo Domingo</b><span>santo domingo · Sto. Dgo.</span></div>
+          <div class="eq-row"><b>Santiago</b><span>SANTIAGO · santiago · Stgo. · «Santiago␣»</span></div>
+          <div class="eq-row"><b>La Vega</b><span>LA VEGA · la vega · La vega</span></div>
+          <div class="eq-row"><b>San Cristóbal</b><span>San Cristobal</span></div>
+          <div class="eq-row"><b>Puerto Plata</b><span>PUERTO PLATA · puerto plata</span></div>
+        </div>
+        <div>
+          <h3>Tipo de Servicio</h3>
+          <div class="eq-row"><b>Consulta</b><span>CONSULTA · Consultas · Consulta médica</span></div>
+          <div class="eq-row"><b>Emergencia</b><span>EMERGENCIA · Emergencias · Emerg.</span></div>
+          <div class="eq-row"><b>Hospitalización</b><span>hospitalización · Hospitalizacion · Internamiento</span></div>
+          <div class="eq-row"><b>Laboratorio</b><span>LABORATORIO · Lab.</span></div>
+          <div class="eq-row"><b>Imágenes</b><span>IMÁGENES · imágenes · Sonografía/Rayos X</span></div>
+        </div>
+      </div>
+      <p class="note"><strong>Las tildes cuentan:</strong> para Excel, <span class="val">San Cristobal</span> y <span class="val">San Cristóbal</span> son textos distintos. Busca cada forma por separado.</p>
+    </div>
+  </section>
+
+  <!-- 10 · PASO 3.1 FECHAS -->
+  <section class="slide" data-tag="Paso 3 · Formatos">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">3</span>Formatos de celdas · Fechas</p>
+      <h2>Una sola forma de mostrar las fechas: dd/mm/aaaa</h2>
+      <div class="two-col">
+        <div>
+          <p style="font-weight:600; color:var(--navy); margin-bottom:10px;">A. Convierte las fechas que son texto</p>
+          <ol class="steps">
+            <li><span>Selecciona la columna <b>Fecha de Servicio</b>.</span></li>
+            <li><span><span class="kbd">Ctrl</span> + <span class="kbd">H</span>: busca <span class="val">.</span> y reemplaza con <span class="val">/</span> &rarr; <b>Reemplazar todos</b>.<small>Excel reconoce <span class="val">26/04/2025</span> como fecha real.</small></span></li>
+          </ol>
+          <p style="font-weight:600; color:var(--navy); margin:20px 0 10px;">B. Aplica el mismo formato a todas</p>
+          <ol class="steps" style="counter-reset:st 2;">
+            <li><span>Con la columna seleccionada, presiona <span class="kbd">Ctrl</span> + <span class="kbd">1</span>.</span></li>
+            <li><span><span class="path">Número <i>›</i> Fecha</span> y elige <span class="val">14/03/2012</span> (fecha corta).<small>O en <b>Personalizada</b>, escribe <span class="val">dd/mm/aaaa</span>.</small></span></li>
+          </ol>
+        </div>
+        <div>
+          <div class="ba">
+            <div>
+              <p class="ba-label b">Antes</p>
+              <div class="xl"><div class="xl-scroll"><table><tbody>
+                <tr class="tbl-hdr"><td class="rn">H</td><td>Fecha de Servicio</td></tr>
+                <tr><td class="rn">2</td><td class="r">14/04/2025</td></tr>
+                <tr><td class="rn">3</td><td class="r bad">16-feb-25</td></tr>
+                <tr><td class="rn">4</td><td class="r bad">2025-06-13</td></tr>
+                <tr><td class="rn">5</td><td class="bad">26.04.2025</td></tr>
+                <tr><td class="rn">6</td><td class="r bad">3/2/25</td></tr>
+                <tr><td class="rn">10</td><td class="r bad">miércoles, 18 de junio de 2025</td></tr>
+                <tr><td class="rn">17</td><td class="r bad">01/14/2025</td></tr>
+              </tbody></table></div></div>
+            </div>
+            <span class="arrow">&rarr;</span>
+            <div>
+              <p class="ba-label a">Después</p>
+              <div class="xl"><div class="xl-scroll"><table><tbody>
+                <tr class="tbl-hdr"><td class="rn">H</td><td>Fecha de Servicio</td></tr>
+                <tr><td class="rn">2</td><td class="r">14/04/2025</td></tr>
+                <tr><td class="rn">3</td><td class="r ok">16/02/2025</td></tr>
+                <tr><td class="rn">4</td><td class="r ok">13/06/2025</td></tr>
+                <tr><td class="rn">5</td><td class="r ok">26/04/2025</td></tr>
+                <tr><td class="rn">6</td><td class="r ok">03/02/2025</td></tr>
+                <tr><td class="rn">10</td><td class="r ok">18/06/2025</td></tr>
+                <tr><td class="rn">17</td><td class="r ok">14/01/2025</td></tr>
+              </tbody></table></div></div>
+            </div>
+          </div>
+          <p class="note good" style="margin-top:18px;"><strong>Detector rápido:</strong> las fechas y los números reales se alinean a la <b>derecha</b>; el texto, a la <b>izquierda</b>. Si una fecha queda a la izquierda (fila 5 antes), todavía es texto.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · PASO 3.2 MONEDA -->
+  <section class="slide" data-tag="Paso 3 · Formatos">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">3</span>Formatos de celdas · Montos</p>
+      <h2>Formato de moneda RD$ para los montos reclamados</h2>
+      <div class="two-col">
+        <div>
+          <p style="font-weight:600; color:var(--navy); margin-bottom:10px;">A. Quita el «RD$» escrito a mano</p>
+          <ol class="steps">
+            <li><span>Selecciona la columna <b>Monto Reclamado</b>.</span></li>
+            <li><span><span class="kbd">Ctrl</span> + <span class="kbd">H</span>: busca <span class="val">RD$</span> y deja <b>Reemplazar con</b> vacío &rarr; <b>Reemplazar todos</b>.<small>Esas celdas pasan de texto a número.</small></span></li>
+          </ol>
+          <p style="font-weight:600; color:var(--navy); margin:20px 0 10px;">B. Aplica el formato de moneda</p>
+          <ol class="steps" style="counter-reset:st 2;">
+            <li><span><span class="kbd">Ctrl</span> + <span class="kbd">1</span> &rarr; <span class="path">Número <i>›</i> Moneda</span></span></li>
+            <li><span>Posiciones decimales: <b>2</b>.</span></li>
+            <li><span>Símbolo: <b>RD$ Español (República Dominicana)</b> &rarr; <b>Aceptar</b>.</span></li>
+          </ol>
+        </div>
+        <div>
+          <div class="ba">
+            <div>
+              <p class="ba-label b">Antes</p>
+              <div class="xl"><div class="xl-scroll"><table><tbody>
+                <tr class="tbl-hdr"><td class="rn">I</td><td>Monto Reclamado</td></tr>
+                <tr><td class="rn">2</td><td class="r bad">13,248.00</td></tr>
+                <tr><td class="rn">3</td><td class="r bad">14629</td></tr>
+                <tr><td class="rn">4</td><td class="r bad">16018.5</td></tr>
+                <tr><td class="rn">6</td><td class="r bad">155647.0</td></tr>
+                <tr><td class="rn">10</td><td class="bad">RD$118,920.00</td></tr>
+              </tbody></table></div></div>
+            </div>
+            <span class="arrow">&rarr;</span>
+            <div>
+              <p class="ba-label a">Después</p>
+              <div class="xl"><div class="xl-scroll"><table><tbody>
+                <tr class="tbl-hdr"><td class="rn">I</td><td>Monto Reclamado</td></tr>
+                <tr><td class="rn">2</td><td class="r ok">RD$13,248.00</td></tr>
+                <tr><td class="rn">3</td><td class="r ok">RD$14,628.50</td></tr>
+                <tr><td class="rn">4</td><td class="r ok">RD$16,018.50</td></tr>
+                <tr><td class="rn">6</td><td class="r ok">RD$155,647.00</td></tr>
+                <tr><td class="rn">10</td><td class="r ok">RD$118,920.00</td></tr>
+              </tbody></table></div></div>
+            </div>
+          </div>
+          <p class="note" style="margin-top:18px;"><strong>No escribas «RD$» a mano.</strong> El símbolo lo pone el formato; el valor de la celda debe ser solo el número, para que se pueda sumar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 · PASO 4.1 VACÍOS -->
+  <section class="slide" data-tag="Paso 4 · Completar">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">4</span>Completado y ordenamiento · Vacíos</p>
+      <h2>Completa los campos vacíos con «No Registrado»</h2>
+      <div class="two-col">
+        <div>
+          <ol class="steps">
+            <li><span>Abre el filtro de <b>Provincia</b>, desmarca todo y marca solo <b>(Vacías)</b>. <b>Aceptar</b>.</span></li>
+            <li><span>Selecciona las celdas vacías visibles de esa columna.</span></li>
+            <li><span>Escribe <span class="val">No Registrado</span> y presiona <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span>.</span></li>
+            <li><span>Borra el filtro y repite en <b>Tipo de Servicio</b> y <b>Prestador</b>.</span></li>
+          </ol>
+          <p class="note good"><strong>Atajo para todas las columnas a la vez:</strong> selecciona la tabla &rarr; <span class="kbd">F5</span> &rarr; <b>Especial</b> &rarr; <b>Celdas en blanco</b> &rarr; escribe <span class="val">No Registrado</span> &rarr; <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span>.</p>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; align-items:flex-start;">
+          <div class="filter" style="max-width:250px;">
+            <div class="fsearch">Buscar</div>
+            <div class="flist">
+              <div class="chk">(Seleccionar todo)</div>
+              <div class="chk">Distrito Nacional</div>
+              <div class="chk">La Vega</div>
+              <div class="chk">Puerto Plata</div>
+              <div class="chk">…</div>
+              <div class="chk on hl">(Vacías)</div>
+            </div>
+            <div class="dlg-foot"><span class="btn-x pri">Aceptar</span></div>
+          </div>
+          <div class="xl" style="min-width:210px;"><div class="xl-scroll"><table><tbody>
+            <tr class="tbl-hdr"><td class="rn">1</td><td>Provincia<span class="fb"></span></td></tr>
+            <tr><td class="rn blue">2</td><td class="ok">No Registrado</td></tr>
+            <tr><td class="rn blue">7</td><td class="ok">No Registrado</td></tr>
+            <tr><td class="rn blue">49</td><td class="ok">No Registrado</td></tr>
+          </tbody></table></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 · PASO 4.2 ORDENAR -->
+  <section class="slide" data-tag="Paso 4 · Ordenar">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">4</span>Completado y ordenamiento · Orden</p>
+      <h2>Ordena por ARS y luego por fecha de servicio</h2>
+      <div class="two-col">
+        <div>
+          <ol class="steps">
+            <li><span>Haz clic en cualquier celda de la tabla.</span></li>
+            <li><span><span class="path">Datos <i>›</i> Ordenar</span> (el botón grande, no el de A→Z).</span></li>
+            <li><span>Primer nivel: <b>Ordenar por</b> <span class="val">ARS</span> · <span class="val">Valores de celda</span> · <span class="val">A a Z</span>.</span></li>
+            <li><span><b>Agregar nivel</b> &rarr; <b>Luego por</b> <span class="val">Fecha de Servicio</span> · <span class="val">De más antiguos a más recientes</span>.</span></li>
+            <li><span><b>Aceptar</b>.</span></li>
+          </ol>
+          <p class="note"><strong>Por eso el paso 3 va antes:</strong> si alguna fecha sigue siendo texto, Excel la ordena alfabéticamente y quedará fuera de lugar.</p>
+        </div>
+        <div>
+          <div class="dlg" style="max-width:520px;">
+            <div class="dlg-title"><span>Ordenar</span><span>?&nbsp;&nbsp;✕</span></div>
+            <div class="dlg-body">
+              <div class="dlg-row" style="gap:6px; flex-wrap:wrap;"><span class="btn-x">+ Agregar nivel</span><span class="btn-x">✕ Eliminar nivel</span><span class="chk on" style="margin-left:auto;">Mis datos tienen encabezados</span></div>
+              <div style="display:grid; grid-template-columns:auto 1fr 1fr 1fr; gap:6px 8px; align-items:center; font-size:.92em;">
+                <span></span><span style="color:#666;">Columna</span><span style="color:#666;">Ordenar según</span><span style="color:#666;">Criterio</span>
+                <span>Ordenar por</span><span class="dlg-input focus">ARS</span><span class="dlg-input">Valores de celda</span><span class="dlg-input">A a Z</span>
+                <span>Luego por</span><span class="dlg-input focus">Fecha de Servicio</span><span class="dlg-input">Valores de celda</span><span class="dlg-input">De más antiguos a más recientes</span>
+              </div>
+            </div>
+            <div class="dlg-foot"><span class="btn-x pri">Aceptar</span><span class="btn-x">Cancelar</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 · VERIFICACIÓN -->
+  <section class="slide" data-tag="Verificación">
+    <div class="slide-inner">
+      <p class="kicker">Antes de entregar</p>
+      <h2>Lista de verificación</h2>
+      <p class="lede">Revisa cada punto. Si todos se cumplen, tu base está lista.</p>
+      <ul class="checklist">
+        <li><span>Los datos están en una <b>Tabla de Excel</b> con filtros en cada encabezado.</span></li>
+        <li><span><b>No hay duplicados</b>.<small>En la demostración quedan 50 filas: selecciona la columna ID y mira el «Recuento» en la barra de estado.</small></span></li>
+        <li><span>El filtro de <b>ARS</b> muestra solo 5 nombres.</span></li>
+        <li><span>El filtro de <b>Provincia</b> y el de <b>Tipo de Servicio</b> no tienen variantes.</span></li>
+        <li><span>Todas las fechas están alineadas a la derecha y se ven como <span class="val">dd/mm/aaaa</span>.</span></li>
+        <li><span>Todos los montos se ven como <span class="val">RD$0,000.00</span> y se pueden sumar.</span></li>
+        <li><span>No hay celdas vacías: donde faltaba el dato dice <span class="val">No Registrado</span>.</span></li>
+        <li><span>La tabla está ordenada por <b>ARS</b> (A→Z) y, dentro de cada ARS, por <b>fecha</b>.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 15 · RECURSOS Y ENTREGA -->
+  <section class="slide" data-tag="Entrega">
+    <div class="slide-inner">
+      <p class="kicker">Recursos y entrega</p>
+      <h2>Ahora te toca a ti</h2>
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <div class="res-list">
+            <a class="res" href="https://docs.google.com/spreadsheets/d/1vXlDvyy--YMjJZfXXJrXEgTiXJgeOcMq/edit?usp=drive_link&amp;ouid=114906269913106424308&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener noreferrer">
+              <span class="ic" style="background:var(--xl-green);">XLSX</span>
+              <span><span class="t">Base de datos de la actividad</span><br><span class="d">El archivo que debes depurar y entregar.</span></span>
+              <span class="go">Abrir &rarr;</span>
+            </a>
+            <a class="res" href="https://drive.google.com/file/d/1FztlMLTNYgAuVNVziUbhPgTh9LKSU_Ls/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
+              <span class="ic" style="background:#C0392B;">PDF</span>
+              <span><span class="t">Instrucciones de la actividad</span><br><span class="d">Guía oficial en PDF.</span></span>
+              <span class="go">Abrir &rarr;</span>
+            </a>
+            <a class="res" href="demo-depuracion-datos.xlsx" download>
+              <span class="ic" style="background:var(--teal);">DEMO</span>
+              <span><span class="t">Archivo de práctica de esta guía</span><br><span class="d">Para repetir cada paso antes de hacer la actividad.</span></span>
+              <span class="go">Descargar &darr;</span>
+            </a>
+          </div>
+        </div>
+        <div class="deliver">
+          <h3>Modalidad de entrega</h3>
+          <ul>
+            <li>Adjunta directamente tu <strong>archivo Excel depurado</strong> en la tarea.</li>
+            <li>O coloca el <strong>enlace</strong> a tu archivo en Google Drive u OneDrive, con los <strong>permisos de acceso</strong> activados.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<nav class="navbar" aria-label="Navegación de diapositivas">
+  <button class="nav-btn" id="btn-prev" aria-label="Anterior">&larr; <span class="lbl">Atrás</span></button>
+  <div class="progress">
+    <div class="bars" id="bars"></div>
+    <div class="counter" id="counter" aria-live="polite"></div>
+  </div>
+  <button class="nav-btn next" id="btn-next" aria-label="Siguiente"><span class="lbl">Siguiente</span> &rarr;</button>
+</nav>
+
+<script>
+(function(){
+  "use strict";
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var bars = document.getElementById('bars');
+  var counter = document.getElementById('counter');
+  var tag = document.getElementById('section-tag');
+  var prev = document.getElementById('btn-prev');
+  var next = document.getElementById('btn-next');
+  var cur = -1;
+
+  slides.forEach(function(s, i){
+    var b = document.createElement('button');
+    b.setAttribute('aria-label', 'Ir a la diapositiva ' + (i + 1));
+    b.addEventListener('click', function(){ go(i); });
+    bars.appendChild(b);
+  });
+
+  function go(i){
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    if(i === cur) return;
+    slides.forEach(function(s, k){
+      s.classList.toggle('active', k === i);
+      s.classList.toggle('left', k < i);
+    });
+    Array.prototype.forEach.call(bars.children, function(b, k){
+      b.className = k < i ? 'done' : (k === i ? 'cur' : '');
+    });
+    slides[i].scrollTop = 0;
+    cur = i;
+    counter.textContent = (i + 1) + ' / ' + slides.length;
+    tag.textContent = slides[i].getAttribute('data-tag') || '';
+    prev.disabled = i === 0;
+    next.disabled = i === slides.length - 1;
+    if(history.replaceState) history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  prev.addEventListener('click', function(){ go(cur - 1); });
+  next.addEventListener('click', function(){ go(cur + 1); });
+  document.querySelectorAll('[data-go="next"]').forEach(function(b){ b.addEventListener('click', function(){ go(cur + 1); }); });
+
+  document.addEventListener('keydown', function(e){
+    if(e.altKey || e.ctrlKey || e.metaKey) return;
+    if(e.key === 'ArrowRight' || e.key === 'PageDown' || (e.key === ' ' && e.target === document.body)){ e.preventDefault(); go(cur + 1); }
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); go(cur - 1); }
+    else if(e.key === 'Home'){ go(0); }
+    else if(e.key === 'End'){ go(slides.length - 1); }
+    else if(e.key === 'f' || e.key === 'F'){ toggleFull(); }
+  });
+
+  // swipe (solo gestos claramente horizontales, para no interferir con el scroll vertical)
+  var sx = null, sy = null;
+  var stage = document.getElementById('stage');
+  stage.addEventListener('touchstart', function(e){ sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, {passive:true});
+  stage.addEventListener('touchend', function(e){
+    if(sx === null) return;
+    var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.6 && !e.target.closest('.xl-scroll')) go(cur + (dx < 0 ? 1 : -1));
+    sx = sy = null;
+  });
+
+  function toggleFull(){
+    if(!document.fullscreenElement){ if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); }
+    else if(document.exitFullscreen){ document.exitFullscreen(); }
+  }
+  document.getElementById('btn-full').addEventListener('click', toggleFull);
+
+  var start = parseInt((location.hash || '').replace('#', ''), 10);
+  go(isNaN(start) ? 0 : start - 1);
+})();
+</script>
+</body>
+</html>
