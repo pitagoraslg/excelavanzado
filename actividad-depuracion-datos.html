@@ -608,10 +608,11 @@
           <p style="font-weight:600; color:var(--navy); margin-bottom:10px;">A. Convierte las fechas que son texto</p>
           <ol class="steps">
             <li><span>Selecciona la columna <b>Fecha de Servicio</b>.</span></li>
-            <li><span><span class="kbd">Ctrl</span> + <span class="kbd">H</span>: busca <span class="val">.</span> y reemplaza con <span class="val">/</span> &rarr; <b>Reemplazar todos</b>.<small>Excel reconoce <span class="val">26/04/2025</span> como fecha real.</small></span></li>
+            <li><span><span class="kbd">Ctrl</span> + <span class="kbd">H</span> &rarr; <b>Opciones &gt;&gt;</b> y <b>desmarca</b> «Coincidir con el contenido de toda la celda».<small>Quedó marcada desde el Paso 2; si no la quitas, Excel no encuentra el punto.</small></span></li>
+            <li><span>Busca <span class="val">.</span> y reemplaza con <span class="val">/</span> &rarr; <b>Reemplazar todos</b>.<small>Excel reconoce <span class="val">26/04/2025</span> como fecha real.</small></span></li>
           </ol>
           <p style="font-weight:600; color:var(--navy); margin:20px 0 10px;">B. Aplica el mismo formato a todas</p>
-          <ol class="steps" style="counter-reset:st 2;">
+          <ol class="steps" style="counter-reset:st 3;">
             <li><span>Con la columna seleccionada, presiona <span class="kbd">Ctrl</span> + <span class="kbd">1</span>.</span></li>
             <li><span><span class="path">Número <i>›</i> Fecha</span> y elige <span class="val">14/03/2012</span> (fecha corta).<small>O en <b>Personalizada</b>, escribe <span class="val">dd/mm/aaaa</span>.</small></span></li>
           </ol>
@@ -662,7 +663,7 @@
           <p style="font-weight:600; color:var(--navy); margin-bottom:10px;">A. Quita el «RD$» escrito a mano</p>
           <ol class="steps">
             <li><span>Selecciona la columna <b>Monto Reclamado</b>.</span></li>
-            <li><span><span class="kbd">Ctrl</span> + <span class="kbd">H</span>: busca <span class="val">RD$</span> y deja <b>Reemplazar con</b> vacío &rarr; <b>Reemplazar todos</b>.<small>Esas celdas pasan de texto a número.</small></span></li>
+            <li><span><span class="kbd">Ctrl</span> + <span class="kbd">H</span>: busca <span class="val">RD$</span> y deja <b>Reemplazar con</b> vacío &rarr; <b>Reemplazar todos</b>.<small>Con «Coincidir con el contenido de toda la celda» desmarcada. Esas celdas pasan de texto a número.</small></span></li>
           </ol>
           <p style="font-weight:600; color:var(--navy); margin:20px 0 10px;">B. Aplica el formato de moneda</p>
           <ol class="steps" style="counter-reset:st 2;">
