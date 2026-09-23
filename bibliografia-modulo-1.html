@@ -62,7 +62,7 @@
   .sec-title{font-size:clamp(1.5rem,3vw,1.9rem); color:var(--navy); margin:26px 0 6px;}
   .sec-note{font-size:.92rem; color:var(--ink-soft); margin-bottom:10px; max-width:64ch;}
   .refs{list-style:none; margin:0; padding:0; border-top:1px solid var(--line);}
-  .ref{display:grid; grid-template-columns:1fr auto; gap:14px; align-items:start; padding:16px 0; border-bottom:1px solid var(--line);}
+  .ref{padding:16px 0; border-bottom:1px solid var(--line);}
   .ref[hidden]{display:none;}
   .ref > div{min-width:0;}
   .apa{
@@ -75,24 +75,11 @@
     display:block; font-family:'IBM Plex Sans',sans-serif; font-size:.72rem; font-weight:600; text-transform:uppercase; letter-spacing:.06em;
     color:var(--teal); margin-bottom:4px;
   }
-  .copy{
-    border:1.5px solid var(--line); background:#fff; color:var(--navy); border-radius:3px; padding:6px 12px; font-size:.82rem; font-weight:600;
-    cursor:pointer; white-space:nowrap; transition:border-color .15s ease, background .15s ease;
-  }
-  .copy:hover{border-color:var(--navy);}
-  .copy.done{background:var(--teal-soft); border-color:var(--teal); color:#0E5E66;}
-
-  .howto{background:#fff; border:1px solid var(--line); border-left:3px solid var(--teal); padding:18px 22px; margin-top:12px; font-size:.95rem;}
-  .howto p + p{margin-top:8px;}
-  .howto code{font-family:'Newsreader',serif; font-style:italic; background:var(--ivory-deep); padding:1px 6px; border-radius:3px;}
-
   footer{padding:30px 0 50px; margin-top:30px; border-top:1px solid var(--line); font-size:.85rem; color:var(--ink-soft);}
   .back{display:inline-flex; align-items:center; gap:8px; color:var(--navy); font-weight:600; text-decoration:none; margin-bottom:10px;}
   .back:hover{color:var(--teal);}
 
   @media (max-width:600px){
-    .ref{grid-template-columns:1fr;}
-    .copy{justify-self:start;}
     .apa{padding-left:.35in; text-indent:-.35in;}
   }
 </style>
@@ -129,94 +116,70 @@
 
   <section aria-labelledby="t-refs">
     <h2 class="sec-title" id="t-refs">Referencias.</h2>
-    <p class="sec-note">Ordenadas alfabéticamente por autor, con sangría francesa, como indica APA 7. Usa «Copiar» para llevar una referencia a tu trabajo.</p>
+    <p class="sec-note">Ordenadas alfabéticamente por autor, con sangría francesa, como indica APA 7.</p>
     <ol class="refs" id="refs">
 
       <li class="ref" data-type="libro">
         <div><span class="tag">Libro</span><p class="apa">Alexander, M., Kusleika, R., &amp; Walkenbach, J. (2018). <i>Excel 2019 bible</i>. Wiley. <a href="https://doi.org/10.1002/9781119549376" target="_blank" rel="noopener">https://doi.org/10.1002/9781119549376</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="articulo">
         <div><span class="tag">Artículo científico</span><p class="apa">Broman, K. W., &amp; Woo, K. H. (2018). Data organization in spreadsheets. <i>The American Statistician, 72</i>(1), 2–10. <a href="https://doi.org/10.1080/00031305.2017.1375989" target="_blank" rel="noopener">https://doi.org/10.1080/00031305.2017.1375989</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="articulo">
         <div><span class="tag">Artículo científico</span><p class="apa">Kim, W., Choi, B.-J., Hong, E.-K., Kim, S.-K., &amp; Lee, D. (2003). A taxonomy of dirty data. <i>Data Mining and Knowledge Discovery, 7</i>(1), 81–99. <a href="https://doi.org/10.1023/A:1021564703268" target="_blank" rel="noopener">https://doi.org/10.1023/A:1021564703268</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="web">
         <div><span class="tag">Documentación de Microsoft</span><p class="apa">Microsoft. (s.f.-a). <i>Buscar o reemplazar texto y números en una hoja de cálculo</i>. Microsoft Support. Recuperado el 23 de septiembre de 2026, de <a href="https://support.microsoft.com/es-es/office/buscar-o-reemplazar-texto-y-n%C3%BAmeros-en-una-hoja-de-c%C3%A1lculo-0e304ca5-ecef-4808-b90f-fdb42f892e90" target="_blank" rel="noopener">https://support.microsoft.com/es-es/office/buscar-o-reemplazar-texto-y-n%C3%BAmeros-en-una-hoja-de-c%C3%A1lculo-0e304ca5-ecef-4808-b90f-fdb42f892e90</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="web">
         <div><span class="tag">Documentación de Microsoft</span><p class="apa">Microsoft. (s.f.-b). <i>Buscar y seleccionar celdas que cumplan condiciones específicas en Excel</i>. Microsoft Support. Recuperado el 23 de septiembre de 2026, de <a href="https://support.microsoft.com/es-es/office/buscar-y-seleccionar-celdas-que-cumplan-condiciones-espec%C3%ADficas-2d686424-6150-4015-a8e4-a5990f4d7e3a" target="_blank" rel="noopener">https://support.microsoft.com/es-es/office/buscar-y-seleccionar-celdas-que-cumplan-condiciones-espec%C3%ADficas-2d686424-6150-4015-a8e4-a5990f4d7e3a</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="web">
         <div><span class="tag">Documentación de Microsoft</span><p class="apa">Microsoft. (s.f.-c). <i>Crear un formato de número personalizado</i>. Microsoft Support. Recuperado el 23 de septiembre de 2026, de <a href="https://support.microsoft.com/es-es/office/crear-un-formato-de-n%C3%BAmero-personalizado-78f2a361-936b-4c03-8772-09fab54be7f4" target="_blank" rel="noopener">https://support.microsoft.com/es-es/office/crear-un-formato-de-n%C3%BAmero-personalizado-78f2a361-936b-4c03-8772-09fab54be7f4</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="web">
         <div><span class="tag">Documentación de Microsoft</span><p class="apa">Microsoft. (s.f.-d). <i>Descripción general de las tablas de Excel</i>. Microsoft Support. Recuperado el 23 de septiembre de 2026, de <a href="https://support.microsoft.com/es-es/office/descripci%C3%B3n-general-de-las-tablas-de-excel-7ab0bb7d-3a9e-4b56-a3c9-6c94334e492c" target="_blank" rel="noopener">https://support.microsoft.com/es-es/office/descripci%C3%B3n-general-de-las-tablas-de-excel-7ab0bb7d-3a9e-4b56-a3c9-6c94334e492c</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="web">
         <div><span class="tag">Documentación de Microsoft</span><p class="apa">Microsoft. (s.f.-e). <i>Filtrar datos de una tabla o un rango en Excel</i>. Microsoft Support. Recuperado el 23 de septiembre de 2026, de <a href="https://support.microsoft.com/es-es/office/filtrar-datos-en-un-rango-o-tabla-en-excel-01832226-31b5-4568-8806-38c37dcc180e" target="_blank" rel="noopener">https://support.microsoft.com/es-es/office/filtrar-datos-en-un-rango-o-tabla-en-excel-01832226-31b5-4568-8806-38c37dcc180e</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="web">
         <div><span class="tag">Documentación de Microsoft</span><p class="apa">Microsoft. (s.f.-f). <i>Filtrar valores únicos o quitar valores duplicados</i>. Microsoft Support. Recuperado el 23 de septiembre de 2026, de <a href="https://support.microsoft.com/es-es/office/filtrar-valores-%C3%BAnicos-o-quitar-valores-duplicados-ccf664b0-81d6-449b-bbe1-8daaec1e83c2" target="_blank" rel="noopener">https://support.microsoft.com/es-es/office/filtrar-valores-%C3%BAnicos-o-quitar-valores-duplicados-ccf664b0-81d6-449b-bbe1-8daaec1e83c2</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="web">
         <div><span class="tag">Documentación de Microsoft</span><p class="apa">Microsoft. (s.f.-g). <i>Formatos de número disponibles en Excel</i>. Microsoft Support. Recuperado el 23 de septiembre de 2026, de <a href="https://support.microsoft.com/es-es/office/formatos-de-n%C3%BAmero-disponibles-en-excel-0afe8f52-97db-41f1-b972-4b46e9f1e8d2" target="_blank" rel="noopener">https://support.microsoft.com/es-es/office/formatos-de-n%C3%BAmero-disponibles-en-excel-0afe8f52-97db-41f1-b972-4b46e9f1e8d2</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="web">
         <div><span class="tag">Documentación de Microsoft</span><p class="apa">Microsoft. (s.f.-h). <i>Métodos abreviados de teclado de Excel</i>. Microsoft Support. Recuperado el 23 de septiembre de 2026, de <a href="https://support.microsoft.com/es-es/office/m%C3%A9todos-abreviados-de-teclado-de-excel-1798d9d5-842a-42b8-9c99-9b7213f0040f" target="_blank" rel="noopener">https://support.microsoft.com/es-es/office/m%C3%A9todos-abreviados-de-teclado-de-excel-1798d9d5-842a-42b8-9c99-9b7213f0040f</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="web">
         <div><span class="tag">Documentación de Microsoft</span><p class="apa">Microsoft. (s.f.-i). <i>Ordenar datos de una tabla o un rango en Excel</i>. Microsoft Support. Recuperado el 23 de septiembre de 2026, de <a href="https://support.microsoft.com/es-es/office/ordenar-datos-en-un-rango-o-tabla-en-excel-62d0b95d-2a90-4610-a6ae-2e545c4a4654" target="_blank" rel="noopener">https://support.microsoft.com/es-es/office/ordenar-datos-en-un-rango-o-tabla-en-excel-62d0b95d-2a90-4610-a6ae-2e545c4a4654</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="web">
         <div><span class="tag">Documentación de Microsoft</span><p class="apa">Microsoft. (s.f.-j). <i>Utilice el formato condicional para resaltar la información en Excel</i>. Microsoft Support. Recuperado el 23 de septiembre de 2026, de <a href="https://support.microsoft.com/es-es/office/usar-formato-condicional-para-resaltar-informaci%C3%B3n-en-excel-fed60dfa-1d3f-4e13-9ecb-f1951ff89d7f" target="_blank" rel="noopener">https://support.microsoft.com/es-es/office/usar-formato-condicional-para-resaltar-informaci%C3%B3n-en-excel-fed60dfa-1d3f-4e13-9ecb-f1951ff89d7f</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="articulo">
         <div><span class="tag">Artículo científico</span><p class="apa">Rahm, E., &amp; Do, H. H. (2000). Data cleaning: Problems and current approaches. <i>IEEE Data Engineering Bulletin, 23</i>(4), 3–13.</p></div>
-        <button class="copy">Copiar</button>
       </li>
 
       <li class="ref" data-type="articulo">
         <div><span class="tag">Artículo científico</span><p class="apa">Wickham, H. (2014). Tidy data. <i>Journal of Statistical Software, 59</i>(10), 1–23. <a href="https://doi.org/10.18637/jss.v059.i10" target="_blank" rel="noopener">https://doi.org/10.18637/jss.v059.i10</a></p></div>
-        <button class="copy">Copiar</button>
       </li>
 
     </ol>
-  </section>
-
-  <section aria-labelledby="t-cite">
-    <h2 class="sec-title" id="t-cite">Cómo citar dentro del texto.</h2>
-    <div class="howto">
-      <p><b>Cita parentética:</b> <code>(Broman &amp; Woo, 2018)</code> · <code>(Kim et al., 2003)</code> · <code>(Microsoft, s.f.-f)</code></p>
-      <p><b>Cita narrativa:</b> <code>Broman y Woo (2018) recomiendan…</code> · <code>Según Kim et al. (2003)…</code></p>
-      <p>En APA 7, las obras con tres o más autores se citan con el primer apellido seguido de «et al.» desde la primera mención. Las páginas sin fecha usan «s.f.» y, si son del mismo autor, se distinguen con letras (s.f.-a, s.f.-b…).</p>
-    </div>
   </section>
 
   <footer>
@@ -249,34 +212,6 @@
     });
   });
   count.textContent = refs.length + ' referencias';
-
-  /* copiar la referencia (con cursivas cuando el portapapeles lo permite) */
-  refs.forEach(function(r){
-    var btn = r.querySelector('.copy');
-    btn.addEventListener('click', function(){
-      var p = r.querySelector('.apa').cloneNode(true);
-      var tag = p.querySelector('.tag'); if(tag) tag.remove();
-      var br = p.querySelector('br'); if(br) br.remove();
-      Array.prototype.forEach.call(p.querySelectorAll('a'), function(a){ a.replaceWith(document.createTextNode(a.textContent)); });
-      var html = p.innerHTML.trim(), text = p.textContent.trim();
-      function ok(){ btn.textContent = 'Copiada ✓'; btn.classList.add('done'); setTimeout(function(){ btn.textContent = 'Copiar'; btn.classList.remove('done'); }, 1800); }
-      function fallback(){
-        var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
-        try{ document.execCommand('copy'); ok(); }catch(e){}
-        ta.remove();
-      }
-      try{
-        if(navigator.clipboard && window.ClipboardItem){
-          navigator.clipboard.write([new ClipboardItem({
-            'text/html': new Blob([html], {type:'text/html'}),
-            'text/plain': new Blob([text], {type:'text/plain'})
-          })]).then(ok, fallback);
-        } else if(navigator.clipboard){
-          navigator.clipboard.writeText(text).then(ok, fallback);
-        } else { fallback(); }
-      }catch(e){ fallback(); }
-    });
-  });
 })();
 </script>
 </body>
