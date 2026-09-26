@@ -309,7 +309,39 @@
     .nav-btn{padding:10px 14px;}
     .nav-btn .lbl{display:none;}
   }
-  @media (prefers-reduced-motion:reduce){ .slide{transition:none !important;} }
+  /* ---------- ANIMACIONES (estilo PowerPoint) ---------- */
+  /* entrada del encabezado de cada diapositiva */
+  @keyframes enterUp{from{opacity:0; transform:translateY(22px);} to{opacity:1; transform:none;}}
+  .slide.active .slide-inner > :not(.build){animation:enterUp .6s cubic-bezier(.2,.8,.2,1) both;}
+  .slide.active .slide-inner > :nth-child(2){animation-delay:.1s;}
+  .slide.active .slide-inner > :nth-child(3){animation-delay:.2s;}
+  .slide.active .slide-inner > :nth-child(4){animation-delay:.3s;}
+  .slide.active .slide-inner > :nth-child(n+5){animation-delay:.4s;}
+
+  /* bloques que aparecen uno a uno con Enter */
+  .build{
+    transition:opacity .5s ease, transform .55s cubic-bezier(.2,.9,.25,1.15), visibility 0s linear 0s;
+  }
+  .build.b-hidden{
+    opacity:0; visibility:hidden; transform:translateY(26px);
+    transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
+  }
+  /* fichas y números: aparecen con zoom */
+  .agenda > .ag.b-hidden, .qualities > .q.b-hidden, .tiles > .tile.b-hidden, .asc > div.b-hidden{transform:scale(.7) translateY(20px);}
+  /* filas de texto: entran desde la izquierda */
+  .facts > .fact.b-hidden, .vs tbody tr.b-hidden, .summary > .sum.b-hidden, .note.b-hidden{transform:translateX(-40px);}
+  /* el bloque recién aparecido se resalta un instante */
+  @keyframes justIn{0%{box-shadow:0 0 0 0 rgba(232,98,42,.45);} 100%{box-shadow:0 0 0 14px rgba(232,98,42,0);}}
+  .b-just{animation:justIn 1s ease-out;}
+  .agenda > .ag.b-just .n{animation:numPop .6s ease;}
+  @keyframes numPop{0%{transform:scale(1);} 45%{transform:scale(1.35); color:var(--orange);} 100%{transform:scale(1);}}
+  .no-anim, .no-anim *{transition:none !important;}
+
+  @media (prefers-reduced-motion:reduce){
+    .slide{transition:none !important;}
+    .slide.active .slide-inner > *, .b-just, .agenda > .ag.b-just .n{animation:none !important;}
+    .build, .build.b-hidden{transition:none !important; transform:none !important;}
+  }
 </style>
 </head>
 <body>
@@ -378,7 +410,7 @@
         <button class="q" data-q="3"><span class="qn">4</span><span class="qt">Completos</span><span class="qs">Sin huecos sin explicar</span></button>
         <button class="q" data-q="4"><span class="qn">5</span><span class="qt">Organizados</span><span class="qs">En un orden útil</span></button>
       </div>
-      <div class="q-detail" id="q-detail" aria-live="polite"><p class="q-empty">Selecciona una cualidad.</p></div>
+      <div class="q-detail" id="q-detail" data-build aria-live="polite"><p class="q-empty">Selecciona una cualidad.</p></div>
     </div>
   </section>
 
@@ -394,12 +426,14 @@
             <div class="fact"><dt>Para qué</dt><dd style="margin:0;"><p>Es la base de todo lo demás: filtrar, ordenar, quitar duplicados y, más adelante, tablas dinámicas y gráficos.</p></dd></div>
             <div class="fact"><dt>Dónde</dt><dd style="margin:0;"><p><span class="kbd">Ctrl</span> + <span class="kbd">T</span> o <span class="path">Insertar <i>›</i> Tabla</span></p></dd></div>
           </dl>
+          <div data-build>
           <p style="margin-top:22px; font-weight:600; color:var(--navy);">Compara: ¿qué puede hacer cada uno?</p>
           <div class="seg" style="margin-top:10px;" id="seg-tabla">
             <button class="on" data-v="rango">Rango normal</button>
             <button data-v="tabla">Tabla de Excel</button>
           </div>
           <div class="compare" id="cmp-tabla"></div>
+          </div>
         </div>
         <div>
           <div class="tiles-head"><h3>Ventajas</h3><button class="reveal-all">Mostrar todas</button></div>
@@ -429,7 +463,7 @@
             <div class="fact"><dt>La clave</dt><dd style="margin:0;"><p>Tú decides <b>qué columnas</b> deben coincidir para considerar que una fila está repetida.</p></dd></div>
           </dl>
         </div>
-        <div>
+        <div data-build>
           <p style="font-weight:600; color:var(--navy); margin-bottom:10px;">¿Qué cuenta como duplicado?</p>
           <div class="seg" id="seg-dup">
             <button class="on" data-v="fila">Toda la fila</button>
@@ -496,7 +530,7 @@
             <div class="fact"><dt>Ojo</dt><dd style="margin:0;"><p>Excel <b>recuerda las opciones</b> que marcaste la última vez. Revísalas antes de cada reemplazo.</p></dd></div>
           </dl>
         </div>
-        <div>
+        <div data-build>
           <p style="font-weight:600; color:var(--navy);">Prueba las opciones: ¿qué celdas encuentra?</p>
           <div class="opts">
             <div class="search-box">Buscar: <span>casa</span></div>
@@ -519,14 +553,14 @@
       <h2>Escribir una vez, llenar muchas celdas.</h2>
       <div class="two-col">
         <div>
-          <h3 style="font-size:1.5rem; color:var(--navy); margin-bottom:12px;">Relleno múltiple <span class="kbd" style="font-size:.7em;">Ctrl</span> + <span class="kbd" style="font-size:.7em;">Enter</span></h3>
+          <h3 class="build-join" style="font-size:1.5rem; color:var(--navy); margin-bottom:12px;">Relleno múltiple <span class="kbd" style="font-size:.7em;">Ctrl</span> + <span class="kbd" style="font-size:.7em;">Enter</span></h3>
           <dl class="facts" style="margin:0;">
             <div class="fact"><dt>Qué es</dt><dd style="margin:0;"><p>Escribe el mismo contenido en <b>todas las celdas seleccionadas</b> al mismo tiempo, en lugar de solo en la celda activa.</p></dd></div>
             <div class="fact"><dt>Ventaja</dt><dd style="margin:0;"><p>Combinado con un filtro, rellena solo las filas visibles. Ideal para corregir o completar grupos de celdas.</p></dd></div>
           </dl>
         </div>
         <div>
-          <h3 style="font-size:1.5rem; color:var(--navy); margin-bottom:12px;">Ir a Especial</h3>
+          <h3 class="build-join" style="font-size:1.5rem; color:var(--navy); margin-bottom:12px;">Ir a Especial</h3>
           <dl class="facts" style="margin:0;">
             <div class="fact"><dt>Qué es</dt><dd style="margin:0;"><p>Selecciona automáticamente celdas de un tipo: en blanco, con fórmulas, con constantes, visibles…</p></dd></div>
             <div class="fact"><dt>Dónde</dt><dd style="margin:0;"><p><span class="kbd">F5</span> › <b>Especial</b> o <span class="path">Inicio <i>›</i> Buscar y seleccionar <i>›</i> Ir a Especial</span></p></dd></div>
@@ -545,14 +579,14 @@
       <h2>Una celda tiene un valor… y una forma de mostrarlo.</h2>
       <div class="two-col">
         <div>
-          <p class="lede" style="margin-top:0;">El <b>formato</b> cambia cómo se ve el dato, <b>no el dato</b>. Para Excel, una fecha es un número: la cantidad de días desde el 1 de enero de 1900.</p>
+          <p class="lede" data-build style="margin-top:0;">El <b>formato</b> cambia cómo se ve el dato, <b>no el dato</b>. Para Excel, una fecha es un número: la cantidad de días desde el 1 de enero de 1900.</p>
           <dl class="facts" style="margin-top:22px;">
             <div class="fact"><dt>Dónde</dt><dd style="margin:0;"><p><span class="kbd">Ctrl</span> + <span class="kbd">1</span> › <b>Número</b> (Formato de celdas)</p></dd></div>
             <div class="fact"><dt>Por qué importa</dt><dd style="margin:0;"><p>Solo los valores reales se pueden sumar, comparar y ordenar correctamente. Un texto que «parece» fecha o número no lo es.</p></dd></div>
             <div class="fact"><dt>Pista visual</dt><dd style="margin:0;"><p>Números y fechas reales se alinean a la <b>derecha</b>; el texto, a la <b>izquierda</b>.</p></dd></div>
           </dl>
         </div>
-        <div class="format-stage">
+        <div class="format-stage" data-build>
           <div class="seg" id="seg-fmt">
             <button class="on" data-v="fecha">Una fecha</button>
             <button data-v="monto">Un monto</button>
@@ -572,7 +606,7 @@
       <p class="kicker"><span class="num">04</span>Formato · Herramienta 8</p>
       <h2>Formatos para montos: Moneda, Contabilidad y Personalizado.</h2>
       <div class="two-col">
-        <div>
+        <div data-build>
           <div class="seg" id="seg-cur">
             <button class="on" data-v="0">Moneda</button>
             <button data-v="1">Contabilidad</button>
@@ -581,7 +615,7 @@
           <dl class="facts" style="margin-top:16px;" id="cur-facts"></dl>
         </div>
         <div>
-          <div class="grid-demo">
+          <div class="grid-demo" data-build>
             <table>
               <thead><tr><th id="cur-head">Moneda</th></tr></thead>
               <tbody id="cur-body"></tbody>
@@ -606,14 +640,14 @@
             <div class="fact"><dt>Varios niveles</dt><dd style="margin:0;"><p><span class="path">Datos <i>›</i> Ordenar</span> (en la web: <b>Orden personalizado</b>). El primer nivel agrupa; el segundo ordena <b>dentro</b> de cada grupo.</p></dd></div>
             <div class="fact"><dt>Ventaja</dt><dd style="margin:0;"><p>En una tabla, cada fila se mueve completa: los datos de un registro nunca se separan.</p></dd></div>
           </dl>
-          <p style="font-weight:600; color:var(--navy); margin-top:22px;">¿Qué significa «ascendente»?</p>
+          <p class="build-join" style="font-weight:600; color:var(--navy); margin-top:22px;">¿Qué significa «ascendente»?</p>
           <div class="asc">
             <div><b>Texto</b><span>A → Z</span></div>
             <div><b>Números</b><span>Menor → mayor</span></div>
             <div><b>Fechas</b><span>Más antigua → más reciente</span></div>
           </div>
         </div>
-        <div>
+        <div data-build>
           <div class="seg" id="seg-sort">
             <button class="on" data-v="0">Sin ordenar</button>
             <button data-v="1">1 nivel: Grupo</button>
@@ -652,7 +686,7 @@
     <div class="slide-inner">
       <p class="kicker"><span class="num">06</span>Repaso · Reto rápido</p>
       <h2>¿Qué herramienta usarías?</h2>
-      <div class="quiz" id="quiz"></div>
+      <div class="quiz" id="quiz" data-build></div>
     </div>
   </section>
 
@@ -672,7 +706,7 @@
         <div class="sum"><b>Formato de celdas</b><span>Fechas y montos uniformes</span></div>
         <div class="sum"><b>Ordenar</b><span>Organizar por uno o varios niveles</span></div>
       </div>
-      <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; align-items:center;">
+      <div data-build style="display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; align-items:center;">
         <a class="btn orange" href="actividad-depuracion-datos.html">Ir a la actividad &rarr;</a>
         <span style="color:var(--ink-soft); font-size:.92rem;">Jarlin Figueroa, MA · Instituto ICADEP-XXI</span>
       </div>
@@ -909,6 +943,59 @@
   var next = document.getElementById('btn-next');
   var cur = -1;
 
+  /* animaciones por pasos: cada Enter muestra el siguiente bloque, como en PowerPoint */
+  var BUILD_SEL = '[data-build], .agenda > .ag, .qualities > .q, .facts > .fact, .tiles-head, .tiles > .tile, '
+    + '.note, .asc > div, .vs tbody tr, .summary > .sum, .build-join';
+  var steps = [], shown = [];
+  slides.forEach(function(s, i){
+    var list = [], pending = [];
+    $$(BUILD_SEL, s).forEach(function(el){
+      if(el.parentNode.closest('[data-build]')) return; // ya va dentro de otro bloque
+      el.classList.add('build');
+      pending.push(el);
+      // los títulos pequeños aparecen junto con el bloque que les sigue
+      if(el.classList.contains('tiles-head') || el.classList.contains('build-join')) return;
+      list.push(pending); pending = [];
+    });
+    if(pending.length) list.push(pending);
+    steps[i] = list; shown[i] = 0;
+  });
+
+  function setShown(i, n, animate){
+    var slide = slides[i];
+    if(!animate){ slide.classList.add('no-anim'); }
+    steps[i].forEach(function(group, k){
+      group.forEach(function(el){
+        el.classList.toggle('b-hidden', k >= n);
+        el.classList.remove('b-just');
+      });
+    });
+    if(animate && n > shown[i]){
+      steps[i][n - 1].forEach(function(el){ void el.offsetWidth; el.classList.add('b-just'); });
+      var last = steps[i][n - 1][steps[i][n - 1].length - 1];
+      if(last.scrollIntoView) last.scrollIntoView({block:'nearest', behavior:'smooth'});
+    }
+    if(!animate){ void slide.offsetWidth; slide.classList.remove('no-anim'); }
+    shown[i] = n;
+    if(i === cur) updateNav();
+  }
+
+  function forward(){
+    if(cur >= 0 && shown[cur] < steps[cur].length) setShown(cur, shown[cur] + 1, true);
+    else go(cur + 1);
+  }
+  function backward(){
+    if(cur >= 0 && shown[cur] > 0) setShown(cur, shown[cur] - 1, true);
+    else go(cur - 1, true);
+  }
+
+  function updateNav(){
+    var left = steps[cur].length - shown[cur];
+    counter.textContent = (cur + 1) + ' / ' + slides.length + (left ? ' · Enter para continuar (' + left + ')' : '');
+    prev.disabled = cur === 0 && shown[cur] === 0;
+    next.disabled = cur === slides.length - 1 && left === 0;
+  }
+
   slides.forEach(function(s, i){
     var b = document.createElement('button');
     b.setAttribute('aria-label', 'Ir a la diapositiva ' + (i + 1));
@@ -916,9 +1003,11 @@
     bars.appendChild(b);
   });
 
-  function go(i){
+  // revealAll: al regresar a una diapositiva se ve completa, como en PowerPoint
+  function go(i, revealAll){
     i = Math.max(0, Math.min(slides.length - 1, i));
     if(i === cur) return;
+    setShown(i, revealAll ? steps[i].length : 0, false);
     slides.forEach(function(s, k){
       s.classList.toggle('active', k === i);
       s.classList.toggle('left', k < i);
@@ -928,20 +1017,25 @@
     });
     slides[i].scrollTop = 0;
     cur = i;
-    counter.textContent = (i + 1) + ' / ' + slides.length;
     tag.textContent = slides[i].getAttribute('data-tag') || '';
-    prev.disabled = i === 0;
-    next.disabled = i === slides.length - 1;
+    updateNav();
     if(history.replaceState) history.replaceState(null, '', '#' + (i + 1));
   }
 
-  prev.addEventListener('click', function(){ go(cur - 1); });
-  next.addEventListener('click', function(){ go(cur + 1); });
+  prev.addEventListener('click', backward);
+  next.addEventListener('click', forward);
+
+  // tras un clic con el ratón en la diapositiva, soltar el foco para que Enter siga avanzando
+  document.getElementById('stage').addEventListener('click', function(e){
+    if(e.detail && !e.target.closest('#quiz') && document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  });
 
   document.addEventListener('keydown', function(e){
     if(e.altKey || e.ctrlKey || e.metaKey) return;
-    if(e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); go(cur + 1); }
-    else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); go(cur - 1); }
+    var onControl = e.target.closest && e.target.closest('button, a, input, select, textarea');
+    if((e.key === 'Enter' || e.key === ' ') && onControl && onControl !== next && onControl !== prev) return;
+    if(e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === 'Enter' || e.key === ' '){ e.preventDefault(); forward(); }
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'Backspace'){ e.preventDefault(); backward(); }
     else if(e.key === 'Home'){ go(0); }
     else if(e.key === 'End'){ go(slides.length - 1); }
     else if(e.key === 'f' || e.key === 'F'){ toggleFull(); }
@@ -953,7 +1047,7 @@
   stage.addEventListener('touchend', function(e){
     if(sx === null) return;
     var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
-    if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.6) go(cur + (dx < 0 ? 1 : -1));
+    if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.6) (dx < 0 ? forward : backward)();
     sx = sy = null;
   });
 
