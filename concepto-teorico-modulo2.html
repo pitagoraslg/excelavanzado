@@ -806,7 +806,7 @@
             <thead><tr><th style="width:auto;">Tipo</th><th>Fórmula</th><th>Resultado</th></tr></thead>
             <tbody id="crit-forms"></tbody>
           </table>
-          <p class="note"><strong>Los operadores van entre comillas</strong> dentro del criterio: <span class="val">"&gt;=50000"</span>. El asterisco <span class="val">*</span> significa «cualquier texto».</p>
+          <p class="note"><strong>Los operadores van entre comillas</strong> dentro del criterio: <span class="val">"&gt;=50000"</span>. El asterisco <span class="val">*</span> significa «cualquier texto». Con <b>«distinto de»</b> usa el rango exacto (<span class="val">E2:E51</span>): con la columna completa también contaría las celdas vacías.</p>
         </div>
       </div>
     </div>
@@ -1318,7 +1318,7 @@
   var FORMS = [
     ['Texto exacto', '=CONTAR.SI.CONJUNTO(D:D;"ARS Humano")', [[3, function(v){ return v === 'ARS Humano'; }]]],
     ['Comparación', '=CONTAR.SI.CONJUNTO(I:I;">=50000")', [[8, function(v){ return v >= 50000; }]]],
-    ['Distinto de', '=CONTAR.SI.CONJUNTO(E:E;"<>No Registrado")', [[4, function(v){ return v !== 'No Registrado'; }]]],
+    ['Distinto de', '=CONTAR.SI.CONJUNTO(E2:E51;"<>No Registrado")', [[4, function(v){ return v !== 'No Registrado'; }]]],
     ['Comodín *', '=CONTAR.SI.CONJUNTO(G:G;"Clínica*")', [[6, function(v){ return v.indexOf('Clínica') === 0; }]]],
     ['Celda', '=CONTAR.SI.CONJUNTO(D:D;K2)', null]
   ];
