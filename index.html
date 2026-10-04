@@ -281,6 +281,7 @@
       status: 'Disponible',
       items: [
         { label:'Aspectos teóricos', href:'concepto-teorico-modulo2.html', icon:'concepts' },
+        { label:'Documento de estudio (PDF)', href:'Conceptos-Funciones-Avanzadas-Modulo2.pdf', icon:'pdf' },
         { label:'Base de práctica (Excel)', href:'Modulo2-Base-Reclamaciones.xlsx', icon:'download', download:true }
       ]
     },
@@ -294,6 +295,7 @@
   var presentationIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.4"></rect><path d="M8 20h8M12 16v4"></path></svg>';
   var conceptsIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"></path><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"></path></svg>';
   var bookIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"></path><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5M8 7h8M8 10.5h6"></path></svg>';
+  var pdfIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8z"></path><path d="M14 3v5h5M8.5 13h7M8.5 16.5h5"></path></svg>';
   var downloadIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5"></path><path d="M5 19h14"></path></svg>';
   var activityIcon ='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="1.4"></rect><path d="M9 3.5h6v2.5H9zM8.5 12l2.2 2.2 4.3-4.4M8.5 17h7"></path></svg>';
 
@@ -310,7 +312,7 @@
         + '<div class="module-panel"><div class="module-panel-inner">';
       if(m.items.length){
         m.items.forEach(function(it){
-          html += '<a class="item-btn" href="'+it.href+'"'+(it.download ? ' download' : ' target="_blank" rel="noopener"')+'>'+(it.icon === 'download' ? downloadIcon : it.icon === 'activity' ? activityIcon : it.icon === 'concepts' ? conceptsIcon : it.icon === 'book' ? bookIcon : presentationIcon)+'<span>'+it.label+'</span></a>';
+          html += '<a class="item-btn" href="'+it.href+'"'+(it.download ? ' download' : ' target="_blank" rel="noopener"')+'>'+(it.icon === 'pdf' ? pdfIcon : it.icon === 'download' ? downloadIcon : it.icon === 'activity' ? activityIcon : it.icon === 'concepts' ? conceptsIcon : it.icon === 'book' ? bookIcon : presentationIcon)+'<span>'+it.label+'</span></a>';
         });
       } else {
         html += '<p class="module-empty">Contenido próximamente.</p>';
