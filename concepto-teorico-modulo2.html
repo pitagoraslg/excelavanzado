@@ -436,7 +436,7 @@
     .ag:nth-child(even){padding-left:16px; border-left:1px solid var(--line);}
   }
   @media (max-width:900px){
-    .two-col, .two-col.wide-r{grid-template-columns:minmax(0,1fr);}
+    .two-col, .two-col.wide-r, .two-col.prac{grid-template-columns:minmax(0,1fr);}
     .summary{grid-template-columns:1fr;}
     .slide-inner{justify-content:flex-start;}
     .fpanel{position:static;}
@@ -493,6 +493,121 @@
     .build, .build.b-hidden{transition:none !important; transform:none !important;}
     .fill, .mbar i{transition:none !important;}
   }
+
+  /* ---------- PEDAGOGÍA: cuatro momentos ---------- */
+  .modes{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:26px;}
+  .mode-card{background:#fff; border:1px solid var(--line); border-top:4px solid var(--indigo); border-radius:4px; padding:18px;}
+  .mode-card.m2{border-top-color:var(--sky-ink);} .mode-card.m3{border-top-color:var(--amber);} .mode-card.m4{border-top-color:var(--mint);}
+  .mode-card .ic{font-size:1.7rem; line-height:1;}
+  .mode-card h3{font-family:'IBM Plex Sans',sans-serif; font-size:1.02rem; font-weight:600; color:var(--indigo); margin:10px 0 6px;}
+  .mode-card p{font-size:.92rem; color:var(--ink-soft);}
+  .badge{display:inline-flex; align-items:center; gap:6px; font-size:.72rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; padding:3px 10px; border-radius:12px; white-space:nowrap;}
+  .b-obs{background:var(--indigo-soft); color:var(--indigo);}
+  .b-con{background:var(--sky-soft); color:var(--sky-ink);}
+  .b-tu{background:var(--amber-soft); color:var(--amber-ink);}
+  .b-reto{background:var(--rose-soft); color:var(--rose);}
+  .b-ok{background:var(--mint-soft); color:var(--mint-ink);}
+
+  /* pasos numerados */
+  .steps{list-style:none; counter-reset:st; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
+  .steps > li{counter-increment:st; display:grid; grid-template-columns:30px 1fr; gap:12px; align-items:start; font-size:clamp(.95rem,1.3vw,1.03rem);}
+  .steps > li::before{content:counter(st); width:28px; height:28px; border-radius:50%; background:var(--indigo); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:.85rem;}
+  .steps.sm > li{font-size:.92rem; grid-template-columns:24px 1fr; gap:9px;}
+  .steps.sm > li::before{width:22px; height:22px; font-size:.75rem;}
+
+  /* tareas de práctica */
+  .prac-head{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:4px;}
+  .tasks{display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:12px; margin-top:16px;}
+  .task{background:#fff; border:1px solid var(--line); border-radius:4px; padding:16px; display:flex; flex-direction:column; gap:10px; min-width:0;}
+  .task.obs{border-left:4px solid var(--indigo);} .task.con{border-left:4px solid var(--sky-ink);} .task.tu{border-left:4px solid var(--amber);} .task.reto{border-left:4px solid var(--rose);}
+  .tk-top{display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;}
+  .cellchip{font-family:'IBM Plex Mono',monospace; font-weight:600; background:var(--grid-head); border:1px solid var(--grid); padding:1px 8px; color:#333; font-size:.82rem; white-space:nowrap;}
+  .tk-q{font-size:.97rem; font-weight:500; color:var(--ink);}
+  .task ol.steps{gap:6px;}
+  .tk-btns{display:flex; flex-wrap:wrap; gap:6px; margin-top:auto; padding-top:4px;}
+  .tk-btns button{border:1.5px solid var(--line); background:var(--pearl); border-radius:3px; padding:6px 10px; font-size:.8rem; font-weight:600; color:var(--indigo); cursor:pointer;}
+  .tk-btns button:hover{border-color:var(--indigo);}
+  .tk-btns button[aria-expanded="true"]{background:var(--indigo); border-color:var(--indigo); color:#fff;}
+  .tk-out{font-size:.9rem; padding:9px 11px; border-radius:3px; line-height:1.5;}
+  .tk-out[hidden]{display:none;}
+  .tk-out.f{background:var(--pearl); font-family:'IBM Plex Mono',monospace; font-size:.84rem; color:var(--indigo-deep); overflow-wrap:anywhere;}
+  .tk-out.r{background:var(--mint-soft); color:var(--mint-ink);}
+  .tk-out.r b{color:var(--ink);}
+  .tk-out.h{background:var(--sky-soft); color:var(--sky-ink);}
+
+  /* hoja simulada (zona de práctica) */
+  .sheet{background:#fff; border:1px solid #C8C8C8; border-radius:4px; overflow:auto; font-family:'Segoe UI',Calibri,Arial,sans-serif; font-size:.84rem; box-shadow:0 10px 30px rgba(43,42,107,.08);}
+  .sheet table{border-collapse:collapse; width:100%;}
+  .sheet th, .sheet td{border:1px solid var(--grid); padding:4px 8px; white-space:nowrap; text-align:left; height:26px;}
+  .sheet th{background:var(--grid-head); color:#666; font-weight:500; text-align:center; font-size:.76rem;}
+  .sheet td.rn{background:var(--grid-head); color:#777; text-align:center; width:36px; font-size:.76rem;}
+  .sheet td.title{font-weight:700; color:var(--indigo);}
+  .sheet td.lab{font-weight:600;}
+  .sheet td.inp{background:var(--mint-soft); color:var(--sky-ink); font-weight:600;}
+  .sheet td.ans{background:#FFF2CC; min-width:90px;}
+  .sheet td.ans.show{color:var(--amber-ink); font-weight:600;}
+  .sheet td.hd{background:var(--indigo-soft); font-weight:600;}
+  .sheet td.r{text-align:right;}
+  .sheet td.dim{color:#999;}
+  .sheet-bar{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px;}
+  .legend-sm{display:flex; gap:12px; flex-wrap:wrap; font-size:.8rem; color:var(--ink-soft);}
+  .legend-sm span::before{content:''; display:inline-block; width:12px; height:12px; border:1px solid var(--grid); margin-right:5px; vertical-align:-2px;}
+  .legend-sm .lg-in::before{background:var(--mint-soft);} .legend-sm .lg-ans::before{background:#FFF2CC;} .legend-sm .lg-lab::before{background:#fff;}
+
+  /* mapa del archivo */
+  .fmap{display:grid; grid-template-columns:44px minmax(0,2.2fr) minmax(0,1fr); grid-template-rows:auto auto 30px auto; gap:4px; margin-top:6px; font-size:.88rem;}
+  .fmap .ax{background:var(--grid-head); color:#777; font-size:.74rem; display:flex; align-items:center; justify-content:center; text-align:center; border-radius:3px; padding:4px;}
+  .fmap .zone{border-radius:4px; padding:12px 14px; display:flex; flex-direction:column; gap:3px; justify-content:center;}
+  .fmap .zone b{font-size:.95rem;} .fmap .zone span{font-size:.82rem;}
+  .z-data{background:var(--indigo-soft); color:var(--indigo); min-height:120px;}
+  .z-new{background:var(--amber-soft); color:var(--amber-ink);}
+  .z-gap{background:repeating-linear-gradient(45deg,#fff 0 6px,var(--pearl-deep) 6px 12px); color:var(--ink-soft); font-size:.78rem !important; grid-column:2 / 4; display:flex; align-items:center; padding:0 12px !important;}
+  .z-zone{background:var(--mint-soft); color:var(--mint-ink); grid-column:2 / 4; min-height:80px;}
+  .tabs{display:flex; gap:4px; margin-top:6px; padding-left:48px;}
+  .tabs span{font-size:.8rem; padding:4px 12px; border:1px solid var(--grid); border-top:none; background:#fff; border-radius:0 0 4px 4px;}
+  .tabs span.on{font-weight:600; color:var(--xl-green); border-bottom:2px solid var(--xl-green);}
+  .tabs span.new{background:var(--sky-soft); color:var(--sky-ink); font-weight:600;}
+
+  /* referencias absolutas */
+  .dl-row{display:grid; grid-template-columns:56px minmax(0,1fr) 70px 70px; gap:10px; align-items:center; padding:8px 10px; border-bottom:1px solid var(--line); font-size:.9rem;}
+  .dl-row.h{font-size:.72rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--mint-ink); border-bottom:2px solid var(--indigo);}
+  .dl-row code{font-size:.82rem; color:var(--indigo-deep); overflow-wrap:anywhere;}
+  .dl-row code mark{background:var(--rose-soft); color:var(--rose); border-radius:2px; padding:0 2px;}
+  .dl-row code mark.ok{background:var(--mint-soft); color:var(--mint-ink);}
+  .dl-row .v{font-family:'IBM Plex Mono',monospace; text-align:right; font-weight:600;}
+  .dl-row .v.bad{color:var(--rose);} .dl-row .v.good{color:var(--mint-ink);}
+  .dl-box{background:#fff; border:1px solid var(--line); border-radius:4px; margin-top:14px;}
+
+  /* lista de comprobación */
+  .checklist{list-style:none; margin:20px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px;}
+  .checklist li{display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--line); font-size:.95rem;}
+  .checklist input{width:20px; height:20px; accent-color:var(--mint); flex-shrink:0; margin-top:2px; cursor:pointer;}
+  .checklist label{cursor:pointer;}
+  .checklist .exp{display:block; font-family:'IBM Plex Mono',monospace; font-size:.82rem; color:var(--mint-ink);}
+  .check-count{font-family:'Newsreader',serif; font-size:1.3rem; color:var(--indigo); margin-top:14px;}
+
+  @media (max-width:900px){
+    .modes{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .checklist{grid-template-columns:minmax(0,1fr);}
+  }
+  @media (max-width:640px){
+    .modes{grid-template-columns:minmax(0,1fr);}
+    .fmap{grid-template-columns:34px minmax(0,1fr);}
+    .z-new{grid-column:2;}
+    .fmap .ax.cols-new{display:none;}
+    .z-gap, .z-zone{grid-column:2;}
+    .tabs{padding-left:38px;}
+    .dl-row{grid-template-columns:44px minmax(0,1fr) 54px;}
+    .dl-row .v.exp{display:none;}
+  }
+
+  .sheet{max-height:min(54vh,460px);}
+  @media (min-width:901px){ .two-col.prac{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);} }
+  .two-col.prac .tasks{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));}
+  .sheet{font-size:.8rem;} .sheet th, .sheet td{padding:3px 7px;}
+  .kbd{display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:.82em; font-weight:500; background:#fff; border:1px solid #C9C9D6; border-bottom-width:3px; border-radius:4px; padding:0 7px; line-height:1.6; color:var(--indigo); white-space:nowrap;}
+  .path{display:inline-flex; flex-wrap:wrap; align-items:center; gap:4px; background:var(--mint-soft); color:var(--indigo); padding:1px 9px; border-radius:3px; font-size:.9em; font-weight:500;}
+  .path i{font-style:normal; color:var(--mint-ink); font-weight:600;}
 </style>
 </head>
 <body>
@@ -519,7 +634,7 @@
       <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
       <p class="eyebrow">Excel Avanzado · Módulo 2 <b>Concepto Teórico</b></p>
       <h1>Funciones avanzadas de Excel.</h1>
-      <p class="lede">Cómo hacer que Excel busque, decida, clasifique, cuente y sume por ti, usando la misma base de reclamaciones que depuraste en el Módulo 1.</p>
+      <p class="lede">Aprenderás a hacer que Excel busque, decida, clasifique, cuente y sume por ti. Cada función la verás, la practicarás conmigo y después la harás tú solo en tu archivo.</p>
       <div class="presenter">
         <div class="mark">JF</div>
         <div>
@@ -536,88 +651,136 @@
     <div class="slide-inner">
       <p class="kicker">Lo que veremos</p>
       <h2>Ocho bloques; cada uno prepara el siguiente.</h2>
-      <p class="lede">Los cinco primeros son el núcleo del módulo. Texto y fechas son aplicaciones breves, y el proyecto final reúne todo en una hoja de consulta.</p>
+      <p class="lede">En cada bloque primero entiendes la función y después la construyes en tu propio archivo, en celdas exactas. Al final todo se une en una hoja de consulta.</p>
       <div class="agenda">
-        <div class="ag"><div class="n">01 <span class="core">Núcleo</span></div><h3>BUSCARX</h3><p>Buscar y recuperar información.</p></div>
-        <div class="ag"><div class="n">02 <span class="core">Núcleo</span></div><h3>SI</h3><p>Tomar decisiones según una condición.</p></div>
-        <div class="ag"><div class="n">03 <span class="core">Núcleo</span></div><h3>SI.CONJUNTO</h3><p>Clasificar con varias condiciones.</p></div>
-        <div class="ag"><div class="n">04 <span class="core">Núcleo</span></div><h3>CONTAR.SI.CONJUNTO</h3><p>Contar registros que cumplen criterios.</p></div>
-        <div class="ag"><div class="n">05 <span class="core">Núcleo</span></div><h3>SUMAR.SI.CONJUNTO</h3><p>Sumar valores según criterios.</p></div>
-        <div class="ag"><div class="n">06</div><h3>Texto</h3><p>Extraer y transformar información.</p></div>
+        <div class="ag"><div class="n">01</div><h3>BUSCARX</h3><p>Buscar y recuperar información.</p></div>
+        <div class="ag"><div class="n">02</div><h3>SI</h3><p>Tomar decisiones según una condición.</p></div>
+        <div class="ag"><div class="n">03</div><h3>SI.CONJUNTO</h3><p>Clasificar con varias condiciones.</p></div>
+        <div class="ag"><div class="n">04</div><h3>CONTAR.SI.CONJUNTO</h3><p>Contar registros que cumplen criterios.</p></div>
+        <div class="ag"><div class="n">05</div><h3>SUMAR.SI.CONJUNTO</h3><p>Sumar valores según criterios.</p></div>
+        <div class="ag"><div class="n">06</div><h3>Texto</h3><p>Extraer partes de un texto.</p></div>
         <div class="ag"><div class="n">07</div><h3>Fechas</h3><p>Analizar fechas y períodos.</p></div>
         <div class="ag"><div class="n">08</div><h3>Proyecto</h3><p>Construir una hoja de consulta.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- 3 · PUNTO DE PARTIDA -->
-  <section class="slide" data-tag="Punto de partida">
+  <!-- 3 · CÓMO APRENDEREMOS -->
+  <section class="slide" data-tag="Cómo aprenderemos">
     <div class="slide-inner">
-      <p class="kicker">Punto de partida</p>
-      <h2>La base que depuraste ahora responde preguntas.</h2>
+      <p class="kicker">Cómo vamos a aprender</p>
+      <h2>Cuatro momentos en cada función.</h2>
+      <p class="lede">Mirar no basta: una función se aprende escribiéndola. Por eso cada bloque avanza de lo que hago yo a lo que haces tú solo.</p>
+      <div class="modes">
+        <div class="mode-card"><div class="ic">👀</div><h3><span class="badge b-obs">Observa</span></h3><p>Te muestro un ejemplo resuelto, paso a paso, en una celda real.</p></div>
+        <div class="mode-card m2"><div class="ic">🤝</div><h3><span class="badge b-con">Hazlo conmigo</span></h3><p>Escribes una fórmula parecida. Tienes una pista y parte de la fórmula.</p></div>
+        <div class="mode-card m3"><div class="ic">✍️</div><h3><span class="badge b-tu">Hazlo tú</span></h3><p>Resuelves solo. La solución está oculta hasta que la necesites.</p></div>
+        <div class="mode-card m4"><div class="ic">✅</div><h3><span class="badge b-ok">Comprueba</span></h3><p>Cada ejercicio dice qué resultado debe salir. Si no coincide, revisa antes de seguir.</p></div>
+      </div>
+      <p class="note good"><strong>Tu evidencia de aprendizaje:</strong> al terminar entregarás tu archivo con todas las fórmulas funcionando. No se evalúa la presentación: se evalúa lo que construyes.</p>
+    </div>
+  </section>
+
+  <!-- 4 · PREPARA TU ARCHIVO -->
+  <section class="slide" data-tag="Tu archivo">
+    <div class="slide-inner">
+      <p class="kicker">Antes de empezar</p>
+      <h2>Prepara tu archivo de trabajo.</h2>
       <div class="two-col">
         <div>
-          <dl class="facts">
-            <div class="fact"><dt>La base</dt><dd><p>Hoja <span class="val">Reclamaciones</span>: las <b>50 reclamaciones</b> que corregiste en la demostración guiada del Módulo 1, en las columnas <b>A a I</b>.</p></dd></div>
-            <div class="fact"><dt>Por qué funciona</dt><dd><p>Las funciones de este módulo comparan textos y números <b>exactos</b>. Si «SeNaSa» apareciera también como «senasa» o «Senasa», los conteos y las sumas saldrían incompletos.</p></dd></div>
-            <div class="fact"><dt>La regla</dt><dd><p>Primero se limpia, después se consulta. Lo que hiciste en el Módulo 1 es la base de todo lo que haremos aquí.</p></dd></div>
-          </dl>
-          <p class="note good"><strong>Para las fórmulas:</strong> usaremos siempre estas letras de columna. Por ejemplo, <span class="val">D:D</span> es la ARS e <span class="val">I:I</span> el monto.</p>
-        </div>
-        <div class="grid-demo" data-build>
-          <div class="grid-scroll short">
-            <table>
-              <thead><tr><th class="rn"></th><th>Columna</th><th>Ejemplo (fila 3)</th></tr></thead>
-              <tbody id="colmap"></tbody>
-            </table>
+          <ol class="steps">
+            <li><span>Descarga la base: es la misma que corregiste en la demostración guiada del Módulo 1, ya depurada.</span></li>
+            <li><span>Ábrela en Excel. Si aparece una barra amarilla, pulsa <b>Habilitar edición</b>.</span></li>
+            <li><span>Guárdala con tu nombre: <span class="path">Archivo <i>›</i> Guardar como</span> → <span class="val">Apellido_Nombre_Modulo2.xlsx</span></span></li>
+            <li><span>Comprueba que los datos están en <b>A1:I51</b>: la fila 1 tiene los encabezados y las filas 2 a 51, las 50 reclamaciones.</span></li>
+          </ol>
+          <div data-build style="margin-top:22px; display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+            <a class="btn amber" href="Modulo2-Base-Reclamaciones.xlsx" download>⬇ Descargar la base (Excel)</a>
+            <span style="color:var(--ink-soft); font-size:.9rem;">Modulo2-Base-Reclamaciones.xlsx</span>
           </div>
         </div>
+        <div data-build>
+          <p class="label">Así se ve al abrirlo</p>
+          <div class="grid-demo">
+            <div class="grid-scroll short">
+              <table>
+                <thead><tr><th class="rn"></th><th>A</th><th>B</th><th>D</th><th>…</th><th>I</th></tr></thead>
+                <tbody id="peek"></tbody>
+              </table>
+            </div>
+          </div>
+          <p class="demo-cap">Si tu archivo no empieza así, avísale al facilitador antes de continuar.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- 4 · CÓMO PENSAR -->
+  <!-- 5 · MAPA DEL ARCHIVO -->
+  <section class="slide" data-tag="Tu archivo">
+    <div class="slide-inner">
+      <p class="kicker">El mapa de tu archivo</p>
+      <h2>Cada cosa tiene su lugar: nada se adivina.</h2>
+      <div class="two-col wide-r">
+        <div>
+          <dl class="facts">
+            <div class="fact"><dt>Regla 1</dt><dd><p><b>Rangos exactos.</b> Escribiremos <span class="val">A2:A51</span>, no <span class="val">A:A</span>. Así sabes exactamente qué filas mira la fórmula, y lo que escribas debajo no se mezcla con los datos.</p></dd></div>
+            <div class="fact"><dt>Regla 2</dt><dd><p><b>Punto y coma.</b> Los argumentos se separan con <span class="val">;</span>. Si tu Excel marca error, prueba con coma <span class="val">,</span>.</p></dd></div>
+            <div class="fact"><dt>Regla 3</dt><dd><p><b>Si seleccionas con el mouse</b>, Excel puede escribir <span class="val">tblReclamaciones[ARS]</span> o <span class="val">[@[Monto Reclamado]]</span> en lugar de <span class="val">D2:D51</span> o <span class="val">I2</span>. Es lo mismo: es el nombre de la tabla.</p></dd></div>
+          </dl>
+        </div>
+        <div data-build>
+          <div class="fmap">
+            <div class="ax"></div><div class="ax">Columnas A a I</div><div class="ax cols-new">Columnas J a P</div>
+            <div class="ax">Filas 1–51</div>
+            <div class="zone z-data"><b>Los datos</b><span>La tabla con las 50 reclamaciones. No se modifican.</span></div>
+            <div class="zone z-new"><b>Tus columnas nuevas</b><span>SI, SI.CONJUNTO, texto y fechas: una respuesta por cada reclamación.</span></div>
+            <div class="ax">52–53</div>
+            <div class="zone z-gap">Dos filas vacías que separan la tabla de tu zona</div>
+            <div class="ax">54 →</div>
+            <div class="zone z-zone"><b>Zona de práctica</b><span>BUSCARX, CONTAR y SUMAR: una respuesta por cada pregunta.</span></div>
+          </div>
+          <div class="tabs"><span class="on">Reclamaciones</span><span class="new">+ CONSULTA (bloque 8)</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · TRES PREGUNTAS -->
   <section class="slide" data-tag="Método">
     <div class="slide-inner">
-      <p class="kicker">Cómo pensar una fórmula</p>
-      <h2>Antes de escribir, pregúntate qué necesitas.</h2>
-      <p class="lede">Lo importante no es memorizar la sintaxis, sino reconocer qué herramienta resuelve cada pregunta. Cada bloque sigue estos tres pasos.</p>
+      <p class="kicker">Antes de cada fórmula</p>
+      <h2>Tres preguntas antes de escribir.</h2>
+      <p class="lede">Quien domina Excel no memoriza fórmulas: reconoce qué necesita y elige la herramienta. Hazte estas tres preguntas siempre.</p>
       <div class="flow">
-        <div class="fstep"><div class="fn-n">①</div><h3>La situación</h3><p>¿Qué necesita saber la unidad?</p><div class="ex">«Auditoría pide el prestador de la reclamación <b>REC-1077</b>.»</div></div>
-        <div class="fstep"><div class="fn-n">②</div><h3>¿Qué necesito obtener?</h3><p>¿Un dato, una decisión, una categoría, un conteo o un total?</p><div class="ex">Un <b>dato de otra columna</b> a partir de un código.</div></div>
-        <div class="fstep"><div class="fn-n">③</div><h3>¿Qué función lo resuelve?</h3><p>Elegimos la herramienta y después escribimos la fórmula.</p><div class="ex"><b>BUSCARX</b> → Centro Médico Las Américas</div></div>
+        <div class="fstep"><div class="fn-n">①</div><h3>¿Cuál es la situación?</h3><p>¿Qué necesita saber la unidad?</p><div class="ex">«Auditoría pide el prestador de la reclamación <b>REC-1077</b>.»</div></div>
+        <div class="fstep"><div class="fn-n">②</div><h3>¿Qué necesito obtener?</h3><p>¿Un dato, una decisión, una categoría, un conteo o un total?</p><div class="ex">Un <b>dato de otra columna</b>, a partir de un código.</div></div>
+        <div class="fstep"><div class="fn-n">③</div><h3>¿Qué función lo resuelve?</h3><p>Primero elijo la herramienta; después escribo la fórmula.</p><div class="ex"><b>BUSCARX</b> → Centro Médico Las Américas</div></div>
       </div>
-      <p class="note"><strong>Separador de argumentos:</strong> en las diapositivas usamos punto y coma <span class="val">;</span>. Si tu Excel marca error al escribir la fórmula, es posible que use coma <span class="val">,</span>: depende de la configuración regional del equipo.</p>
     </div>
   </section>
 
-  <!-- 5 · BUSCARX CONCEPTO -->
+  <!-- 7 · BUSCARX CONCEPTO -->
   <section class="slide" data-tag="BUSCARX">
     <div class="slide-inner">
       <p class="kicker"><span class="num">01</span>BUSCARX · Buscar y recuperar</p>
       <h2>Busca esto, aquí… y devuélveme esto.</h2>
-      <div class="situ"><small>Situación</small><p>La unidad de auditoría recibe un número de reclamación y necesita saber a qué afiliado, ARS y provincia corresponde, sin recorrer las 50 filas.</p></div>
+      <div class="situ"><small>Situación</small><p>Auditoría recibe un número de reclamación y necesita saber a qué afiliado, ARS y provincia corresponde, sin recorrer las 50 filas.</p></div>
       <div class="two-col" style="margin-top:22px;">
         <div>
           <div class="formula"><span class="fn">=BUSCARX(</span><span class="arg p1">valor_buscado</span><span class="sep">;</span><span class="arg p2">matriz_buscar_en</span><span class="sep">;</span><span class="arg p3">matriz_devolver</span><span class="sep">;</span><span class="arg p4 opt">[si_no_se_encuentra]</span><span class="fn">)</span></div>
           <dl class="facts" style="margin-top:14px;">
-            <div class="fact"><dt class="arg p1">valor_buscado</dt><dd><p><b>Busca esto:</b> el ID que escribes, por ejemplo en la celda <span class="val">K2</span>.</p></dd></div>
-            <div class="fact"><dt class="arg p2">matriz_buscar_en</dt><dd><p><b>Aquí:</b> la columna donde está ese ID, <span class="val">A:A</span>.</p></dd></div>
-            <div class="fact"><dt class="arg p3">matriz_devolver</dt><dd><p><b>Devuélveme esto:</b> la columna con el dato que quieres; <span class="val">E:E</span> es la provincia.</p></dd></div>
-            <div class="fact"><dt class="arg p4">si_no_se_encuentra</dt><dd><p><b>Opcional:</b> el texto que se muestra si el ID no existe. Sin él, Excel muestra <span class="val">#N/D</span>.</p></dd></div>
+            <div class="fact"><dt class="arg p1">valor_buscado</dt><dd><p><b>Busca esto:</b> la celda donde escribiste el ID. En tu práctica será <span class="val">C57</span>.</p></dd></div>
+            <div class="fact"><dt class="arg p2">matriz_buscar_en</dt><dd><p><b>Aquí:</b> la columna de los ID, <span class="val">A2:A51</span>.</p></dd></div>
+            <div class="fact"><dt class="arg p3">matriz_devolver</dt><dd><p><b>Devuélveme esto:</b> la columna con el dato que quieres, del mismo tamaño. El afiliado está en <span class="val">B2:B51</span>.</p></dd></div>
+            <div class="fact"><dt class="arg p4">si_no_se_encuentra</dt><dd><p><b>Opcional:</b> el texto que aparece si el ID no existe. Sin él, Excel muestra <span class="val">#N/D</span>.</p></dd></div>
           </dl>
         </div>
         <div>
           <div data-build>
-            <p class="label">Ejemplo: si K2 contiene REC-1077…</p>
-            <div class="formula sm"><span class="fn">=BUSCARX(</span><span class="arg p1">K2</span><span class="sep">;</span><span class="arg p2">A:A</span><span class="sep">;</span><span class="arg p3">E:E</span><span class="fn">)</span> <span style="color:var(--ink-soft);">→</span> <b style="color:var(--mint-ink);">Puerto Plata</b></div>
-          </div>
-          <div class="tiles-head" style="margin-top:22px;"><h3>Ventajas</h3><button class="reveal-all">Mostrar todas</button></div>
-          <div class="tiles">
-            <button class="tile"><span class="th">Busca en cualquier dirección</span><span class="tb">La columna que devuelve puede estar a la izquierda o a la derecha de la que busca.</span></button>
-            <button class="tile"><span class="th">Coincidencia exacta</span><span class="tb">Por defecto solo acepta el valor exacto. No da resultados «parecidos» por error.</span></button>
-            <button class="tile"><span class="th">Mensaje propio</span><span class="tb">El cuarto argumento reemplaza el #N/D por un texto claro, como «No encontrado».</span></button>
-            <button class="tile"><span class="th">Varias columnas a la vez</span><span class="tb">Con <span class="val">B:E</span> como matriz_devolver, trae afiliado, cédula, ARS y provincia de una vez.</span></button>
+            <p class="label">Piénsalo como una lista de asistencia</p>
+            <p style="color:var(--ink-soft);">Buscas tu nombre en la primera columna y, en esa <b>misma fila</b>, lees el dato que necesitas. BUSCARX hace exactamente eso.</p>
+            <div class="formula sm" style="margin-top:12px;"><span class="fn">=BUSCARX(</span><span class="arg p1">C57</span><span class="sep">;</span><span class="arg p2">A2:A51</span><span class="sep">;</span><span class="arg p3">B2:B51</span><span class="fn">)</span> <span style="color:var(--ink-soft);">→</span> <b style="color:var(--mint-ink);">Rafael Reyes Gómez</b></div>
+            <p class="hint" style="margin-top:8px;">C57 contiene REC-1077. Excel lo encuentra en la fila 3 y devuelve B3.</p>
           </div>
           <p class="note"><strong>Versión:</strong> BUSCARX está en Microsoft 365, Excel 2021 y Excel para la web. En Excel 2019 o anteriores se usa <span class="val">BUSCARV</span>.</p>
         </div>
@@ -625,28 +788,28 @@
     </div>
   </section>
 
-  <!-- 6 · BUSCARX SIMULADOR -->
+  <!-- 8 · BUSCARX SIMULADOR -->
   <section class="slide" data-tag="BUSCARX">
     <div class="slide-inner">
-      <p class="kicker"><span class="num">01</span>BUSCARX · Con la base real</p>
-      <h2>Escribe un ID y mira cómo lo encuentra Excel.</h2>
+      <p class="kicker"><span class="num">01</span>BUSCARX · <span class="badge b-obs">Observa</span></p>
+      <h2>Mira cómo encuentra Excel el dato.</h2>
       <div class="two-col wide-r" data-build>
         <div>
-          <div class="field"><span>valor_buscado (celda K2)</span>
+          <div class="field"><span>C57 · escribe aquí el ID</span>
             <input class="txt" id="bx-id" list="bx-list" value="REC-1077" autocomplete="off" spellcheck="false" aria-label="ID de reclamación">
             <datalist id="bx-list"></datalist>
           </div>
           <div class="picks" style="margin-top:10px;" id="bx-picks"></div>
           <p class="label" style="margin-top:18px;">matriz_devolver: ¿qué dato quieres?</p>
           <div class="seg" id="bx-col">
-            <button data-v="1">Afiliado</button>
+            <button class="on" data-v="1">Afiliado</button>
             <button data-v="3">ARS</button>
-            <button class="on" data-v="4">Provincia</button>
+            <button data-v="4">Provincia</button>
             <button data-v="6">Prestador</button>
             <button data-v="8">Monto</button>
           </div>
           <div style="margin-top:14px;"><button class="switch" role="switch" aria-checked="false" id="bx-nf"><span class="track"></span>Agregar el 4.º argumento: «No encontrado»</button></div>
-          <div class="formula-bar" style="margin-top:16px;"><span class="cellref">K3</span><b>fx</b><span class="fx" id="bx-fx"></span></div>
+          <div class="formula-bar" style="margin-top:16px;"><span class="cellref">C58</span><b>fx</b><span class="fx" id="bx-fx"></span></div>
           <div class="result"><div class="cell-big" id="bx-res"></div></div>
           <p class="demo-cap" id="bx-cap"></p>
         </div>
@@ -662,7 +825,23 @@
     </div>
   </section>
 
-  <!-- 7 · SI CONCEPTO -->
+  <!-- 9 · BUSCARX PRÁCTICA -->
+  <section class="slide" data-tag="BUSCARX">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">01</span>BUSCARX · Tu práctica</p>
+      <h2>Ahora en tu archivo: filas 56 a 62.</h2>
+      <div class="two-col prac" data-build>
+        <div>
+          <div class="sheet-bar"><div class="legend-sm"><span class="lg-lab">Escribes el texto</span><span class="lg-in">Escribes el dato</span><span class="lg-ans">Escribes la fórmula</span></div></div>
+          <div class="sheet" data-zone="z1"></div>
+          <div style="margin-top:10px;"><button class="btn ghost" data-zone-toggle="z1">Ver resultados esperados</button></div>
+        </div>
+        <div class="tasks" data-tasks="t1" style="margin-top:0;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · SI CONCEPTO -->
   <section class="slide" data-tag="SI">
     <div class="slide-inner">
       <p class="kicker"><span class="num">02</span>SI · Tomar decisiones</p>
@@ -671,16 +850,16 @@
         <div>
           <div class="formula"><span class="fn">=SI(</span><span class="arg p1">prueba_lógica</span><span class="sep">;</span><span class="arg p2">valor_si_verdadero</span><span class="sep">;</span><span class="arg p3">valor_si_falso</span><span class="fn">)</span></div>
           <dl class="facts" style="margin-top:14px;">
-            <div class="fact"><dt class="arg p1">prueba_lógica</dt><dd><p>Una pregunta que solo puede responderse con <b>VERDADERO</b> o <b>FALSO</b>: ¿el monto es de 50,000 o más?</p></dd></div>
-            <div class="fact"><dt class="arg p2">valor_si_verdadero</dt><dd><p>Lo que Excel escribe si la respuesta es sí.</p></dd></div>
-            <div class="fact"><dt class="arg p3">valor_si_falso</dt><dd><p>Lo que Excel escribe en cualquier otro caso.</p></dd></div>
+            <div class="fact"><dt class="arg p1">prueba_lógica</dt><dd><p>Una pregunta que solo se responde con <b>VERDADERO</b> o <b>FALSO</b>. Por ejemplo: ¿el monto de I2 es de 50,000 o más? → <span class="val">I2&gt;=50000</span></p></dd></div>
+            <div class="fact"><dt class="arg p2">valor_si_verdadero</dt><dd><p>Lo que Excel escribe si la respuesta es sí: <span class="val">"Alto costo"</span>.</p></dd></div>
+            <div class="fact"><dt class="arg p3">valor_si_falso</dt><dd><p>Lo que escribe en cualquier otro caso: <span class="val">"Costo regular"</span>.</p></dd></div>
           </dl>
-          <p class="note"><strong>Comillas:</strong> los textos van entre comillas (<span class="val">"Alto costo"</span>). Los números van sin comillas, sin RD$ y sin comas (<span class="val">50000</span>).</p>
+          <p class="note"><strong>Comillas:</strong> los textos van entre comillas. Los números van sin comillas, sin RD$ y sin comas: <span class="val">50000</span>.</p>
         </div>
         <div data-build>
           <p class="label">Operadores para la prueba lógica</p>
           <table class="ops">
-            <thead><tr><th>Signo</th><th>Significa</th><th>Ejemplo con la base</th></tr></thead>
+            <thead><tr><th>Signo</th><th>Significa</th><th>Ejemplo con la fila 2</th></tr></thead>
             <tbody>
               <tr><td>=</td><td>igual a</td><td><code>G2="No Registrado"</code></td></tr>
               <tr><td>&lt;&gt;</td><td>distinto de</td><td><code>D2&lt;&gt;"SeNaSa"</code></td></tr>
@@ -690,32 +869,33 @@
               <tr><td>&lt;=</td><td>menor o igual que</td><td><code>I2&lt;=20000</code></td></tr>
             </tbody>
           </table>
+          <p class="hint">¿Por qué fila 2? Porque escribes la fórmula una vez en la fila 2 y Excel la repite en las demás filas.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 8 · SI DEMO -->
+  <!-- 11 · SI DEMO -->
   <section class="slide" data-tag="SI">
     <div class="slide-inner">
-      <p class="kicker"><span class="num">02</span>SI · Con la base real</p>
+      <p class="kicker"><span class="num">02</span>SI · <span class="badge b-obs">Observa</span></p>
       <h2>Una fórmula, aplicada fila por fila.</h2>
       <div data-build>
         <div class="seg" id="si-seg" style="margin-top:22px;">
-          <button class="on" data-v="monto">Ejemplo: alto costo</button>
-          <button data-v="prest">Reto: ¿tiene prestador?</button>
+          <button class="on" data-v="monto">Columna J: alto costo</button>
+          <button data-v="prest">Columna K: ¿tiene prestador?</button>
         </div>
         <div class="situ" id="si-situ"></div>
         <div class="two-col" style="margin-top:20px;">
           <div>
-            <div class="formula-bar"><span class="cellref">J2</span><b>fx</b><span class="fx" id="si-fx"></span></div>
+            <div class="formula-bar"><span class="cellref" id="si-ref">J2</span><b>fx</b><span class="fx" id="si-fx"></span></div>
             <p class="demo-cap" id="si-cap" style="margin-top:14px;"></p>
             <button class="btn ghost" id="si-play" style="margin-top:6px;">▶ Evaluar de nuevo</button>
           </div>
           <div class="grid-demo">
             <div class="grid-scroll short">
               <table>
-                <thead><tr><th class="rn"></th><th><span class="cl">A</span>ID</th><th id="si-h"></th><th>Prueba lógica</th><th><span class="cl">J</span>Resultado</th></tr></thead>
+                <thead><tr><th class="rn"></th><th><span class="cl">A</span>ID</th><th id="si-h"></th><th>Prueba lógica</th><th id="si-rh"></th></tr></thead>
                 <tbody id="si-body"></tbody>
               </table>
             </div>
@@ -725,7 +905,28 @@
     </div>
   </section>
 
-  <!-- 9 · SI.CONJUNTO CONCEPTO -->
+  <!-- 12 · SI PRÁCTICA -->
+  <section class="slide" data-tag="SI">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">02</span>SI · Tu práctica</p>
+      <h2>Agrega dos columnas nuevas a la tabla: J y K.</h2>
+      <div class="two-col prac" data-build>
+        <div>
+          <p class="label">Así se agrega una columna a la tabla</p>
+          <ol class="steps sm">
+            <li><span>Haz clic en <b>J1</b>, justo a la derecha de «Monto Reclamado».</span></li>
+            <li><span>Escribe el encabezado y pulsa Enter: <b>la tabla crece sola</b> e incluye la columna.</span></li>
+            <li><span>Escribe la fórmula en la <b>fila 2</b> y pulsa Enter: Excel la copia en las 50 filas.</span></li>
+          </ol>
+          <div class="sheet" data-zone="zJ" style="margin-top:14px;"></div>
+          <div style="margin-top:10px;"><button class="btn ghost" data-zone-toggle="zJ">Ver resultados esperados</button></div>
+        </div>
+        <div class="tasks" data-tasks="t2" style="margin-top:0;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 · SI.CONJUNTO CONCEPTO -->
   <section class="slide" data-tag="SI.CONJUNTO">
     <div class="slide-inner">
       <p class="kicker"><span class="num">03</span>SI.CONJUNTO · Clasificar</p>
@@ -747,27 +948,27 @@
           <p class="demo-cap" id="sic-cap"></p>
         </div>
         <div data-build>
-          <p class="label">El concepto clave</p>
+          <p class="label">La idea clave</p>
           <div class="key-q" style="margin-top:0;">
             <div><b>SI</b><span>¿Se cumple esto?</span></div>
             <div><b>SI.CONJUNTO</b><span>¿Cuál de estas condiciones se cumple?</span></div>
           </div>
-          <p class="note good"><strong>Se lee en pares:</strong> condición y resultado, condición y resultado… Excel las evalúa <b>de arriba hacia abajo</b> y se detiene en la primera que es verdadera.</p>
+          <p class="note good"><strong>Se lee en pares:</strong> condición y resultado, condición y resultado… Excel las revisa <b>de arriba hacia abajo</b> y se detiene en la primera verdadera.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 10 · SI.CONJUNTO ESCALERA -->
+  <!-- 14 · SI.CONJUNTO ESCALERA -->
   <section class="slide" data-tag="SI.CONJUNTO">
     <div class="slide-inner">
-      <p class="kicker"><span class="num">03</span>SI.CONJUNTO · Paso a paso</p>
+      <p class="kicker"><span class="num">03</span>SI.CONJUNTO · <span class="badge b-obs">Observa</span></p>
       <h2>Excel baja por las condiciones hasta encontrar una verdadera.</h2>
       <div class="two-col" data-build>
         <div>
           <p class="label">Elige una reclamación o mueve el monto</p>
           <div class="picks" id="sic-picks"></div>
-          <div class="monto-in"><label for="sic-range" class="mono" style="color:var(--ink-soft);">I2 =</label><input type="range" id="sic-range" min="0" max="160000" step="500"><output id="sic-out"></output></div>
+          <div class="monto-in"><label for="sic-range" class="mono" id="sic-lab" style="color:var(--ink-soft);"></label><input type="range" id="sic-range" min="0" max="180000" step="500"><output id="sic-out"></output></div>
           <div style="margin-top:18px;">
             <div class="seg" id="sic-order">
               <button class="on" data-v="ok">Orden correcto</button>
@@ -786,7 +987,23 @@
     </div>
   </section>
 
-  <!-- 11 · CONTAR CONCEPTO -->
+  <!-- 15 · SI.CONJUNTO PRÁCTICA -->
+  <section class="slide" data-tag="SI.CONJUNTO">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">03</span>SI.CONJUNTO · Tu práctica</p>
+      <h2>Columna L: la categoría de cada reclamación.</h2>
+      <div class="two-col prac" data-build>
+        <div>
+          <div class="sheet" data-zone="zL"></div>
+          <div style="margin-top:10px;"><button class="btn ghost" data-zone-toggle="zL">Ver resultados esperados</button></div>
+          <p class="note"><strong>Antes de escribir, predice:</strong> REC-1329 reclama RD$100,732.50. ¿Será «Alto» o «Muy alto»? Escribe tu predicción y luego compruébala.</p>
+        </div>
+        <div class="tasks" data-tasks="t3" style="margin-top:0;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 · CONTAR CONCEPTO -->
   <section class="slide" data-tag="CONTAR.SI.CONJUNTO">
     <div class="slide-inner">
       <p class="kicker"><span class="num">04</span>CONTAR.SI.CONJUNTO · Contar</p>
@@ -795,8 +1012,8 @@
         <div>
           <div class="formula"><span class="fn">=CONTAR.SI.CONJUNTO(</span><span class="arg p1">rango_criterios1</span><span class="sep">;</span><span class="arg p1">criterio1</span><span class="sep">;</span><span class="arg p2 opt">[rango_criterios2</span><span class="sep">;</span><span class="arg p2 opt">criterio2]</span><span class="sep">;</span>…<span class="fn">)</span></div>
           <dl class="facts" style="margin-top:14px;">
-            <div class="fact"><dt>En pares</dt><dd><p>Cada criterio va con su rango: <b>dónde</b> mirar y <b>qué</b> debe cumplirse.</p></dd></div>
-            <div class="fact"><dt>Todos a la vez</dt><dd><p>Solo cuenta las filas que cumplen <b>todos</b> los criterios al mismo tiempo: ARS Humano <b>y</b> Santo Domingo.</p></dd></div>
+            <div class="fact"><dt>En pares</dt><dd><p>Cada criterio va con su rango: <b>dónde</b> mirar (<span class="val">D2:D51</span>) y <b>qué</b> debe cumplirse (<span class="val">"ARS Humano"</span>).</p></dd></div>
+            <div class="fact"><dt>Todos a la vez</dt><dd><p>Solo cuenta las filas que cumplen <b>todos</b> los criterios al mismo tiempo: ARS <b>y</b> provincia.</p></dd></div>
             <div class="fact"><dt>Pregunta</dt><dd><p>Responde <b>¿cuántos?</b>: siempre devuelve una cantidad de filas.</p></dd></div>
           </dl>
         </div>
@@ -806,16 +1023,16 @@
             <thead><tr><th style="width:auto;">Tipo</th><th>Fórmula</th><th>Resultado</th></tr></thead>
             <tbody id="crit-forms"></tbody>
           </table>
-          <p class="note"><strong>Los operadores van entre comillas</strong> dentro del criterio: <span class="val">"&gt;=50000"</span>. El asterisco <span class="val">*</span> significa «cualquier texto». Con <b>«distinto de»</b> usa el rango exacto (<span class="val">E2:E51</span>): con la columna completa también contaría las celdas vacías.</p>
+          <p class="note"><strong>Los operadores van entre comillas</strong> dentro del criterio: <span class="val">"&gt;=50000"</span>. El asterisco <span class="val">*</span> significa «cualquier texto».</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 12 · CONTAR CONSTRUCTOR -->
+  <!-- 17 · CONTAR CONSTRUCTOR -->
   <section class="slide" data-tag="CONTAR.SI.CONJUNTO">
     <div class="slide-inner">
-      <p class="kicker"><span class="num">04</span>CONTAR.SI.CONJUNTO · Con la base real</p>
+      <p class="kicker"><span class="num">04</span>CONTAR.SI.CONJUNTO · <span class="badge b-obs">Observa</span></p>
       <h2>Agrega criterios y mira qué filas se cuentan.</h2>
       <div class="two-col wide-r" data-build>
         <div>
@@ -832,7 +1049,48 @@
     </div>
   </section>
 
-  <!-- 13 · SUMAR CONCEPTO -->
+  <!-- 18 · FIJAR RANGOS CON $ -->
+  <section class="slide" data-tag="CONTAR.SI.CONJUNTO">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">04</span>Antes de copiar fórmulas</p>
+      <h2>Fija el rango con $ para que no se mueva.</h2>
+      <div class="two-col">
+        <div>
+          <dl class="facts">
+            <div class="fact"><dt>El problema</dt><dd><p>Al copiar una fórmula hacia abajo, Excel <b>mueve</b> sus referencias una fila: <span class="val">L2:L51</span> pasa a <span class="val">L3:L52</span>, luego a <span class="val">L4:L53</span>… y se van quedando filas fuera.</p></dd></div>
+            <div class="fact"><dt>La solución</dt><dd><p>Escribe <span class="val">$L$2:$L$51</span>. El signo <b>$</b> fija la columna y la fila: el rango queda quieto.</p></dd></div>
+            <div class="fact"><dt>Atajo</dt><dd><p>Con el cursor sobre el rango, pulsa <span class="kbd">F4</span>. En algunas laptops: <span class="kbd">Fn</span> + <span class="kbd">F4</span>.</p></dd></div>
+            <div class="fact"><dt>Lo que sí se mueve</dt><dd><p>El criterio <span class="val">B82</span> va <b>sin $</b>, porque en cada fila debe tomar una categoría distinta.</p></dd></div>
+          </dl>
+        </div>
+        <div data-build>
+          <div class="seg" id="dl-seg">
+            <button class="on" data-v="no">Sin $</button>
+            <button data-v="yes">Con $</button>
+          </div>
+          <div class="dl-box" id="dl-box"></div>
+          <p class="demo-cap" id="dl-cap"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19 · CONTAR PRÁCTICA -->
+  <section class="slide" data-tag="CONTAR.SI.CONJUNTO">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">04</span>CONTAR.SI.CONJUNTO · Tu práctica</p>
+      <h2>Zona de práctica: filas 64 a 86.</h2>
+      <div class="two-col prac" data-build>
+        <div>
+          <div class="sheet" data-zone="z4"></div>
+          <div style="margin-top:10px;"><button class="btn ghost" data-zone-toggle="z4">Ver resultados esperados</button></div>
+        </div>
+        <div class="tasks" data-tasks="t4" style="margin-top:0;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 20 · SUMAR CONCEPTO -->
   <section class="slide" data-tag="SUMAR.SI.CONJUNTO">
     <div class="slide-inner">
       <p class="kicker"><span class="num">05</span>SUMAR.SI.CONJUNTO · Sumar</p>
@@ -841,9 +1099,9 @@
         <div>
           <div class="formula"><span class="fn">=SUMAR.SI.CONJUNTO(</span><span class="arg p3">rango_suma</span><span class="sep">;</span><span class="arg p1">rango_criterios1</span><span class="sep">;</span><span class="arg p1">criterio1</span><span class="sep">;</span>…<span class="fn">)</span></div>
           <dl class="facts" style="margin-top:14px;">
-            <div class="fact"><dt class="arg p3">rango_suma</dt><dd><p><b>Va primero.</b> Es la columna que se suma: en nuestra base, <span class="val">I:I</span> (Monto Reclamado).</p></dd></div>
-            <div class="fact"><dt class="arg p1">criterios</dt><dd><p>Los mismos pares que en CONTAR.SI.CONJUNTO, con las mismas reglas.</p></dd></div>
-            <div class="fact"><dt>Mismo tamaño</dt><dd><p>El rango que se suma y los rangos de criterios deben tener <b>las mismas filas</b>. Usar columnas completas (<span class="val">I:I</span>, <span class="val">D:D</span>) lo garantiza.</p></dd></div>
+            <div class="fact"><dt class="arg p3">rango_suma</dt><dd><p><b>Va primero.</b> Es la columna que se suma: el monto, <span class="val">I2:I51</span>.</p></dd></div>
+            <div class="fact"><dt class="arg p1">criterios</dt><dd><p>Los mismos pares que en CONTAR.SI.CONJUNTO: <span class="val">D2:D51;"ARS Humano"</span>.</p></dd></div>
+            <div class="fact"><dt>Mismo tamaño</dt><dd><p>El rango que se suma y los de criterios deben tener <b>las mismas filas</b>: los dos de la 2 a la 51.</p></dd></div>
           </dl>
         </div>
         <div data-build>
@@ -855,10 +1113,10 @@
     </div>
   </section>
 
-  <!-- 14 · SUMAR CONSTRUCTOR -->
+  <!-- 21 · SUMAR CONSTRUCTOR -->
   <section class="slide" data-tag="SUMAR.SI.CONJUNTO">
     <div class="slide-inner">
-      <p class="kicker"><span class="num">05</span>SUMAR.SI.CONJUNTO · Con la base real</p>
+      <p class="kicker"><span class="num">05</span>SUMAR.SI.CONJUNTO · <span class="badge b-obs">Observa</span></p>
       <h2>Las mismas filas, ahora sumando su monto.</h2>
       <div class="two-col wide-r" data-build>
         <div>
@@ -875,7 +1133,7 @@
     </div>
   </section>
 
-  <!-- 15 · CUÁNTOS VS CUÁNTO -->
+  <!-- 22 · CUÁNTOS VS CUÁNTO -->
   <section class="slide" data-tag="SUMAR.SI.CONJUNTO">
     <div class="slide-inner">
       <p class="kicker"><span class="num">05</span>¿Cuántos? vs. ¿Cuánto?</p>
@@ -893,7 +1151,22 @@
     </div>
   </section>
 
-  <!-- 16 · TEXTO CONCEPTO -->
+  <!-- 23 · SUMAR PRÁCTICA -->
+  <section class="slide" data-tag="SUMAR.SI.CONJUNTO">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">05</span>SUMAR.SI.CONJUNTO · Tu práctica</p>
+      <h2>Completa la columna D y el reto de dos criterios.</h2>
+      <div class="two-col prac" data-build>
+        <div>
+          <div class="sheet" data-zone="z5"></div>
+          <div style="margin-top:10px;"><button class="btn ghost" data-zone-toggle="z5">Ver resultados esperados</button></div>
+        </div>
+        <div class="tasks" data-tasks="t5" style="margin-top:0;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 24 · TEXTO CONCEPTO -->
   <section class="slide" data-tag="Texto">
     <div class="slide-inner">
       <p class="kicker"><span class="num">06</span>Funciones de texto · Aplicación breve</p>
@@ -909,22 +1182,22 @@
           </dl>
         </div>
         <div>
-          <p class="label build-join">¿Cuándo las necesitas?</p>
+          <p class="label build-join">¿Cuándo las necesitas? Ejemplos de la fila 3</p>
           <div class="flow" style="grid-template-columns:1fr; margin-top:0; gap:10px;">
-            <div class="fstep"><h3 style="margin-top:0;">Solo el número de la reclamación</h3><p><span class="val">REC-1077</span> → <b>1077</b></p></div>
-            <div class="fstep"><h3 style="margin-top:0;">El prefijo de la cédula</h3><p><span class="val">047-6491194-0</span> → <b>047</b></p></div>
-            <div class="fstep"><h3 style="margin-top:0;">El primer nombre del afiliado</h3><p><span class="val">Rafael Reyes Gómez</span> → <b>Rafael</b></p></div>
+            <div class="fstep"><h3 style="margin-top:0;">Solo el número de la reclamación</h3><p>A3 = <span class="val">REC-1077</span> → <b>1077</b></p></div>
+            <div class="fstep"><h3 style="margin-top:0;">El prefijo de la cédula</h3><p>C3 = <span class="val">047-6491194-0</span> → <b>047</b></p></div>
+            <div class="fstep"><h3 style="margin-top:0;">El primer nombre del afiliado</h3><p>B3 = <span class="val">Rafael Reyes Gómez</span> → <b>Rafael</b></p></div>
           </div>
-          <p class="note"><strong>El resultado es texto:</strong> «1077» extraído con DERECHA no es un número. Si necesitas operar con él, conviértelo con <span class="val">VALOR()</span>.</p>
+          <p class="note"><strong>El resultado es texto:</strong> «1077» extraído con DERECHA no es un número; por eso se alinea a la izquierda. Si necesitas operar con él, conviértelo con <span class="val">VALOR()</span>.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 17 · TEXTO LAB -->
+  <!-- 25 · TEXTO LAB -->
   <section class="slide" data-tag="Texto">
     <div class="slide-inner">
-      <p class="kicker"><span class="num">06</span>Funciones de texto · Laboratorio</p>
+      <p class="kicker"><span class="num">06</span>Funciones de texto · <span class="badge b-obs">Observa</span></p>
       <h2>Cada carácter tiene una posición.</h2>
       <div data-build>
         <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:22px;">
@@ -944,7 +1217,22 @@
     </div>
   </section>
 
-  <!-- 18 · FECHAS -->
+  <!-- 26 · TEXTO PRÁCTICA -->
+  <section class="slide" data-tag="Texto">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">06</span>Funciones de texto · Tu práctica</p>
+      <h2>Columnas M y N de tu tabla.</h2>
+      <div class="two-col prac" data-build>
+        <div>
+          <div class="sheet" data-zone="zM"></div>
+          <div style="margin-top:10px;"><button class="btn ghost" data-zone-toggle="zM">Ver resultados esperados</button></div>
+        </div>
+        <div class="tasks" data-tasks="t6" style="margin-top:0;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 27 · FECHAS -->
   <section class="slide" data-tag="Fechas">
     <div class="slide-inner">
       <p class="kicker"><span class="num">07</span>Funciones de fecha · Aplicación breve</p>
@@ -955,20 +1243,20 @@
             <div class="fact"><dt class="arg p1">AÑO · MES · DIA</dt><dd><p>Extraen cada parte de una fecha como número.</p></dd></div>
             <div class="fact"><dt class="arg p2">HOY</dt><dd><p><span class="val">=HOY()</span> devuelve la fecha actual y se actualiza cada día.</p></dd></div>
             <div class="fact"><dt class="arg p3">TEXTO</dt><dd><p><span class="val">=TEXTO(H2;"mmmm")</span> muestra el nombre del mes.</p></dd></div>
-            <div class="fact"><dt class="arg p5">FECHA</dt><dd><p><span class="val">=FECHA(año;mes;día)</span> construye una fecha; es útil en los criterios.</p></dd></div>
+            <div class="fact"><dt class="arg p5">FECHA</dt><dd><p><span class="val">=FECHA(año;mes;día)</span> construye una fecha.</p></dd></div>
           </dl>
           <p class="note good"><strong>Restar fechas da días:</strong> <span class="val">=HOY()-H2</span> dice cuántos días han pasado desde el servicio.</p>
         </div>
         <div data-build>
-          <div class="field"><span>Elige una reclamación (su fecha está en H2)</span><select class="sel" id="dt-sel"></select></div>
-          <div class="formula-bar" style="margin-top:12px;"><span class="cellref">H2</span><b>fx</b><span class="fx" id="dt-h"></span></div>
+          <div class="field"><span>Elige una reclamación</span><select class="sel" id="dt-sel"></select></div>
+          <div class="formula-bar" style="margin-top:12px;"><span class="cellref" id="dt-ref">H3</span><b>fx</b><span class="fx" id="dt-h"></span></div>
           <table class="dres"><tbody id="dt-body"></tbody></table>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 19 · FECHAS POR PERÍODO -->
+  <!-- 28 · FECHAS POR PERÍODO -->
   <section class="slide" data-tag="Fechas">
     <div class="slide-inner">
       <p class="kicker"><span class="num">07</span>Funciones de fecha · Períodos</p>
@@ -981,24 +1269,41 @@
         </div>
         <div>
           <p class="label" id="mo-title"></p>
+          <p style="color:var(--ink-soft); margin-bottom:10px;">Con la columna O (<span class="val">=MES(H2)</span>) que crearás, contar por mes es un criterio más:</p>
           <div class="formula sm" id="mo-count"></div>
           <div class="formula sm" id="mo-sum" style="margin-top:10px; border-left-color:var(--amber);"></div>
-          <p class="note"><strong>Otra forma:</strong> agrega una columna auxiliar con <span class="val">=MES(H2)</span> y cuenta por esa columna: <span class="val">=CONTAR.SI.CONJUNTO(J:J;6)</span>.</p>
+          <p class="hint" id="mo-hint"></p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 20 · PROYECTO -->
+  <!-- 29 · FECHAS PRÁCTICA -->
+  <section class="slide" data-tag="Fechas">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">07</span>Funciones de fecha · Tu práctica</p>
+      <h2>Columnas O y P, y la tabla por mes.</h2>
+      <div class="two-col prac" data-build>
+        <div>
+          <div class="sheet" data-zone="zO"></div>
+          <div class="sheet" data-zone="z7" style="margin-top:12px;"></div>
+          <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;"><button class="btn ghost" data-zone-toggle="zO">Ver columnas resueltas</button><button class="btn ghost" data-zone-toggle="z7">Ver tabla resuelta</button></div>
+        </div>
+        <div class="tasks" data-tasks="t7" style="margin-top:0;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 30 · PROYECTO -->
   <section class="slide" data-tag="Proyecto">
     <div class="slide-inner">
-      <p class="kicker"><span class="num">08</span>Proyecto integrador</p>
+      <p class="kicker"><span class="num">08</span>Proyecto integrador · <span class="badge b-obs">Observa</span></p>
       <h2>Centro de consulta: todo junto en una hoja.</h2>
-      <p class="lede">En una hoja nueva llamada <b>CONSULTA</b>, el usuario escribe un ID en <span class="val">C3</span> y todo lo demás se llena solo. Cambia el ID y toca cualquier campo para ver su fórmula.</p>
+      <p class="lede">En una hoja nueva llamada <b>CONSULTA</b> escribes un ID en <span class="val">C4</span> y todo lo demás se llena solo. Cambia el ID y toca cualquier campo para ver su fórmula.</p>
       <div class="two-col" data-build style="margin-top:22px;">
         <div class="consulta">
           <div class="chead">CONSULTA DE RECLAMACIONES <small>Hoja CONSULTA</small></div>
-          <div class="idrow"><label for="pj-id">ID (C3):</label><select class="sel" id="pj-id"></select></div>
+          <div class="idrow"><label for="pj-id">ID (C4):</label><select class="sel" id="pj-id"></select></div>
           <div id="pj-rows"></div>
         </div>
         <div>
@@ -1009,27 +1314,36 @@
     </div>
   </section>
 
-  <!-- 21 · ERRORES -->
+  <!-- 31 · PROYECTO PRÁCTICA -->
+  <section class="slide" data-tag="Proyecto">
+    <div class="slide-inner">
+      <p class="kicker"><span class="num">08</span>Proyecto integrador · Tu práctica</p>
+      <h2>Construye tu hoja CONSULTA.</h2>
+      <div class="tasks" data-tasks="t8" data-build></div>
+    </div>
+  </section>
+
+  <!-- 32 · ERRORES -->
   <section class="slide" data-tag="Errores comunes">
     <div class="slide-inner">
       <p class="kicker">Repaso · Errores comunes</p>
-      <h2>Cuando la fórmula no responde lo que esperas.</h2>
+      <h2>Cuando tu resultado no coincide.</h2>
       <table class="vs">
         <thead><tr><th>Lo que ves</th><th>Causa probable</th><th>Qué hacer</th></tr></thead>
         <tbody>
-          <tr><td><span class="err">#N/D</span> en BUSCARX</td><td data-l="Causa">El ID no existe en la columna o está escrito distinto (un espacio de más, otra letra).</td><td data-l="Qué hacer">Revisa el valor buscado; agrega el 4.º argumento «No encontrado».</td></tr>
+          <tr><td><span class="err">#N/D</span> en BUSCARX</td><td data-l="Causa">El ID no existe o está escrito distinto: un espacio de más, otra letra.</td><td data-l="Qué hacer">Revisa C57; agrega el 4.º argumento «No encontrado».</td></tr>
           <tr><td><span class="err">#¿NOMBRE?</span></td><td data-l="Causa">La función está mal escrita, o un texto se escribió sin comillas.</td><td data-l="Qué hacer">Usa el autocompletado de Excel y pon los textos entre comillas.</td></tr>
-          <tr><td>Un conteo o suma que da <b>0</b></td><td data-l="Causa">El criterio no coincide con el dato: «Humano» en lugar de «ARS Humano».</td><td data-l="Qué hacer">Copia el valor exacto de la base o apunta a una celda que lo contenga.</td></tr>
-          <tr><td><span class="err">#¡VALOR!</span> en SUMAR.SI.CONJUNTO</td><td data-l="Causa">El rango que se suma y los rangos de criterios tienen distinto tamaño.</td><td data-l="Qué hacer">Usa columnas completas (<span class="val">I:I</span>, <span class="val">D:D</span>) o rangos con las mismas filas.</td></tr>
-          <tr><td>SUMAR.SI.CONJUNTO da 0 o un total extraño</td><td data-l="Causa">El rango_suma no está en primer lugar.</td><td data-l="Qué hacer">Primero lo que se suma, después los pares de criterios.</td></tr>
-          <tr><td>Categorías equivocadas en SI.CONJUNTO</td><td data-l="Causa">Las condiciones están en un orden que hace que una «atrape» a las demás.</td><td data-l="Qué hacer">Ordénalas de la más restrictiva a la más amplia.</td></tr>
-          <tr><td><span class="err">#N/D</span> en SI.CONJUNTO</td><td data-l="Causa">Ninguna condición se cumplió.</td><td data-l="Qué hacer">Agrega al final <span class="val">VERDADERO;"Otro"</span> como respuesta por defecto.</td></tr>
+          <tr><td>Un conteo o suma que da <b>0</b></td><td data-l="Causa">El criterio no coincide: «Humano» en lugar de «ARS Humano».</td><td data-l="Qué hacer">Copia el nombre exacto de la base.</td></tr>
+          <tr><td>Copiaste la fórmula y el total no da 50</td><td data-l="Causa">El rango se movió al copiar: <span class="val">L3:L52</span>, <span class="val">L4:L53</span>…</td><td data-l="Qué hacer">Fija el rango con $ (F4): <span class="val">$L$2:$L$51</span>.</td></tr>
+          <tr><td><span class="err">#¡VALOR!</span> en SUMAR.SI.CONJUNTO</td><td data-l="Causa">El rango que se suma y los de criterios tienen distinto tamaño.</td><td data-l="Qué hacer">Usa las mismas filas en todos: 2 a 51.</td></tr>
+          <tr><td>MES muestra <span class="val">02/01/1900</span></td><td data-l="Causa">La celda heredó el formato de fecha de la columna vecina.</td><td data-l="Qué hacer">Cámbiala a formato <b>General</b> (Ctrl + 1).</td></tr>
+          <tr><td>Categorías equivocadas en SI.CONJUNTO</td><td data-l="Causa">Una condición amplia está antes que las demás y las «atrapa».</td><td data-l="Qué hacer">Ordénalas de la más pequeña a la más grande.</td></tr>
         </tbody>
       </table>
     </div>
   </section>
 
-  <!-- 22 · REPASO -->
+  <!-- 33 · REPASO -->
   <section class="slide" data-tag="Repaso">
     <div class="slide-inner">
       <p class="kicker">Repaso · ¿Qué necesito?</p>
@@ -1049,7 +1363,7 @@
     </div>
   </section>
 
-  <!-- 23 · QUIZ -->
+  <!-- 34 · QUIZ -->
   <section class="slide" data-tag="Reto">
     <div class="slide-inner">
       <p class="kicker">Repaso · Reto rápido</p>
@@ -1058,7 +1372,19 @@
     </div>
   </section>
 
-  <!-- 24 · CIERRE -->
+  <!-- 35 · EVIDENCIA -->
+  <section class="slide" data-tag="Evidencia">
+    <div class="slide-inner">
+      <p class="kicker"><span class="badge b-ok">Comprueba</span> Tu evidencia de aprendizaje</p>
+      <h2>Revisa tu archivo antes de entregarlo.</h2>
+      <p class="lede">Marca cada punto cuando tu archivo muestre exactamente ese resultado. Si alguno no coincide, vuelve al bloque y revisa la fórmula.</p>
+      <ul class="checklist" id="checklist"></ul>
+      <p class="check-count" id="check-count"></p>
+      <p class="note good"><strong>Entrega:</strong> guarda el archivo como <span class="val">Apellido_Nombre_Modulo2.xlsx</span> y súbelo en la tarea del Módulo 2.</p>
+    </div>
+  </section>
+
+  <!-- 36 · CIERRE -->
   <section class="slide" data-tag="Cierre">
     <div class="slide-inner">
       <p class="kicker">Cierre</p>
@@ -1069,9 +1395,9 @@
         <div class="sum"><b>SI.CONJUNTO</b><span>Clasificar en varias categorías</span></div>
         <div class="sum"><b>CONTAR.SI.CONJUNTO</b><span>¿Cuántos registros cumplen?</span></div>
         <div class="sum"><b>SUMAR.SI.CONJUNTO</b><span>¿Cuánto suman los que cumplen?</span></div>
-        <div class="sum"><b>IZQUIERDA · DERECHA · EXTRAE</b><span>Separar partes de un texto</span></div>
-        <div class="sum"><b>AÑO · MES · HOY</b><span>Analizar fechas y períodos</span></div>
-        <div class="sum"><b>Hoja CONSULTA</b><span>Todas juntas en una herramienta</span></div>
+        <div class="sum"><b>$ (F4)</b><span>Fijar rangos antes de copiar</span></div>
+        <div class="sum"><b>IZQUIERDA · DERECHA</b><span>Separar partes de un texto</span></div>
+        <div class="sum"><b>MES · TEXTO</b><span>Analizar fechas y períodos</span></div>
       </div>
       <div data-build style="display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; align-items:center;">
         <span class="btn amber" style="cursor:default;">Siguiente: actividad práctica</span>
@@ -1099,12 +1425,14 @@
   function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- base: hoja Reclamaciones (50 registros depurados del Módulo 1) ----------
-     [A ID, B Afiliado, C Cédula, D ARS, E Provincia, F Tipo de Servicio, G Prestador, H Fecha, I Monto] */
+  /* ---------- base: hoja Reclamaciones de Modulo2-Base-Reclamaciones.xlsx ----------
+     Fila de Excel = índice + 2.  [A ID, B Afiliado, C Cédula, D ARS, E Provincia, F Tipo de Servicio, G Prestador, H Fecha, I Monto] */
   var DB = [["REC-1189","Ramón Féliz Jiménez","001-4888762-3","ARS Humano","Santiago","No Registrado","Clínica Vista Mar","24/01/2025",12257],["REC-1077","Rafael Reyes Gómez","047-6491194-0","ARS Humano","Puerto Plata","Hospitalización","Centro Médico Las Américas","03/02/2025",155647],["REC-1329","María Batista Tavárez","001-5317727-3","ARS Humano","San Cristóbal","Hospitalización","Centro Médico Las Américas","06/02/2025",100732.5],["REC-1280","Leidy Ureña Jiménez","047-8124028-9","ARS Humano","Santo Domingo","Hospitalización","Hospital Regional Norte","12/02/2025",41375],["REC-1168","Carmen Guzmán Guzmán","031-4969657-9","ARS Humano","San Cristóbal","Laboratorio","Laboratorio Clínico Amigo","22/02/2025",4768.5],["REC-1014","Miguel Peña Féliz","047-9839563-2","ARS Humano","Distrito Nacional","Imágenes","Hospital Regional Norte","04/04/2025",11332],["REC-1210","Julio Díaz Ureña","031-4787899-0","ARS Humano","Distrito Nacional","Emergencia","Policlínica Central","26/04/2025",4848.5],["REC-1140","Paola Almonte Almonte","047-6491974-2","ARS Humano","Santiago","Consulta","Centro Médico Nuestra Señora","17/05/2025",1880],["REC-1112","Daniela Pérez De la Cruz","402-9624033-4","ARS Humano","Puerto Plata","Emergencia","Centro Médico Nuestra Señora","28/05/2025",11468],["REC-1021","José Jiménez Ureña","037-0045369-6","ARS Humano","Puerto Plata","Laboratorio","No Registrado","26/06/2025",5596.5],["REC-1182","Andrés De la Cruz Peña","037-5733666-4","ARS Universal","Santo Domingo","Emergencia","Hospital Regional Norte","04/02/2025",9809],["REC-1056","Rosa De la Cruz Rodríguez","402-9613027-7","ARS Universal","Puerto Plata","Hospitalización","Clínica Vista Mar","16/03/2025",50257.5],["REC-1154","Marisol Rodríguez Jiménez","002-1526365-6","ARS Universal","La Vega","Imágenes","Clínica San Rafael","03/04/2025",12384],["REC-1084","Wilson Santana Almonte","402-8942724-0","ARS Universal","Distrito Nacional","Laboratorio","Centro Diagnóstico del Cibao","11/04/2025",2793.5],["REC-1196","Ana Guzmán Mejía","402-5600518-8","ARS Universal","Santiago","Imágenes","Laboratorio Clínico Amigo","12/05/2025",13949],["REC-1252","Ramón Almonte Batista","402-8114714-3","ARS Universal","Santo Domingo","Consulta","Policlínica Central","28/05/2025",3186.5],["REC-1091","Rafael Tavárez Díaz","037-5381989-8","ARS Universal","Puerto Plata","Imágenes","Policlínica Central","15/06/2025",10321],["REC-1007","Leidy Peña Almonte","001-3858598-5","MAPFRE Salud ARS","Distrito Nacional","Consulta","Clínica Vista Mar","01/01/2025",3158],["REC-1042","Esperanza Encarnación Pérez","002-9497133-3","MAPFRE Salud ARS","Distrito Nacional","Emergencia","Policlínica Central","09/01/2025",14587.5],["REC-1175","Ivelisse Mejía Rosario","223-6516549-4","MAPFRE Salud ARS","Santo Domingo","Emergencia","Centro Médico Nuestra Señora","14/01/2025",6107],["REC-1266","Mercedes Santana De la Cruz","047-9101566-8","MAPFRE Salud ARS","Santiago","Hospitalización","Policlínica Central","28/01/2025",103478],["REC-1336","Wilson Pérez De la Cruz","002-9024755-8","MAPFRE Salud ARS","La Vega","Consulta","No Registrado","26/02/2025",1972],["REC-1287","Ivelisse Batista Féliz","047-0632004-3","MAPFRE Salud ARS","Puerto Plata","Hospitalización","Hospital Regional Norte","05/04/2025",147899],["REC-1161","Félix Reyes Peña","031-9030576-9","MAPFRE Salud ARS","La Vega","Consulta","No Registrado","12/04/2025",3309],["REC-1049","Yudelka Almonte Martínez","002-8951084-0","MAPFRE Salud ARS","Santo Domingo","Laboratorio","Hospital Regional Norte","02/05/2025",5849.5],["REC-1259","Miguel Peña Gómez","402-0790644-5","MAPFRE Salud ARS","Santo Domingo","Imágenes","Hospital Regional Norte","13/05/2025",4638],["REC-1308","Ángel Guzmán Reyes","002-9145581-4","MAPFRE Salud ARS","San Cristóbal","Consulta","Centro Diagnóstico del Cibao","19/05/2025",3291.5],["REC-1301","María Santana Santana","031-1750773-7","MAPFRE Salud ARS","La Vega","Imágenes","Hospital Regional Norte","20/05/2025",9045],["REC-1231","Ivelisse Díaz Batista","402-6166805-1","MAPFRE Salud ARS","Puerto Plata","Emergencia","Centro Médico Nuestra Señora","04/06/2025",9624.5],["REC-1098","Carmen Jiménez Castillo","223-7547525-4","MAPFRE Salud ARS","Distrito Nacional","Emergencia","Policlínica Central","13/06/2025",16018.5],["REC-1350","Juan Gómez Encarnación","001-1338216-9","MAPFRE Salud ARS","Distrito Nacional","Laboratorio","Laboratorio Clínico Amigo","14/06/2025",1998],["REC-1119","Ivelisse Tavárez Pérez","037-0451463-1","MAPFRE Salud ARS","La Vega","Hospitalización","Centro Médico Las Américas","18/06/2025",118920],["REC-1245","Félix Tavárez Cabrera","223-0580053-1","MAPFRE Salud ARS","Santiago","Consulta","Centro Médico Las Américas","21/06/2025",1357.5],["REC-1028","Marisol Díaz Almonte","402-7919402-2","Primera ARS","Distrito Nacional","Consulta","Clínica Vista Mar","01/01/2025",1589],["REC-1224","Mercedes Guzmán Díaz","037-1521978-3","Primera ARS","Distrito Nacional","Hospitalización","Hospital Regional Norte","04/01/2025",146387.5],["REC-1035","Rafael Martínez Peña","037-2536253-5","Primera ARS","No Registrado","Hospitalización","Centro Médico Las Américas","25/01/2025",129905],["REC-1105","Marisol Ureña Jiménez","001-7807309-4","Primera ARS","La Vega","Laboratorio","No Registrado","04/02/2025",4224],["REC-1315","Mercedes Mejía Féliz","002-2527004-8","Primera ARS","Distrito Nacional","Imágenes","Clínica Vista Mar","14/02/2025",9674.5],["REC-1294","Francisco Pérez Núñez","223-4138189-9","Primera ARS","San Cristóbal","No Registrado","Clínica Vista Mar","24/02/2025",9291],["REC-1070","Mercedes Guzmán Batista","002-6277427-6","Primera ARS","Puerto Plata","No Registrado","Laboratorio Clínico Amigo","08/04/2025",2675],["REC-1126","Yudelka Ureña Pérez","223-7649596-9","Primera ARS","No Registrado","Emergencia","Centro Médico Las Américas","14/04/2025",13248],["REC-1147","Rafael Almonte Guzmán","031-7828080-0","SeNaSa","Distrito Nacional","Imágenes","Policlínica Central","27/01/2025",4429.5],["REC-1063","Luis Mejía Reyes","223-3452548-4","SeNaSa","Santiago","Consulta","Clínica San Rafael","28/01/2025",2555],["REC-1343","Altagracia Gómez Núñez","047-0784217-6","SeNaSa","Puerto Plata","Laboratorio","Hospital Regional Norte","07/02/2025",2757.5],["REC-1322","Yudelka Féliz Gómez","047-8632872-5","SeNaSa","Santiago","Emergencia","Clínica Vista Mar","16/02/2025",14628.5],["REC-1273","Altagracia Polanco Martínez","001-1925992-1","SeNaSa","Distrito Nacional","Consulta","No Registrado","27/02/2025",2013.5],["REC-1133","Julio Tavárez Guzmán","001-1614331-5","SeNaSa","San Cristóbal","Hospitalización","Laboratorio Clínico Amigo","07/05/2025",174865],["REC-1203","Manuel Rodríguez Féliz","402-4873161-2","SeNaSa","La Vega","Imágenes","Centro Diagnóstico del Cibao","13/05/2025",12998],["REC-1238","Ivelisse Ureña Tavárez","047-2059000-5","SeNaSa","No Registrado","Emergencia","Centro Médico Nuestra Señora","14/05/2025",6390.5],["REC-1217","Carmen Martínez Núñez","031-2673256-8","SeNaSa","La Vega","Emergencia","Laboratorio Clínico Amigo","26/06/2025",15313]];
   var LET = ['A','B','C','D','E','F','G','H','I'];
   var HEAD = ['ID Reclamación','Afiliado','Cédula','ARS','Provincia','Tipo de Servicio','Prestador','Fecha de Servicio','Monto Reclamado'];
   var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var ARS = ['ARS Humano','ARS Universal','MAPFRE Salud ARS','Primera ARS','SeNaSa'];
+  var CATS = ['Bajo','Medio','Alto','Muy alto'];
 
   function rd(n){ return 'RD$' + Number(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
   function num(n){ return Number(n).toLocaleString('en-US'); }
@@ -1112,6 +1440,11 @@
   function uniq(k){ var s = {}; DB.forEach(function(r){ s[r[k]] = 1; }); return Object.keys(s).sort(function(a, b){ return a.localeCompare(b, 'es'); }); }
   function parseD(s){ var p = s.split('/'); return {d:+p[0], m:+p[1], y:+p[2]}; }
   function serial(s){ var p = parseD(s); return Math.round(Date.UTC(p.y, p.m - 1, p.d) / 864e5) + 25569; }
+  function mes(r){ return parseD(r[7]).m; }
+  function cat(m){ return m < 5000 ? 'Bajo' : m < 20000 ? 'Medio' : m < 100000 ? 'Alto' : 'Muy alto'; }
+  function cnt(f){ return DB.filter(f).length; }
+  function sum(f){ return DB.filter(f).reduce(function(a, r){ return a + r[8]; }, 0); }
+  function row(id){ for(var i = 0; i < DB.length; i++){ if(DB[i][0] === id) return i; } return -1; }
   function q(s){ return '"' + s + '"'; }
   function arg(html, cls){ return '<span class="arg ' + cls + '">' + html + '</span>'; }
   function call(name, parts){ return '<span class="fn">=' + name + '(</span>' + parts.join('<span class="sep">;</span>') + '<span class="fn">)</span>'; }
@@ -1128,9 +1461,8 @@
     }
     el._raf = requestAnimationFrame(step);
   }
-  function scrollRow(box, row){ if(box && row) box.scrollTop = Math.max(0, row.offsetTop - box.clientHeight / 2); }
+  function scrollRow(box, tr){ if(box && tr) box.scrollTop = Math.max(0, tr.offsetTop - box.clientHeight / 2); }
 
-  /* segmented controls */
   function seg(id, onChange){
     var host = document.getElementById(id);
     $$('button', host).forEach(function(b){
@@ -1142,21 +1474,228 @@
     onChange($('button.on', host).getAttribute('data-v'));
   }
 
-  /* fichas */
-  $$('.tile').forEach(function(t){ t.addEventListener('click', function(){ t.classList.toggle('open'); }); });
-  $$('.reveal-all').forEach(function(b){
+  /* ---------- resultados esperados (se calculan de la base, no se escriben a mano) ---------- */
+  var EX = DB[row('REC-1077')];
+  var EXP = {
+    alto: cnt(function(r){ return r[8] >= 50000; }),
+    sinp: cnt(function(r){ return r[6] === 'No Registrado'; }),
+    firstSinp: row(DB.filter(function(r){ return r[6] === 'No Registrado'; })[0][0]) + 2,
+    cats: CATS.map(function(c){ return cnt(function(r){ return cat(r[8]) === c; }); }),
+    arsN: ARS.map(function(a){ return cnt(function(r){ return r[3] === a; }); }),
+    arsS: ARS.map(function(a){ return sum(function(r){ return r[3] === a; }); }),
+    total: sum(function(){ return true; }),
+    twoN: cnt(function(r){ return r[3] === 'MAPFRE Salud ARS' && r[4] === 'Distrito Nacional'; }),
+    twoS: sum(function(r){ return r[3] === 'MAPFRE Salud ARS' && r[4] === 'Distrito Nacional'; }),
+    meses: [1,2,3,4,5,6].map(function(m){ return [cnt(function(r){ return mes(r) === m; }), sum(function(r){ return mes(r) === m; })]; })
+  };
+
+  /* ---------- vista previa del archivo ---------- */
+  document.getElementById('peek').innerHTML = [-1, 0, 1, 2].map(function(i){
+    if(i < 0) return '<tr><td class="rn">1</td><td><b>' + HEAD[0] + '</b></td><td><b>' + HEAD[1] + '</b></td><td><b>' + HEAD[3] + '</b></td><td>…</td><td><b>' + HEAD[8] + '</b></td></tr>';
+    var r = DB[i];
+    return '<tr><td class="rn">' + (i + 2) + '</td><td>' + r[0] + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[3]) + '</td><td>…</td><td class="r">' + rd(r[8]) + '</td></tr>';
+  }).join('') + '<tr><td class="rn">⋮</td><td colspan="5" style="color:#999;">… hasta la fila 51</td></tr>';
+
+  /* ---------- hojas simuladas: lo que el alumno escribe, celda por celda ---------- */
+  // tipos: t = título, l = etiqueta que escribe, i = dato que escribe, a = fórmula (respuesta), h = encabezado, d = dato existente
+  function dataRows(cols, extra, rows){
+    var head = [1, {}];
+    cols.forEach(function(c){ var k = LET.indexOf(c); head[1][c] = k >= 0 ? ['h', HEAD[k]] : null; });
+    Object.keys(extra).forEach(function(c){ head[1][c] = ['i', extra[c].h]; });
+    var out = [head];
+    rows.forEach(function(ix){
+      if(ix === null){ out.push(['⋮', {}]); return; }
+      var r = DB[ix], cells = {};
+      cols.forEach(function(c){ var k = LET.indexOf(c); if(k >= 0) cells[c] = ['d', show(r, k), k === 8]; });
+      Object.keys(extra).forEach(function(c){ cells[c] = ['a', extra[c].v(r)]; });
+      out.push([ix + 2, cells]);
+    });
+    return out;
+  }
+  var ZONES = {
+    z1: { cols:['A','B','C'], rows:[
+      [56, {A:['t','BLOQUE 1 · BUSCARX']}],
+      [57, {B:['l','ID a buscar'], C:['i','REC-1077']}],
+      [58, {B:['l','Afiliado'], C:['a', EX[1]]}],
+      [59, {B:['l','ARS'], C:['a', EX[3]]}],
+      [60, {B:['l','Provincia'], C:['a', EX[4]]}],
+      [61, {B:['l','Monto'], C:['a', rd(EX[8]), true]}],
+      [62, {B:['l','Prestador (con mensaje)'], C:['a', EX[6]]}]
+    ]},
+    zJ: { cols:['A','G','I','J','K'], rows: dataRows(['A','G','I'], {
+      J:{h:'Tipo de costo', v:function(r){ return r[8] >= 50000 ? 'Alto costo' : 'Costo regular'; }},
+      K:{h:'Estado del prestador', v:function(r){ return r[6] === 'No Registrado' ? 'Sin prestador' : 'Con prestador'; }}
+    }, [0, 1, 2, null, EXP.firstSinp - 2]) },
+    zL: { cols:['A','I','L'], rows: dataRows(['A','I'], {
+      L:{h:'Categoría', v:function(r){ return cat(r[8]); }}
+    }, [0, 1, 2, null, row('REC-1140'), null, row('REC-1056')]) },
+    zM: { cols:['A','C','M','N'], rows: dataRows(['A','C'], {
+      M:{h:'N.º reclamación', v:function(r){ return r[0].slice(-4); }},
+      N:{h:'Prefijo cédula', v:function(r){ return r[2].slice(0, 3); }}
+    }, [0, 1, 2]) },
+    zO: { cols:['A','H','O','P'], rows: dataRows(['A','H'], {
+      O:{h:'Mes', v:function(r){ return mes(r); }},
+      P:{h:'Nombre del mes', v:function(r){ return MESES[mes(r) - 1]; }}
+    }, [0, 1, 2]) }
+  };
+  (function(){
+    var z4 = [[64, {A:['t','BLOQUES 4 Y 5 · CONTAR Y SUMAR POR ARS']}], [65, {B:['l','ARS'], C:['l','¿Cuántas?'], D:['l','¿Cuánto?']}]];
+    ARS.forEach(function(a, i){ z4.push([66 + i, {B:['i', a], C:['a', EXP.arsN[i], true], D:['n', '(bloque 5)']}]); });
+    z4.push([71, {B:['l','Total'], C:['a', 50, true], D:['n', '']}]);
+    var two = [[74, {A:['t','RETO · DOS CRITERIOS A LA VEZ']}], [75, {B:['l','ARS'], C:['i','MAPFRE Salud ARS']}], [76, {B:['l','Provincia'], C:['i','Distrito Nacional']}], [77, {B:['l','¿Cuántas?'], C:['a', EXP.twoN, true]}]];
+    var cats = [[80, {A:['t','RETO · ¿CUÁNTAS HAY DE CADA CATEGORÍA?']}], [81, {B:['l','Categoría'], C:['l','¿Cuántas?']}]];
+    CATS.forEach(function(c, i){ cats.push([82 + i, {B:['i', c], C:['a', EXP.cats[i], true]}]); });
+    cats.push([86, {B:['l','Total'], C:['a', 50, true]}]);
+    ZONES.z4 = { cols:['A','B','C','D'], rows: z4.concat([['', {}]], two, [['', {}]], cats) };
+    var z5 = [[65, {B:['d','ARS'], C:['d','¿Cuántas?'], D:['l','¿Cuánto?']}]];
+    ARS.forEach(function(a, i){ z5.push([66 + i, {B:['d', a], C:['d', EXP.arsN[i], true], D:['a', rd(EXP.arsS[i]), true]}]); });
+    z5.push([71, {B:['d','Total'], C:['d', 50, true], D:['a', rd(EXP.total), true]}]);
+    z5.push(['', {}], [75, {B:['d','ARS'], C:['d','MAPFRE Salud ARS']}], [76, {B:['d','Provincia'], C:['d','Distrito Nacional']}], [77, {B:['d','¿Cuántas?'], C:['d', EXP.twoN, true]}], [78, {B:['l','¿Cuánto?'], C:['a', rd(EXP.twoS), true]}]);
+    ZONES.z5 = { cols:['A','B','C','D'], rows: z5 };
+    var z7 = [[89, {A:['t','BLOQUE 7 · RECLAMACIONES POR MES']}], [90, {B:['l','Mes'], C:['l','¿Cuántas?'], D:['l','¿Cuánto?']}]];
+    EXP.meses.forEach(function(m, i){ z7.push([91 + i, {B:['i', i + 1, true], C:['a', m[0], true], D:['a', rd(m[1]), true]}]); });
+    z7.push([97, {B:['l','Total'], C:['a', 50, true], D:['a', rd(EXP.total), true]}]);
+    ZONES.z7 = { cols:['A','B','C','D'], rows: z7 };
+  })();
+  var CLS = {t:'title', l:'lab', i:'inp', a:'ans', h:'hd', d:'', n:'dim'};
+  function renderZone(host, solved){
+    var z = ZONES[host.getAttribute('data-zone')];
+    host.innerHTML = '<table><thead><tr><th></th>' + z.cols.map(function(c){ return '<th>' + c + '</th>'; }).join('') + '</tr></thead><tbody>'
+      + z.rows.map(function(rw){
+          var span = false;
+          return '<tr><td class="rn">' + rw[0] + '</td>' + z.cols.map(function(c, ci){
+            if(span) return '';
+            var v = rw[1][c];
+            if(v && v[0] === 't'){ span = true; return '<td class="title" colspan="' + (z.cols.length - ci) + '">' + esc(v[1]) + '</td>'; }
+            if(!v) return '<td></td>';
+            var cls = CLS[v[0]] + (v[2] ? ' r' : '') + (v[0] === 'a' && solved ? ' show' : '');
+            var txt = v[0] === 'a' && !solved ? '' : esc(v[1]);
+            return '<td class="' + cls + '">' + txt + '</td>';
+          }).join('') + '</tr>';
+        }).join('') + '</tbody></table>';
+  }
+  $$('[data-zone]').forEach(function(h){ renderZone(h, false); });
+  $$('[data-zone-toggle]').forEach(function(b){
+    var label = b.textContent;
     b.addEventListener('click', function(){
-      var tiles = $$('.tile', b.closest('div').parentNode);
-      var allOpen = tiles.every(function(t){ return t.classList.contains('open'); });
-      tiles.forEach(function(t){ t.classList.toggle('open', !allOpen); });
-      b.textContent = allOpen ? 'Mostrar todas' : 'Ocultar todas';
+      var host = $('[data-zone="' + b.getAttribute('data-zone-toggle') + '"]'), on = !host._solved;
+      host._solved = on; renderZone(host, on);
+      b.textContent = on ? 'Ocultar resultados' : label;
     });
   });
 
-  /* ---------- mapa de columnas ---------- */
-  document.getElementById('colmap').innerHTML = LET.map(function(l, k){
-    return '<tr><td class="rn">' + l + '</td><td><b>' + HEAD[k] + '</b></td><td' + (k === 8 || k === 7 ? ' class="r"' : '') + '>' + esc(show(DB[1], k)) + '</td></tr>';
-  }).join('');
+  /* ---------- tareas: Observa · Hazlo conmigo · Hazlo tú · Reto ---------- */
+  var BADGE = {obs:['b-obs','👀 Observa'], con:['b-con','🤝 Hazlo conmigo'], tu:['b-tu','✍️ Hazlo tú'], reto:['b-reto','🏁 Mini desafío']};
+  var TASKS = {
+    t1: [
+      {m:'obs', cell:'C58', q:'Trae el afiliado de la reclamación escrita en C57.',
+        steps:['En <b>A56</b> escribe el título del bloque.', 'En <b>B57</b> escribe <i>ID a buscar</i> y en <b>C57</b> escribe <b>REC-1077</b>.', 'En <b>B58</b> escribe <i>Afiliado</i>.', 'Haz clic en <b>C58</b>, escribe la fórmula y pulsa Enter.'],
+        f:'=BUSCARX(C57;A2:A51;B2:B51)', r:EX[1]},
+      {m:'con', cell:'C59', q:'Trae la ARS. Solo cambia la columna que devuelve.', blank:'=BUSCARX(C57;A2:A51;____)',
+        hint:'La ARS está en la columna D, de la fila 2 a la 51.', f:'=BUSCARX(C57;A2:A51;D2:D51)', r:EX[3]},
+      {m:'tu', cell:'C60 · C61', q:'Trae la provincia en C60 y el monto en C61.',
+        hint:'Mira en la fila 1 en qué letra está cada dato. Si el monto sale como 155647, aplícale formato Moneda (Ctrl + 1).',
+        f:'C60: =BUSCARX(C57;A2:A51;E2:E51)<br>C61: =BUSCARX(C57;A2:A51;I2:I51)', r:'C60: <b>' + EX[4] + '</b> · C61: <b>' + rd(EX[8]) + '</b>'},
+      {m:'reto', cell:'C62', q:'Trae el prestador y haz que diga «No encontrado» si el ID no existe. Pruébalo cambiando C57 por REC-9999 y después vuelve a REC-1077.',
+        hint:'Usa el cuarto argumento, entre comillas.', f:'=BUSCARX(C57;A2:A51;G2:G51;"No encontrado")', r:'Con REC-1077: <b>' + EX[6] + '</b> · con REC-9999: <b>No encontrado</b>'}
+    ],
+    t2: [
+      {m:'obs', cell:'J', q:'Crea la columna «Tipo de costo».',
+        steps:['En <b>J1</b> escribe <i>Tipo de costo</i> y pulsa Enter.', 'En <b>J2</b> escribe la fórmula y pulsa Enter.', 'Verifica que Excel la copió hasta J51.'],
+        f:'=SI(I2>=50000;"Alto costo";"Costo regular")', r:'J2: <b>Costo regular</b> · J3: <b>Alto costo</b> · Con el filtro de J hay <b>' + EXP.alto + '</b> «Alto costo».'},
+      {m:'tu', cell:'K', q:'Crea la columna K «Estado del prestador»: «Sin prestador» si el prestador (G) dice No Registrado; si no, «Con prestador».',
+        hint:'La prueba compara un texto: G2="No Registrado".', f:'=SI(G2="No Registrado";"Sin prestador";"Con prestador")',
+        r:'K2: <b>Con prestador</b> · K' + EXP.firstSinp + ': <b>Sin prestador</b> · En total hay <b>' + EXP.sinp + '</b> «Sin prestador».'}
+    ],
+    t3: [
+      {m:'con', cell:'L', q:'Crea la columna L «Categoría» con los cuatro niveles de costo.',
+        steps:['En <b>L1</b> escribe <i>Categoría</i>.', 'En <b>L2</b> completa la fórmula: falta el último par.'],
+        blank:'=SI.CONJUNTO(I2<5000;"Bajo";I2<20000;"Medio";I2<100000;"Alto";____)',
+        hint:'El último nivel es 100,000 o más: I2>=100000 y su texto.', f:'=SI.CONJUNTO(I2<5000;"Bajo";I2<20000;"Medio";I2<100000;"Alto";I2>=100000;"Muy alto")',
+        r:'L2: <b>' + cat(DB[0][8]) + '</b> · L3: <b>' + cat(DB[1][8]) + '</b> · L' + (row('REC-1140') + 2) + ': <b>' + cat(DB[row('REC-1140')][8]) + '</b>'},
+      {m:'tu', cell:'L4 · L' + (row('REC-1056') + 2), q:'Sin calcular a mano, busca en tu columna L la categoría de REC-1329 (fila 4) y de REC-1056 (fila ' + (row('REC-1056') + 2) + '). ¿Coincide con tu predicción?',
+        hint:'Compara el monto de la columna I con los límites: 20,000 y 100,000.', f:'Usa la misma fórmula de L2: ya está copiada en todas las filas.',
+        r:'REC-1329 (' + rd(DB[row('REC-1329')][8]) + '): <b>' + cat(DB[row('REC-1329')][8]) + '</b> · REC-1056 (' + rd(DB[row('REC-1056')][8]) + '): <b>' + cat(DB[row('REC-1056')][8]) + '</b>'}
+    ],
+    t4: [
+      {m:'obs', cell:'C66:C71', q:'¿Cuántas reclamaciones tiene cada ARS?',
+        steps:['En <b>B65</b>, <b>C65</b> y <b>D65</b> escribe <i>ARS</i>, <i>¿Cuántas?</i> y <i>¿Cuánto?</i>', 'En <b>B66:B70</b> escribe las 5 ARS exactamente como en la base.', 'En <b>C66</b> escribe la fórmula; fija el rango con F4.', 'Copia C66 hasta C70: arrastra el cuadrito de la esquina.', 'En <b>B71</b> escribe <i>Total</i> y en <b>C71</b>: =SUMA(C66:C70)'],
+        f:'=CONTAR.SI.CONJUNTO($D$2:$D$51;B66)', r:ARS.map(function(a, i){ return a + ': <b>' + EXP.arsN[i] + '</b>'; }).join(' · ') + ' · C71 = <b>50</b> ✓'},
+      {m:'con', cell:'C77', q:'En C75 escribe MAPFRE Salud ARS y en C76 Distrito Nacional. En C77 cuenta las reclamaciones que cumplen las dos cosas.',
+        blank:'=CONTAR.SI.CONJUNTO(D2:D51;C75;____;____)', hint:'El segundo par: la columna de provincia (E2:E51) y la celda C76.',
+        f:'=CONTAR.SI.CONJUNTO(D2:D51;C75;E2:E51;C76)', r:'C77: <b>' + EXP.twoN + '</b>'},
+      {m:'tu', cell:'C82:C86', q:'Usando tu columna L, cuenta cuántas reclamaciones hay de cada categoría. Escribe Bajo, Medio, Alto y Muy alto en B82:B85 y el total en C86.',
+        hint:'Igual que con las ARS, pero el rango es la columna L. ¡No olvides el $!', f:'C82: =CONTAR.SI.CONJUNTO($L$2:$L$51;B82) → copiar hasta C85<br>C86: =SUMA(C82:C85)',
+        r:CATS.map(function(c, i){ return c + ': <b>' + EXP.cats[i] + '</b>'; }).join(' · ') + ' · Total <b>50</b>'}
+    ],
+    t5: [
+      {m:'con', cell:'D66:D71', q:'Completa la columna D: ¿cuánto suman las reclamaciones de cada ARS?',
+        steps:['En <b>D66</b> escribe la fórmula y cópiala hasta D70.', 'En <b>D71</b>: =SUMA(D66:D70)', 'Control: en una celda libre escribe =SUMA(I2:I51). Debe dar lo mismo que D71.'],
+        blank:'=SUMAR.SI.CONJUNTO($I$2:$I$51;____;B66)', hint:'Después del rango que se suma va el par de criterio: $D$2:$D$51 y B66.',
+        f:'=SUMAR.SI.CONJUNTO($I$2:$I$51;$D$2:$D$51;B66)', r:'D66: <b>' + rd(EXP.arsS[0]) + '</b> · D71: <b>' + rd(EXP.total) + '</b> = SUMA(I2:I51) ✓'},
+      {m:'tu', cell:'C78', q:'En C78, ¿cuánto suman las reclamaciones de MAPFRE Salud ARS en Distrito Nacional? Usa las celdas C75 y C76.',
+        hint:'Como C77, pero con SUMAR.SI.CONJUNTO: primero I2:I51.', f:'=SUMAR.SI.CONJUNTO(I2:I51;D2:D51;C75;E2:E51;C76)', r:'C78: <b>' + rd(EXP.twoS) + '</b>'}
+    ],
+    t6: [
+      {m:'con', cell:'M', q:'Crea la columna M «N.º reclamación» con los 4 últimos caracteres del ID.',
+        blank:'=DERECHA(A2;__)', hint:'REC-1189 tiene 4 dígitos al final.', f:'=DERECHA(A2;4)', r:'M2: <b>' + DB[0][0].slice(-4) + '</b> · M3: <b>' + DB[1][0].slice(-4) + '</b> (alineados a la izquierda: son texto)'},
+      {m:'tu', cell:'N', q:'Crea la columna N «Prefijo cédula» con los 3 primeros caracteres de la cédula (columna C).',
+        hint:'Desde el inicio del texto: IZQUIERDA.', f:'=IZQUIERDA(C2;3)', r:'N2: <b>' + DB[0][2].slice(0, 3) + '</b> · N3: <b>' + DB[1][2].slice(0, 3) + '</b>'}
+    ],
+    t7: [
+      {m:'con', cell:'O', q:'Crea la columna O «Mes» con el número de mes de la fecha de servicio.',
+        blank:'=MES(__)', hint:'La fecha está en la columna H. Si ves 01/01/1900, cambia el formato de la columna O a General.', f:'=MES(H2)', r:'O2: <b>' + mes(DB[0]) + '</b> · O3: <b>' + mes(DB[1]) + '</b>'},
+      {m:'tu', cell:'P', q:'Crea la columna P «Nombre del mes» que muestre el mes en letras.',
+        hint:'TEXTO con el formato "mmmm".', f:'=TEXTO(H2;"mmmm")', r:'P2: <b>' + MESES[mes(DB[0]) - 1] + '</b> · P3: <b>' + MESES[mes(DB[1]) - 1] + '</b>'},
+      {m:'reto', cell:'C91:D97', q:'Arma la tabla por mes: en B91:B96 escribe 1 a 6; en C cuenta y en D suma usando tu columna O. Cierra con los totales en la fila 97.',
+        hint:'El criterio es el número de mes de la columna B. Fija $O$2:$O$51 y $I$2:$I$51.', f:'C91: =CONTAR.SI.CONJUNTO($O$2:$O$51;B91)<br>D91: =SUMAR.SI.CONJUNTO($I$2:$I$51;$O$2:$O$51;B91)',
+        r:EXP.meses.map(function(m, i){ return MESES[i].slice(0, 3) + ' <b>' + m[0] + '</b>'; }).join(' · ') + ' · Total <b>50</b> y <b>' + rd(EXP.total) + '</b>'}
+    ],
+    t8: [
+      {m:'obs', cell:'Hoja CONSULTA', q:'Prepara la hoja.',
+        steps:['Pulsa el <b>+</b> junto a la pestaña Reclamaciones y llama a la hoja nueva <b>CONSULTA</b>.', 'Escribe las etiquetas de la columna B tal como en la maqueta de la diapositiva anterior: B4, B6 a B12, B14 a B17 y B19 a B22.', 'En <b>C4</b> escribe <b>REC-1077</b>.'],
+        f:'Las fórmulas leen la otra hoja: Reclamaciones!$A$2:$A$51', r:'Truco: haz clic en la pestaña Reclamaciones y selecciona el rango; Excel escribe el nombre de la hoja por ti.'},
+      {m:'con', cell:'C6:C12', q:'Trae los 7 datos con BUSCARX. Escribe C6 y cópiala hasta C12; luego cambia en cada una la columna que devuelve.',
+        blank:'=BUSCARX($C$4;Reclamaciones!$A$2:$A$51;Reclamaciones!$B$2:$B$51;"No encontrado")',
+        hint:'C7 → D, C8 → E, C9 → F, C10 → G, C11 → H (formato fecha), C12 → I (formato moneda).', f:'C7: =BUSCARX($C$4;Reclamaciones!$A$2:$A$51;Reclamaciones!$D$2:$D$51;"No encontrado")<br>… y así hasta C12 con la columna I.',
+        r:'C6: <b>' + EX[1] + '</b> · C12: <b>' + rd(EX[8]) + '</b>'},
+      {m:'tu', cell:'C14:C22', q:'Completa el análisis y el resumen con las fórmulas que ya conoces (SI.CONJUNTO, SI, TEXTO, DERECHA, CONTAR y SUMAR).',
+        hint:'Toca cada campo en la maqueta de la diapositiva anterior para ver qué celda usa.', f:'Están en la maqueta: toca cada campo.',
+        r:'C14: <b>' + cat(EX[8]) + '</b> · C19: <b>' + EXP.arsN[0] + '</b> · C20: <b>' + rd(EXP.arsS[0]) + '</b>'},
+      {m:'reto', cell:'C4', q:'Demuéstralo: cambia C4 por REC-1210 y luego por REC-1133. Todo debe cambiar solo. Compara con la maqueta eligiendo el mismo ID.',
+        hint:'Si algo no cambia, esa fórmula tiene un dato escrito a mano en lugar de una celda.', f:'Ninguna fórmula debe tener «REC-1077» escrito: todas leen C4.',
+        r:'REC-1210: <b>' + DB[row('REC-1210')][1] + '</b>, <b>' + cat(DB[row('REC-1210')][8]) + '</b> · REC-1133: <b>' + DB[row('REC-1133')][1] + '</b>, <b>' + cat(DB[row('REC-1133')][8]) + '</b>'}
+    ]
+  };
+  function fx(s){ return esc(s).replace(/&lt;br&gt;/g, '<br>'); }
+  function renderTasks(host){
+    var list = TASKS[host.getAttribute('data-tasks')];
+    host.innerHTML = list.map(function(t, i){
+      var b = BADGE[t.m], open = t.m === 'obs', html = '<div class="task ' + t.m + '"><div class="tk-top"><span class="badge ' + b[0] + '">' + b[1] + '</span><span class="cellchip">' + t.cell + '</span></div>'
+        + '<p class="tk-q">' + t.q + '</p>';
+      if(t.steps) html += '<ol class="steps sm">' + t.steps.map(function(s){ return '<li><span>' + s + '</span></li>'; }).join('') + '</ol>';
+      if(t.blank) html += '<div class="tk-out f">' + esc(t.blank) + '</div>';
+      if(open){
+        html += '<div class="tk-out f">' + fx(t.f) + '</div><div class="tk-out r">✅ Debe salir: ' + t.r + '</div>';
+      } else {
+        html += '<div class="tk-btns">'
+          + (t.hint ? '<button aria-expanded="false" data-o="h">💡 Pista</button>' : '')
+          + '<button aria-expanded="false" data-o="r">✅ Comprobar resultado</button>'
+          + '<button aria-expanded="false" data-o="f">' + (t.m === 'con' ? 'Ver fórmula completa' : 'Ver solución') + '</button></div>'
+          + (t.hint ? '<div class="tk-out h" data-p="h" hidden>💡 ' + t.hint + '</div>' : '')
+          + '<div class="tk-out r" data-p="r" hidden>Debe salir: ' + t.r + '</div>'
+          + '<div class="tk-out f" data-p="f" hidden>' + fx(t.f) + '</div>';
+      }
+      return html + '</div>';
+    }).join('');
+    $$('.tk-btns button', host).forEach(function(b){
+      b.addEventListener('click', function(){
+        var p = $('[data-p="' + b.getAttribute('data-o') + '"]', b.closest('.task')), on = p.hidden;
+        p.hidden = !on; b.setAttribute('aria-expanded', on ? 'true' : 'false');
+      });
+    });
+  }
+  $$('[data-tasks]').forEach(renderTasks);
 
   /* ---------- BUSCARX ---------- */
   var bxCols = [0, 1, 3, 4, 6, 8];
@@ -1165,15 +1704,14 @@
     return '<tr><td class="rn">' + (i + 2) + '</td>' + bxCols.map(function(k){ return '<td data-k="' + k + '"' + (k === 8 ? ' class="r"' : '') + '>' + esc(show(r, k)) + '</td>'; }).join('') + '</tr>';
   }).join('');
   document.getElementById('bx-list').innerHTML = DB.map(function(r){ return '<option value="' + r[0] + '">'; }).join('');
-  var bxIn = document.getElementById('bx-id'), bxNf = document.getElementById('bx-nf'), bxCol = 4, bxTimer = null;
+  var bxIn = document.getElementById('bx-id'), bxNf = document.getElementById('bx-nf'), bxCol = 1, bxTimer = null;
   var bxPicks = ['REC-1077', 'REC-1210', 'REC-1133', 'REC-9999'];
   document.getElementById('bx-picks').innerHTML = bxPicks.map(function(p){ return '<button class="pick" data-v="' + p + '">' + p + '</button>'; }).join('') + '<span style="font-size:.8rem; color:var(--ink-soft);">(REC-9999 no existe)</span>';
   $$('#bx-picks .pick').forEach(function(b){ b.addEventListener('click', function(){ bxIn.value = b.getAttribute('data-v'); runBx(true); }); });
-
   function runBx(animate){
     clearInterval(bxTimer);
     var v = bxIn.value.trim().toUpperCase(), nf = bxNf.getAttribute('aria-checked') === 'true';
-    var parts = [arg(q(esc(v || '…')), 'p1'), arg('A:A', 'p2'), arg(LET[bxCol] + ':' + LET[bxCol], 'p3')];
+    var parts = [arg('C57', 'p1'), arg('A2:A51', 'p2'), arg(LET[bxCol] + '2:' + LET[bxCol] + '51', 'p3')];
     if(nf) parts.push(arg('"No encontrado"', 'p4'));
     document.getElementById('bx-fx').innerHTML = call('BUSCARX', parts);
     $$('#bx-picks .pick').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === v); });
@@ -1181,21 +1719,20 @@
     DB.forEach(function(r, i){ if(idx < 0 && r[0].toUpperCase() === v) idx = i; });
     rows.forEach(function(tr){ tr.classList.remove('found'); $$('td', tr).forEach(function(td){ td.classList.remove('scan', 'ret', 'key'); }); });
     var res = document.getElementById('bx-res'), cap = document.getElementById('bx-cap');
-    res.textContent = '…'; res.classList.remove('err'); cap.innerHTML = 'Buscando en la columna A…';
+    res.textContent = '…'; res.classList.remove('err'); cap.innerHTML = 'C57 contiene «' + esc(v) + '». Buscando en A2:A51…';
     function finish(){
       rows.forEach(function(tr){ tr.children[1].classList.remove('scan'); });
       if(idx >= 0){
         var tr = rows[idx];
-        tr.classList.add('found');
-        tr.children[1].classList.add('key');
+        tr.classList.add('found'); tr.children[1].classList.add('key');
         $('td[data-k="' + bxCol + '"]', tr).classList.add('ret');
         scrollRow(bxScroll, tr);
         res.textContent = show(DB[idx], bxCol);
-        cap.innerHTML = 'Encontró <b>' + esc(DB[idx][0]) + '</b> en la fila ' + (idx + 2) + ' y devolvió lo que hay en la columna <b>' + LET[bxCol] + '</b> de esa misma fila.';
+        cap.innerHTML = 'Encontró <b>' + esc(DB[idx][0]) + '</b> en <b>A' + (idx + 2) + '</b> y devolvió <b>' + LET[bxCol] + (idx + 2) + '</b>: la misma fila, en la columna que pediste.';
       } else {
         res.textContent = nf ? 'No encontrado' : '#N/D';
         res.classList.add('err');
-        cap.innerHTML = nf ? 'El ID no existe, así que muestra el texto del 4.º argumento.' : 'Recorrió las 50 filas sin encontrar el ID. Activa el 4.º argumento para mostrar un mensaje claro.';
+        cap.innerHTML = nf ? 'El ID no existe, así que muestra el texto del 4.º argumento.' : 'Revisó A2:A51 completo sin encontrar el ID. Activa el 4.º argumento para mostrar un mensaje claro.';
       }
       flash(res);
     }
@@ -1216,16 +1753,16 @@
 
   /* ---------- SI ---------- */
   var SI = {
-    monto: { situ:'Finanzas quiere marcar las reclamaciones de <b>alto costo</b>: RD$50,000 o más.', col:8, head:'<span class="cl">I</span>Monto',
+    monto: { col:'J', situ:'Finanzas quiere marcar las reclamaciones de <b>alto costo</b>: RD$50,000 o más.', k:8, head:'<span class="cl">I</span>Monto', rh:'<span class="cl">J</span>Tipo de costo',
       test:function(r){ return r[8] >= 50000; }, cond:'I2>=50000', yes:'Alto costo', no:'Costo regular' },
-    prest: { situ:'Auditoría quiere saber qué reclamaciones <b>no tienen prestador</b> registrado, para darles seguimiento.', col:6, head:'<span class="cl">G</span>Prestador',
+    prest: { col:'K', situ:'Auditoría quiere saber qué reclamaciones <b>no tienen prestador</b> registrado, para darles seguimiento.', k:6, head:'<span class="cl">G</span>Prestador', rh:'<span class="cl">K</span>Estado del prestador',
       test:function(r){ return r[6] === 'No Registrado'; }, cond:'G2="No Registrado"', yes:'Sin prestador', no:'Con prestador' }
   };
   var siSample = (function(){
     var pick = {}, n = 0;
     DB.forEach(function(r, i){ if(r[6] === 'No Registrado'){ pick[i] = 1; n++; } });
-    DB.forEach(function(r, i){ if(n < 7 && r[8] >= 50000 && !pick[i]){ pick[i] = 1; n++; } });
-    DB.forEach(function(r, i){ if(n < 11 && !pick[i]){ pick[i] = 1; n++; } });
+    DB.forEach(function(r, i){ if(n < 9 && r[8] >= 50000 && !pick[i]){ pick[i] = 1; n++; } });
+    DB.forEach(function(r, i){ if(n < 12 && !pick[i]){ pick[i] = 1; n++; } });
     return Object.keys(pick).map(Number).sort(function(a, b){ return a - b; });
   })();
   var siCur = 'monto', siTimer = null;
@@ -1234,17 +1771,18 @@
     var e = SI[siCur];
     document.getElementById('si-situ').innerHTML = '<small>Situación</small><p>' + e.situ + '</p>';
     document.getElementById('si-h').innerHTML = e.head;
+    document.getElementById('si-rh').innerHTML = e.rh;
+    document.getElementById('si-ref').textContent = e.col + '2';
     document.getElementById('si-fx').innerHTML = call('SI', [arg(esc(e.cond), 'p1'), arg(q(e.yes), 'p2'), arg(q(e.no), 'p3')]);
     var body = document.getElementById('si-body');
     body.innerHTML = siSample.map(function(i){
       var r = DB[i];
-      return '<tr><td class="rn">' + (i + 2) + '</td><td>' + r[0] + '</td><td' + (e.col === 8 ? ' class="r"' : '') + '>' + esc(show(r, e.col)) + '</td><td class="pend c">…</td><td class="pend">…</td></tr>';
+      return '<tr><td class="rn">' + (i + 2) + '</td><td>' + r[0] + '</td><td' + (e.k === 8 ? ' class="r"' : '') + '>' + esc(show(r, e.k)) + '</td><td class="pend c">…</td><td class="pend">…</td></tr>';
     }).join('');
-    var total = DB.filter(e.test).length;
-    document.getElementById('si-cap').innerHTML = 'La misma fórmula se copia hacia abajo y cada fila responde por sí sola. En toda la base, <b>' + total + ' de 50</b> reclamaciones dan «' + e.yes + '».';
+    document.getElementById('si-cap').innerHTML = 'Escribes la fórmula una sola vez en <b>' + e.col + '2</b> y la tabla la copia hacia abajo: en cada fila, <b>2</b> se convierte en el número de esa fila. En toda la base, <b>' + DB.filter(e.test).length + ' de 50</b> dan «' + e.yes + '».';
     var rows = $$('tr', body), k = 0;
     function reveal(j){
-      var ok = SI[siCur].test(DB[siSample[j]]), c = rows[j].children;
+      var ok = e.test(DB[siSample[j]]), c = rows[j].children;
       c[3].className = 'c ' + (ok ? 't' : 'f'); c[3].textContent = ok ? 'VERDADERO' : 'FALSO';
       c[4].className = ok ? 'yes' : 'no'; c[4].textContent = ok ? e.yes : e.no;
     }
@@ -1261,24 +1799,27 @@
     document.getElementById('sic-code').textContent = v === 'nest' ? SIC_NEST : SIC_CONJ;
     document.getElementById('sic-cap').innerHTML = v === 'nest'
       ? 'Funciona, pero cada SI va dentro del anterior: hay que contar paréntesis y es fácil equivocarse.'
-      : 'Mismo resultado, sin anidar: cada línea es una condición con su resultado. Disponible desde Excel 2019.';
+      : 'El mismo resultado, sin anidar: cada línea es una condición con su resultado. Disponible desde Excel 2019.';
   });
-  var ORD = {
-    ok: [[function(x){ return x < 5000; }, 'I2<5000', 'Bajo'], [function(x){ return x < 20000; }, 'I2<20000', 'Medio'], [function(x){ return x < 100000; }, 'I2<100000', 'Alto'], [function(x){ return x >= 100000; }, 'I2>=100000', 'Muy alto']],
-    bad: [[function(x){ return x < 100000; }, 'I2<100000', 'Alto'], [function(x){ return x < 20000; }, 'I2<20000', 'Medio'], [function(x){ return x < 5000; }, 'I2<5000', 'Bajo'], [function(x){ return x >= 100000; }, 'I2>=100000', 'Muy alto']]
-  };
+  function ORDS(c){
+    return {
+      ok: [[function(x){ return x < 5000; }, c + '<5000', 'Bajo'], [function(x){ return x < 20000; }, c + '<20000', 'Medio'], [function(x){ return x < 100000; }, c + '<100000', 'Alto'], [function(x){ return x >= 100000; }, c + '>=100000', 'Muy alto']],
+      bad: [[function(x){ return x < 100000; }, c + '<100000', 'Alto'], [function(x){ return x < 20000; }, c + '<20000', 'Medio'], [function(x){ return x < 5000; }, c + '<5000', 'Bajo'], [function(x){ return x >= 100000; }, c + '>=100000', 'Muy alto']]
+    };
+  }
   function classify(order, x){ for(var i = 0; i < order.length; i++){ if(order[i][0](x)) return i; } return -1; }
-  var sicOrder = 'ok', sicVal = DB[1][8], sicTimer = null;
+  var sicOrder = 'ok', sicIdx = 1, sicVal = DB[1][8], sicTimer = null;
   var sicRange = document.getElementById('sic-range');
-  var sicPickIdx = [7, 0, 3, 1];
+  var sicPickIdx = ['REC-1140', 'REC-1189', 'REC-1280', 'REC-1077'].map(row);
   document.getElementById('sic-picks').innerHTML = sicPickIdx.map(function(i){ return '<button class="pick" data-i="' + i + '">' + DB[i][0] + '</button>'; }).join('');
-  $$('#sic-picks .pick').forEach(function(b){ b.addEventListener('click', function(){ sicVal = DB[+b.getAttribute('data-i')][8]; sicRange.value = Math.min(160000, sicVal); runSic(true); }); });
-  sicRange.addEventListener('input', function(){ sicVal = +sicRange.value; runSic(false); });
+  $$('#sic-picks .pick').forEach(function(b){ b.addEventListener('click', function(){ sicIdx = +b.getAttribute('data-i'); sicVal = DB[sicIdx][8]; sicRange.value = Math.min(180000, sicVal); runSic(true); }); });
+  sicRange.addEventListener('input', function(){ sicIdx = -1; sicVal = +sicRange.value; runSic(false); });
   function runSic(animate){
     clearTimeout(sicTimer);
-    var order = ORD[sicOrder], hit = classify(order, sicVal);
+    var c = sicIdx >= 0 ? 'I' + (sicIdx + 2) : 'monto', order = ORDS(c)[sicOrder], hit = classify(order, sicVal);
+    document.getElementById('sic-lab').textContent = sicIdx >= 0 ? 'I' + (sicIdx + 2) + ' =' : 'monto de prueba =';
     document.getElementById('sic-out').textContent = rd(sicVal);
-    $$('#sic-picks .pick').forEach(function(b){ b.classList.toggle('on', DB[+b.getAttribute('data-i')][8] === sicVal); });
+    $$('#sic-picks .pick').forEach(function(b){ b.classList.toggle('on', +b.getAttribute('data-i') === sicIdx); });
     var lad = document.getElementById('sic-ladder');
     lad.innerHTML = order.map(function(o, i){ return '<div class="rung"><span class="rn">' + (i + 1) + '</span><code>' + esc(o[1]) + '</code><span class="rv">"' + o[2] + '"</span><span class="rs"></span></div>'; }).join('');
     var rungs = $$('.rung', lad), res = document.getElementById('sic-res');
@@ -1300,38 +1841,36 @@
     })();
   }
   function renderDist(){
-    var order = ORD[sicOrder], names = ['Bajo', 'Medio', 'Alto', 'Muy alto'], cnt = {Bajo:0, Medio:0, Alto:0, 'Muy alto':0};
-    DB.forEach(function(r){ cnt[order[classify(order, r[8])][2]]++; });
-    var max = Math.max.apply(null, names.map(function(n){ return cnt[n]; }));
-    document.getElementById('sic-dist').innerHTML = names.map(function(n){
-      return '<div class="drow"><span>' + n + '</span><span class="track"><span class="fill" style="width:' + (cnt[n] / max * 82) + '%"></span><em>' + cnt[n] + '</em></span></div>';
+    var order = ORDS('I2')[sicOrder], cntc = {Bajo:0, Medio:0, Alto:0, 'Muy alto':0};
+    DB.forEach(function(r){ cntc[order[classify(order, r[8])][2]]++; });
+    var max = Math.max.apply(null, CATS.map(function(n){ return cntc[n]; }));
+    document.getElementById('sic-dist').innerHTML = CATS.map(function(n){
+      return '<div class="drow"><span>' + n + '</span><span class="track"><span class="fill" style="width:' + (cntc[n] / max * 82) + '%"></span><em>' + cntc[n] + '</em></span></div>';
     }).join('');
     document.getElementById('sic-dcap').innerHTML = sicOrder === 'ok'
-      ? 'Con el orden correcto, cada monto cae en su nivel.'
+      ? 'Con el orden correcto, cada monto cae en su nivel. Son los mismos números que obtendrás en tu columna L.'
       : '<b>Orden al revés:</b> la primera condición (I2&lt;100000) ya es verdadera para casi todos, así que «atrapa» los montos bajos y medios. Nadie llega a «Bajo» ni a «Medio».';
   }
   seg('sic-order', function(v){ sicOrder = v; renderDist(); runSic(true); });
   sicRange.value = sicVal;
 
   /* ---------- criterios (formas) ---------- */
-  function countIf(pairs){ return DB.filter(function(r){ return pairs.every(function(p){ return p[1](r[p[0]]); }); }); }
   var FORMS = [
-    ['Texto exacto', '=CONTAR.SI.CONJUNTO(D:D;"ARS Humano")', [[3, function(v){ return v === 'ARS Humano'; }]]],
-    ['Comparación', '=CONTAR.SI.CONJUNTO(I:I;">=50000")', [[8, function(v){ return v >= 50000; }]]],
-    ['Distinto de', '=CONTAR.SI.CONJUNTO(E2:E51;"<>No Registrado")', [[4, function(v){ return v !== 'No Registrado'; }]]],
-    ['Comodín *', '=CONTAR.SI.CONJUNTO(G:G;"Clínica*")', [[6, function(v){ return v.indexOf('Clínica') === 0; }]]],
-    ['Celda', '=CONTAR.SI.CONJUNTO(D:D;K2)', null]
+    ['Texto exacto', '=CONTAR.SI.CONJUNTO(D2:D51;"ARS Humano")', cnt(function(r){ return r[3] === 'ARS Humano'; })],
+    ['Comparación', '=CONTAR.SI.CONJUNTO(I2:I51;">=50000")', cnt(function(r){ return r[8] >= 50000; })],
+    ['Distinto de', '=CONTAR.SI.CONJUNTO(E2:E51;"<>No Registrado")', cnt(function(r){ return r[4] !== 'No Registrado'; })],
+    ['Comodín *', '=CONTAR.SI.CONJUNTO(G2:G51;"Clínica*")', cnt(function(r){ return r[6].indexOf('Clínica') === 0; })],
+    ['Una celda', '=CONTAR.SI.CONJUNTO(D2:D51;B66)', cnt(function(r){ return r[3] === ARS[0]; }) + ' (B66 = ' + ARS[0] + ')']
   ];
   document.getElementById('crit-forms').innerHTML = FORMS.map(function(f){
-    var n = f[2] ? countIf(f[2]).length : '';
-    return '<tr><td style="font-family:inherit; font-size:.9rem; width:auto; white-space:nowrap;">' + f[0] + '</td><td><code style="font-size:.8rem;">' + esc(f[1]) + '</code></td><td style="font-family:\'IBM Plex Mono\',monospace;">' + (f[2] ? n : 'según K2') + '</td></tr>';
+    return '<tr><td style="font-family:inherit; font-size:.9rem; width:auto; white-space:nowrap;">' + f[0] + '</td><td><code style="font-size:.8rem;">' + esc(f[1]) + '</code></td><td style="font-family:\'IBM Plex Mono\',monospace;">' + esc(f[2]) + '</td></tr>';
   }).join('');
 
   /* ---------- constructor CONTAR / SUMAR ---------- */
   function builder(pre, mode, defaults, presets){
     var defs = [[3, 'ARS', 'c1', 'p1', 'h1'], [4, 'Provincia', 'c2', 'p2', 'h2'], [5, 'Tipo de servicio', 'c3', 'p5', 'h3']];
     document.getElementById(pre + '-crit').innerHTML = defs.map(function(d){
-      return '<label class="field ' + d[2] + '"><span>' + LET[d[0]] + ':' + LET[d[0]] + ' · ' + d[1] + '</span><select class="sel" data-k="' + d[0] + '"><option value="">— sin criterio —</option>'
+      return '<label class="field ' + d[2] + '"><span>' + LET[d[0]] + '2:' + LET[d[0]] + '51 · ' + d[1] + '</span><select class="sel" data-k="' + d[0] + '"><option value="">— sin criterio —</option>'
         + uniq(d[0]).map(function(v){ return '<option>' + esc(v) + '</option>'; }).join('') + '</select></label>';
     }).join('');
     var sels = $$('#' + pre + '-crit select');
@@ -1350,8 +1889,8 @@
     function run(){
       var crit = [];
       sels.forEach(function(s, k){ if(s.value) crit.push([defs[k][0], s.value, defs[k][3], defs[k][4]]); });
-      var parts = mode === 'sum' ? [arg('I:I', 'p3')] : [];
-      crit.forEach(function(c){ parts.push(arg(LET[c[0]] + ':' + LET[c[0]] + ';' + esc(q(c[1])), c[2])); });
+      var parts = mode === 'sum' ? [arg('I2:I51', 'p3')] : [];
+      crit.forEach(function(c){ parts.push(arg(LET[c[0]] + '2:' + LET[c[0]] + '51;' + esc(q(c[1])), c[2])); });
       var fname = mode === 'sum' ? 'SUMAR.SI.CONJUNTO' : 'CONTAR.SI.CONJUNTO';
       var fx = document.getElementById(pre + '-fx');
       var rows = $$('tr', body), hits = [], total = 0;
@@ -1380,7 +1919,7 @@
       var desc = crit.map(function(c){ return '<b>' + esc(c[1]) + '</b>'; }).join(' y ');
       document.getElementById(pre + '-cap').innerHTML = hits.length
         ? (mode === 'sum'
-            ? 'Suma la columna I solo en las ' + hits.length + ' filas que cumplen ' + desc + '. Las demás no participan.'
+            ? 'Suma I2:I51 solo en las ' + hits.length + ' filas que cumplen ' + desc + ' (filas ' + hits.map(function(h){ return h + 2; }).join(', ') + '). Las demás no participan.'
             : hits.length + ' de 50 filas cumplen ' + desc + (crit.length > 1 ? ' al mismo tiempo.' : '.'))
         : 'Ninguna fila cumple ' + desc + ' a la vez: el resultado es 0.';
       if(hits.length) scrollRow(body.closest('.grid-scroll'), rows[hits[0]]);
@@ -1389,19 +1928,35 @@
     run();
   }
   builder('ct', 'count', ['ARS Humano'], [
-    ['Una ARS', ['ARS Humano']], ['Una provincia', ['', 'Santiago']], ['ARS + provincia', ['MAPFRE Salud ARS', 'Distrito Nacional']], ['Un servicio', ['', '', 'Laboratorio']]
+    ['Una ARS', ['ARS Humano']], ['Una provincia', ['', 'Santiago']], ['ARS + provincia (C77)', ['MAPFRE Salud ARS', 'Distrito Nacional']], ['Un servicio', ['', '', 'Laboratorio']]
   ]);
   builder('sm', 'sum', ['MAPFRE Salud ARS', 'Distrito Nacional'], [
-    ['Por ARS', ['SeNaSa']], ['Por provincia', ['', 'La Vega']], ['Por servicio', ['', '', 'Hospitalización']], ['ARS dentro de provincia', ['MAPFRE Salud ARS', 'Distrito Nacional']]
+    ['Por ARS', ['SeNaSa']], ['Por provincia', ['', 'La Vega']], ['Por servicio', ['', '', 'Hospitalización']], ['ARS + provincia (C78)', ['MAPFRE Salud ARS', 'Distrito Nacional']]
   ]);
+
+  /* ---------- referencias absolutas ($) ---------- */
+  seg('dl-seg', function(v){
+    var fixed = v === 'yes', bad = 0, tot = 0;
+    var html = '<div class="dl-row h"><span>Celda</span><span>Fórmula copiada</span><span style="text-align:right;">Da</span><span style="text-align:right;" class="v exp">Debe dar</span></div>';
+    CATS.forEach(function(c, i){
+      var r = 82 + i, a = fixed ? 2 : 2 + i, b = fixed ? 51 : 51 + i;
+      var got = DB.filter(function(x, k){ return k + 2 >= a && k + 2 <= b && cat(x[8]) === c; }).length, exp = EXP.cats[i];
+      tot += got; if(got !== exp) bad++;
+      var rng = fixed ? '<mark class="ok">$L$2:$L$51</mark>' : (i ? '<mark>L' + a + ':L' + b + '</mark>' : 'L2:L51');
+      html += '<div class="dl-row"><span class="cellchip">C' + r + '</span><code>=CONTAR.SI.CONJUNTO(' + rng + ';B' + r + ')</code><span class="v ' + (got === exp ? 'good' : 'bad') + '">' + got + '</span><span class="v exp">' + exp + '</span></div>';
+    });
+    html += '<div class="dl-row"><span class="cellchip">C86</span><code>=SUMA(C82:C85)</code><span class="v ' + (tot === 50 ? 'good' : 'bad') + '">' + tot + '</span><span class="v exp">50</span></div>';
+    document.getElementById('dl-box').innerHTML = html;
+    document.getElementById('dl-cap').innerHTML = fixed
+      ? 'Con <b>$</b> el rango no se mueve: todas las filas cuentan sobre L2:L51 y el total da <b>50</b>.'
+      : 'Sin <b>$</b>, cada fila mira un rango corrido y deja fuera las primeras reclamaciones: ' + bad + ' resultados salen mal y el total da <b>' + tot + '</b>, no 50. <b>El total es tu control.</b>';
+  });
 
   /* duo contar vs sumar */
   (function(){
-    var h = DB.filter(function(r){ return r[3] === 'ARS Humano'; });
-    var s = h.reduce(function(a, r){ return a + r[8]; }, 0);
     document.getElementById('duo').innerHTML =
-      '<div><h3>CONTAR.SI.CONJUNTO</h3><p class="q2">¿Cuántos?</p><code style="font-size:.78rem; color:var(--ink-soft);">=CONTAR.SI.CONJUNTO(D:D;"ARS Humano")</code><p class="ans" style="margin-top:10px;">' + h.length + '</p><small>reclamaciones</small></div>'
-      + '<div><h3>SUMAR.SI.CONJUNTO</h3><p class="q2">¿Cuánto?</p><code style="font-size:.78rem; color:var(--ink-soft);">=SUMAR.SI.CONJUNTO(I:I;D:D;"ARS Humano")</code><p class="ans" style="margin-top:10px;">' + rd(s) + '</p><small>monto total reclamado</small></div>';
+      '<div><h3>CONTAR.SI.CONJUNTO</h3><p class="q2">¿Cuántos?</p><code style="font-size:.78rem; color:var(--ink-soft);">=CONTAR.SI.CONJUNTO(D2:D51;"ARS Humano")</code><p class="ans" style="margin-top:10px;">' + EXP.arsN[0] + '</p><small>reclamaciones</small></div>'
+      + '<div><h3>SUMAR.SI.CONJUNTO</h3><p class="q2">¿Cuánto?</p><code style="font-size:.78rem; color:var(--ink-soft);">=SUMAR.SI.CONJUNTO(I2:I51;D2:D51;"ARS Humano")</code><p class="ans" style="margin-top:10px;">' + rd(EXP.arsS[0]) + '</p><small>monto total reclamado</small></div>';
   })();
 
   /* ---------- cuántos vs cuánto ---------- */
@@ -1413,63 +1968,62 @@
     var mc = Math.max.apply(null, keys.map(function(x){ return g[x][0]; })), ms = Math.max.apply(null, keys.map(function(x){ return g[x][1]; }));
     var topC = keys[0], topS = keys.slice().sort(function(a, b){ return g[b][1] - g[a][1]; })[0];
     var L = LET[k];
-    var html = '<div class="h">' + DIMN[k] + '</div><div class="h"><b>¿Cuántos?</b>CONTAR.SI.CONJUNTO(' + L + ':' + L + ';…)</div><div class="h"><b>¿Cuánto?</b>SUMAR.SI.CONJUNTO(I:I;' + L + ':' + L + ';…)</div>';
+    var html = '<div class="h">' + DIMN[k] + '</div><div class="h"><b>¿Cuántos?</b>CONTAR.SI.CONJUNTO(' + L + '2:' + L + '51;…)</div><div class="h"><b>¿Cuánto?</b>SUMAR.SI.CONJUNTO(I2:I51;' + L + '2:' + L + '51;…)</div>';
     keys.forEach(function(x){
       html += '<div class="lb' + (x === topC || x === topS ? ' top' : '') + '">' + esc(x) + '</div>'
         + '<div class="track"><span class="fill" style="width:' + (g[x][0] / mc * 70) + '%"></span><em>' + g[x][0] + '</em></div>'
         + '<div class="track"><span class="fill am" style="width:' + (g[x][1] / ms * 62) + '%"></span><em>' + rd(g[x][1]) + '</em></div>';
     });
     document.getElementById('cc-chart').innerHTML = html;
-    var tot = DB.reduce(function(a, r){ return a + r[8]; }, 0);
     document.getElementById('cc-note').innerHTML = topC === topS
-      ? '<strong>Lectura:</strong> «' + esc(topC) + '» lidera en ambas preguntas: más reclamaciones (' + g[topC][0] + ') y mayor monto (' + rd(g[topC][1]) + ').'
-      : '<strong>Lectura:</strong> «' + esc(topC) + '» tiene más reclamaciones (' + g[topC][0] + '), pero «' + esc(topS) + '» acumula el mayor monto: ' + rd(g[topS][1]) + ', el ' + Math.round(g[topS][1] / tot * 100) + '% del total. Por eso hay que preguntarse si interesa <b>cuántos</b> o <b>cuánto</b>.';
+      ? '<strong>Lectura:</strong> «' + esc(topC) + '» lidera en las dos preguntas: más reclamaciones (' + g[topC][0] + ') y mayor monto (' + rd(g[topC][1]) + ').'
+      : '<strong>Lectura:</strong> «' + esc(topC) + '» tiene más reclamaciones (' + g[topC][0] + '), pero «' + esc(topS) + '» acumula el mayor monto: ' + rd(g[topS][1]) + ', el ' + Math.round(g[topS][1] / EXP.total * 100) + '% del total. Por eso hay que preguntarse si interesa <b>cuántos</b> o <b>cuánto</b>.';
   });
 
   /* ---------- texto ---------- */
   function rng(a, b){ var o = []; for(var i = a; i <= b; i++) o.push(i); return o; }
   var TX = {
-    id: { cell:'A2', k:0, fns:[
-      ['IZQUIERDA(A2;3)', function(s){ return {r:s.slice(0, 3), h:rng(0, 2), c:'Los 3 primeros caracteres: el prefijo.'}; }],
-      ['DERECHA(A2;4)', function(s){ return {r:s.slice(-4), h:rng(s.length - 4, s.length - 1), c:'Los 4 últimos caracteres: el número. Es texto, no número.'}; }],
-      ['EXTRAE(A2;5;4)', function(s){ return {r:s.substr(4, 4), h:rng(4, 7), c:'Desde la posición 5, toma 4 caracteres.'}; }],
-      ['ENCONTRAR("-";A2)', function(s){ var p = s.indexOf('-'); return {r:p + 1, h:[p], c:'El guion está en la posición ' + (p + 1) + '.'}; }],
-      ['LARGO(A2)', function(s){ return {r:s.length, h:rng(0, s.length - 1), c:'Cuenta todos los caracteres, incluido el guion.'}; }],
-      ['VALOR(DERECHA(A2;4))', function(s){ return {r:+s.slice(-4), h:rng(s.length - 4, s.length - 1), c:'Convierte el texto «' + s.slice(-4) + '» en un número con el que se puede operar.', num:true}; }]
+    id: { col:'A', k:0, fns:[
+      ['IZQUIERDA({c};3)', function(s){ return {r:s.slice(0, 3), h:rng(0, 2), c:'Los 3 primeros caracteres: el prefijo.'}; }],
+      ['DERECHA({c};4)', function(s){ return {r:s.slice(-4), h:rng(s.length - 4, s.length - 1), c:'Los 4 últimos caracteres: el número. Es texto, no número.'}; }],
+      ['EXTRAE({c};5;4)', function(s){ return {r:s.substr(4, 4), h:rng(4, 7), c:'Desde la posición 5, toma 4 caracteres.'}; }],
+      ['ENCONTRAR("-";{c})', function(s){ var p = s.indexOf('-'); return {r:p + 1, h:[p], c:'El guion está en la posición ' + (p + 1) + '.'}; }],
+      ['LARGO({c})', function(s){ return {r:s.length, h:rng(0, s.length - 1), c:'Cuenta todos los caracteres, incluido el guion.'}; }],
+      ['VALOR(DERECHA({c};4))', function(s){ return {r:+s.slice(-4), h:rng(s.length - 4, s.length - 1), c:'Convierte el texto «' + s.slice(-4) + '» en un número con el que se puede operar.'}; }]
     ]},
-    ced: { cell:'C2', k:2, fns:[
-      ['IZQUIERDA(C2;3)', function(s){ return {r:s.slice(0, 3), h:rng(0, 2), c:'El prefijo de la cédula.'}; }],
-      ['EXTRAE(C2;5;7)', function(s){ return {r:s.substr(4, 7), h:rng(4, 10), c:'Los 7 dígitos del centro, desde la posición 5.'}; }],
-      ['DERECHA(C2;1)', function(s){ return {r:s.slice(-1), h:[s.length - 1], c:'El dígito verificador.'}; }],
-      ['LARGO(C2)', function(s){ return {r:s.length, h:rng(0, s.length - 1), c:'Una cédula bien escrita tiene 13 caracteres con guiones. Sirve para detectar errores.'}; }],
-      ['SUSTITUIR(C2;"-";"")', function(s){ var d = []; s.split('').forEach(function(ch, i){ if(ch === '-') d.push(i); }); return {r:s.replace(/-/g, ''), h:[], d:d, c:'Reemplaza cada guion por nada: la cédula queda solo con dígitos.'}; }]
+    ced: { col:'C', k:2, fns:[
+      ['IZQUIERDA({c};3)', function(s){ return {r:s.slice(0, 3), h:rng(0, 2), c:'El prefijo de la cédula.'}; }],
+      ['EXTRAE({c};5;7)', function(s){ return {r:s.substr(4, 7), h:rng(4, 10), c:'Los 7 dígitos del centro, desde la posición 5.'}; }],
+      ['DERECHA({c};1)', function(s){ return {r:s.slice(-1), h:[s.length - 1], c:'El dígito verificador.'}; }],
+      ['LARGO({c})', function(s){ return {r:s.length, h:rng(0, s.length - 1), c:'Una cédula bien escrita tiene 13 caracteres con guiones. Sirve para detectar errores.'}; }],
+      ['SUSTITUIR({c};"-";"")', function(s){ var d = []; s.split('').forEach(function(ch, i){ if(ch === '-') d.push(i); }); return {r:s.replace(/-/g, ''), h:[], d:d, c:'Reemplaza cada guion por nada: la cédula queda solo con dígitos.'}; }]
     ]},
-    nom: { cell:'B2', k:1, fns:[
-      ['ENCONTRAR(" ";B2)', function(s){ var p = s.indexOf(' '); return {r:p + 1, h:[p], c:'El primer espacio está en la posición ' + (p + 1) + '.'}; }],
-      ['IZQUIERDA(B2;ENCONTRAR(" ";B2)-1)', function(s){ var p = s.indexOf(' '); return {r:s.slice(0, p), h:rng(0, p - 1), c:'Combina dos funciones: toma todo lo que está antes del primer espacio.'}; }],
-      ['LARGO(B2)', function(s){ return {r:s.length, h:rng(0, s.length - 1), c:'Los espacios también cuentan como caracteres.'}; }],
-      ['MAYUSC(B2)', function(s){ return {r:s.toUpperCase(), h:rng(0, s.length - 1), c:'Transforma el texto a mayúsculas.'}; }]
+    nom: { col:'B', k:1, fns:[
+      ['ENCONTRAR(" ";{c})', function(s){ var p = s.indexOf(' '); return {r:p + 1, h:[p], c:'El primer espacio está en la posición ' + (p + 1) + '.'}; }],
+      ['IZQUIERDA({c};ENCONTRAR(" ";{c})-1)', function(s){ var p = s.indexOf(' '); return {r:s.slice(0, p), h:rng(0, p - 1), c:'Combina dos funciones: toma todo lo que está antes del primer espacio.'}; }],
+      ['LARGO({c})', function(s){ return {r:s.length, h:rng(0, s.length - 1), c:'Los espacios también cuentan como caracteres.'}; }],
+      ['MAYUSC({c})', function(s){ return {r:s.toUpperCase(), h:rng(0, s.length - 1), c:'Transforma el texto a mayúsculas.'}; }]
     ]}
   };
   var txSrc = 'id', txRow = 1, txFn = 0;
   function runTx(){
-    var src = TX[txSrc], s = DB[txRow][src.k], f = src.fns[txFn], out = f[1](s);
+    var src = TX[txSrc], s = DB[txRow][src.k], f = src.fns[txFn], out = f[1](s), ref = src.col + (txRow + 2);
     var hi = {}, del = {};
     out.h.forEach(function(i){ hi[i] = 1; }); (out.d || []).forEach(function(i){ del[i] = 1; });
     document.getElementById('tx-chars').innerHTML = s.split('').map(function(ch, i){
       return '<div class="ch' + (hi[i] ? ' hi' : '') + (del[i] ? ' del' : '') + '"><span>' + (ch === ' ' ? '·' : esc(ch)) + '</span><small>' + (i + 1) + '</small></div>';
     }).join('');
-    $$('#tx-fns button').forEach(function(b, i){ b.classList.toggle('on', i === txFn); });
-    document.getElementById('tx-fx').innerHTML = '<span class="fn">=' + esc(f[0]) + '</span>';
+    $$('#tx-fns button').forEach(function(b, i){ b.classList.toggle('on', i === txFn); b.textContent = '=' + src.fns[i][0].split('{c}').join(ref); });
+    document.getElementById('tx-fx').innerHTML = '<span class="fn">=' + esc(f[0].split('{c}').join(ref)) + '</span>';
     var res = document.getElementById('tx-res');
     res.textContent = out.r; res.style.textAlign = (typeof out.r === 'number') ? 'right' : 'left';
     flash(res);
-    document.getElementById('tx-cap').innerHTML = '<b>' + src.cell + '</b> contiene «' + esc(s) + '». ' + out.c + (typeof out.r === 'number' ? ' Resultado numérico: se alinea a la derecha.' : '');
+    document.getElementById('tx-cap').innerHTML = '<b>' + ref + '</b> contiene «' + esc(s) + '». ' + out.c + (typeof out.r === 'number' ? ' Resultado numérico: se alinea a la derecha.' : '');
   }
   seg('tx-seg', function(v){
     txSrc = v; txFn = 0;
     var host = document.getElementById('tx-fns');
-    host.innerHTML = TX[v].fns.map(function(f, i){ return '<button data-i="' + i + '">' + esc(f[0]) + '</button>'; }).join('');
+    host.innerHTML = TX[v].fns.map(function(f, i){ return '<button data-i="' + i + '"></button>'; }).join('');
     $$('button', host).forEach(function(b){ b.addEventListener('click', function(){ txFn = +b.getAttribute('data-i'); runTx(); }); });
     runTx();
   });
@@ -1477,54 +2031,53 @@
 
   /* ---------- fechas ---------- */
   var dtSel = document.getElementById('dt-sel');
-  dtSel.innerHTML = DB.map(function(r, i){ return '<option value="' + i + '">' + r[0] + ' · ' + r[7] + '</option>'; }).join('');
+  dtSel.innerHTML = DB.map(function(r, i){ return '<option value="' + i + '">Fila ' + (i + 2) + ' · ' + r[0] + ' · ' + r[7] + '</option>'; }).join('');
   dtSel.value = '1';
   function runDt(){
-    var r = DB[+dtSel.value], p = parseD(r[7]);
+    var i = +dtSel.value, r = DB[i], p = parseD(r[7]), h = 'H' + (i + 2);
     var now = new Date(), today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
     var hoy = String(now.getDate()).padStart(2, '0') + '/' + String(now.getMonth() + 1).padStart(2, '0') + '/' + now.getFullYear();
     var days = Math.round((today - Date.UTC(p.y, p.m - 1, p.d)) / 864e5);
+    document.getElementById('dt-ref').textContent = h;
     document.getElementById('dt-h').textContent = r[7] + '   (valor real: ' + serial(r[7]) + ')';
     var rows = [
-      ['=AÑO(H2)', p.y, 'Año del servicio'],
-      ['=MES(H2)', p.m, 'Mes como número (1 a 12)'],
-      ['=DIA(H2)', p.d, 'Día del mes'],
-      ['=TEXTO(H2;"mmmm")', MESES[p.m - 1], 'Nombre del mes'],
+      ['=AÑO(' + h + ')', p.y, 'Año del servicio'],
+      ['=MES(' + h + ')', p.m, 'Mes como número (1 a 12)'],
+      ['=DIA(' + h + ')', p.d, 'Día del mes'],
+      ['=TEXTO(' + h + ';"mmmm")', MESES[p.m - 1], 'Nombre del mes'],
       ['=HOY()', hoy, 'Fecha de hoy'],
-      ['=HOY()-H2', num(days), 'Días transcurridos desde el servicio']
+      ['=HOY()-' + h, num(days), 'Días transcurridos desde el servicio']
     ];
     document.getElementById('dt-body').innerHTML = rows.map(function(x){ return '<tr><td>' + esc(x[0]) + '</td><td>' + x[1] + '</td><td>' + x[2] + '</td></tr>'; }).join('');
   }
   dtSel.addEventListener('change', runDt);
   runDt();
 
-  var MO = [0, 0, 0, 0, 0, 0], MS = [0, 0, 0, 0, 0, 0];
-  DB.forEach(function(r){ var m = parseD(r[7]).m - 1; MO[m]++; MS[m] += r[8]; });
-  var moMax = Math.max.apply(null, MO), moCur = MO.indexOf(moMax);
-  document.getElementById('mo-labels').innerHTML = MO.map(function(_, i){ return '<span>' + MESES[i].slice(0, 3) + '</span>'; }).join('');
+  var moMax = Math.max.apply(null, EXP.meses.map(function(m){ return m[0]; }));
+  var moCur = EXP.meses.map(function(m){ return m[0]; }).indexOf(moMax);
+  document.getElementById('mo-labels').innerHTML = EXP.meses.map(function(_, i){ return '<span>' + MESES[i].slice(0, 3) + '</span>'; }).join('');
   var moBars = document.getElementById('mo-bars');
-  moBars.innerHTML = MO.map(function(n, i){ return '<button class="mbar" data-i="' + i + '" aria-label="' + MESES[i] + ': ' + n + ' reclamaciones"><em>' + n + '</em><i style="height:' + (n / moMax * 80) + '%"></i></button>'; }).join('');
+  moBars.innerHTML = EXP.meses.map(function(m, i){ return '<button class="mbar" data-i="' + i + '" aria-label="' + MESES[i] + ': ' + m[0] + ' reclamaciones"><em>' + m[0] + '</em><i style="height:' + (m[0] / moMax * 80) + '%"></i></button>'; }).join('');
   function runMo(){
     $$('.mbar', moBars).forEach(function(b, i){ b.classList.toggle('on', i === moCur); });
-    var m = moCur + 1, d1 = 'FECHA(2025;' + m + ';1)', d2 = 'FECHA(2025;' + (m + 1) + ';1)';
-    document.getElementById('mo-title').innerHTML = MESES[moCur].charAt(0).toUpperCase() + MESES[moCur].slice(1) + ' de 2025';
-    document.getElementById('mo-count').innerHTML = call('CONTAR.SI.CONJUNTO', [arg('H:H;"&gt;="&amp;' + d1, 'p1'), arg('H:H;"&lt;"&amp;' + d2, 'p2')]) + ' <span style="color:var(--ink-soft);">→</span> <b>' + MO[moCur] + '</b>';
-    document.getElementById('mo-sum').innerHTML = call('SUMAR.SI.CONJUNTO', [arg('I:I', 'p3'), arg('H:H;"&gt;="&amp;' + d1, 'p1'), arg('H:H;"&lt;"&amp;' + d2, 'p2')]) + ' <span style="color:var(--ink-soft);">→</span> <b>' + rd(MS[moCur]) + '</b>';
+    var m = moCur + 1, r = 90 + m;
+    document.getElementById('mo-title').innerHTML = MESES[moCur].charAt(0).toUpperCase() + MESES[moCur].slice(1) + ' de 2025 · fila ' + r + ' de tu tabla (B' + r + ' = ' + m + ')';
+    document.getElementById('mo-count').innerHTML = '<span class="cellchip">C' + r + '</span> ' + call('CONTAR.SI.CONJUNTO', [arg('$O$2:$O$51;B' + r, 'p1')]) + ' <span style="color:var(--ink-soft);">→</span> <b>' + EXP.meses[moCur][0] + '</b>';
+    document.getElementById('mo-sum').innerHTML = '<span class="cellchip">D' + r + '</span> ' + call('SUMAR.SI.CONJUNTO', [arg('$I$2:$I$51', 'p3'), arg('$O$2:$O$51;B' + r, 'p1')]) + ' <span style="color:var(--ink-soft);">→</span> <b>' + rd(EXP.meses[moCur][1]) + '</b>';
+    document.getElementById('mo-hint').innerHTML = 'Sin columna auxiliar también se puede: =CONTAR.SI.CONJUNTO(H2:H51;"&gt;="&amp;FECHA(2025;' + m + ';1);H2:H51;"&lt;"&amp;FECHA(2025;' + (m + 1) + ';1)). Es más larga: por eso usamos la columna O.';
   }
   $$('.mbar', moBars).forEach(function(b){ b.addEventListener('click', function(){ moCur = +b.getAttribute('data-i'); runMo(); }); });
   runMo();
 
   /* ---------- proyecto: hoja CONSULTA ---------- */
   var TAG = {'BUSCARX':'p1', 'SI':'p2', 'SI.CONJUNTO':'p2', 'CONTAR.SI.CONJUNTO':'p5', 'SUMAR.SI.CONJUNTO':'p3', 'TEXTO':'p4', 'DERECHA':'p4'};
-  function bx(col){ return '=BUSCARX(C3;Reclamaciones!A:A;Reclamaciones!' + col + ':' + col + ';"No encontrado")'; }
-  function cat(m){ return m < 5000 ? 'Bajo' : m < 20000 ? 'Medio' : m < 100000 ? 'Alto' : 'Muy alto'; }
-  function cnt(f){ return DB.filter(f).length; }
+  function R(c){ return 'Reclamaciones!$' + c + '$2:$' + c + '$51'; }
+  function bx(col){ return '=BUSCARX($C$4;' + R('A') + ';' + R(col) + ';"No encontrado")'; }
   var PJ = [
-    {sec:'Datos de la reclamación'},
-    {k:'Afiliado', c:'C5', fn:'BUSCARX', f:bx('B'), v:function(r){ return r[1]; }, why:'Busca el ID de C3 en la columna A de la base y devuelve el afiliado de la columna B.'},
-    {k:'Cédula', c:'C6', fn:'BUSCARX', f:bx('C'), v:function(r){ return r[2]; }, why:'La misma búsqueda; solo cambia la columna que devuelve.'},
-    {k:'ARS', c:'C7', fn:'BUSCARX', f:bx('D'), v:function(r){ return r[3]; }, why:'Este resultado se reutiliza abajo como criterio del resumen.'},
-    {k:'Provincia', c:'C8', fn:'BUSCARX', f:bx('E'), v:function(r){ return r[4]; }, why:'También se reutiliza como criterio del resumen.'},
+    {sec:'Datos (BUSCARX)'},
+    {k:'Afiliado', c:'C6', fn:'BUSCARX', f:bx('B'), v:function(r){ return r[1]; }, why:'Busca el ID de C4 en la columna A de la hoja Reclamaciones y devuelve el afiliado de la columna B.'},
+    {k:'ARS', c:'C7', fn:'BUSCARX', f:bx('D'), v:function(r){ return r[3]; }, why:'Este resultado se usa abajo como criterio del resumen.'},
+    {k:'Provincia', c:'C8', fn:'BUSCARX', f:bx('E'), v:function(r){ return r[4]; }, why:'También se usa como criterio del resumen.'},
     {k:'Tipo de servicio', c:'C9', fn:'BUSCARX', f:bx('F'), v:function(r){ return r[5]; }, why:'Devuelve la columna F de la fila encontrada.'},
     {k:'Prestador', c:'C10', fn:'BUSCARX', f:bx('G'), v:function(r){ return r[6]; }, why:'Devuelve la columna G. Si no hay prestador, la base dice «No Registrado».'},
     {k:'Fecha', c:'C11', fn:'BUSCARX', f:bx('H'), v:function(r){ return r[7]; }, why:'Devuelve la fecha. Dale formato de fecha a C11 para que no se vea como número.'},
@@ -1532,17 +2085,17 @@
     {sec:'Análisis'},
     {k:'Categoría de costo', c:'C14', fn:'SI.CONJUNTO', f:'=SI.CONJUNTO(C12<5000;"Bajo";C12<20000;"Medio";C12<100000;"Alto";C12>=100000;"Muy alto")', v:function(r){ return cat(r[8]); }, why:'Clasifica el monto que trajo BUSCARX en C12.'},
     {k:'Estado del prestador', c:'C15', fn:'SI', f:'=SI(C10="No Registrado";"Sin prestador";"Con prestador")', v:function(r){ return r[6] === 'No Registrado' ? 'Sin prestador' : 'Con prestador'; }, why:'Decide a partir del prestador que trajo BUSCARX en C10.'},
-    {k:'Mes del servicio', c:'C16', fn:'TEXTO', f:'=TEXTO(C11;"mmmm")', v:function(r){ return MESES[parseD(r[7]).m - 1]; }, why:'Convierte la fecha de C11 en el nombre del mes.'},
-    {k:'N.º de reclamación', c:'C17', fn:'DERECHA', f:'=DERECHA(C3;4)', v:function(r){ return r[0].slice(-4); }, why:'Extrae los 4 últimos caracteres del ID escrito en C3.'},
+    {k:'Mes del servicio', c:'C16', fn:'TEXTO', f:'=TEXTO(C11;"mmmm")', v:function(r){ return MESES[mes(r) - 1]; }, why:'Convierte la fecha de C11 en el nombre del mes.'},
+    {k:'N.º de reclamación', c:'C17', fn:'DERECHA', f:'=DERECHA(C4;4)', v:function(r){ return r[0].slice(-4); }, why:'Extrae los 4 últimos caracteres del ID escrito en C4.'},
     {sec:'Resumen'},
-    {k:'Reclamaciones de su ARS', c:'C19', fn:'CONTAR.SI.CONJUNTO', f:'=CONTAR.SI.CONJUNTO(Reclamaciones!D:D;C7)', v:function(r){ return cnt(function(x){ return x[3] === r[3]; }); }, why:'Usa la ARS de C7 como criterio: el resumen cambia solo al cambiar el ID.'},
-    {k:'Monto acumulado de su ARS', c:'C20', fn:'SUMAR.SI.CONJUNTO', f:'=SUMAR.SI.CONJUNTO(Reclamaciones!I:I;Reclamaciones!D:D;C7)', v:function(r){ return rd(DB.filter(function(x){ return x[3] === r[3]; }).reduce(function(a, x){ return a + x[8]; }, 0)); }, why:'Suma la columna I de todas las filas con la misma ARS.'},
-    {k:'Reclamaciones en su provincia', c:'C21', fn:'CONTAR.SI.CONJUNTO', f:'=CONTAR.SI.CONJUNTO(Reclamaciones!E:E;C8)', v:function(r){ return cnt(function(x){ return x[4] === r[4]; }); }, why:'Usa la provincia de C8 como criterio.'},
-    {k:'Mismo servicio en su ARS', c:'C22', fn:'CONTAR.SI.CONJUNTO', f:'=CONTAR.SI.CONJUNTO(Reclamaciones!D:D;C7;Reclamaciones!F:F;C9)', v:function(r){ return cnt(function(x){ return x[3] === r[3] && x[5] === r[5]; }); }, why:'Dos criterios a la vez: la misma ARS (C7) y el mismo servicio (C9).'}
+    {k:'Reclamaciones de su ARS', c:'C19', fn:'CONTAR.SI.CONJUNTO', f:'=CONTAR.SI.CONJUNTO(' + R('D') + ';C7)', v:function(r){ return cnt(function(x){ return x[3] === r[3]; }); }, why:'Usa la ARS de C7 como criterio: el resumen cambia solo al cambiar el ID.'},
+    {k:'Monto acumulado de su ARS', c:'C20', fn:'SUMAR.SI.CONJUNTO', f:'=SUMAR.SI.CONJUNTO(' + R('I') + ';' + R('D') + ';C7)', v:function(r){ return rd(sum(function(x){ return x[3] === r[3]; })); }, why:'Suma la columna I de todas las filas con la misma ARS.'},
+    {k:'Reclamaciones en su provincia', c:'C21', fn:'CONTAR.SI.CONJUNTO', f:'=CONTAR.SI.CONJUNTO(' + R('E') + ';C8)', v:function(r){ return cnt(function(x){ return x[4] === r[4]; }); }, why:'Usa la provincia de C8 como criterio.'},
+    {k:'Mismo servicio en su ARS', c:'C22', fn:'CONTAR.SI.CONJUNTO', f:'=CONTAR.SI.CONJUNTO(' + R('D') + ';C7;' + R('F') + ';C9)', v:function(r){ return cnt(function(x){ return x[3] === r[3] && x[5] === r[5]; }); }, why:'Dos criterios a la vez: la misma ARS (C7) y el mismo servicio (C9).'}
   ];
   var pjSel = document.getElementById('pj-id'), pjCur = 1;
   pjSel.innerHTML = DB.map(function(r, i){ return '<option value="' + i + '">' + r[0] + '</option>'; }).join('');
-  pjSel.value = '1';
+  pjSel.value = String(row('REC-1077'));
   var pjRows = document.getElementById('pj-rows');
   pjRows.innerHTML = PJ.map(function(p, i){
     if(p.sec) return '<div class="sec">' + p.sec + '</div>';
@@ -1573,15 +2126,15 @@
     { q:'Necesitas clasificar los montos en Bajo, Medio, Alto y Muy alto.', o:['BUSCARX','CONTAR.SI.CONJUNTO','SI.CONJUNTO','DERECHA'], a:2, why:'Varias condiciones, cada una con su resultado: SI.CONJUNTO.' },
     { q:'¿Cuántas reclamaciones tiene SeNaSa en Santiago?', o:['SUMAR.SI.CONJUNTO','CONTAR.SI.CONJUNTO','SI','BUSCARX'], a:1, why:'«¿Cuántas?» con dos criterios a la vez: CONTAR.SI.CONJUNTO.' },
     { q:'¿Cuál es el monto total reclamado por Hospitalización?', o:['CONTAR.SI.CONJUNTO','SI.CONJUNTO','SUMAR.SI.CONJUNTO','HOY'], a:2, why:'«¿Cuánto?» suma los montos de las filas que cumplen el criterio.' },
-    { q:'De «REC-1077» solo necesitas «1077».', o:['IZQUIERDA(A2;3)','DERECHA(A2;4)','LARGO(A2)','MES(A2)'], a:1, why:'Son los 4 últimos caracteres: DERECHA(A2;4).' },
-    { q:'Quieres saber en qué mes se dio cada servicio.', o:['DIA(H2)','HOY()','MES(H2)','AÑO(H2)'], a:2, why:'MES extrae el mes de una fecha como número del 1 al 12.' },
-    { q:'=SUMAR.SI.CONJUNTO(D:D;I:I;"ARS Humano") devuelve 0. ¿Por qué?', o:['Falta un criterio','El rango que se suma (I:I) debe ir primero','«ARS Humano» va sin comillas','Debe usarse BUSCARX'], a:1, why:'En SUMAR.SI.CONJUNTO el primer argumento es el rango que se suma.' }
+    { q:'Copiaste =CONTAR.SI.CONJUNTO(L2:L51;B82) hasta C85 y el total no da 50. ¿Qué falta?', o:['Comillas en B82','Fijar el rango: $L$2:$L$51','Usar SUMAR.SI.CONJUNTO','Ordenar la tabla'], a:1, why:'Sin $, el rango se corre al copiar y deja filas fuera.' },
+    { q:'De «REC-1077» solo necesitas «1077».', o:['IZQUIERDA(A3;3)','DERECHA(A3;4)','LARGO(A3)','MES(A3)'], a:1, why:'Son los 4 últimos caracteres: DERECHA(A3;4).' },
+    { q:'=SUMAR.SI.CONJUNTO(D2:D51;I2:I51;"ARS Humano") devuelve 0. ¿Por qué?', o:['Falta un criterio','El rango que se suma (I2:I51) debe ir primero','«ARS Humano» va sin comillas','Debe usarse BUSCARX'], a:1, why:'En SUMAR.SI.CONJUNTO el primer argumento es el rango que se suma.' }
   ];
   var quiz = document.getElementById('quiz'), qi = 0, score = 0;
   function renderQuiz(){
     if(qi >= QUIZ.length){
       quiz.innerHTML = '<div class="score">' + score + ' / ' + QUIZ.length + '</div>'
-        + '<p class="quiz-q" style="margin-top:12px;">' + (score === QUIZ.length ? '¡Excelente! Sabes qué función usar en cada caso.' : score >= 6 ? 'Muy bien. Ya estás listo para la actividad.' : 'Buen intento. Repasa la tabla «¿Qué necesito?» y vuelve a intentarlo.') + '</p>'
+        + '<p class="quiz-q" style="margin-top:12px;">' + (score === QUIZ.length ? '¡Excelente! Sabes qué función usar en cada caso.' : score >= 6 ? 'Muy bien. Ya puedes revisar tu evidencia.' : 'Buen intento. Repasa la tabla «¿Qué necesito?» y vuelve a intentarlo.') + '</p>'
         + '<div class="quiz-actions" style="justify-content:flex-start;"><button class="btn" id="quiz-again">Intentar de nuevo</button></div>';
       document.getElementById('quiz-again').addEventListener('click', function(){ qi = 0; score = 0; renderQuiz(); });
       return;
@@ -1609,6 +2162,40 @@
   }
   renderQuiz();
 
+  /* ---------- evidencia: lista de comprobación (se recuerda en este navegador) ---------- */
+  var CHECK = [
+    ['BUSCARX', 'C58 muestra el afiliado de REC-1077', EX[1]],
+    ['BUSCARX', 'C62 dice «No encontrado» al escribir REC-9999 en C57', 'No encontrado'],
+    ['SI', 'Columna J: «Alto costo» aparece', EXP.alto + ' veces'],
+    ['SI', 'Columna K: «Sin prestador» aparece', EXP.sinp + ' veces'],
+    ['SI.CONJUNTO', 'C82:C85 (categorías de la columna L)', EXP.cats.join(' · ') + ' = 50'],
+    ['CONTAR', 'C71: total de reclamaciones por ARS', '50'],
+    ['SUMAR', 'D71 es igual a =SUMA(I2:I51)', rd(EXP.total)],
+    ['Dos criterios', 'C77 y C78 (MAPFRE Salud ARS en Distrito Nacional)', EXP.twoN + ' · ' + rd(EXP.twoS)],
+    ['Texto', 'M3 y N3', DB[1][0].slice(-4) + ' · ' + DB[1][2].slice(0, 3)],
+    ['Fechas', 'O3, P3 y el total C97', mes(DB[1]) + ' · ' + MESES[mes(DB[1]) - 1] + ' · 50'],
+    ['CONSULTA', 'Con REC-1077: C14, C19 y C20', cat(EX[8]) + ' · ' + EXP.arsN[0] + ' · ' + rd(EXP.arsS[0])],
+    ['CONSULTA', 'Al cambiar C4 por REC-1210, todo cambia solo', DB[row('REC-1210')][1]]
+  ];
+  var KEY = 'icadep-m2-evidencia', saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ saved = {}; }
+  var cl = document.getElementById('checklist');
+  cl.innerHTML = CHECK.map(function(c, i){
+    return '<li><input type="checkbox" id="ck' + i + '"' + (saved[i] ? ' checked' : '') + '><label for="ck' + i + '"><b>' + c[0] + '.</b> ' + c[1] + '<span class="exp">→ ' + esc(c[2]) + '</span></label></li>';
+  }).join('');
+  function countChecks(){
+    var n = $$('input', cl).filter(function(x){ return x.checked; }).length;
+    document.getElementById('check-count').textContent = n === CHECK.length ? '¡Todo coincide! Tu archivo está listo para entregar.' : n + ' de ' + CHECK.length + ' comprobados';
+  }
+  $$('input', cl).forEach(function(x, i){
+    x.addEventListener('change', function(){
+      saved[i] = x.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch(e){}
+      countChecks();
+    });
+  });
+  countChecks();
+
   /* ---------- navegación de diapositivas ---------- */
   var slides = $$('.slide');
   var bars = document.getElementById('bars');
@@ -1618,8 +2205,7 @@
   var next = document.getElementById('btn-next');
   var cur = -1;
 
-  /* animaciones por pasos: cada Enter muestra el siguiente bloque, como en PowerPoint */
-  var BUILD_SEL = '[data-build], .agenda > .ag, .flow > .fstep, .facts > .fact, .tiles-head, .tiles > .tile, '
+  var BUILD_SEL = '[data-build], .agenda > .ag, .flow > .fstep, .modes > .mode-card, .facts > .fact, .tiles-head, .tiles > .tile, '
     + '.note, .vs tbody tr, .summary > .sum, .build-join';
   var steps = [], shown = [];
   slides.forEach(function(s, i){
@@ -1635,26 +2221,16 @@
     steps[i] = list; shown[i] = 0;
   });
 
-  // al mostrar un bloque con simulador, se vuelve a animar
-  var ON_SHOW = {
-    'bx-id': function(){ runBx(true); },
-    'si-seg': runSi,
-    'sic-ladder': function(){ runSic(true); }
-  };
+  var ON_SHOW = { 'bx-id': function(){ runBx(true); }, 'si-seg': runSi, 'sic-ladder': function(){ runSic(true); } };
   function replay(group){
-    group.forEach(function(el){
-      Object.keys(ON_SHOW).forEach(function(id){ if(el.querySelector('#' + id)) ON_SHOW[id](); });
-    });
+    group.forEach(function(el){ Object.keys(ON_SHOW).forEach(function(id){ if(el.querySelector('#' + id)) ON_SHOW[id](); }); });
   }
 
   function setShown(i, n, animate){
     var slide = slides[i];
     if(!animate){ slide.classList.add('no-anim'); }
     steps[i].forEach(function(group, k){
-      group.forEach(function(el){
-        el.classList.toggle('b-hidden', k >= n);
-        el.classList.remove('b-just');
-      });
+      group.forEach(function(el){ el.classList.toggle('b-hidden', k >= n); el.classList.remove('b-just'); });
     });
     if(animate && n > shown[i]){
       steps[i][n - 1].forEach(function(el){ void el.offsetWidth; el.classList.add('b-just'); });
@@ -1666,63 +2242,45 @@
     shown[i] = n;
     if(i === cur) updateNav();
   }
-
-  function forward(){
-    if(cur >= 0 && shown[cur] < steps[cur].length) setShown(cur, shown[cur] + 1, true);
-    else go(cur + 1);
-  }
-  function backward(){
-    if(cur >= 0 && shown[cur] > 0) setShown(cur, shown[cur] - 1, true);
-    else go(cur - 1, true);
-  }
-
+  function forward(){ if(cur >= 0 && shown[cur] < steps[cur].length) setShown(cur, shown[cur] + 1, true); else go(cur + 1); }
+  function backward(){ if(cur >= 0 && shown[cur] > 0) setShown(cur, shown[cur] - 1, true); else go(cur - 1, true); }
   function updateNav(){
     var left = steps[cur].length - shown[cur];
     counter.textContent = (cur + 1) + ' / ' + slides.length + (left ? ' · Enter para continuar (' + left + ')' : '');
     prev.disabled = cur === 0 && shown[cur] === 0;
     next.disabled = cur === slides.length - 1 && left === 0;
   }
-
   slides.forEach(function(s, i){
     var b = document.createElement('button');
     b.setAttribute('aria-label', 'Ir a la diapositiva ' + (i + 1));
     b.addEventListener('click', function(){ go(i); });
     bars.appendChild(b);
   });
-
   function go(i, revealAll){
     i = Math.max(0, Math.min(slides.length - 1, i));
     if(i === cur) return;
     setShown(i, revealAll ? steps[i].length : 0, false);
-    slides.forEach(function(s, k){
-      s.classList.toggle('active', k === i);
-      s.classList.toggle('left', k < i);
-    });
-    Array.prototype.forEach.call(bars.children, function(b, k){
-      b.className = k < i ? 'done' : (k === i ? 'cur' : '');
-    });
+    slides.forEach(function(s, k){ s.classList.toggle('active', k === i); s.classList.toggle('left', k < i); });
+    Array.prototype.forEach.call(bars.children, function(b, k){ b.className = k < i ? 'done' : (k === i ? 'cur' : ''); });
     slides[i].scrollTop = 0;
     cur = i;
     tag.textContent = slides[i].getAttribute('data-tag') || '';
     updateNav();
     if(history.replaceState) history.replaceState(null, '', '#' + (i + 1));
   }
-
   prev.addEventListener('click', backward);
   next.addEventListener('click', forward);
 
   var FORM_SEL = 'input, select, textarea, label';
-  // tras un clic con el ratón en la diapositiva, soltar el foco para que Enter siga avanzando
   document.getElementById('stage').addEventListener('click', function(e){
     if(e.target.closest(FORM_SEL) || e.target.closest('#quiz')) return;
     if(e.detail && document.activeElement && document.activeElement.blur) document.activeElement.blur();
   });
-
   document.addEventListener('keydown', function(e){
     if(e.altKey || e.ctrlKey || e.metaKey) return;
     if(e.target.closest && e.target.closest(FORM_SEL)){
       if(e.key === 'Escape' && e.target.blur) e.target.blur();
-      return; // mientras se escribe o se elige, las teclas son del campo
+      return;
     }
     var onControl = e.target.closest && e.target.closest('button, a');
     if((e.key === 'Enter' || e.key === ' ') && onControl && onControl !== next && onControl !== prev) return;
@@ -1732,12 +2290,10 @@
     else if(e.key === 'End'){ go(slides.length - 1); }
     else if(e.key === 'f' || e.key === 'F'){ toggleFull(); }
   });
-
   var sx = null, sy = null;
   var stage = document.getElementById('stage');
   stage.addEventListener('touchstart', function(e){
-    // no cambiar de diapositiva al mover un deslizador o desplazar una tabla
-    if(e.target.closest(FORM_SEL + ', .grid-scroll')){ sx = null; return; }
+    if(e.target.closest(FORM_SEL + ', .grid-scroll, .sheet')){ sx = null; return; }
     sx = e.touches[0].clientX; sy = e.touches[0].clientY;
   }, {passive:true});
   stage.addEventListener('touchend', function(e){
@@ -1746,7 +2302,6 @@
     if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.6) (dx < 0 ? forward : backward)();
     sx = sy = null;
   });
-
   function toggleFull(){
     if(!document.fullscreenElement){ if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); }
     else if(document.exitFullscreen){ document.exitFullscreen(); }
