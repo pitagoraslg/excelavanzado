@@ -1,0 +1,108 @@
+<!-- Invitación a la presentación del Módulo 2 para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes m2-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes m2-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(47,111,176,.45); } 50% { box-shadow: 0 0 0 12px rgba(47,111,176,0); } }
+  @keyframes m2-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+  @keyframes m2-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  @keyframes m2-caret { 50% { opacity: 0; } }
+  .m2-in { animation: m2-in .7s ease-out both; }
+  .m2-d1 { animation-delay: .1s; } .m2-d2 { animation-delay: .25s; } .m2-d3 { animation-delay: .4s; } .m2-d4 { animation-delay: .55s; }
+  .m2-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .m2-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(30,58,95,.14); }
+  .m2-float { display: inline-block; animation: m2-float 3s ease-in-out infinite; }
+  .m2-caret { display: inline-block; width: 2px; height: 1.1em; background: #16754C; vertical-align: -3px; margin-left: 4px; animation: m2-caret 1s steps(1) infinite; }
+  .m2-btn { animation: m2-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .m2-btn:hover { transform: scale(1.04); background-color: #24578C !important; }
+  .m2-btn2:hover { background-color: #DCEBFA !important; }
+  .m2-bar { background: linear-gradient(90deg, #9CC9F2 0%, #2F6FB0 35%, #9CC9F2 70%, #2F6FB0 100%); background-size: 200% 100%; animation: m2-shine 6s linear infinite; }
+  .m2-row { transition: background-color .2s ease; }
+  .m2-row:hover { background-color: #EEF5FC; }
+  details.m2-det > summary { cursor: pointer; }
+  @media (prefers-reduced-motion: reduce) { .m2-in, .m2-btn, .m2-float, .m2-bar, .m2-caret { animation: none !important; } }
+</style>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #000000; line-height: 1.55; background-color: #F3F8FD; border-radius: 10px; overflow: hidden; border: 1px solid #CFE2F5;">
+
+  <div class="m2-bar" style="height: 6px; background-color: #2F6FB0;"></div>
+
+  <!-- Encabezado -->
+  <div style="background-color: #DCEBFA; padding: 28px 30px 24px; text-align: center;">
+    <p class="m2-in" style="margin: 0 0 10px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #2F6FB0;">Excel Avanzado · Módulo 2 · Instituto ICADEP-XXI</p>
+    <p class="m2-in m2-d1" style="margin: 0 0 6px; font-size: 42px; line-height: 1;"><span class="m2-float">📊</span></p>
+    <h2 class="m2-in m2-d1" style="margin: 0 0 10px; font-family: Georgia, 'Times New Roman', serif; font-size: 30px; font-weight: normal; line-height: 1.2; color: #1E3A5F;">Funciones avanzadas de Excel</h2>
+    <p class="m2-in m2-d2" style="margin: 0 auto 14px; max-width: 620px; font-size: 16px;">Siete funciones que te permiten <strong>buscar, decidir, clasificar, contar, sumar</strong> y trabajar con <strong>textos y fechas</strong>, explicadas con la base de reclamaciones del curso.</p>
+    <p class="m2-in m2-d2" style="margin: 0 auto; display: inline-block; font-family: Consolas, monospace; font-size: 15px; background-color: #FFFFFF; border: 1px solid #CFE2F5; padding: 7px 14px; border-radius: 4px; color: #1E3A5F;"><em style="font-family: Georgia, serif; color: #5E5B7A;">fx</em>&nbsp; =BUSCARX( SI( CONTAR.SI.CONJUNTO( … ) ) )<span class="m2-caret"></span></p>
+  </div>
+
+  <!-- Datos rápidos -->
+  <table class="m2-in m2-d2" style="width: 100%; border-collapse: separate; border-spacing: 10px; margin: 4px 0 0;" role="presentation">
+    <tr>
+      <td class="m2-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #2F6FB0; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">🧩</span><br>
+        <strong style="color: #1E3A5F; font-size: 18px;">7 temas</strong><br>
+        <span style="font-size: 13px;">De BUSCARX a las fechas</span>
+      </td>
+      <td class="m2-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #5AA2E6; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">🖥️</span><br>
+        <strong style="color: #1E3A5F; font-size: 18px;">24 láminas</strong><br>
+        <span style="font-size: 13px;">Con simuladores en vivo</span>
+      </td>
+      <td class="m2-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #2FA88A; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">🎮</span><br>
+        <strong style="color: #1E3A5F; font-size: 18px;">Kahoot final</strong><br>
+        <span style="font-size: 13px;">Repaso al cierre de la clase</span>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 4px 26px 26px;">
+
+    <!-- Los 7 temas -->
+    <h3 class="m2-in m2-d3" style="margin: 14px 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1E3A5F;">🎯 Los siete temas</h3>
+    <table class="m2-in m2-d3" style="width: 100%; border-collapse: collapse; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-radius: 6px; font-size: 14px;" role="presentation">
+      <tr class="m2-row"><td style="padding: 8px 12px; border-bottom: 1px solid #E3ECF6; width: 36px; font-family: Georgia, serif; font-size: 18px; color: #16754C;">01</td><td style="padding: 8px 4px; border-bottom: 1px solid #E3ECF6; font-family: Consolas, monospace; font-weight: bold; color: #1E3A5F; white-space: nowrap;">BUSCARX</td><td style="padding: 8px 12px; border-bottom: 1px solid #E3ECF6;">Buscar y recuperar información.</td></tr>
+      <tr class="m2-row"><td style="padding: 8px 12px; border-bottom: 1px solid #E3ECF6; font-family: Georgia, serif; font-size: 18px; color: #16754C;">02</td><td style="padding: 8px 4px; border-bottom: 1px solid #E3ECF6; font-family: Consolas, monospace; font-weight: bold; color: #1E3A5F;">SI</td><td style="padding: 8px 12px; border-bottom: 1px solid #E3ECF6;">Tomar decisiones según una condición.</td></tr>
+      <tr class="m2-row"><td style="padding: 8px 12px; border-bottom: 1px solid #E3ECF6; font-family: Georgia, serif; font-size: 18px; color: #16754C;">03</td><td style="padding: 8px 4px; border-bottom: 1px solid #E3ECF6; font-family: Consolas, monospace; font-weight: bold; color: #1E3A5F;">SI.CONJUNTO</td><td style="padding: 8px 12px; border-bottom: 1px solid #E3ECF6;">Clasificar con varias condiciones.</td></tr>
+      <tr class="m2-row"><td style="padding: 8px 12px; border-bottom: 1px solid #E3ECF6; font-family: Georgia, serif; font-size: 18px; color: #16754C;">04</td><td style="padding: 8px 4px; border-bottom: 1px solid #E3ECF6; font-family: Consolas, monospace; font-weight: bold; color: #1E3A5F;">CONTAR.SI.CONJUNTO</td><td style="padding: 8px 12px; border-bottom: 1px solid #E3ECF6;">Contar registros que cumplen criterios.</td></tr>
+      <tr class="m2-row"><td style="padding: 8px 12px; border-bottom: 1px solid #E3ECF6; font-family: Georgia, serif; font-size: 18px; color: #16754C;">05</td><td style="padding: 8px 4px; border-bottom: 1px solid #E3ECF6; font-family: Consolas, monospace; font-weight: bold; color: #1E3A5F;">SUMAR.SI.CONJUNTO</td><td style="padding: 8px 12px; border-bottom: 1px solid #E3ECF6;">Sumar valores según criterios.</td></tr>
+      <tr class="m2-row"><td style="padding: 8px 12px; border-bottom: 1px solid #E3ECF6; font-family: Georgia, serif; font-size: 18px; color: #16754C;">06</td><td style="padding: 8px 4px; border-bottom: 1px solid #E3ECF6; font-family: Consolas, monospace; font-weight: bold; color: #1E3A5F;">Texto</td><td style="padding: 8px 12px; border-bottom: 1px solid #E3ECF6;">Extraer partes de un texto: IZQUIERDA, DERECHA, EXTRAE…</td></tr>
+      <tr class="m2-row"><td style="padding: 8px 12px; font-family: Georgia, serif; font-size: 18px; color: #16754C;">07</td><td style="padding: 8px 4px; font-family: Consolas, monospace; font-weight: bold; color: #1E3A5F;">Fechas</td><td style="padding: 8px 12px;">Analizar fechas y períodos: AÑO, MES, TEXTO, HOY…</td></tr>
+    </table>
+
+    <!-- Cómo está organizado -->
+    <h3 class="m2-in m2-d3" style="margin: 18px 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1E3A5F;">🧭 Cada tema tiene tres láminas</h3>
+    <table class="m2-in m2-d4" style="width: 100%; border-collapse: separate; border-spacing: 8px 0;" role="presentation">
+      <tr>
+        <td class="m2-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-radius: 6px; padding: 12px; vertical-align: top; font-size: 13.5px;"><span style="font-size: 22px;">💡</span><br><strong style="color: #1E3A5F;">Concepto</strong><br>Qué es, una comparación de la vida diaria y la sintaxis explicada parte por parte.</td>
+        <td class="m2-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-radius: 6px; padding: 12px; vertical-align: top; font-size: 13.5px;"><span style="font-size: 22px;">🛠️</span><br><strong style="color: #1E3A5F;">Utilidad</strong><br>Cuatro usos reales en el trabajo y el error más común que debes evitar.</td>
+        <td class="m2-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-radius: 6px; padding: 12px; vertical-align: top; font-size: 13.5px;"><span style="font-size: 22px;">✍️</span><br><strong style="color: #1E3A5F;">Práctica en vivo</strong><br>Pasos para hacerlo en tu Excel y un simulador: predice el resultado y luego revélalo con un clic.</td>
+      </tr>
+    </table>
+
+    <!-- Antes de empezar -->
+    <details class="m2-det m2-in m2-d4" style="margin: 18px 0 0; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-left: 5px solid #2F6FB0; border-radius: 6px; padding: 12px 16px;">
+      <summary style="font-weight: bold; color: #1E3A5F; font-size: 16px;">📥 Antes de empezar (toca para ver)</summary>
+      <ol style="margin: 10px 0 4px; padding-left: 22px;">
+        <li style="margin: 0 0 6px;">Descarga la base de práctica (botón de abajo) y ábrela en Excel. La tabla se llama <strong>tblReclamaciones</strong> y tiene 50 reclamaciones.</li>
+        <li style="margin: 0 0 6px;">Ten Excel abierto junto a la presentación: en cada «Práctica en vivo» puedes copiar la fórmula con el botón <strong>Copiar</strong> y pegarla en tu archivo.</li>
+        <li style="margin: 0 0 6px;"><strong>Separador:</strong> las fórmulas usan coma ( , ). Si tu Excel usa punto y coma ( ; ), cámbialo al escribirlas.</li>
+        <li style="margin: 0 0 6px;"><strong>Para moverte:</strong> flechas ← → o los botones Anterior y Siguiente; la tecla <strong>F</strong> activa la pantalla completa.</li>
+      </ol>
+    </details>
+
+    <!-- Llamado a la acción -->
+    <div class="m2-in m2-d4" style="text-align: center; margin: 24px 0 8px;">
+      <a class="m2-btn" href="https://pitagoraslg.github.io/excelavanzado/modulo2-funciones-avanzadas.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #2F6FB0; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px; margin: 4px 6px;">▶ Entrar a la presentación</a>
+      <a class="m2-btn2" href="https://pitagoraslg.github.io/excelavanzado/Modulo2-Base-Reclamaciones.xlsx" style="display: inline-block; background-color: #FFFFFF; color: #2F6FB0; border: 2px solid #2F6FB0; text-decoration: none; font-weight: bold; font-size: 17px; padding: 13px 28px; border-radius: 30px; margin: 4px 6px;">⬇ Base de práctica</a>
+      <p style="margin: 10px 0 0; font-size: 13px;">Se abre en una pestaña nueva. Se ve mejor en computadora o en pantalla grande.</p>
+    </div>
+
+    <!-- Cierre -->
+    <div class="m2-in m2-d4" style="margin: 18px 0 0; background-color: #1E3A5F; color: #FFFFFF; border-radius: 6px; padding: 14px 18px; font-size: 14px;">
+      <strong style="font-size: 16px;">🎮 Al final: ¡Kahoot!</strong> Ten tu celular listo para el repaso en vivo. Entrarás con el PIN que aparece en pantalla.
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
