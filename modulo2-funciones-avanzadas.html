@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>Módulo 2 · Funciones avanzadas de Excel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Layout: escenario fijo 1280×720 escalado a la pantalla (proyector); hoja de cálculo como motivo. Tema claro deliberado. */
+:root{
+  --bg:#e9e8f0;        /* fondo fuera del escenario */
+  --paper:#f5f4f8;     /* lámina */
+  --card:#ffffff;
+  --ink:#1f1c4f;       /* azul marino */
+  --muted:#5e5b7a;
+  --line:#dcdbe6;
+  --grid:#c9c7d8;
+  --xl:#16754c;        /* verde Excel */
+  --xl-soft:#e1f1e8;
+  --mark:#fff1bf;      /* resaltado de celda */
+  --mark-line:#d9a800;
+  --warn:#a33a2a;
+  --warn-soft:#f8e6e2;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --mono:"IBM Plex Mono", Consolas, "Courier New", monospace;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);overflow:hidden}
+#viewport{position:fixed;inset:0;overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;background:var(--paper);transform-origin:center center;transform:translate(-50%,-50%);box-shadow:0 10px 40px rgba(31,28,79,.18);border-top:3px solid var(--ink);flex:none}
+.slide{position:absolute;inset:0;padding:64px 72px 70px;display:none;flex-direction:column;gap:22px}
+.slide.on{display:flex;animation:in .35s ease}
+@keyframes in{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.slide.on{animation:none}}
+
+/* chrome */
+.top{position:absolute;top:20px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;z-index:3}
+.dots{display:flex;gap:6px}
+.dots button{width:30px;height:6px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dots button.done{background:var(--grid)}
+.dots button.cur{background:var(--xl)}
+.bottom{position:absolute;bottom:18px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);z-index:3}
+.navb{display:flex;gap:8px;align-items:center}
+.btn{font-family:var(--mono);font-size:13px;border:1px solid var(--grid);background:var(--card);color:var(--ink);padding:7px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink)}
+.btn:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--xl);outline-offset:2px}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* type */
+.eyebrow{font-family:var(--mono);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--xl);display:flex;gap:14px;align-items:center}
+.eyebrow .n{font-family:var(--serif);font-size:30px;letter-spacing:0;text-transform:none}
+.eyebrow .tag{border:1px solid var(--xl);padding:2px 8px;font-size:12px}
+h1{font-family:var(--serif);font-weight:600;font-size:76px;line-height:1.02;margin:0;text-wrap:balance}
+h2{font-family:var(--serif);font-weight:600;font-size:46px;line-height:1.08;margin:0;text-wrap:balance}
+h3{font-size:20px;margin:0;font-weight:600}
+p{margin:0}
+.lead{font-size:24px;line-height:1.45;max-width:30em;color:var(--ink)}
+.muted{color:var(--muted)}
+code,.code{font-family:var(--mono)}
+
+/* cover */
+.cover{justify-content:center;gap:28px}
+.cover .mod{font-family:var(--mono);font-size:18px;letter-spacing:.14em;text-transform:uppercase;color:var(--xl)}
+.cover h1{font-size:96px;max-width:11em}
+.cover .by{font-size:24px;color:var(--muted)}
+.cover .by b{color:var(--ink);font-weight:600}
+.cover .fx{font-family:var(--mono);font-size:22px;display:flex;align-items:stretch;border:1px solid var(--grid);background:var(--card);width:max-content;max-width:100%}
+.cover .fx span{padding:10px 14px}
+.cover .fx .lbl{border-right:1px solid var(--grid);color:var(--muted);font-style:italic;font-family:var(--serif)}
+.cover .fx .caret{border-left:2px solid var(--xl);animation:blink 1s steps(1) infinite;padding:0;margin:8px 0}
+@keyframes blink{50%{opacity:0}}
+.cover .hint{font-family:var(--mono);font-size:14px;color:var(--muted)}
+
+/* index grid like the screenshot */
+.idx{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink)}
+.idx button{all:unset;cursor:pointer;padding:22px 22px 24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.idx button:nth-child(4n){border-right:0}
+.idx button:hover{background:var(--card)}
+.idx .n{font-family:var(--serif);font-size:40px;color:var(--xl);line-height:1}
+.idx .k{font-family:var(--mono);font-size:17px;color:var(--ink);font-weight:500}
+.idx .d{font-size:16px;color:var(--ink)}
+.idx .ex{background:var(--ink);color:var(--paper);cursor:default}
+.idx .ex .n,.idx .ex .k,.idx .ex .d{color:var(--paper)}
+.note{font-size:15px;color:var(--muted);display:flex;gap:10px;align-items:center}
+.note b{color:var(--ink)}
+
+/* concept */
+.cols{display:grid;grid-template-columns:1.05fr 1fr;gap:44px;flex:1;min-height:0}
+.analogy{border-left:3px solid var(--xl);padding:6px 0 6px 18px;font-family:var(--serif);font-size:22px;font-style:italic;line-height:1.4;color:var(--ink)}
+.syntax{background:var(--card);border:1px solid var(--grid);font-family:var(--mono);font-size:20px;padding:18px 20px;line-height:1.7}
+.syntax .fn{color:var(--xl);font-weight:600}
+.arg{cursor:pointer;border-bottom:2px solid var(--grid);padding:0 2px}
+.arg.opt{color:var(--muted)}
+.arg.on{background:var(--mark);border-bottom-color:var(--mark-line)}
+.args{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.args li{list-style:none;display:grid;grid-template-columns:200px 1fr;gap:16px;padding:11px 8px;border-bottom:1px solid var(--line);cursor:pointer;font-size:17px;line-height:1.4}
+.args li code{font-size:15px;color:var(--ink);font-weight:500}
+.args li .o{font-family:var(--mono);font-size:11px;color:var(--muted);display:block;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.args li.on{background:var(--mark)}
+.args{margin:0;padding:0}
+
+/* uses */
+.uses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.use{min-width:0;background:var(--card);border:1px solid var(--line);padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.use h3{font-size:19px}
+.use p{font-size:16.5px;line-height:1.45;color:var(--muted)}
+.use code{font-size:14px;color:var(--xl);background:var(--xl-soft);padding:3px 6px;display:inline-block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.pit{display:flex;gap:16px;align-items:flex-start;background:var(--warn-soft);padding:14px 18px;font-size:17px;line-height:1.45}
+.pit b{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--warn);padding-top:3px;white-space:nowrap}
+
+/* practice */
+.prac{display:grid;grid-template-columns:430px 1fr;gap:36px;flex:1;min-height:0}
+.steps{margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:s}
+.steps li{list-style:none;display:grid;grid-template-columns:30px 1fr;gap:10px;font-size:17px;line-height:1.4;counter-increment:s}
+.steps li::before{content:counter(s);font-family:var(--serif);font-size:22px;color:var(--xl);line-height:1}
+.steps code{font-size:15px;background:var(--card);border:1px solid var(--line);padding:1px 5px}
+.fbar{display:flex;border:1px solid var(--grid);background:var(--card);font-family:var(--mono);font-size:15.5px;align-items:stretch}
+.fbar .lbl{font-family:var(--serif);font-style:italic;color:var(--muted);padding:9px 12px;border-right:1px solid var(--grid)}
+.fbar .f{padding:9px 12px;flex:1;min-width:0;word-break:break-word;line-height:1.45}
+.fbar button{all:unset;cursor:pointer;font-size:12px;padding:0 12px;border-left:1px solid var(--grid);color:var(--xl);font-weight:600}
+.fbar button:hover{background:var(--xl-soft)}
+.sim{background:var(--card);border:1px solid var(--grid);display:flex;flex-direction:column;min-height:0}
+.sim-h{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--grid);font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--paper)}
+.sim-h .live{color:var(--xl)}
+.sim-b{padding:16px 18px;display:flex;flex-direction:column;gap:14px;min-height:0;flex:1}
+.ctrls{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.ctrl{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--muted);font-family:var(--mono)}
+select,input[type=number]{font-family:var(--sans);font-size:16px;padding:7px 10px;border:1px solid var(--grid);background:var(--card);color:var(--ink);min-width:180px}
+.livef{font-family:var(--mono);font-size:15px;background:var(--paper);border:1px dashed var(--grid);padding:9px 12px;line-height:1.5;word-break:break-word}
+.livef .v{background:var(--mark);padding:0 3px}
+.res{display:flex;align-items:center;gap:16px;border:2px solid var(--xl);padding:12px 16px;position:relative;cursor:pointer}
+.res .k{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--xl)}
+.res .val{font-family:var(--serif);font-size:34px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.res.hide .val{filter:blur(12px);user-select:none}
+.res .rev{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.res.hide .rev{color:var(--xl);font-weight:600}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:13px;border:1px solid var(--grid);background:var(--paper);padding:4px 9px;cursor:pointer;color:var(--ink)}
+.chip:hover{border-color:var(--xl)}
+
+/* spreadsheet table */
+.sheet{overflow:auto;border:1px solid var(--grid);min-height:0;flex:1}
+.sheet table{border-collapse:collapse;font-size:13.5px;width:100%;font-variant-numeric:tabular-nums}
+.sheet th,.sheet td{border:1px solid var(--line);padding:5px 8px;text-align:left;white-space:nowrap}
+.sheet thead th{background:var(--paper);font-family:var(--mono);font-weight:500;font-size:12px;color:var(--muted);text-align:center;position:sticky;top:0}
+.sheet thead tr.hdr th{color:var(--ink);font-family:var(--sans);font-weight:600;font-size:12.5px;text-align:left;top:25px}
+.sheet td.rn,.sheet th.rn{background:var(--paper);color:var(--muted);font-family:var(--mono);font-size:11px;text-align:center;width:28px}
+.sheet td.num{text-align:right}
+.sheet tr.hit td{background:var(--mark)}
+.sheet td.key{background:#fbf6e2}
+.sheet td.ret{background:var(--xl-soft)}
+.sheet tr.sel td{font-weight:600}
+.sheet tr.sel td.key{outline:2px solid var(--mark-line);outline-offset:-2px;background:var(--mark)}
+.sheet tr.sel td.ret{outline:2px solid var(--xl);outline-offset:-2px}
+.empty{padding:18px;color:var(--muted);font-size:15px}
+
+/* condition ladder (SI / SI.CONJUNTO) */
+.ladder{display:flex;flex-direction:column;gap:6px;font-family:var(--mono);font-size:15px}
+.ladder div{display:grid;grid-template-columns:22px 1fr auto;gap:10px;padding:7px 10px;border:1px solid var(--line);align-items:center;color:var(--muted)}
+.ladder div.t{border-color:var(--xl);background:var(--xl-soft);color:var(--ink)}
+.ladder div.s{opacity:.45}
+.ladder .r{font-family:var(--sans);font-weight:600}
+.dist{display:flex;gap:10px;flex-wrap:wrap}
+.dist span{font-size:14px;border:1px solid var(--line);padding:5px 10px;background:var(--paper)}
+.dist b{font-family:var(--serif);font-size:18px;margin-right:4px}
+
+/* function output list (texto/fechas) */
+.outs{display:grid;grid-template-columns:1fr auto;border-top:1px solid var(--line);font-size:15px;overflow:auto;min-height:0}
+.outs > div{padding:8px 6px;border-bottom:1px solid var(--line)}
+.outs .fx{font-family:var(--mono);font-size:14px;color:var(--muted)}
+.outs .fx b{color:var(--xl);font-weight:600}
+.outs .o{font-family:var(--serif);font-size:19px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.outs .o.hid{filter:blur(8px);cursor:pointer}
+.ficha{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line)}
+.ficha div{padding:7px 10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px}
+.ficha small{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+/* summary */
+.sum{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:2px solid var(--ink)}
+.sum>div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;padding:10px 10px;border-bottom:1px solid var(--line);align-items:baseline}
+.sum .n{font-family:var(--serif);font-size:26px;color:var(--xl)}
+.sum code{font-size:14.5px;display:block;color:var(--ink);margin-top:3px;font-weight:500}
+.sum p{font-size:16px;color:var(--muted)}
+.sum>div>div{min-width:0}
+.kahoot{display:flex;align-items:center;justify-content:space-between;background:var(--ink);color:var(--paper);padding:20px 26px}
+.kahoot h3{font-family:var(--serif);font-size:30px;font-weight:600}
+.kahoot p{font-family:var(--mono);font-size:14px;opacity:.8}
+.toast{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:13px;padding:8px 14px;z-index:5}
+</style>
+
+<div id="viewport"><div id="stage">
+  <div class="top"><span id="topL">MÓDULO 2 · FUNCIONES AVANZADAS DE EXCEL</span><div class="dots" id="dots"></div></div>
+  <div id="slides"></div>
+  <div class="bottom">
+    <span>Jarlin Figueroa, MA</span>
+    <div class="navb">
+      <button class="btn" id="fs" title="Pantalla completa (F)">Pantalla completa</button>
+      <button class="btn" id="prev" aria-label="Anterior">← Anterior</button>
+      <span id="count" style="min-width:70px;text-align:center"></span>
+      <button class="btn primary" id="next" aria-label="Siguiente">Siguiente →</button>
+    </div>
+  </div>
+</div></div>
+
+<script>
+const DATA = [["REC-1189", "Ramón Féliz Jiménez", "001-4888762-3", "ARS Humano", "Santiago", "No Registrado", "Clínica Vista Mar", "2025-01-24", 12257], ["REC-1077", "Rafael Reyes Gómez", "047-6491194-0", "ARS Humano", "Puerto Plata", "Hospitalización", "Centro Médico Las Américas", "2025-02-03", 155647], ["REC-1329", "María Batista Tavárez", "001-5317727-3", "ARS Humano", "San Cristóbal", "Hospitalización", "Centro Médico Las Américas", "2025-02-06", 100732.5], ["REC-1280", "Leidy Ureña Jiménez", "047-8124028-9", "ARS Humano", "Santo Domingo", "Hospitalización", "Hospital Regional Norte", "2025-02-12", 41375], ["REC-1168", "Carmen Guzmán Guzmán", "031-4969657-9", "ARS Humano", "San Cristóbal", "Laboratorio", "Laboratorio Clínico Amigo", "2025-02-22", 4768.5], ["REC-1014", "Miguel Peña Féliz", "047-9839563-2", "ARS Humano", "Distrito Nacional", "Imágenes", "Hospital Regional Norte", "2025-04-04", 11332], ["REC-1210", "Julio Díaz Ureña", "031-4787899-0", "ARS Humano", "Distrito Nacional", "Emergencia", "Policlínica Central", "2025-04-26", 4848.5], ["REC-1140", "Paola Almonte Almonte", "047-6491974-2", "ARS Humano", "Santiago", "Consulta", "Centro Médico Nuestra Señora", "2025-05-17", 1880], ["REC-1112", "Daniela Pérez De la Cruz", "402-9624033-4", "ARS Humano", "Puerto Plata", "Emergencia", "Centro Médico Nuestra Señora", "2025-05-28", 11468], ["REC-1021", "José Jiménez Ureña", "037-0045369-6", "ARS Humano", "Puerto Plata", "Laboratorio", "No Registrado", "2025-06-26", 5596.5], ["REC-1182", "Andrés De la Cruz Peña", "037-5733666-4", "ARS Universal", "Santo Domingo", "Emergencia", "Hospital Regional Norte", "2025-02-04", 9809], ["REC-1056", "Rosa De la Cruz Rodríguez", "402-9613027-7", "ARS Universal", "Puerto Plata", "Hospitalización", "Clínica Vista Mar", "2025-03-16", 50257.5], ["REC-1154", "Marisol Rodríguez Jiménez", "002-1526365-6", "ARS Universal", "La Vega", "Imágenes", "Clínica San Rafael", "2025-04-03", 12384], ["REC-1084", "Wilson Santana Almonte", "402-8942724-0", "ARS Universal", "Distrito Nacional", "Laboratorio", "Centro Diagnóstico del Cibao", "2025-04-11", 2793.5], ["REC-1196", "Ana Guzmán Mejía", "402-5600518-8", "ARS Universal", "Santiago", "Imágenes", "Laboratorio Clínico Amigo", "2025-05-12", 13949], ["REC-1252", "Ramón Almonte Batista", "402-8114714-3", "ARS Universal", "Santo Domingo", "Consulta", "Policlínica Central", "2025-05-28", 3186.5], ["REC-1091", "Rafael Tavárez Díaz", "037-5381989-8", "ARS Universal", "Puerto Plata", "Imágenes", "Policlínica Central", "2025-06-15", 10321], ["REC-1007", "Leidy Peña Almonte", "001-3858598-5", "MAPFRE Salud ARS", "Distrito Nacional", "Consulta", "Clínica Vista Mar", "2025-01-01", 3158], ["REC-1042", "Esperanza Encarnación Pérez", "002-9497133-3", "MAPFRE Salud ARS", "Distrito Nacional", "Emergencia", "Policlínica Central", "2025-01-09", 14587.5], ["REC-1175", "Ivelisse Mejía Rosario", "223-6516549-4", "MAPFRE Salud ARS", "Santo Domingo", "Emergencia", "Centro Médico Nuestra Señora", "2025-01-14", 6107], ["REC-1266", "Mercedes Santana De la Cruz", "047-9101566-8", "MAPFRE Salud ARS", "Santiago", "Hospitalización", "Policlínica Central", "2025-01-28", 103478], ["REC-1336", "Wilson Pérez De la Cruz", "002-9024755-8", "MAPFRE Salud ARS", "La Vega", "Consulta", "No Registrado", "2025-02-26", 1972], ["REC-1287", "Ivelisse Batista Féliz", "047-0632004-3", "MAPFRE Salud ARS", "Puerto Plata", "Hospitalización", "Hospital Regional Norte", "2025-04-05", 147899], ["REC-1161", "Félix Reyes Peña", "031-9030576-9", "MAPFRE Salud ARS", "La Vega", "Consulta", "No Registrado", "2025-04-12", 3309], ["REC-1049", "Yudelka Almonte Martínez", "002-8951084-0", "MAPFRE Salud ARS", "Santo Domingo", "Laboratorio", "Hospital Regional Norte", "2025-05-02", 5849.5], ["REC-1259", "Miguel Peña Gómez", "402-0790644-5", "MAPFRE Salud ARS", "Santo Domingo", "Imágenes", "Hospital Regional Norte", "2025-05-13", 4638], ["REC-1308", "Ángel Guzmán Reyes", "002-9145581-4", "MAPFRE Salud ARS", "San Cristóbal", "Consulta", "Centro Diagnóstico del Cibao", "2025-05-19", 3291.5], ["REC-1301", "María Santana Santana", "031-1750773-7", "MAPFRE Salud ARS", "La Vega", "Imágenes", "Hospital Regional Norte", "2025-05-20", 9045], ["REC-1231", "Ivelisse Díaz Batista", "402-6166805-1", "MAPFRE Salud ARS", "Puerto Plata", "Emergencia", "Centro Médico Nuestra Señora", "2025-06-04", 9624.5], ["REC-1098", "Carmen Jiménez Castillo", "223-7547525-4", "MAPFRE Salud ARS", "Distrito Nacional", "Emergencia", "Policlínica Central", "2025-06-13", 16018.5], ["REC-1350", "Juan Gómez Encarnación", "001-1338216-9", "MAPFRE Salud ARS", "Distrito Nacional", "Laboratorio", "Laboratorio Clínico Amigo", "2025-06-14", 1998], ["REC-1119", "Ivelisse Tavárez Pérez", "037-0451463-1", "MAPFRE Salud ARS", "La Vega", "Hospitalización", "Centro Médico Las Américas", "2025-06-18", 118920], ["REC-1245", "Félix Tavárez Cabrera", "223-0580053-1", "MAPFRE Salud ARS", "Santiago", "Consulta", "Centro Médico Las Américas", "2025-06-21", 1357.5], ["REC-1028", "Marisol Díaz Almonte", "402-7919402-2", "Primera ARS", "Distrito Nacional", "Consulta", "Clínica Vista Mar", "2025-01-01", 1589], ["REC-1224", "Mercedes Guzmán Díaz", "037-1521978-3", "Primera ARS", "Distrito Nacional", "Hospitalización", "Hospital Regional Norte", "2025-01-04", 146387.5], ["REC-1035", "Rafael Martínez Peña", "037-2536253-5", "Primera ARS", "No Registrado", "Hospitalización", "Centro Médico Las Américas", "2025-01-25", 129905], ["REC-1105", "Marisol Ureña Jiménez", "001-7807309-4", "Primera ARS", "La Vega", "Laboratorio", "No Registrado", "2025-02-04", 4224], ["REC-1315", "Mercedes Mejía Féliz", "002-2527004-8", "Primera ARS", "Distrito Nacional", "Imágenes", "Clínica Vista Mar", "2025-02-14", 9674.5], ["REC-1294", "Francisco Pérez Núñez", "223-4138189-9", "Primera ARS", "San Cristóbal", "No Registrado", "Clínica Vista Mar", "2025-02-24", 9291], ["REC-1070", "Mercedes Guzmán Batista", "002-6277427-6", "Primera ARS", "Puerto Plata", "No Registrado", "Laboratorio Clínico Amigo", "2025-04-08", 2675], ["REC-1126", "Yudelka Ureña Pérez", "223-7649596-9", "Primera ARS", "No Registrado", "Emergencia", "Centro Médico Las Américas", "2025-04-14", 13248], ["REC-1147", "Rafael Almonte Guzmán", "031-7828080-0", "SeNaSa", "Distrito Nacional", "Imágenes", "Policlínica Central", "2025-01-27", 4429.5], ["REC-1063", "Luis Mejía Reyes", "223-3452548-4", "SeNaSa", "Santiago", "Consulta", "Clínica San Rafael", "2025-01-28", 2555], ["REC-1343", "Altagracia Gómez Núñez", "047-0784217-6", "SeNaSa", "Puerto Plata", "Laboratorio", "Hospital Regional Norte", "2025-02-07", 2757.5], ["REC-1322", "Yudelka Féliz Gómez", "047-8632872-5", "SeNaSa", "Santiago", "Emergencia", "Clínica Vista Mar", "2025-02-16", 14628.5], ["REC-1273", "Altagracia Polanco Martínez", "001-1925992-1", "SeNaSa", "Distrito Nacional", "Consulta", "No Registrado", "2025-02-27", 2013.5], ["REC-1133", "Julio Tavárez Guzmán", "001-1614331-5", "SeNaSa", "San Cristóbal", "Hospitalización", "Laboratorio Clínico Amigo", "2025-05-07", 174865], ["REC-1203", "Manuel Rodríguez Féliz", "402-4873161-2", "SeNaSa", "La Vega", "Imágenes", "Centro Diagnóstico del Cibao", "2025-05-13", 12998], ["REC-1238", "Ivelisse Ureña Tavárez", "047-2059000-5", "SeNaSa", "No Registrado", "Emergencia", "Centro Médico Nuestra Señora", "2025-05-14", 6390.5], ["REC-1217", "Carmen Martínez Núñez", "031-2673256-8", "SeNaSa", "La Vega", "Emergencia", "Laboratorio Clínico Amigo", "2025-06-26", 15313]];
+const COLS = ["ID Reclamación","Afiliado","Cédula","ARS","Provincia","Tipo de Servicio","Prestador","Fecha de Servicio","Monto Reclamado"];
+const LET = "ABCDEFGHI".split("");
+const T = "tblReclamaciones";
+const rec = DATA.map(r=>({id:r[0],af:r[1],ced:r[2],ars:r[3],prov:r[4],tipo:r[5],pres:r[6],fecha:r[7],monto:r[8]}));
+const uniq = k => [...new Set(rec.map(r=>r[k]))].sort((a,b)=>a.localeCompare(b,'es'));
+const money = n => "RD$ " + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const num = n => n.toLocaleString("en-US",{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2});
+const MES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const DIA = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+const pd = s => { const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); };
+const fdate = s => { const [y,m,d]=s.split("-"); return `${d}/${m}/${y}`; };
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const opts = (arr,sel) => arr.map(v=>`<option${v===sel?" selected":""}>${esc(v)}</option>`).join("");
+
+/* ---------- Contenido de los 7 temas ---------- */
+const TOPICS = [
+{ k:"BUSCARX", d:"Buscar y recuperar información.",
+  def:"Busca un dato en una columna y te devuelve el valor que está en la misma fila, en otra columna.",
+  ana:"Es como buscar a alguien en la guía telefónica: encuentras el nombre y lees el teléfono que está al lado.",
+  syn:[["valor_buscado","Lo que quieres encontrar. Ej.: el ID REC-1077."],["matriz_buscada","La columna donde Excel va a buscar. Ej.: la columna ID Reclamación."],["matriz_devuelta","La columna de donde sale la respuesta. Ej.: la columna Afiliado."],["si_no_se_encuentra","Texto a mostrar si no existe. Ej.: \"No existe\". Evita el error #N/D.",1]],
+  uses:[["Consultar una reclamación","Escribes el ID y aparece el afiliado, la ARS y el monto.",'=BUSCARX(B2,'+T+'[ID Reclamación],'+T+'[Afiliado])'],
+        ["Buscar por cédula","Con la cédula de un afiliado recuperas su ARS.",'=BUSCARX(B2,'+T+'[Cédula],'+T+'[ARS])'],
+        ["Cruzar dos hojas","Traer a un reporte el monto que está en la base principal.",'=BUSCARX(A2,'+T+'[ID Reclamación],'+T+'[Monto Reclamado])'],
+        ["Busca a la izquierda","A diferencia de BUSCARV, la respuesta puede estar a la izquierda de la columna buscada.",'=BUSCARX(B2,'+T+'[Afiliado],'+T+'[ID Reclamación])']],
+  pit:"Si el valor buscado tiene un espacio de más o está escrito diferente (REC-1077 vs REC 1077), BUSCARX no lo encuentra y devuelve #N/D.",
+  steps:["Crea una hoja nueva y llámala <code>Consulta</code>.","En <code>A2</code> escribe <code>ID Reclamación</code> y en <code>B2</code> escribe <code>REC-1077</code>.","En <code>A4</code> escribe <code>Afiliado</code> y en <code>B4</code> la fórmula de abajo.","Cambia el ID en <code>B2</code> y observa cómo cambia el resultado."],
+  f:'=BUSCARX(B2,'+T+'[ID Reclamación],'+T+'[Afiliado],"No existe")', sim:"buscarx" },
+
+{ k:"SI", d:"Tomar decisiones según una condición.",
+  def:"Hace una pregunta de sí o no. Si la respuesta es verdadera, muestra una cosa; si es falsa, muestra otra.",
+  ana:"Es como un semáforo con dos luces: si el monto pasa el límite, se enciende “Alto costo”; si no, “Regular”.",
+  syn:[["prueba_lógica","La pregunta. Ej.: ¿el monto es mayor o igual a 50,000?"],["valor_si_verdadero","Lo que se muestra si la respuesta es SÍ."],["valor_si_falso","Lo que se muestra si la respuesta es NO."]],
+  uses:[["Marcar alto costo","Identificar reclamaciones de RD$ 50,000 o más.",'=SI([@[Monto Reclamado]]>=50000,"Alto costo","Regular")'],
+        ["Detectar datos incompletos","Señalar las filas con Prestador “No Registrado” para revisarlas.",'=SI([@Prestador]="No Registrado","Revisar","OK")'],
+        ["Validar una ARS","Saber si la reclamación pertenece al régimen subsidiado (SeNaSa).",'=SI([@ARS]="SeNaSa","Subsidiado","Contributivo")'],
+        ["Calcular condicionalmente","Aplicar un 10 % de copago solo a las consultas.",'=SI([@[Tipo de Servicio]]="Consulta",[@[Monto Reclamado]]*0.1,0)']],
+  pit:"Los textos van entre comillas (\"Alto costo\") y los números sin comillas (50000). Escribir \"50000\" entre comillas hace que la comparación falle.",
+  steps:["Ve a la hoja <code>Reclamaciones</code>.","En <code>J1</code> escribe el encabezado <code>Nivel</code>. La tabla se extiende sola.","En <code>J2</code> escribe la fórmula de abajo y presiona Enter.","La fórmula se copia a todas las filas automáticamente."],
+  f:'=SI([@[Monto Reclamado]]>=50000,"Alto costo","Regular")', sim:"si" },
+
+{ k:"SI.CONJUNTO", d:"Clasificar con varias condiciones.",
+  def:"Revisa varias condiciones en orden y devuelve el resultado de la primera que se cumpla. Reemplaza a varios SI anidados.",
+  ana:"Es como clasificar pacientes en emergencia: primero se pregunta si es crítico, luego si es urgente, y así hasta llegar al último nivel.",
+  syn:[["prueba1","Primera condición que se revisa."],["valor1","Resultado si la prueba1 se cumple."],["prueba2, valor2…","Más pares de condición y resultado. Se revisan en orden."],["VERDADERO, valor_final","Último par opcional: lo que se muestra si ninguna condición anterior se cumplió.",1]],
+  uses:[["Nivel de costo","Crítico, Alto, Medio o Bajo según el monto reclamado.",'=SI.CONJUNTO([@[Monto Reclamado]]>=100000,"Crítico",…)'],
+        ["Prioridad de auditoría","Hospitalización = Alta, Emergencia = Media, el resto = Baja.",'=SI.CONJUNTO([@[Tipo de Servicio]]="Hospitalización","Alta",…)'],
+        ["Región","Agrupar provincias en Norte, Sur o Metropolitana.",'=SI.CONJUNTO([@Provincia]="Santiago","Norte",…)'],
+        ["Trimestre","Convertir el mes de la fecha en T1 o T2.",'=SI.CONJUNTO(MES([@[Fecha de Servicio]])<=3,"T1",VERDADERO,"T2")']],
+  pit:"El orden importa. Si preguntas primero “>=5000” y luego “>=100000”, todo lo grande se queda en la primera condición. Empieza siempre por el valor más alto.",
+  steps:["En la hoja <code>Reclamaciones</code>, en <code>K1</code> escribe <code>Nivel de costo</code>.","En <code>K2</code> escribe la fórmula de abajo.","Fíjate en el último par: <code>VERDADERO,\"Bajo\"</code> atrapa todo lo que sobra.","Filtra la columna para ver cuántas son “Crítico”."],
+  f:'=SI.CONJUNTO([@[Monto Reclamado]]>=100000,"Crítico",[@[Monto Reclamado]]>=20000,"Alto",[@[Monto Reclamado]]>=5000,"Medio",VERDADERO,"Bajo")', sim:"siconj" },
+
+{ k:"CONTAR.SI.CONJUNTO", d:"Contar registros que cumplen criterios.",
+  def:"Cuenta cuántas filas cumplen todas las condiciones que le indiques al mismo tiempo.",
+  ana:"Es como pasar lista con filtro: “levanten la mano los de SeNaSa… y de esos, solo los que vinieron por emergencia”.",
+  syn:[["rango_criterios1","La primera columna a revisar. Ej.: la columna ARS."],["criterio1","Lo que debe cumplir. Ej.: \"SeNaSa\"."],["rango_criterios2, criterio2…","Más columnas y condiciones. Todas deben cumplirse a la vez.",1]],
+  uses:[["Reclamaciones por ARS","¿Cuántas reclamaciones tiene MAPFRE Salud ARS?",'=CONTAR.SI.CONJUNTO('+T+'[ARS],"MAPFRE Salud ARS")'],
+        ["Dos criterios","¿Cuántas emergencias de SeNaSa hay?",'=CONTAR.SI.CONJUNTO('+T+'[ARS],"SeNaSa",'+T+'[Tipo de Servicio],"Emergencia")'],
+        ["Con números","¿Cuántas superan RD$ 100,000?",'=CONTAR.SI.CONJUNTO('+T+'[Monto Reclamado],">=100000")'],
+        ["Calidad del dato","¿Cuántas filas tienen la provincia “No Registrado”?",'=CONTAR.SI.CONJUNTO('+T+'[Provincia],"No Registrado")']],
+  pit:"Los operadores van entre comillas junto al número: \">=100000\". Si el criterio está en una celda, se une con &: \">=\"&B2.",
+  steps:["Crea una hoja <code>Resumen</code>.","En <code>A2</code> escribe la ARS y en <code>B2</code> el tipo de servicio.","En <code>C2</code> escribe la fórmula de abajo.","Cambia la ARS o el servicio y compara con el simulador."],
+  f:'=CONTAR.SI.CONJUNTO('+T+'[ARS],A2,'+T+'[Tipo de Servicio],B2)', sim:"contar" },
+
+{ k:"SUMAR.SI.CONJUNTO", d:"Sumar valores según criterios.",
+  def:"Suma los valores de una columna, pero solo de las filas que cumplen todas las condiciones.",
+  ana:"Es como sumar en la caja solo las facturas de un cliente y de un tipo de servicio, dejando las demás a un lado.",
+  syn:[["rango_suma","La columna con los números a sumar. Ej.: Monto Reclamado."],["rango_criterios1","La primera columna a revisar. Ej.: ARS."],["criterio1","Lo que debe cumplir. Ej.: \"MAPFRE Salud ARS\"."],["rango_criterios2, criterio2…","Más condiciones opcionales.",1]],
+  uses:[["Monto por ARS","¿Cuánto reclama en total SeNaSa?",'=SUMAR.SI.CONJUNTO('+T+'[Monto Reclamado],'+T+'[ARS],"SeNaSa")'],
+        ["ARS + servicio","Total de hospitalizaciones de MAPFRE Salud ARS.",'=SUMAR.SI.CONJUNTO('+T+'[Monto Reclamado],'+T+'[ARS],"MAPFRE Salud ARS",'+T+'[Tipo de Servicio],"Hospitalización")'],
+        ["Por provincia","Monto total reclamado en el Distrito Nacional.",'=SUMAR.SI.CONJUNTO('+T+'[Monto Reclamado],'+T+'[Provincia],"Distrito Nacional")'],
+        ["Por rango de fechas","Total de febrero 2025, usando dos condiciones de fecha.",'=SUMAR.SI.CONJUNTO('+T+'[Monto Reclamado],'+T+'[Fecha de Servicio],">=1/2/2025",…)']],
+  pit:"A diferencia de SUMAR.SI, aquí el rango a sumar va PRIMERO. Es el error más común al pasar de una función a la otra.",
+  steps:["En la hoja <code>Resumen</code>, usa los mismos valores de <code>A2</code> (ARS) y <code>B2</code> (servicio).","En <code>D2</code> escribe la fórmula de abajo.","Dale formato de moneda a <code>D2</code>.","Cambia la ARS y observa cómo cambia la suma."],
+  f:'=SUMAR.SI.CONJUNTO('+T+'[Monto Reclamado],'+T+'[ARS],A2,'+T+'[Tipo de Servicio],B2)', sim:"sumar" },
+
+{ k:"Texto", d:"Extraer partes de un texto.",
+  def:"Un grupo de funciones para cortar, medir, unir y limpiar textos: sacar los primeros caracteres, los últimos o un pedazo del medio.",
+  ana:"Es como usar unas tijeras sobre la cédula: corto los 3 primeros dígitos, o el pedazo del medio, o el último.",
+  syn:[["IZQUIERDA(texto, n)","Toma n caracteres desde el inicio."],["DERECHA(texto, n)","Toma n caracteres desde el final."],["EXTRAE(texto, inicio, n)","Toma n caracteres a partir de una posición."],["LARGO(texto)","Cuenta cuántos caracteres tiene."],["ENCONTRAR(buscar, texto)","Dice en qué posición está un carácter, por ejemplo el primer espacio."]],
+  uses:[["Código de la cédula","Los 3 primeros dígitos de la cédula.",'=IZQUIERDA([@Cédula],3)'],
+        ["Número del ID","Quitar el prefijo REC- y quedarse con el número.",'=DERECHA([@[ID Reclamación]],4)'],
+        ["Primer nombre","Todo lo que está antes del primer espacio.",'=IZQUIERDA([@Afiliado],ENCONTRAR(" ",[@Afiliado])-1)'],
+        ["Cédula sin guiones","Limpiar el formato para cruzar con otro sistema.",'=SUSTITUIR([@Cédula],"-","")']],
+  pit:"El resultado de estas funciones siempre es texto. “001” se queda como texto con su cero; si necesitas operar con él como número, envuélvelo en VALOR().",
+  steps:["En la hoja <code>Reclamaciones</code>, agrega la columna <code>Primer nombre</code>.","Escribe la fórmula de abajo.","Agrega otra columna <code>Código cédula</code> con <code>=IZQUIERDA([@Cédula],3)</code>.","Elige un afiliado en el simulador y comprueba cada función."],
+  f:'=IZQUIERDA([@Afiliado],ENCONTRAR(" ",[@Afiliado])-1)', sim:"texto" },
+
+{ k:"Fechas", d:"Analizar fechas y períodos.",
+  def:"Funciones para sacar el año, el mes o el día de una fecha, saber qué día de la semana fue y calcular cuántos días han pasado.",
+  ana:"Para Excel una fecha es un número: cuenta los días desde el 1 de enero de 1900. Por eso se pueden restar fechas.",
+  syn:[["AÑO / MES / DIA(fecha)","Extraen el año, el mes (1–12) o el día (1–31)."],["TEXTO(fecha,\"mmmm\")","Muestra el nombre del mes. Con \"dddd\", el nombre del día."],["DIASEM(fecha,2)","Número del día de la semana: 1 = lunes … 7 = domingo."],["HOY()","La fecha de hoy. Se actualiza sola cada día."],["HOY() − fecha","Días transcurridos desde la fecha del servicio."]],
+  uses:[["Agrupar por mes","Columna con el mes para hacer resúmenes mensuales.",'=TEXTO([@[Fecha de Servicio]],"mmmm")'],
+        ["Antigüedad","Días que lleva una reclamación desde el servicio.",'=HOY()-[@[Fecha de Servicio]]'],
+        ["Fines de semana","Detectar servicios en sábado o domingo.",'=SI(DIASEM([@[Fecha de Servicio]],2)>5,"Fin de semana","Laboral")'],
+        ["Contar por mes","Reclamaciones de febrero, combinando con CONTAR.SI.CONJUNTO.",'=CONTAR.SI.CONJUNTO('+T+'[Fecha de Servicio],">=1/2/2025",…)']],
+  pit:"Si una fecha aparece alineada a la izquierda, Excel la tomó como texto y estas funciones darán #¡VALOR!. Las fechas reales se alinean a la derecha.",
+  steps:["En la hoja <code>Reclamaciones</code>, agrega la columna <code>Mes</code> con la fórmula de abajo.","Agrega <code>Días transcurridos</code> con <code>=HOY()-[@[Fecha de Servicio]]</code> y formato Número.","Agrega <code>Día</code> con <code>=TEXTO([@[Fecha de Servicio]],\"dddd\")</code>.","Compara con el simulador eligiendo un afiliado."],
+  f:'=TEXTO([@[Fecha de Servicio]],"mmmm")', sim:"fechas" }
+];
+
+const SH=["=BUSCARX(buscado, columna_buscar, columna_resultado)","=SI(prueba, si_verdadero, si_falso)","=SI.CONJUNTO(prueba1, valor1, …, VERDADERO, otro)","=CONTAR.SI.CONJUNTO(rango1, criterio1, …)","=SUMAR.SI.CONJUNTO(rango_suma, rango1, criterio1, …)","IZQUIERDA · DERECHA · EXTRAE · LARGO · ENCONTRAR","AÑO · MES · DIA · TEXTO · DIASEM · HOY"];
+/* ---------- Construcción de diapositivas ---------- */
+const S = []; // {html, topic, init}
+S.push({topic:-1, html:`<div class="slide cover">
+  <div class="mod">Módulo 2</div>
+  <h1>Funciones avanzadas de Excel</h1>
+  <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
+  <div class="fx"><span class="lbl">fx</span><span>=BUSCARX( SI( CONTAR.SI.CONJUNTO( … ) ) )</span><span class="caret"></span></div>
+  <div class="hint">Base de práctica: tblReclamaciones · ${rec.length} reclamaciones · use ← → para avanzar</div>
+</div>`});
+
+S.push({topic:-1, html:`<div class="slide">
+  <div class="eyebrow">Contenido</div>
+  <h2>Siete herramientas, un mismo archivo</h2>
+  <p class="lead" style="font-size:20px">Cada tema tiene tres láminas: <b>concepto</b>, <b>utilidad</b> y <b>práctica en vivo</b> con la base de reclamaciones.</p>
+  <div class="idx">${TOPICS.map((t,i)=>`<button data-go="${2+i*3}"><span class="n">0${i+1}</span><span class="k">${t.k}</span><span class="d">${t.d}</span></button>`).join("")}
+    <button class="ex" tabindex="-1"><span class="n">→</span><span class="k">Kahoot</span><span class="d">Repaso al final de la clase.</span></button></div>
+  <p class="note"><b>Nota:</b> las fórmulas usan coma ( , ). Si tu Excel usa punto y coma ( ; ), cámbialo al escribirlas.</p>
+</div>`});
+
+TOPICS.forEach((t,i)=>{
+  const n = "0"+(i+1);
+  const eb = tag => `<div class="eyebrow"><span class="n">${n}</span><span>${t.k}</span><span class="tag">${tag}</span></div>`;
+  const isFn = t.syn[0][0].indexOf("(")<0;
+  const synHtml = isFn
+    ? `<div class="syntax"><span class="fn">=${t.k}(</span>${t.syn.map((a,j)=>`<span class="arg${a[2]?" opt":""}" data-a="${j}">${a[2]?"["+a[0]+"]":a[0]}</span>`).join(", ")}<span class="fn">)</span></div>`
+    : "";
+  S.push({topic:i, html:`<div class="slide">${eb("Concepto")}
+    <div class="cols">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <h2>¿Qué es ${t.k}?</h2>
+        <p class="lead">${t.def}</p>
+        <p class="analogy">${t.ana}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <h3 class="muted" style="font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase">${isFn?"Sintaxis · toca cada parte":"Funciones del grupo · toca cada una"}</h3>
+        ${synHtml}
+        <ul class="args">${t.syn.map((a,j)=>`<li data-a="${j}"><div><code>${esc(a[0])}</code>${a[2]?'<span class="o">opcional</span>':""}</div><div>${esc(a[1])}</div></li>`).join("")}</ul>
+      </div>
+    </div></div>`, init:el=>{
+      const set = j => el.querySelectorAll("[data-a]").forEach(x=>x.classList.toggle("on",x.dataset.a==j));
+      el.querySelectorAll("[data-a]").forEach(x=>x.addEventListener("click",()=>set(x.dataset.a)));
+    }});
+  S.push({topic:i, html:`<div class="slide">${eb("Utilidad")}
+    <h2>¿Para qué nos sirve en el trabajo?</h2>
+    <div class="uses">${t.uses.map(u=>`<div class="use"><h3>${u[0]}</h3><p>${u[1]}</p><code title="${esc(u[2])}">${esc(u[2])}</code></div>`).join("")}</div>
+    <div class="pit"><b>Error común</b><span>${t.pit}</span></div></div>`});
+  S.push({topic:i, html:`<div class="slide">${eb("Práctica en vivo")}
+    <div class="prac">
+      <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+        <h2 style="font-size:38px">Hagámoslo juntos</h2>
+        <ol class="steps">${t.steps.map(s=>`<li><span>${s}</span></li>`).join("")}</ol>
+        <div class="fbar"><span class="lbl">fx</span><span class="f">${esc(t.f)}</span><button data-copy>Copiar</button></div>
+      </div>
+      <div class="sim" data-sim="${t.sim}"></div>
+    </div></div>`, init:el=>{
+      el.querySelector("[data-copy]").addEventListener("click",e=>copy(t.f,e.target));
+      SIMS[t.sim](el.querySelector(".sim"));
+    }});
+});
+
+S.push({topic:-1, html:`<div class="slide">
+  <div class="eyebrow">Resumen</div>
+  <h2>Lo que aprendimos hoy</h2>
+  <div class="sum">${TOPICS.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${esc(SH[i])}</code></div></div>`).join("")}
+  <div><span class="n">✓</span><div><p>Separador de argumentos</p><code>coma ( , ) o punto y coma ( ; )</code></div></div></div>
+  <div class="kahoot"><div><h3>¡Ahora, al Kahoot!</h3><p>Ten tu celular listo · entra con el PIN que aparece en pantalla</p></div><span style="font-family:var(--serif);font-size:56px">?</span></div>
+</div>`});
+
+/* ---------- Simuladores ---------- */
+function head(title){ return `<div class="sim-h"><span>${title}</span><span class="live">● en vivo</span></div>`; }
+function resBox(label){ return `<div class="res hide" data-res><div><div class="k">${label}</div><div class="val" data-val>—</div></div><span class="rev" data-rev>Clic para revelar</span></div>`; }
+function wireRes(box){ const r=box.querySelector("[data-res]"); r.addEventListener("click",()=>{r.classList.toggle("hide"); r.querySelector("[data-rev]").textContent=r.classList.contains("hide")?"Clic para revelar":"Clic para ocultar";}); return v=>{r.querySelector("[data-val]").textContent=v;}; }
+function sheet(rows, opt={}){
+  const cols = opt.cols || [0,1,3,5,8];
+  if(!rows.length) return `<div class="empty">Ninguna fila cumple las condiciones.</div>`;
+  return `<table><thead><tr><th class="rn"></th>${cols.map(c=>`<th>${LET[c]}</th>`).join("")}</tr><tr class="hdr"><th class="rn">1</th>${cols.map(c=>`<th>${COLS[c]}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>{
+    const vals=[r.id,r.af,r.ced,r.ars,r.prov,r.tipo,r.pres,fdate(r.fecha),num(r.monto)];
+    return `<tr class="${opt.hit&&opt.hit(r)?"hit":""}${opt.sel===r?" sel":""}"><td class="rn">${rec.indexOf(r)+2}</td>${cols.map(c=>`<td class="${c===8?"num ":""}${opt.key===c?"key":""}${opt.ret===c?"ret":""}">${esc(vals[c])}</td>`).join("")}</tr>`;}).join("")}</tbody></table>`;
+}
+const FIELD = {Afiliado:["af",1],ARS:["ars",3],Provincia:["prov",4],"Tipo de Servicio":["tipo",5],Prestador:["pres",6],"Monto Reclamado":["monto",8]};
+
+const SIMS = {
+buscarx(box){
+  const ids = rec.map(r=>r.id).concat(["REC-9999"]);
+  box.innerHTML = head("Simulador · BUSCARX")+`<div class="sim-b">
+    <div class="ctrls"><label class="ctrl">valor_buscado (B2)<select id="bx-id">${opts(ids,"REC-1077")}</select></label>
+    <label class="ctrl">matriz_devuelta<select id="bx-col">${opts(Object.keys(FIELD),"Afiliado")}</select></label></div>
+    <div class="livef" data-f></div>${resBox("Resultado en B4")}<div class="sheet" data-t></div></div>`;
+  const out = wireRes(box), id=box.querySelector("#bx-id"), col=box.querySelector("#bx-col");
+  const run=()=>{
+    const r = rec.find(x=>x.id===id.value), [k,c]=FIELD[col.value];
+    box.querySelector("[data-f]").innerHTML = `=BUSCARX(<span class="v">"${id.value}"</span>, ${T}[ID Reclamación], ${T}[<span class="v">${col.value}</span>], "No existe")`;
+    out(r ? (k==="monto"?money(r[k]):r[k]) : "No existe");
+    const i = r?rec.indexOf(r):-1, near = r? rec.slice(Math.max(0,i-2),i+3) : rec.slice(0,4);
+    const cols=[0,1,3,5,8].includes(c)?[0,1,3,5,8]:[0,1,3,c,8];
+    box.querySelector("[data-t]").innerHTML = sheet(near,{cols,key:0,ret:c,sel:r});
+    if(!r) box.querySelector("[data-t]").insertAdjacentHTML("afterbegin",`<div class="empty">REC-9999 no está en la columna A: BUSCARX devuelve el 4.º argumento.</div>`);
+  };
+  id.onchange=col.onchange=run; run();
+},
+si(box){
+  box.innerHTML = head("Simulador · SI")+`<div class="sim-b">
+    <div class="ctrls"><label class="ctrl">Monto Reclamado<input type="number" id="si-m" value="155647" step="500"></label>
+    <div class="chips">${[155647,41375,12257,1880].map(v=>`<button class="chip" data-v="${v}">${num(v)}</button>`).join("")}</div></div>
+    <div class="livef" data-f></div>
+    <div class="ladder" data-l></div>${resBox("Resultado en J2")}
+    <div><div class="ctrl" style="margin-bottom:6px">En toda la base (${rec.length} filas)</div><div class="dist" data-d></div></div></div>`;
+  const out=wireRes(box), m=box.querySelector("#si-m");
+  const f=v=>v>=50000?"Alto costo":"Regular";
+  const run=()=>{ const v=+m.value||0, t=v>=50000;
+    box.querySelector("[data-f]").innerHTML=`=SI(<span class="v">${num(v)}</span>>=50000, "Alto costo", "Regular")`;
+    box.querySelector("[data-l]").innerHTML=`<div class="${t?"t":"s"}"><span>${t?"✓":"✗"}</span><span>¿${num(v)} >= 50,000? → VERDADERO</span><span class="r">"Alto costo"</span></div><div class="${t?"s":"t"}"><span>${t?"✗":"✓"}</span><span>Si no → FALSO</span><span class="r">"Regular"</span></div>`;
+    out(f(v)); };
+  const c={}; rec.forEach(r=>c[f(r.monto)]=(c[f(r.monto)]||0)+1);
+  box.querySelector("[data-d]").innerHTML=Object.entries(c).map(([k,v])=>`<span><b>${v}</b>${k}</span>`).join("");
+  m.oninput=run; box.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{m.value=b.dataset.v;run();}); run();
+},
+siconj(box){
+  const L=[[100000,"Crítico"],[20000,"Alto"],[5000,"Medio"],[null,"Bajo"]];
+  const f=v=>L.find(x=>x[0]===null||v>=x[0])[1];
+  box.innerHTML = head("Simulador · SI.CONJUNTO")+`<div class="sim-b">
+    <div class="ctrls"><label class="ctrl">Monto Reclamado<input type="number" id="sc-m" value="41375" step="500"></label>
+    <div class="chips">${[174865,41375,9809,1880].map(v=>`<button class="chip" data-v="${v}">${num(v)}</button>`).join("")}</div></div>
+    <div class="ladder" data-l></div>${resBox("Resultado en K2")}
+    <div><div class="ctrl" style="margin-bottom:6px">En toda la base (${rec.length} filas)</div><div class="dist" data-d></div></div></div>`;
+  const out=wireRes(box), m=box.querySelector("#sc-m");
+  const run=()=>{ const v=+m.value||0; let hit=false;
+    box.querySelector("[data-l]").innerHTML=L.map((x,i)=>{ const ok=x[0]===null||v>=x[0]; let cls=""; if(hit) cls="s"; else if(ok){cls="t";hit=true;}
+      return `<div class="${cls}"><span>${cls==="t"?"✓":cls==="s"?"·":"✗"}</span><span>${x[0]===null?"VERDADERO":`${num(v)} >= ${num(x[0])}`}</span><span class="r">"${x[1]}"</span></div>`;}).join("");
+    out(f(v)); };
+  const c={}; rec.forEach(r=>c[f(r.monto)]=(c[f(r.monto)]||0)+1);
+  box.querySelector("[data-d]").innerHTML=L.map(x=>`<span><b>${c[x[1]]||0}</b>${x[1]}</span>`).join("");
+  m.oninput=run; box.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{m.value=b.dataset.v;run();}); run();
+},
+contar(box){ critSim(box,false); },
+sumar(box){ critSim(box,true); },
+texto(box){
+  box.innerHTML = head("Simulador · funciones de texto")+`<div class="sim-b">
+    <div class="ctrls"><label class="ctrl">Fila del afiliado<select id="tx-r">${rec.map((r,i)=>`<option value="${i}">${esc(r.af)}</option>`).join("")}</select></label>
+    <button class="btn" data-all>Revelar todo</button></div>
+    <div class="ficha" data-fi></div><div class="outs" data-o></div></div>`;
+  const s=box.querySelector("#tx-r");
+  const run=()=>{ const r=rec[+s.value]; const sp=r.af.indexOf(" ")+1;
+    box.querySelector("[data-fi]").innerHTML=`<div><small>Afiliado</small>${esc(r.af)}</div><div><small>Cédula</small>${r.ced}</div><div><small>ID Reclamación</small>${r.id}</div>`;
+    const rows=[[`<b>IZQUIERDA</b>([@Cédula],3)`,r.ced.slice(0,3)],[`<b>EXTRAE</b>([@Cédula],5,7)`,r.ced.substr(4,7)],[`<b>DERECHA</b>([@[ID Reclamación]],4)`,r.id.slice(-4)],[`<b>LARGO</b>([@Afiliado])`,r.af.length],[`<b>ENCONTRAR</b>(" ",[@Afiliado])`,sp],[`<b>IZQUIERDA</b>([@Afiliado],ENCONTRAR(" ",[@Afiliado])-1)`,r.af.slice(0,sp-1)],[`<b>SUSTITUIR</b>([@Cédula],"-","")`,r.ced.replace(/-/g,"")],[`<b>MAYUSC</b>([@ARS])`,r.ars.toUpperCase()]];
+    box.querySelector("[data-o]").innerHTML=rows.map(x=>`<div class="fx">=${x[0]}</div><div class="o hid" title="Clic para revelar">${esc(x[1])}</div>`).join("");
+    box.querySelectorAll(".o").forEach(o=>o.onclick=()=>o.classList.toggle("hid")); };
+  box.querySelector("[data-all]").onclick=()=>box.querySelectorAll(".o").forEach(o=>o.classList.remove("hid"));
+  s.onchange=run; run();
+},
+fechas(box){
+  box.innerHTML = head("Simulador · funciones de fecha")+`<div class="sim-b">
+    <div class="ctrls"><label class="ctrl">Fila del afiliado<select id="fe-r">${rec.map((r,i)=>`<option value="${i}">${esc(r.af)} · ${fdate(r.fecha)}</option>`).join("")}</select></label>
+    <button class="btn" data-all>Revelar todo</button></div>
+    <div class="ficha" data-fi></div><div class="outs" data-o></div></div>`;
+  const s=box.querySelector("#fe-r");
+  const run=()=>{ const r=rec[+s.value], d=pd(r.fecha), now=new Date(); now.setHours(0,0,0,0);
+    const dias=Math.round((now-d)/864e5), serial=Math.round((d-new Date(1899,11,30))/864e5);
+    box.querySelector("[data-fi]").innerHTML=`<div><small>Fecha de Servicio</small>${fdate(r.fecha)}</div><div><small>Número interno</small>${serial.toLocaleString("en-US")}</div><div><small>HOY()</small>${now.toLocaleDateString("es-DO")}</div>`;
+    const rows=[[`<b>AÑO</b>([@[Fecha de Servicio]])`,d.getFullYear()],[`<b>MES</b>([@[Fecha de Servicio]])`,d.getMonth()+1],[`<b>DIA</b>([@[Fecha de Servicio]])`,d.getDate()],[`<b>TEXTO</b>([@[Fecha de Servicio]],"mmmm")`,MES[d.getMonth()]],[`<b>TEXTO</b>([@[Fecha de Servicio]],"dddd")`,DIA[d.getDay()]],[`<b>DIASEM</b>([@[Fecha de Servicio]],2)`,(d.getDay()+6)%7+1],[`<b>HOY</b>()-[@[Fecha de Servicio]]`,dias.toLocaleString("en-US")+" días"]];
+    box.querySelector("[data-o]").innerHTML=rows.map(x=>`<div class="fx">=${x[0]}</div><div class="o hid" title="Clic para revelar">${esc(x[1])}</div>`).join("");
+    box.querySelectorAll(".o").forEach(o=>o.onclick=()=>o.classList.toggle("hid")); };
+  box.querySelector("[data-all]").onclick=()=>box.querySelectorAll(".o").forEach(o=>o.classList.remove("hid"));
+  s.onchange=run; run();
+}
+};
+function critSim(box,isSum){
+  const pfx=isSum?"su":"co", ANY="(todas)";
+  box.innerHTML = head(isSum?"Simulador · SUMAR.SI.CONJUNTO":"Simulador · CONTAR.SI.CONJUNTO")+`<div class="sim-b">
+    <div class="ctrls"><label class="ctrl">criterio1 · ARS (A2)<select id="${pfx}-a">${opts(uniq("ars"),isSum?"MAPFRE Salud ARS":"SeNaSa")}</select></label>
+    <label class="ctrl">criterio2 · Tipo de Servicio (B2)<select id="${pfx}-t">${opts([ANY].concat(uniq("tipo")),isSum?"Hospitalización":"Emergencia")}</select></label></div>
+    <div class="livef" data-f></div>${resBox(isSum?"Resultado en D2":"Resultado en C2")}<div class="sheet" data-t></div></div>`;
+  const out=wireRes(box), a=box.querySelector("#"+pfx+"-a"), t=box.querySelector("#"+pfx+"-t");
+  const run=()=>{ const all=t.value===ANY, hit=r=>r.ars===a.value&&(all||r.tipo===t.value), rows=rec.filter(hit);
+    const crit=`${T}[ARS], <span class="v">"${a.value}"</span>${all?"":`, ${T}[Tipo de Servicio], <span class="v">"${t.value}"</span>`}`;
+    box.querySelector("[data-f]").innerHTML = isSum?`=SUMAR.SI.CONJUNTO(${T}[Monto Reclamado], ${crit})`:`=CONTAR.SI.CONJUNTO(${crit})`;
+    out(isSum?money(rows.reduce((s,r)=>s+r.monto,0)):rows.length);
+    box.querySelector("[data-t]").innerHTML=sheet(rows,{cols:[0,1,3,5,8],hit:()=>isSum?false:true}); };
+  a.onchange=t.onchange=run; run();
+}
+
+function copy(txt,btn){
+  const done=()=>{btn.textContent="Copiado";setTimeout(()=>btn.textContent="Copiar",1400);};
+  try{ navigator.clipboard.writeText(txt).then(done,()=>sel(btn)); }catch(e){ sel(btn); }
+}
+function sel(btn){ const r=document.createRange(); r.selectNodeContents(btn.previousElementSibling); const s=getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent="Ctrl+C"; }
+
+/* ---------- Motor ---------- */
+const wrap=document.getElementById("slides");
+wrap.innerHTML=S.map(s=>s.html).join("");
+const els=[...wrap.children];
+els.forEach((el,i)=>S[i].init&&S[i].init(el));
+wrap.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(+b.dataset.go)));
+const dots=document.getElementById("dots");
+dots.innerHTML=TOPICS.map((t,i)=>`<button title="${t.k}" aria-label="Ir a ${t.k}" data-t="${i}"></button>`).join("");
+dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(2+3*b.dataset.t));
+let cur=0;
+function go(i){
+  cur=Math.max(0,Math.min(els.length-1,i));
+  els.forEach((e,j)=>e.classList.toggle("on",j===cur));
+  const tp=S[cur].topic;
+  dots.querySelectorAll("button").forEach((b,j)=>{b.classList.toggle("cur",j===tp);b.classList.toggle("done",tp>j||(tp<0&&cur>1));});
+  document.getElementById("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
+  document.getElementById("topL").textContent = tp<0?"MÓDULO 2 · FUNCIONES AVANZADAS DE EXCEL":`MÓDULO 2 · TEMA 0${tp+1} DE 07 · ${TOPICS[tp].k.toUpperCase()}`;
+  document.getElementById("prev").disabled=cur===0; document.getElementById("next").disabled=cur===els.length-1;
+}
+document.getElementById("prev").onclick=()=>go(cur-1);
+document.getElementById("next").onclick=()=>go(cur+1);
+document.getElementById("fs").onclick=()=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{}); }catch(e){} };
+document.addEventListener("keydown",e=>{
+  const tag=(e.target.tagName||"").toLowerCase();
+  if(tag==="input"||tag==="select") return;
+  if(["ArrowRight","PageDown"].includes(e.key)||(e.key===" "&&tag!=="button")){e.preventDefault();go(cur+1);}
+  else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==="Home") go(0); else if(e.key==="End") go(els.length-1);
+  else if(e.key==="f"||e.key==="F") document.getElementById("fs").click();
+});
+function fit(){ const st=document.getElementById("stage"); const s=Math.min((innerWidth-16)/1280,(innerHeight-16)/720); st.style.transform=`translate(-50%,-50%) scale(${s})`; }
+addEventListener("resize",fit); fit(); go(0);
+</script>

@@ -1,2 +1,5 @@
 node_modules/
 .netlify/
+
+# Presentación anterior del Módulo 2: solo en la carpeta local, no se publica
+concepto-teorico-modulo2.html
