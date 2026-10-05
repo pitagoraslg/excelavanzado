@@ -187,9 +187,6 @@ select,input[type=number]{font-family:var(--sans);font-size:16px;padding:7px 10p
 .sum code{font-size:14.5px;display:block;color:var(--ink);margin-top:3px;font-weight:500}
 .sum p{font-size:16px;color:var(--muted)}
 .sum>div>div{min-width:0}
-.kahoot{display:flex;align-items:center;justify-content:space-between;background:var(--ink);color:var(--paper);padding:20px 26px}
-.kahoot h3{font-family:var(--serif);font-size:30px;font-weight:600}
-.kahoot p{font-family:var(--mono);font-size:14px;opacity:.8}
 .toast{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:13px;padding:8px 14px;z-index:5}
 </style>
 
@@ -325,8 +322,7 @@ S.push({topic:-1, html:`<div class="slide">
   <div class="eyebrow">Contenido</div>
   <h2>Siete herramientas, un mismo archivo</h2>
   <p class="lead" style="font-size:20px">Cada tema tiene tres láminas: <b>concepto</b>, <b>utilidad</b> y <b>práctica en vivo</b> con la base de reclamaciones.</p>
-  <div class="idx">${TOPICS.map((t,i)=>`<button data-go="${2+i*3}"><span class="n">0${i+1}</span><span class="k">${t.k}</span><span class="d">${t.d}</span></button>`).join("")}
-    <button class="ex" tabindex="-1"><span class="n">→</span><span class="k">Kahoot</span><span class="d">Repaso al final de la clase.</span></button></div>
+  <div class="idx">${TOPICS.map((t,i)=>`<button data-go="${2+i*3}"><span class="n">0${i+1}</span><span class="k">${t.k}</span><span class="d">${t.d}</span></button>`).join("")}</div>
   <p class="note"><b>Nota:</b> las fórmulas usan coma ( , ). Si tu Excel usa punto y coma ( ; ), cámbialo al escribirlas.</p>
 </div>`});
 
@@ -376,7 +372,6 @@ S.push({topic:-1, html:`<div class="slide">
   <h2>Lo que aprendimos hoy</h2>
   <div class="sum">${TOPICS.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${esc(SH[i])}</code></div></div>`).join("")}
   <div><span class="n">✓</span><div><p>Separador de argumentos</p><code>coma ( , ) o punto y coma ( ; )</code></div></div></div>
-  <div class="kahoot"><div><h3>¡Ahora, al Kahoot!</h3><p>Ten tu celular listo · entra con el PIN que aparece en pantalla</p></div><span style="font-family:var(--serif);font-size:56px">?</span></div>
 </div>`});
 
 /* ---------- Simuladores ---------- */
