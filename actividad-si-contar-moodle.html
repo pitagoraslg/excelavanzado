@@ -1,0 +1,65 @@
+<!-- Actividad «SI y CONTAR.SI.CONJUNTO» (Módulo 2) para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la actividad se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes s2-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes s2-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(47,111,176,.45); } 50% { box-shadow: 0 0 0 12px rgba(47,111,176,0); } }
+  @keyframes s2-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(8deg); } }
+  @keyframes s2-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  .s2-in { animation: s2-in .7s ease-out both; }
+  .s2-d1 { animation-delay: .1s; } .s2-d2 { animation-delay: .25s; } .s2-d3 { animation-delay: .4s; }
+  .s2-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .s2-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(30,58,95,.14); }
+  .s2-float { display: inline-block; animation: s2-float 3s ease-in-out infinite; }
+  .s2-btn { animation: s2-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .s2-btn:hover { transform: scale(1.04); background-color: #24578C !important; }
+  .s2-btn2:hover { background-color: #DCEBFA !important; }
+  .s2-bar { background: linear-gradient(90deg, #9CC9F2 0%, #2F6FB0 35%, #9CC9F2 70%, #2F6FB0 100%); background-size: 200% 100%; animation: s2-shine 6s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .s2-in, .s2-btn, .s2-float, .s2-bar { animation: none !important; } }
+</style>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #000000; line-height: 1.55; background-color: #F3F8FD; border-radius: 10px; overflow: hidden; border: 1px solid #CFE2F5;">
+
+  <div class="s2-bar" style="height: 6px; background-color: #2F6FB0;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #DCEBFA;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="s2-float">🚦</span></td>
+      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
+        <p class="s2-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #2F6FB0;">Actividad práctica · Módulo 2</p>
+        <h2 class="s2-in s2-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 28px; font-weight: normal; line-height: 1.2; color: #1E3A5F;">Decide y cuenta: SI y CONTAR.SI.CONJUNTO</h2>
+        <p class="s2-in s2-d2" style="margin: 0; font-size: 15px;">Usarás <strong>SI</strong> para clasificar las reclamaciones y <strong>CONTAR.SI.CONJUNTO</strong> para contarlas por ARS. Al final, unes las dos para saber qué ARS hay que revisar.</p>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Las 3 partes -->
+  <table class="s2-in s2-d2" style="width: 100%; border-collapse: separate; border-spacing: 8px; margin: 4px 0 0;" role="presentation">
+    <tr>
+      <td class="s2-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #2F6FB0; border-radius: 6px; padding: 12px 14px; vertical-align: top; font-size: 14px;"><strong style="color: #1E3A5F; font-size: 16px;">🔀 1 · SI</strong><br>Clasificas cada reclamación como <strong>Alto costo</strong> o <strong>Regular</strong> según su monto.</td>
+      <td class="s2-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #5AA2E6; border-radius: 6px; padding: 12px 14px; vertical-align: top; font-size: 14px;"><strong style="color: #1E3A5F; font-size: 16px;">🔢 2 · CONTAR.SI.CONJUNTO</strong><br>Cuentas cuántas reclamaciones tiene <strong>cada ARS</strong>.</td>
+      <td class="s2-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #2FA88A; border-radius: 6px; padding: 12px 14px; vertical-align: top; font-size: 14px;"><strong style="color: #1E3A5F; font-size: 16px;">🚦 3 · Las dos juntas</strong><br>Cuentas las de <strong>Alto costo</strong> por ARS y marcas <strong>Revisar</strong> las que tienen 3 o más.</td>
+    </tr>
+  </table>
+
+  <div style="padding: 4px 26px 26px;">
+
+    <!-- Pasos -->
+    <h3 class="s2-in s2-d3" style="margin: 16px 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1E3A5F;">📝 Lo que tienes que hacer</h3>
+    <ol class="s2-in s2-d3" style="margin: 0 0 4px; padding-left: 22px;">
+      <li style="margin: 0 0 6px;">Descarga la <strong>base de Excel</strong> y guárdala como <strong>Apellido_Nombre_SiContar.xlsx</strong>.</li>
+      <li style="margin: 0 0 6px;">Descarga las <strong>instrucciones en PDF</strong>: una página por parte, con las celdas, las fórmulas y lo que debe salir.</li>
+      <li style="margin: 0 0 6px;">Haz las 3 partes en ese mismo archivo y comprueba tus resultados con los del PDF.</li>
+      <li style="margin: 0 0 6px;">Sube tu archivo <strong>Apellido_Nombre_SiContar.xlsx</strong> en esta tarea.</li>
+    </ol>
+
+    <!-- Descargas -->
+    <div class="s2-in s2-d3" style="text-align: center; margin: 22px 0 6px;">
+      <a class="s2-btn" href="https://pitagoraslg.github.io/excelavanzado/Actividad-SiContar-Modulo2.pdf" target="_blank" rel="noopener" style="display: inline-block; background-color: #2F6FB0; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 17px; padding: 14px 30px; border-radius: 30px; margin: 4px 6px;">⬇ Instrucciones (PDF)</a>
+      <a class="s2-btn2" href="https://pitagoraslg.github.io/excelavanzado/Modulo2-Base-Reclamaciones.xlsx" style="display: inline-block; background-color: #FFFFFF; color: #2F6FB0; border: 2px solid #2F6FB0; text-decoration: none; font-weight: bold; font-size: 17px; padding: 12px 28px; border-radius: 30px; margin: 4px 6px;">⬇ Base de Excel</a>
+      <p style="margin: 10px 0 0; font-size: 13px;">Requiere Microsoft 365, Excel 2021 o Excel para la web.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
