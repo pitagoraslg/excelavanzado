@@ -1,0 +1,96 @@
+<!-- Actividad «Búsquedas con BUSCARX» (Módulo 2, 3 partes) para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la actividad se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes b2-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes b2-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(47,111,176,.45); } 50% { box-shadow: 0 0 0 12px rgba(47,111,176,0); } }
+  @keyframes b2-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(8deg); } }
+  @keyframes b2-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  .b2-in { animation: b2-in .7s ease-out both; }
+  .b2-d1 { animation-delay: .1s; } .b2-d2 { animation-delay: .25s; } .b2-d3 { animation-delay: .4s; } .b2-d4 { animation-delay: .55s; }
+  .b2-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .b2-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(30,58,95,.14); }
+  .b2-float { display: inline-block; animation: b2-float 3s ease-in-out infinite; }
+  .b2-btn { animation: b2-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .b2-btn:hover { transform: scale(1.04); background-color: #24578C !important; }
+  .b2-btn2:hover { background-color: #DCEBFA !important; }
+  .b2-bar { background: linear-gradient(90deg, #9CC9F2 0%, #2F6FB0 35%, #9CC9F2 70%, #2F6FB0 100%); background-size: 200% 100%; animation: b2-shine 6s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .b2-in, .b2-btn, .b2-float, .b2-bar { animation: none !important; } }
+</style>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #000000; line-height: 1.55; background-color: #F3F8FD; border-radius: 10px; overflow: hidden; border: 1px solid #CFE2F5;">
+
+  <div class="b2-bar" style="height: 6px; background-color: #2F6FB0;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #DCEBFA;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="b2-float">🔍</span></td>
+      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
+        <p class="b2-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #2F6FB0;">Actividad práctica · Módulo 2 · Solo BUSCARX</p>
+        <h2 class="b2-in b2-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 28px; font-weight: normal; line-height: 1.2; color: #1E3A5F;">Búsquedas en Excel con BUSCARX</h2>
+        <p class="b2-in b2-d2" style="margin: 0; font-size: 15px;">Harás <strong>3 búsquedas</strong> en la base de reclamaciones: por <strong>cédula</strong>, por <strong>ID</strong> y por <strong>nombre del afiliado</strong>. El <strong>PDF de instrucciones</strong> te lleva <strong>clic a clic</strong> por las 3 partes: qué escribir en cada celda, cómo armar la fórmula y qué debe salir.</p>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 4px 26px 26px;">
+
+    <!-- La fórmula -->
+    <div class="b2-in b2-d2" style="margin: 16px 0 0; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-left: 5px solid #2F6FB0; border-radius: 6px; padding: 12px 16px; font-size: 14px;">
+      <strong style="color: #1E3A5F;">🔎 La única función que usarás: BUSCARX</strong>
+      <p style="margin: 8px 0 0; font-family: Consolas, monospace; background-color: #EEF3F9; padding: 6px 10px; border-radius: 4px; overflow-wrap: anywhere;">=BUSCARX(qué_buscas; dónde_lo_buscas; qué_quieres_traer; "si no existe")</p>
+      <p style="margin: 8px 0 0;">Los datos de la hoja <strong>Reclamaciones</strong> forman la tabla <strong>tblReclamaciones</strong>. Cada columna se nombra así: <code>tblReclamaciones[Cédula]</code>. <strong>Excel lo escribe por ti</strong> si haces clic en el encabezado de la columna mientras escribes la fórmula.</p>
+    </div>
+
+    <!-- Instrucciones -->
+    <div class="b2-in b2-d2" style="text-align: center; margin: 20px 0 4px;">
+      <a class="b2-btn" href="https://pitagoraslg.github.io/excelavanzado/Actividad-Busquedas-Modulo2.pdf" target="_blank" rel="noopener" style="display: inline-block; background-color: #2F6FB0; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px;">⬇ Instrucciones de la actividad (PDF)</a>
+      <p style="margin: 8px 0 0; font-size: 13px;">Un solo PDF con las 3 partes. Se abre en una pestaña nueva.</p>
+    </div>
+
+    <!-- Antes de empezar -->
+    <div class="b2-in b2-d2" style="margin: 12px 0 0; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-radius: 6px; padding: 12px 16px; font-size: 14px;">
+      <strong style="color: #1E3A5F;">📂 Antes de empezar:</strong> descarga la base y guárdala como <strong>Apellido_Nombre_Busquedas.xlsx</strong>. Las 3 partes se hacen en <strong>ese mismo archivo</strong>, cada una en su propia hoja.
+      <div style="text-align: center; margin: 12px 0 2px;">
+        <a class="b2-btn2" href="https://pitagoraslg.github.io/excelavanzado/Modulo2-Base-Reclamaciones.xlsx" style="display: inline-block; background-color: #FFFFFF; color: #2F6FB0; border: 2px solid #2F6FB0; text-decoration: none; font-weight: bold; font-size: 16px; padding: 10px 26px; border-radius: 30px;">⬇ Base de Excel</a>
+      </div>
+    </div>
+
+    <h3 class="b2-in b2-d3" style="margin: 20px 0 10px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1E3A5F;">📝 Las 3 partes de la actividad</h3>
+
+    <!-- Parte 1 -->
+    <div class="b2-card b2-in b2-d3" style="margin: 0 0 14px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #2F6FB0; border-radius: 8px; padding: 14px 18px;">
+      <p style="margin: 0 0 4px; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; color: #2F6FB0;">Parte 1 · Hoja CEDULA</p>
+      <h4 style="margin: 0 0 6px; font-size: 19px; color: #1E3A5F;">🪪 Búsqueda por cédula</h4>
+      <p style="margin: 0 0 8px; font-size: 14px;">Escribes una <strong>cédula</strong> en C5 y en C6:C9 aparecen, solos, el ID, el afiliado, la ARS y el monto. Una BUSCARX por cada dato.</p>
+      <p style="margin: 0 0 10px; font-family: Consolas, monospace; font-size: 13px; background-color: #EEF3F9; padding: 6px 10px; border-radius: 4px; overflow-wrap: anywhere;">=BUSCARX(C5;tblReclamaciones[Cédula];tblReclamaciones[ID Reclamación];"No encontrada")</p>
+      <p style="margin: 0; font-size: 13px;"><strong>Dato de prueba:</strong> 047-6491194-0 → REC-1077 · Rafael Reyes Gómez · ARS Humano · RD$155,647.00</p>
+    </div>
+
+    <!-- Parte 2 -->
+    <div class="b2-card b2-in b2-d3" style="margin: 0 0 14px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #5AA2E6; border-radius: 8px; padding: 14px 18px;">
+      <p style="margin: 0 0 4px; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; color: #2F6FB0;">Parte 2 · Hoja ID</p>
+      <h4 style="margin: 0 0 6px; font-size: 19px; color: #1E3A5F;">🧾 Búsqueda por ID de reclamación</h4>
+      <p style="margin: 0 0 8px; font-size: 14px;">Escribes un <strong>ID</strong> en C5 y <strong>una sola fórmula</strong> en B8 trae los 8 datos de la fila, de B8 a I8. Las celdas C8:I8 deben estar vacías para que el resultado se derrame.</p>
+      <p style="margin: 0 0 10px; font-family: Consolas, monospace; font-size: 13px; background-color: #EEF3F9; padding: 6px 10px; border-radius: 4px; overflow-wrap: anywhere;">=BUSCARX(C5;tblReclamaciones[ID Reclamación];tblReclamaciones[[Afiliado]:[Monto Reclamado]];"No encontrado")</p>
+      <p style="margin: 0; font-size: 13px;"><strong>Dato de prueba:</strong> REC-1077 → Rafael Reyes Gómez · 047-6491194-0 · ARS Humano · Puerto Plata · Hospitalización · Centro Médico Las Américas · 03/02/2025 · RD$155,647.00</p>
+    </div>
+
+    <!-- Parte 3 -->
+    <div class="b2-card b2-in b2-d4" style="margin: 0 0 14px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #2FA88A; border-radius: 8px; padding: 14px 18px;">
+      <p style="margin: 0 0 4px; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; color: #2F6FB0;">Parte 3 · Hoja AFILIADO</p>
+      <h4 style="margin: 0 0 6px; font-size: 19px; color: #1E3A5F;">👤 Búsqueda por nombre del afiliado</h4>
+      <p style="margin: 0 0 8px; font-size: 14px;">Escribes el <strong>nombre</strong> en C5 y en C6:C9 aparecen el ID, la cédula, la ARS y el monto. El ID está <strong>a la izquierda</strong> del nombre en la tabla: BUSCARX lo trae igual.</p>
+      <p style="margin: 0 0 10px; font-family: Consolas, monospace; font-size: 13px; background-color: #EEF3F9; padding: 6px 10px; border-radius: 4px; overflow-wrap: anywhere;">=BUSCARX(C5;tblReclamaciones[Afiliado];tblReclamaciones[ID Reclamación];"No encontrado")</p>
+      <p style="margin: 0; font-size: 13px;"><strong>Dato de prueba:</strong> Ivelisse Batista Féliz → REC-1287 · 047-0632004-3 · MAPFRE Salud ARS · RD$147,899.00</p>
+    </div>
+
+    <!-- Entrega -->
+    <div class="b2-in b2-d4" style="margin: 6px 0 0; background-color: #EAF7F2; border: 1px solid #BFE6D8; border-left: 5px solid #2FA88A; border-radius: 6px; padding: 12px 16px; font-size: 14px;">
+      <strong style="color: #1E3A5F;">✅ Entrega:</strong> cuando las 3 hojas (<strong>CEDULA</strong>, <strong>ID</strong> y <strong>AFILIADO</strong>) den los resultados del PDF y hayas hecho las pruebas del paso 6 de cada parte, sube <strong>Apellido_Nombre_Busquedas.xlsx</strong> en esta tarea.
+      <p style="margin: 8px 0 0; font-size: 13px;">Requiere Microsoft 365, Excel 2021 o Excel para la web.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
