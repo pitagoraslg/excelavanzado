@@ -1,0 +1,272 @@
+<!-- Invitación a los videos del Módulo 2 para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
+<!-- Si Moodle elimina los <iframe>, el botón "Ver aquí" queda vacío pero la miniatura sigue abriendo el video en YouTube. -->
+<style>
+  @keyframes v2-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  @keyframes v2-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(47,111,176,.45); } 50% { box-shadow: 0 0 0 12px rgba(47,111,176,0); } }
+  @keyframes v2-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(-4deg); } }
+  @keyframes v2-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  @keyframes v2-play { 0%, 100% { transform: translate(-50%,-50%) scale(1); } 50% { transform: translate(-50%,-50%) scale(1.12); } }
+  .v2-in { animation: v2-in .7s ease-out both; }
+  .v2-d1 { animation-delay: .1s; } .v2-d2 { animation-delay: .2s; } .v2-d3 { animation-delay: .3s; } .v2-d4 { animation-delay: .4s; }
+  .v2-d5 { animation-delay: .5s; } .v2-d6 { animation-delay: .6s; } .v2-d7 { animation-delay: .7s; } .v2-d8 { animation-delay: .8s; }
+  .v2-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .v2-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(30,58,95,.16); }
+  .v2-thumb img { transition: transform .35s ease, filter .35s ease; }
+  .v2-card:hover .v2-thumb img { transform: scale(1.06); filter: brightness(.85); }
+  .v2-play { animation: v2-play 2s ease-in-out infinite; }
+  .v2-float { display: inline-block; animation: v2-float 3s ease-in-out infinite; }
+  .v2-btn { animation: v2-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .v2-btn:hover { transform: scale(1.04); background-color: #24578C !important; }
+  .v2-bar { background: linear-gradient(90deg, #9CC9F2 0%, #2F6FB0 35%, #9CC9F2 70%, #2F6FB0 100%); background-size: 200% 100%; animation: v2-shine 6s linear infinite; }
+  .v2-step { transition: background-color .2s ease, color .2s ease; }
+  .v2-step:hover { background-color: #2F6FB0 !important; color: #FFFFFF !important; }
+  details.v2-more > summary { list-style: none; }
+  details.v2-more > summary::-webkit-details-marker { display: none; }
+  details.v2-more[open] > summary { background-color: #DCEBFA !important; }
+  @media (prefers-reduced-motion: reduce) { .v2-in, .v2-btn, .v2-float, .v2-bar, .v2-play { animation: none !important; } }
+</style>
+
+<div style="max-width: 900px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #000000; line-height: 1.55; background-color: #F3F8FD; border-radius: 10px; overflow: hidden; border: 1px solid #CFE2F5;">
+
+  <!-- Franja -->
+  <div class="v2-bar" style="height: 6px; background-color: #2F6FB0;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #DCEBFA;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="v2-float">🎬</span></td>
+      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
+        <p class="v2-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #2F6FB0;">Videos de apoyo · Módulo 2</p>
+        <h2 class="v2-in v2-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 27px; font-weight: normal; line-height: 1.2; color: #1E3A5F;">Mira, pausa y practica: las 7 funciones del módulo en video</h2>
+        <p class="v2-in v2-d2" style="margin: 0; font-size: 15px; color: #000000;">Te invito a ver estos videos <strong>con tu Excel abierto</strong>. Cada uno trae un <strong>reto corto</strong> para hacer en la base de reclamaciones del módulo: mira el video, pausa, repite el ejemplo y luego resuelve el reto por tu cuenta.</p>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 6px 22px 26px;">
+
+    <!-- Método -->
+    <div class="v2-in v2-d2" style="display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px;">
+      <span class="v2-step" style="flex: 1 1 150px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-radius: 20px; padding: 8px 12px; text-align: center; font-size: 14px; color: #1E3A5F;"><strong>1.</strong> 👀 Observa el video</span>
+      <span class="v2-step" style="flex: 1 1 150px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-radius: 20px; padding: 8px 12px; text-align: center; font-size: 14px; color: #1E3A5F;"><strong>2.</strong> ⏸ Pausa y hazlo conmigo</span>
+      <span class="v2-step" style="flex: 1 1 150px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-radius: 20px; padding: 8px 12px; text-align: center; font-size: 14px; color: #1E3A5F;"><strong>3.</strong> ✍ Hazlo tú: el reto</span>
+      <span class="v2-step" style="flex: 1 1 150px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-radius: 20px; padding: 8px 12px; text-align: center; font-size: 14px; color: #1E3A5F;"><strong>4.</strong> ✅ Comprueba la fórmula</span>
+    </div>
+
+    <!-- Base de práctica -->
+    <div class="v2-in v2-d3" style="margin: 14px 0 6px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-left: 5px solid #2F6FB0; border-radius: 6px; padding: 12px 16px; font-size: 14px;">
+      <strong style="color: #1E3A5F;">📂 Antes de empezar:</strong> descarga la <a href="https://pitagoraslg.github.io/excelavanzado/Modulo2-Base-Reclamaciones.xlsx" target="_blank" rel="noopener" style="color: #2F6FB0; font-weight: bold;">base de práctica (Modulo2-Base-Reclamaciones.xlsx)</a>. Los retos usan su tabla <strong>tblReclamaciones</strong> (50 filas). Haz cada reto en una columna nueva al final de la tabla o en una hoja aparte.
+    </div>
+
+    <!-- Tarjetas de video -->
+    <div style="display: flex; flex-wrap: wrap; gap: 14px; margin: 14px 0 0;">
+
+      <!-- 1 · BUSCARX -->
+      <div class="v2-card v2-in v2-d1" style="flex: 1 1 260px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #2F6FB0; border-radius: 8px; overflow: hidden;">
+        <a class="v2-thumb" href="https://youtu.be/ooV4tdRXosk" target="_blank" rel="noopener" style="display: block; position: relative; overflow: hidden; background-color: #1E3A5F;">
+          <img src="https://img.youtube.com/vi/ooV4tdRXosk/hqdefault.jpg" alt="Video: función BUSCARX" style="display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;">
+          <span class="v2-play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 54px; height: 54px; line-height: 54px; border-radius: 50%; background-color: rgba(47,111,176,.92); color: #FFFFFF; font-size: 22px; text-align: center;">▶</span>
+          <span style="position: absolute; top: 10px; left: 10px; background-color: #FFFFFF; color: #1E3A5F; font-weight: bold; font-size: 13px; border-radius: 12px; padding: 2px 10px;">Video 1</span>
+        </a>
+        <div style="padding: 12px 14px 14px;">
+          <h3 style="margin: 0 0 4px; font-size: 18px; color: #1E3A5F;">BUSCARX</h3>
+          <p style="margin: 0 0 10px; font-size: 14px;">Encuentra un dato en la tabla a partir de un valor clave, sin contar columnas.</p>
+          <details class="v2-more" style="margin: 0 0 8px; border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">🎯 Reto para practicar</summary>
+            <div style="padding: 8px 12px 10px; font-size: 14px;">
+              Escribe un ID de reclamación en <strong>A2</strong> de una hoja nueva y, en <strong>B2</strong>, trae el <strong>Afiliado</strong>. Si el ID no existe, debe decir <em>No existe</em>.
+              <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=BUSCARX(A2,tblReclamaciones[ID Reclamación],tblReclamaciones[Afiliado],"No existe")</code>
+              </details>
+            </div>
+          </details>
+          <details class="v2-more" style="border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">▶ Ver aquí sin salir</summary>
+            <div style="padding: 8px;"><iframe src="https://www.youtube-nocookie.com/embed/ooV4tdRXosk" title="BUSCARX" style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 4px;" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
+          </details>
+        </div>
+      </div>
+
+      <!-- 2 · SI -->
+      <div class="v2-card v2-in v2-d2" style="flex: 1 1 260px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #5AA2E6; border-radius: 8px; overflow: hidden;">
+        <a class="v2-thumb" href="https://youtu.be/MYV5IMVXbgI" target="_blank" rel="noopener" style="display: block; position: relative; overflow: hidden; background-color: #1E3A5F;">
+          <img src="https://img.youtube.com/vi/MYV5IMVXbgI/hqdefault.jpg" alt="Video: función SI" style="display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;">
+          <span class="v2-play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 54px; height: 54px; line-height: 54px; border-radius: 50%; background-color: rgba(47,111,176,.92); color: #FFFFFF; font-size: 22px; text-align: center;">▶</span>
+          <span style="position: absolute; top: 10px; left: 10px; background-color: #FFFFFF; color: #1E3A5F; font-weight: bold; font-size: 13px; border-radius: 12px; padding: 2px 10px;">Video 2</span>
+        </a>
+        <div style="padding: 12px 14px 14px;">
+          <h3 style="margin: 0 0 4px; font-size: 18px; color: #1E3A5F;">Función SI</h3>
+          <p style="margin: 0 0 10px; font-size: 14px;">Haz que Excel decida entre dos resultados según una condición.</p>
+          <details class="v2-more" style="margin: 0 0 8px; border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">🎯 Reto para practicar</summary>
+            <div style="padding: 8px 12px 10px; font-size: 14px;">
+              Agrega a la tabla la columna <strong>Categoría</strong>: si el <strong>Monto Reclamado</strong> es de 50,000 o más, que diga <em>Alto costo</em>; si no, <em>Regular</em>.
+              <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SI([@[Monto Reclamado]]&gt;=50000,"Alto costo","Regular")</code>
+              </details>
+            </div>
+          </details>
+          <details class="v2-more" style="border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">▶ Ver aquí sin salir</summary>
+            <div style="padding: 8px;"><iframe src="https://www.youtube-nocookie.com/embed/MYV5IMVXbgI" title="Función SI" style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 4px;" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
+          </details>
+        </div>
+      </div>
+
+      <!-- 3 · SI.CONJUNTO -->
+      <div class="v2-card v2-in v2-d3" style="flex: 1 1 260px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #9CC9F2; border-radius: 8px; overflow: hidden;">
+        <a class="v2-thumb" href="https://youtu.be/gqxhtc76pHs" target="_blank" rel="noopener" style="display: block; position: relative; overflow: hidden; background-color: #1E3A5F;">
+          <img src="https://img.youtube.com/vi/gqxhtc76pHs/hqdefault.jpg" alt="Video: función SI.CONJUNTO" style="display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;">
+          <span class="v2-play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 54px; height: 54px; line-height: 54px; border-radius: 50%; background-color: rgba(47,111,176,.92); color: #FFFFFF; font-size: 22px; text-align: center;">▶</span>
+          <span style="position: absolute; top: 10px; left: 10px; background-color: #FFFFFF; color: #1E3A5F; font-weight: bold; font-size: 13px; border-radius: 12px; padding: 2px 10px;">Video 3</span>
+        </a>
+        <div style="padding: 12px 14px 14px;">
+          <h3 style="margin: 0 0 4px; font-size: 18px; color: #1E3A5F;">SI.CONJUNTO</h3>
+          <p style="margin: 0 0 10px; font-size: 14px;">Evalúa varias condiciones en orden, sin anidar un SI dentro de otro.</p>
+          <details class="v2-more" style="margin: 0 0 8px; border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">🎯 Reto para practicar</summary>
+            <div style="padding: 8px 12px 10px; font-size: 14px;">
+              Crea la columna <strong>Nivel</strong>: <em>Muy alto</em> si el monto es 100,000 o más, <em>Alto</em> si es 50,000 o más y <em>Normal</em> en cualquier otro caso.
+              <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SI.CONJUNTO([@[Monto Reclamado]]&gt;=100000,"Muy alto",[@[Monto Reclamado]]&gt;=50000,"Alto",VERDADERO,"Normal")</code>
+              </details>
+            </div>
+          </details>
+          <details class="v2-more" style="border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">▶ Ver aquí sin salir</summary>
+            <div style="padding: 8px;"><iframe src="https://www.youtube-nocookie.com/embed/gqxhtc76pHs" title="SI.CONJUNTO" style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 4px;" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
+          </details>
+        </div>
+      </div>
+
+      <!-- 4 · CONTAR.SI.CONJUNTO -->
+      <div class="v2-card v2-in v2-d4" style="flex: 1 1 260px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #2F6FB0; border-radius: 8px; overflow: hidden;">
+        <a class="v2-thumb" href="https://youtu.be/t5ChW0EtXSs" target="_blank" rel="noopener" style="display: block; position: relative; overflow: hidden; background-color: #1E3A5F;">
+          <img src="https://img.youtube.com/vi/t5ChW0EtXSs/hqdefault.jpg" alt="Video: función CONTAR.SI.CONJUNTO" style="display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;">
+          <span class="v2-play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 54px; height: 54px; line-height: 54px; border-radius: 50%; background-color: rgba(47,111,176,.92); color: #FFFFFF; font-size: 22px; text-align: center;">▶</span>
+          <span style="position: absolute; top: 10px; left: 10px; background-color: #FFFFFF; color: #1E3A5F; font-weight: bold; font-size: 13px; border-radius: 12px; padding: 2px 10px;">Video 4</span>
+        </a>
+        <div style="padding: 12px 14px 14px;">
+          <h3 style="margin: 0 0 4px; font-size: 18px; color: #1E3A5F;">CONTAR.SI.CONJUNTO</h3>
+          <p style="margin: 0 0 10px; font-size: 14px;">Cuenta cuántas filas cumplen una o varias condiciones a la vez.</p>
+          <details class="v2-more" style="margin: 0 0 8px; border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">🎯 Reto para practicar</summary>
+            <div style="padding: 8px 12px 10px; font-size: 14px;">
+              ¿Cuántas reclamaciones de la ARS <strong>SeNaSa</strong> son de tipo <strong>Emergencia</strong>? Escribe la fórmula en una celda libre.
+              <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=CONTAR.SI.CONJUNTO(tblReclamaciones[ARS],"SeNaSa",tblReclamaciones[Tipo de Servicio],"Emergencia")</code>
+              </details>
+            </div>
+          </details>
+          <details class="v2-more" style="border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">▶ Ver aquí sin salir</summary>
+            <div style="padding: 8px;"><iframe src="https://www.youtube-nocookie.com/embed/t5ChW0EtXSs" title="CONTAR.SI.CONJUNTO" style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 4px;" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
+          </details>
+        </div>
+      </div>
+
+      <!-- 5 · SUMAR.SI.CONJUNTO -->
+      <div class="v2-card v2-in v2-d5" style="flex: 1 1 260px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #5AA2E6; border-radius: 8px; overflow: hidden;">
+        <a class="v2-thumb" href="https://youtu.be/FM1X9_UOyJ8" target="_blank" rel="noopener" style="display: block; position: relative; overflow: hidden; background-color: #1E3A5F;">
+          <img src="https://img.youtube.com/vi/FM1X9_UOyJ8/hqdefault.jpg" alt="Video: función SUMAR.SI.CONJUNTO" style="display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;">
+          <span class="v2-play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 54px; height: 54px; line-height: 54px; border-radius: 50%; background-color: rgba(47,111,176,.92); color: #FFFFFF; font-size: 22px; text-align: center;">▶</span>
+          <span style="position: absolute; top: 10px; left: 10px; background-color: #FFFFFF; color: #1E3A5F; font-weight: bold; font-size: 13px; border-radius: 12px; padding: 2px 10px;">Video 5</span>
+        </a>
+        <div style="padding: 12px 14px 14px;">
+          <h3 style="margin: 0 0 4px; font-size: 18px; color: #1E3A5F;">SUMAR.SI.CONJUNTO</h3>
+          <p style="margin: 0 0 10px; font-size: 14px;">Suma solo los montos de las filas que cumplen tus condiciones.</p>
+          <details class="v2-more" style="margin: 0 0 8px; border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">🎯 Reto para practicar</summary>
+            <div style="padding: 8px 12px 10px; font-size: 14px;">
+              ¿Cuánto dinero suman las reclamaciones de <strong>SeNaSa</strong> de tipo <strong>Emergencia</strong>? Compara con el reto del video 4: misma lógica, ahora sumando.
+              <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SUMAR.SI.CONJUNTO(tblReclamaciones[Monto Reclamado],tblReclamaciones[ARS],"SeNaSa",tblReclamaciones[Tipo de Servicio],"Emergencia")</code>
+              </details>
+            </div>
+          </details>
+          <details class="v2-more" style="border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">▶ Ver aquí sin salir</summary>
+            <div style="padding: 8px;"><iframe src="https://www.youtube-nocookie.com/embed/FM1X9_UOyJ8" title="SUMAR.SI.CONJUNTO" style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 4px;" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
+          </details>
+        </div>
+      </div>
+
+      <!-- 6 · Texto -->
+      <div class="v2-card v2-in v2-d6" style="flex: 1 1 260px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #9CC9F2; border-radius: 8px; overflow: hidden;">
+        <a class="v2-thumb" href="https://youtu.be/fxBCPBc97N4" target="_blank" rel="noopener" style="display: block; position: relative; overflow: hidden; background-color: #1E3A5F;">
+          <img src="https://img.youtube.com/vi/fxBCPBc97N4/hqdefault.jpg" alt="Video: funciones de texto" style="display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;">
+          <span class="v2-play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 54px; height: 54px; line-height: 54px; border-radius: 50%; background-color: rgba(47,111,176,.92); color: #FFFFFF; font-size: 22px; text-align: center;">▶</span>
+          <span style="position: absolute; top: 10px; left: 10px; background-color: #FFFFFF; color: #1E3A5F; font-weight: bold; font-size: 13px; border-radius: 12px; padding: 2px 10px;">Video 6</span>
+        </a>
+        <div style="padding: 12px 14px 14px;">
+          <h3 style="margin: 0 0 4px; font-size: 18px; color: #1E3A5F;">Funciones de texto</h3>
+          <p style="margin: 0 0 10px; font-size: 14px;">Extrae, separa y limpia partes de un texto: nombres, códigos, cédulas.</p>
+          <details class="v2-more" style="margin: 0 0 8px; border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">🎯 Reto para practicar</summary>
+            <div style="padding: 8px 12px 10px; font-size: 14px;">
+              Crea la columna <strong>Nombre</strong> con solo el primer nombre del <strong>Afiliado</strong> (todo lo que está antes del primer espacio).
+              <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=IZQUIERDA([@Afiliado],ENCONTRAR(" ",[@Afiliado])-1)</code>
+              </details>
+            </div>
+          </details>
+          <details class="v2-more" style="border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">▶ Ver aquí sin salir</summary>
+            <div style="padding: 8px;"><iframe src="https://www.youtube-nocookie.com/embed/fxBCPBc97N4" title="Funciones de texto" style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 4px;" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
+          </details>
+        </div>
+      </div>
+
+      <!-- 7 · Fechas -->
+      <div class="v2-card v2-in v2-d7" style="flex: 1 1 260px; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #2F6FB0; border-radius: 8px; overflow: hidden;">
+        <a class="v2-thumb" href="https://youtu.be/pcXJgpGLnuo" target="_blank" rel="noopener" style="display: block; position: relative; overflow: hidden; background-color: #1E3A5F;">
+          <img src="https://img.youtube.com/vi/pcXJgpGLnuo/hqdefault.jpg" alt="Video: funciones de fecha" style="display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;">
+          <span class="v2-play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 54px; height: 54px; line-height: 54px; border-radius: 50%; background-color: rgba(47,111,176,.92); color: #FFFFFF; font-size: 22px; text-align: center;">▶</span>
+          <span style="position: absolute; top: 10px; left: 10px; background-color: #FFFFFF; color: #1E3A5F; font-weight: bold; font-size: 13px; border-radius: 12px; padding: 2px 10px;">Video 7</span>
+        </a>
+        <div style="padding: 12px 14px 14px;">
+          <h3 style="margin: 0 0 4px; font-size: 18px; color: #1E3A5F;">Funciones de fecha</h3>
+          <p style="margin: 0 0 10px; font-size: 14px;">Calcula días transcurridos y saca el día, el mes o el año de una fecha.</p>
+          <details class="v2-more" style="margin: 0 0 8px; border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">🎯 Reto para practicar</summary>
+            <div style="padding: 8px 12px 10px; font-size: 14px;">
+              Crea la columna <strong>Día</strong>: si la <strong>Fecha de Servicio</strong> cae sábado o domingo, que diga <em>Fin de semana</em>; si no, <em>Laboral</em>.
+              <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SI(DIASEM([@[Fecha de Servicio]],2)&gt;5,"Fin de semana","Laboral")</code>
+              </details>
+            </div>
+          </details>
+          <details class="v2-more" style="border: 1px solid #CFE2F5; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1E3A5F; background-color: #F3F8FD; border-radius: 6px;">▶ Ver aquí sin salir</summary>
+            <div style="padding: 8px;"><iframe src="https://www.youtube-nocookie.com/embed/pcXJgpGLnuo" title="Funciones de fecha" style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 4px;" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Tarjeta de cierre: reto integrador -->
+      <div class="v2-card v2-in v2-d8" style="flex: 1 1 260px; background-color: #1E3A5F; color: #FFFFFF; border-radius: 8px; padding: 18px 16px; display: flex; flex-direction: column; justify-content: center;">
+        <p style="margin: 0 0 6px; font-size: 32px; line-height: 1;"><span class="v2-float">🏆</span></p>
+        <h3 style="margin: 0 0 6px; font-size: 18px; color: #FFFFFF;">Reto final: combínalas</h3>
+        <p style="margin: 0 0 10px; font-size: 14px; color: #FFFFFF;">Cuando termines los 7 videos, intenta en una sola fórmula: busca con BUSCARX el monto de un ID y, con SI, indica si es <em>Alto costo</em> o <em>Regular</em>.</p>
+        <details style="font-size: 13px;"><summary style="cursor: pointer; color: #9CC9F2; font-weight: bold;">Ver una solución</summary>
+          <code style="display: block; margin: 6px 0 0; background-color: #FFFFFF; color: #1E3A5F; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SI(BUSCARX(A2,tblReclamaciones[ID Reclamación],tblReclamaciones[Monto Reclamado])&gt;=50000,"Alto costo","Regular")</code>
+        </details>
+      </div>
+
+    </div>
+
+    <!-- Sugerencia -->
+    <div class="v2-in v2-d8" style="margin: 16px 0 0; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-radius: 6px; padding: 12px 16px; font-size: 14px;">
+      <strong style="color: #1E3A5F;">💡 Consejo:</strong> no veas los videos de corrido. Mira uno, haz su reto y solo entonces pasa al siguiente. Intenta el reto <strong>antes</strong> de abrir "Ver la fórmula"; si te equivocas, compara y busca la diferencia.
+    </div>
+
+    <!-- Llamado a la acción -->
+    <div class="v2-in v2-d8" style="text-align: center; margin: 24px 0 6px;">
+      <a class="v2-btn" href="https://youtu.be/ooV4tdRXosk" target="_blank" rel="noopener" style="display: inline-block; background-color: #2F6FB0; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px;">▶ Empezar por el video 1</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #000000;">Los videos se abren en YouTube, en una pestaña nueva.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #000000;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
