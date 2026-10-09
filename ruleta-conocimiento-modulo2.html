@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ruleta del Conocimiento | Módulo 2 · Funciones avanzadas de Excel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-0:#050110;
+  --bg-1:#0c0620;
+  --panel:#150c2e;
+  --panel-2:#1b1140;
+  --neon-cyan:#21e6ff;
+  --neon-pink:#ff2fa0;
+  --neon-purple:#b026ff;
+  --neon-gold:#ffd23f;
+  --text:#eae6ff;
+  --muted:#9083b8;
+  --ok:#2bffa8;
+  --bad:#ff3d5a;
+  --border: rgba(176,38,255,0.35);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  font-family:'Rajdhani', sans-serif;
+  background: radial-gradient(ellipse at 50% -10%, #1a0d3d 0%, var(--bg-1) 45%, var(--bg-0) 100%);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+#bgCanvas{position:fixed; inset:0; z-index:0; opacity:0.55;}
+#fireworksCanvas{position:fixed; inset:0; z-index:1; pointer-events:none; display:none;}
+.scanlines{
+  position:fixed; inset:0; z-index:1; pointer-events:none;
+  background:repeating-linear-gradient(to bottom, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 2px, transparent 4px);
+  mix-blend-mode:overlay;
+}
+.grid-floor{
+  position:fixed; left:0; right:0; bottom:0; height:40vh; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(176,38,255,0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(176,38,255,0.35) 1px, transparent 1px);
+  background-size:48px 48px;
+  transform:perspective(320px) rotateX(62deg);
+  transform-origin:bottom;
+  mask-image:linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  -webkit-mask-image:linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  opacity:0.5;
+}
+#app{position:relative; z-index:2; min-height:100vh; display:flex; flex-direction:column;}
+.screen{display:none; flex:1; flex-direction:column; align-items:center; padding:24px 16px 48px;}
+.screen.active{display:flex;}
+
+h1,h2,h3{font-family:'Orbitron', sans-serif;}
+
+/* ---------- credit tag ---------- */
+.credit-tag{
+  font-family:'Share Tech Mono', monospace;
+  letter-spacing:2px;
+  color:var(--neon-gold);
+  font-size:0.75rem;
+  text-transform:uppercase;
+  opacity:0.9;
+}
+
+/* ================= COVER ================= */
+#screen-cover{justify-content:center; text-align:center; gap:28px; padding-top:5vh;}
+.cover-wheel-wrap{position:relative; width:min(56vw, 300px); height:min(56vw, 300px); margin:0 auto;}
+.cover-wheel{
+  width:100%; height:100%; border-radius:50%;
+  background:conic-gradient(var(--neon-cyan) 0deg 45deg, var(--neon-pink) 45deg 90deg, var(--neon-purple) 90deg 135deg, var(--neon-gold) 135deg 180deg, var(--neon-cyan) 180deg 225deg, var(--neon-pink) 225deg 270deg, var(--neon-purple) 270deg 315deg, var(--neon-gold) 315deg 360deg);
+  box-shadow:0 0 40px rgba(176,38,255,0.6), 0 0 90px rgba(33,230,255,0.25), inset 0 0 30px rgba(0,0,0,0.5);
+  animation:coverSpin 9s linear infinite;
+  border:6px solid #0a0018;
+}
+.cover-wheel::after{
+  content:'';
+  position:absolute; inset:38%;
+  background:#0a0018; border-radius:50%;
+  border:3px solid var(--neon-gold);
+  box-shadow:0 0 18px rgba(255,210,63,0.7);
+}
+.cover-wheel-wrap .pointer{
+  position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+  width:0; height:0;
+  border-left:14px solid transparent; border-right:14px solid transparent;
+  border-top:22px solid var(--neon-gold);
+  filter:drop-shadow(0 0 8px rgba(255,210,63,0.9));
+  z-index:3;
+}
+@keyframes coverSpin{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+
+.title-block{display:flex; flex-direction:column; gap:6px; align-items:center;}
+.eyebrow{font-family:'Share Tech Mono',monospace; letter-spacing:6px; color:var(--neon-cyan); font-size:0.8rem; text-transform:uppercase;}
+.glitch-title{
+  font-size:clamp(2.2rem, 7vw, 4.2rem);
+  font-weight:900;
+  letter-spacing:2px;
+  color:#fff;
+  text-shadow: 0 0 12px var(--neon-purple), 0 0 28px var(--neon-purple);
+  position:relative;
+  animation:glitchShift 4.5s infinite;
+}
+.glitch-title span{display:block; background:linear-gradient(90deg, var(--neon-cyan), var(--neon-pink) 50%, var(--neon-gold)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+@keyframes glitchShift{
+  0%,92%,100%{ text-shadow:0 0 12px var(--neon-purple), 0 0 28px var(--neon-purple), 2px 0 0 rgba(255,45,45,0), -2px 0 0 rgba(33,230,255,0);}
+  93%{ text-shadow:0 0 12px var(--neon-purple), 3px 0 0 rgba(255,45,160,0.7), -3px 0 0 rgba(33,230,255,0.7);}
+  95%{ text-shadow:0 0 12px var(--neon-purple), -3px 0 0 rgba(255,45,160,0.7), 3px 0 0 rgba(33,230,255,0.7);}
+  97%{ text-shadow:0 0 12px var(--neon-purple), 0 0 28px var(--neon-purple);}
+}
+.subtitle{font-size:clamp(1rem, 2.4vw, 1.35rem); color:var(--muted); font-weight:600; letter-spacing:1px;}
+
+.btn{
+  font-family:'Orbitron', sans-serif;
+  font-weight:700;
+  font-size:1rem;
+  letter-spacing:1.5px;
+  padding:16px 38px;
+  border-radius:10px;
+  border:2px solid var(--neon-cyan);
+  background:linear-gradient(180deg, rgba(33,230,255,0.15), rgba(176,38,255,0.15));
+  color:#fff;
+  cursor:pointer;
+  text-transform:uppercase;
+  box-shadow:0 0 18px rgba(33,230,255,0.35);
+  transition:transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.btn:hover:not(:disabled){ transform:translateY(-2px) scale(1.03); box-shadow:0 0 30px rgba(33,230,255,0.6); }
+.btn:active:not(:disabled){ transform:translateY(0) scale(0.98); }
+.btn:disabled{opacity:0.35; cursor:not-allowed;}
+.btn-primary{border-color:var(--neon-gold); box-shadow:0 0 22px rgba(255,210,63,0.4);}
+.btn-primary:hover:not(:disabled){box-shadow:0 0 34px rgba(255,210,63,0.7);}
+.btn-pink{border-color:var(--neon-pink); box-shadow:0 0 18px rgba(255,47,160,0.4);}
+.btn-ghost{background:transparent; border-color:var(--muted); box-shadow:none; font-size:0.8rem; padding:10px 20px;}
+.btn-ghost:hover:not(:disabled){border-color:var(--neon-pink); color:var(--neon-pink); box-shadow:0 0 14px rgba(255,47,160,0.4);}
+
+/* ================= SETUP ================= */
+#screen-setup{align-items:stretch; justify-content:flex-start; padding-top:20px; max-width:1100px; margin:0 auto; width:100%;}
+.setup-header{text-align:center; margin-bottom:22px;}
+.setup-header h2{font-size:clamp(1.5rem,4vw,2.1rem); color:#fff; text-shadow:0 0 14px var(--neon-purple);}
+.setup-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:22px; width:100%;}
+@media (max-width:820px){ .setup-grid{grid-template-columns:1fr;} }
+
+.panel{
+  background:linear-gradient(180deg, var(--panel), var(--panel-2));
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:22px;
+  box-shadow:0 0 30px rgba(10,0,25,0.6), inset 0 0 40px rgba(176,38,255,0.06);
+  position:relative;
+}
+.panel h3{color:var(--neon-cyan); font-size:1.05rem; letter-spacing:1px; margin-bottom:14px; display:flex; align-items:center; gap:8px;}
+.panel h3 .count-pill{
+  margin-left:auto; font-family:'Share Tech Mono',monospace; font-size:0.85rem; color:var(--neon-gold);
+  border:1px solid var(--neon-gold); border-radius:20px; padding:2px 10px;
+}
+
+.add-row{display:flex; gap:10px; margin-bottom:16px;}
+.add-row input{
+  flex:1; padding:13px 14px; border-radius:8px; border:1px solid var(--border);
+  background:rgba(5,1,16,0.6); color:var(--text); font-family:'Rajdhani',sans-serif; font-size:1.05rem; font-weight:600;
+  outline:none;
+}
+.add-row input:focus{border-color:var(--neon-cyan); box-shadow:0 0 10px rgba(33,230,255,0.4);}
+.add-row button{white-space:nowrap; padding:12px 22px;}
+
+.participant-list{list-style:none; display:flex; flex-direction:column; gap:8px; max-height:340px; overflow-y:auto; padding-right:4px;}
+.participant-list::-webkit-scrollbar{width:6px;}
+.participant-list::-webkit-scrollbar-thumb{background:var(--neon-purple); border-radius:4px;}
+.participant-item{
+  display:flex; align-items:center; gap:10px;
+  background:rgba(255,255,255,0.03); border:1px solid rgba(176,38,255,0.25);
+  border-radius:8px; padding:10px 12px;
+  animation:popIn 0.25s ease;
+}
+@keyframes popIn{ from{opacity:0; transform:translateX(-8px);} to{opacity:1; transform:translateX(0);} }
+.participant-item .num{
+  font-family:'Orbitron',sans-serif; font-size:0.75rem; color:var(--bg-0); background:var(--neon-cyan);
+  width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.participant-item .pname{flex:1; font-weight:700; letter-spacing:0.5px;}
+.participant-item .rm{
+  background:none; border:none; color:var(--bad); cursor:pointer; font-size:1.1rem; font-weight:900; line-height:1;
+  padding:4px 8px; border-radius:6px;
+}
+.participant-item .rm:hover{background:rgba(255,61,90,0.15);}
+.empty-hint{color:var(--muted); font-size:0.9rem; text-align:center; padding:24px 8px; font-style:italic;}
+.warn-msg{color:var(--neon-gold); font-size:0.85rem; margin-top:8px; min-height:1.2em; font-weight:600;}
+
+.qcount-row{display:flex; align-items:center; gap:14px; margin-bottom:16px;}
+.qcount-row input[type=number]{
+  width:90px; padding:12px; text-align:center; border-radius:8px; border:1px solid var(--border);
+  background:rgba(5,1,16,0.6); color:var(--neon-gold); font-family:'Share Tech Mono',monospace; font-size:1.3rem; font-weight:700; outline:none;
+}
+.qcount-row input[type=number]:focus{border-color:var(--neon-gold); box-shadow:0 0 10px rgba(255,210,63,0.4);}
+.qcount-label{font-size:0.9rem; color:var(--muted);}
+.preset-chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+.chip{
+  font-family:'Share Tech Mono',monospace; font-size:0.85rem; padding:7px 14px; border-radius:20px;
+  border:1px solid var(--neon-purple); background:transparent; color:var(--text); cursor:pointer;
+}
+.chip:hover{background:rgba(176,38,255,0.2);}
+.chip.active{background:var(--neon-purple); color:#fff; box-shadow:0 0 12px rgba(176,38,255,0.7);}
+
+.category-row{display:flex; flex-direction:column; gap:10px; margin-bottom:18px;}
+.cat-toggle{
+  display:flex; align-items:center; gap:12px; cursor:pointer;
+  border:1px solid rgba(176,38,255,0.3); border-radius:10px; padding:12px 14px;
+  background:rgba(255,255,255,0.02); transition:all 0.2s ease;
+}
+.cat-toggle:hover{border-color:var(--neon-cyan);}
+.cat-toggle input{display:none;}
+.cat-toggle .box{
+  width:20px; height:20px; border-radius:5px; border:2px solid var(--muted); flex-shrink:0; position:relative;
+  transition:all 0.2s ease;
+}
+.cat-toggle .box::after{
+  content:''; position:absolute; inset:3px; border-radius:2px; background:var(--neon-gold);
+  opacity:0; transform:scale(0.4); transition:all 0.2s ease;
+}
+.cat-toggle.checked{border-color:var(--neon-gold); background:rgba(255,210,63,0.08); box-shadow:0 0 14px rgba(255,210,63,0.25);}
+.cat-toggle.checked .box{border-color:var(--neon-gold);}
+.cat-toggle.checked .box::after{opacity:1; transform:scale(1);}
+.cat-toggle .cat-label{font-weight:700; letter-spacing:0.3px;}
+.cat-toggle .cat-desc{display:block; font-size:0.78rem; color:var(--muted); font-weight:500; margin-top:2px;}
+.pool-info{font-family:'Share Tech Mono',monospace; font-size:0.78rem; color:var(--neon-cyan); margin:-6px 0 16px; min-height:1.2em;}
+.cat-toggle-disabled{opacity:0.45; cursor:not-allowed;}
+.cat-toggle-disabled:hover{border-color:rgba(176,38,255,0.3);}
+
+.custom-panel{margin-top:22px;}
+.custom-panel-header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap;}
+.collapsed-summary{
+  font-family:'Share Tech Mono',monospace; font-size:0.85rem; color:var(--neon-gold);
+  background:rgba(255,210,63,0.06); border:1px dashed rgba(255,210,63,0.4); border-radius:10px;
+  padding:16px; display:flex; align-items:center; gap:8px; animation:popIn 0.25s ease;
+}
+.custom-tabs{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;}
+.tab-btn{
+  font-family:'Orbitron',sans-serif; font-size:0.78rem; letter-spacing:0.5px; padding:10px 16px;
+  border-radius:8px 8px 0 0; border:1px solid rgba(176,38,255,0.35); border-bottom:none;
+  background:rgba(255,255,255,0.02); color:var(--muted); cursor:pointer;
+}
+.tab-btn.active{background:rgba(176,38,255,0.18); color:#fff; border-color:var(--neon-purple);}
+.tab-panel{border:1px solid rgba(176,38,255,0.3); border-radius:0 10px 10px 10px; padding:18px; background:rgba(255,255,255,0.02);}
+
+.custom-field{margin-bottom:16px;}
+.custom-field-label{display:block; font-size:0.82rem; color:var(--neon-cyan); font-weight:700; margin-bottom:8px; letter-spacing:0.3px;}
+.custom-field textarea{
+  width:100%; padding:12px 14px; border-radius:8px; border:1px solid var(--border);
+  background:rgba(5,1,16,0.6); color:var(--text); font-family:'Rajdhani',sans-serif; font-size:1rem; font-weight:600;
+  outline:none; resize:vertical;
+}
+.custom-field textarea:focus{border-color:var(--neon-cyan); box-shadow:0 0 10px rgba(33,230,255,0.4);}
+.custom-option-row{display:flex; align-items:center; gap:10px; margin-bottom:9px;}
+.custom-option-row input[type=radio]{width:18px; height:18px; accent-color:var(--neon-gold); flex-shrink:0; cursor:pointer;}
+.custom-option-row input[type=text]{
+  flex:1; padding:10px 12px; border-radius:8px; border:1px solid var(--border);
+  background:rgba(5,1,16,0.6); color:var(--text); font-family:'Rajdhani',sans-serif; font-size:0.98rem; font-weight:600;
+  outline:none;
+}
+.custom-option-row input[type=text]:focus{border-color:var(--neon-cyan); box-shadow:0 0 8px rgba(33,230,255,0.35);}
+
+#customFileInput{
+  display:block; margin:14px 0; padding:10px; border-radius:8px; border:1px dashed rgba(33,230,255,0.5);
+  background:rgba(33,230,255,0.04); color:var(--text); font-family:'Rajdhani',sans-serif; font-size:0.92rem; width:100%;
+}
+.code-line{
+  display:inline-block; font-family:'Share Tech Mono',monospace; font-size:0.78rem; color:var(--neon-gold);
+  background:rgba(0,0,0,0.35); padding:3px 8px; border-radius:5px; margin-top:4px; word-break:break-all;
+}
+
+.custom-list-wrap{margin-top:20px;}
+.custom-question-list{list-style:none; display:flex; flex-direction:column; gap:8px; max-height:320px; overflow-y:auto; padding-right:4px;}
+.custom-question-list::-webkit-scrollbar{width:6px;}
+.custom-question-list::-webkit-scrollbar-thumb{background:var(--neon-purple); border-radius:4px;}
+.custom-question-item{
+  background:rgba(255,255,255,0.03); border:1px solid rgba(176,38,255,0.25); border-radius:8px; padding:10px 12px;
+  display:flex; align-items:flex-start; gap:10px; animation:popIn 0.25s ease;
+}
+.custom-question-item .cqi-num{
+  font-family:'Orbitron',sans-serif; font-size:0.72rem; color:var(--bg-0); background:var(--neon-gold);
+  width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;
+}
+.custom-question-item .cqi-body{flex:1; min-width:0;}
+.custom-question-item .cqi-q{font-weight:700; font-size:0.92rem; line-height:1.35;}
+.custom-question-item .cqi-a{font-size:0.78rem; color:var(--ok); margin-top:3px;}
+.custom-question-item .rm{
+  background:none; border:none; color:var(--bad); cursor:pointer; font-size:1.1rem; font-weight:900; line-height:1;
+  padding:4px 8px; border-radius:6px; flex-shrink:0;
+}
+.custom-question-item .rm:hover{background:rgba(255,61,90,0.15);}
+.section-divider{height:1px; background:linear-gradient(90deg, transparent, rgba(176,38,255,0.4), transparent); margin:18px 0;}
+
+.switch-row{
+  display:flex; align-items:center; justify-content:space-between; gap:14px; cursor:pointer;
+  padding:10px 4px; user-select:none;
+}
+.switch-info{display:flex; flex-direction:column; gap:3px;}
+.switch-title{font-weight:700; letter-spacing:0.3px; font-size:0.98rem;}
+.switch-desc{font-size:0.78rem; color:var(--muted);}
+.switch-desc b{color:var(--neon-gold); font-weight:700;}
+.switch-toggle{position:relative; display:inline-flex; align-items:center; flex-shrink:0;}
+.switch-toggle input{display:none;}
+.switch-track{
+  width:50px; height:26px; border-radius:20px; position:relative; display:block;
+  background:rgba(255,255,255,0.08); border:1px solid rgba(176,38,255,0.4); transition:all 0.25s ease;
+}
+.switch-thumb{
+  position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:50%;
+  background:var(--muted); transition:all 0.25s ease;
+}
+.switch-toggle input:checked ~ .switch-track{
+  background:rgba(255,210,63,0.2); border-color:var(--neon-gold); box-shadow:0 0 12px rgba(255,210,63,0.35);
+}
+.switch-toggle input:checked ~ .switch-track .switch-thumb{
+  left:26px; background:var(--neon-gold); box-shadow:0 0 8px rgba(255,210,63,0.7);
+}
+.switch-details{
+  margin-top:6px; padding-top:14px; border-top:1px dashed rgba(176,38,255,0.3);
+  animation:popIn 0.25s ease;
+}
+
+.info-box{
+  background:rgba(33,230,255,0.06); border:1px dashed rgba(33,230,255,0.4); border-radius:10px;
+  padding:14px; font-size:0.88rem; color:var(--muted); line-height:1.5; margin-bottom:20px;
+}
+.info-box b{color:var(--neon-cyan);}
+
+.setup-footer{display:flex; justify-content:center; margin-top:26px;}
+.floating-start-btn{
+  position:fixed; bottom:22px; right:22px; z-index:40;
+  padding:14px 26px; font-size:0.88rem; border-radius:50px;
+  box-shadow:0 6px 26px rgba(0,0,0,0.55), 0 0 22px rgba(255,210,63,0.55);
+}
+@media (max-width:640px){
+  .floating-start-btn{ bottom:14px; right:14px; padding:11px 18px; font-size:0.78rem; }
+}
+
+/* ================= GAME ================= */
+#screen-game{align-items:stretch; padding-top:14px; max-width:1200px; margin:0 auto; width:100%;}
+.game-topbar{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; flex-wrap:wrap;}
+.round-badge{
+  font-family:'Orbitron',sans-serif; font-size:0.95rem; color:var(--neon-gold);
+  border:1px solid var(--neon-gold); border-radius:20px; padding:8px 18px; letter-spacing:1px;
+  background:rgba(255,210,63,0.06);
+}
+.scoreboard-mini{display:flex; gap:8px; flex-wrap:wrap; max-width:60%; justify-content:flex-end;}
+.score-chip{
+  font-family:'Share Tech Mono',monospace; font-size:0.78rem; padding:5px 10px; border-radius:14px;
+  background:rgba(255,255,255,0.04); border:1px solid rgba(176,38,255,0.3); color:var(--muted);
+  transition:all 0.3s ease;
+}
+.score-chip b{color:var(--neon-cyan);}
+.score-chip.leading{border-color:var(--neon-gold); color:var(--neon-gold);}
+.score-chip.leading b{color:var(--neon-gold);}
+.score-chip.active-player{border-color:var(--neon-pink); box-shadow:0 0 10px rgba(255,47,160,0.6); color:#fff;}
+
+.game-grid{display:grid; grid-template-columns:380px 1fr; gap:24px; align-items:start;}
+@media (max-width:920px){ .game-grid{grid-template-columns:1fr;} }
+
+.wheel-column{display:flex; flex-direction:column; align-items:center; gap:18px;}
+.wheel-frame{position:relative; width:min(90vw, 380px); aspect-ratio:1/1;}
+.wheel-frame .pointer{
+  position:absolute; top:-6px; left:50%; transform:translateX(-50%);
+  width:0; height:0; z-index:5;
+  border-left:16px solid transparent; border-right:16px solid transparent;
+  border-top:28px solid var(--neon-gold);
+  filter:drop-shadow(0 0 10px rgba(255,210,63,0.9));
+}
+.wheel-frame .glow-ring{
+  position:absolute; inset:-10px; border-radius:50%;
+  box-shadow:0 0 40px rgba(176,38,255,0.55), 0 0 80px rgba(33,230,255,0.25);
+  pointer-events:none;
+  animation:ringPulse 2.4s ease-in-out infinite;
+}
+@keyframes ringPulse{ 0%,100%{opacity:0.6;} 50%{opacity:1;} }
+#wheelSvgContainer{width:100%; height:100%;}
+#wheelSvgContainer svg{width:100%; height:100%; display:block;}
+#wheelGroup{transition:transform 4.5s cubic-bezier(0.17,0.67,0.16,0.99);}
+.wheel-label{
+  font-family:'Rajdhani',sans-serif; font-weight:800; fill:#0a0018;
+  text-shadow:0 0 2px rgba(255,255,255,0.4);
+}
+.wheel-hub-text{font-family:'Orbitron',sans-serif; font-size:20px; font-weight:900; fill:var(--neon-gold);}
+
+.spin-btn{
+  font-family:'Orbitron',sans-serif; font-weight:900; font-size:1.15rem; letter-spacing:2px;
+  padding:16px 44px; border-radius:50px; border:2px solid var(--neon-pink); color:#fff;
+  background:linear-gradient(180deg, rgba(255,47,160,0.25), rgba(176,38,255,0.25));
+  box-shadow:0 0 24px rgba(255,47,160,0.5); cursor:pointer; text-transform:uppercase;
+}
+.spin-btn:hover:not(:disabled){transform:translateY(-2px); box-shadow:0 0 36px rgba(255,47,160,0.8);}
+.spin-btn:disabled{opacity:0.35; cursor:not-allowed;}
+
+.finish-btn-wrap{display:flex; justify-content:center;}
+
+.stage{
+  background:linear-gradient(180deg, var(--panel), var(--panel-2));
+  border:1px solid var(--border); border-radius:18px; padding:32px 26px;
+  min-height:420px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+  box-shadow:0 0 30px rgba(10,0,25,0.6), inset 0 0 50px rgba(176,38,255,0.05);
+  position:relative; overflow:hidden;
+}
+.stage-idle{text-align:center; color:var(--muted); display:flex; flex-direction:column; gap:14px; align-items:center;}
+.stage-idle .big-icon{font-size:3.2rem; filter:drop-shadow(0 0 12px rgba(33,230,255,0.6));}
+.stage-idle h3{color:var(--text); font-size:1.3rem;}
+
+.reveal-name{
+  font-family:'Orbitron',sans-serif; font-weight:900; font-size:clamp(2rem,6vw,3.4rem);
+  text-align:center; color:#fff;
+  text-shadow:0 0 20px var(--neon-pink), 0 0 50px var(--neon-purple);
+  animation:revealPop 0.6s cubic-bezier(0.17,0.89,0.32,1.28);
+}
+.reveal-sub{font-family:'Share Tech Mono',monospace; color:var(--neon-cyan); letter-spacing:3px; font-size:0.9rem; text-transform:uppercase;}
+@keyframes revealPop{ 0%{opacity:0; transform:scale(0.4) rotate(-8deg);} 60%{opacity:1; transform:scale(1.1) rotate(2deg);} 100%{transform:scale(1) rotate(0);} }
+
+.question-card{width:100%; display:flex; flex-direction:column; gap:16px;}
+.q-player-banner{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  background:rgba(255,47,160,0.08); border:1px solid rgba(255,47,160,0.4); border-radius:10px; padding:10px 16px;
+}
+.q-player-banner .pname{font-family:'Orbitron',sans-serif; font-weight:700; color:#fff; font-size:1.05rem;}
+.timer-wrap{display:flex; align-items:center; gap:8px;}
+.timer-ring{position:relative; width:52px; height:52px;}
+.timer-ring svg{transform:rotate(-90deg); width:52px; height:52px;}
+.timer-ring circle{fill:none; stroke-width:5;}
+.timer-ring .bg{stroke:rgba(255,255,255,0.1);}
+.timer-ring .fg{stroke:var(--neon-gold); stroke-linecap:round; transition:stroke-dashoffset 1s linear, stroke 0.3s ease;}
+.timer-num{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:'Share Tech Mono',monospace; font-weight:700; font-size:1rem; color:var(--neon-gold);
+}
+.timer-num.urgent{color:var(--bad);}
+
+.q-text{
+  font-family:'Orbitron',sans-serif; font-size:clamp(1.05rem,2.4vw,1.4rem); font-weight:700; color:#fff;
+  line-height:1.5; text-align:center; padding:8px 6px; overflow-wrap:anywhere;
+}
+.options-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+@media (max-width:560px){ .options-grid{grid-template-columns:1fr;} }
+.option-btn{
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1.05rem; text-align:left;
+  padding:16px 18px; border-radius:10px; border:2px solid rgba(176,38,255,0.4);
+  background:rgba(255,255,255,0.03); color:var(--text); cursor:pointer;
+  display:flex; align-items:center; gap:10px; transition:all 0.15s ease;
+  overflow-wrap:anywhere; min-width:0;
+}
+.option-btn .opt-letter{
+  font-family:'Orbitron',sans-serif; font-size:0.85rem; width:26px; height:26px; border-radius:50%;
+  border:1px solid var(--neon-cyan); color:var(--neon-cyan); display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.option-btn:hover:not(:disabled){border-color:var(--neon-cyan); background:rgba(33,230,255,0.08); transform:translateY(-2px);}
+.option-btn:disabled{cursor:default;}
+.option-btn.correct{border-color:var(--ok); background:rgba(43,255,168,0.15); box-shadow:0 0 18px rgba(43,255,168,0.5);}
+.option-btn.correct .opt-letter{border-color:var(--ok); color:var(--ok);}
+.option-btn.wrong{border-color:var(--bad); background:rgba(255,61,90,0.15); box-shadow:0 0 18px rgba(255,61,90,0.5);}
+.option-btn.wrong .opt-letter{border-color:var(--bad); color:var(--bad);}
+.option-btn.dim{opacity:0.45;}
+
+.feedback-line{
+  text-align:center; font-family:'Orbitron',sans-serif; font-weight:700; font-size:1.15rem; min-height:1.4em;
+  animation:popIn 0.3s ease; overflow-wrap:anywhere;
+}
+.feedback-line.ok{color:var(--ok); text-shadow:0 0 14px rgba(43,255,168,0.6);}
+.feedback-line.bad{color:var(--bad); text-shadow:0 0 14px rgba(255,61,90,0.6);}
+
+.continue-wrap{display:flex; justify-content:center; margin-top:4px;}
+
+/* ================= STATS ================= */
+#screen-stats{max-width:900px; margin:0 auto; width:100%; padding-top:20px;}
+.stats-header{text-align:center; margin-bottom:22px;}
+.stats-header h2{font-size:clamp(1.6rem,4vw,2.3rem); color:#fff; text-shadow:0 0 16px var(--neon-gold);}
+.podium{display:flex; align-items:flex-end; justify-content:center; gap:14px; margin-bottom:34px; flex-wrap:wrap;}
+.podium-slot{display:flex; flex-direction:column; align-items:center; gap:8px; width:140px;}
+.podium-slot .medal{font-size:2.2rem;}
+.podium-slot .pname{font-family:'Orbitron',sans-serif; font-weight:700; font-size:0.95rem; text-align:center; color:#fff;}
+.podium-slot .pscore{font-family:'Share Tech Mono',monospace; color:var(--neon-gold); font-size:1.1rem;}
+.podium-bar{width:100%; border-radius:10px 10px 0 0; display:flex; align-items:flex-start; justify-content:center; padding-top:10px;}
+.podium-slot.first .podium-bar{height:130px; background:linear-gradient(180deg, rgba(255,210,63,0.5), rgba(255,210,63,0.1)); border:1px solid var(--neon-gold); box-shadow:0 0 26px rgba(255,210,63,0.5);}
+.podium-slot.second .podium-bar{height:95px; background:linear-gradient(180deg, rgba(33,230,255,0.4), rgba(33,230,255,0.08)); border:1px solid var(--neon-cyan);}
+.podium-slot.third .podium-bar{height:70px; background:linear-gradient(180deg, rgba(255,47,160,0.4), rgba(255,47,160,0.08)); border:1px solid var(--neon-pink);}
+.podium-rank{font-family:'Orbitron',sans-serif; font-weight:900; color:#fff; font-size:1.3rem;}
+
+.stats-table-wrap{
+  background:linear-gradient(180deg, var(--panel), var(--panel-2)); border:1px solid var(--border); border-radius:16px;
+  overflow:hidden; margin-bottom:26px;
+}
+table{width:100%; border-collapse:collapse;}
+thead th{
+  font-family:'Orbitron',sans-serif; font-size:0.8rem; letter-spacing:1px; text-transform:uppercase;
+  color:var(--neon-cyan); text-align:left; padding:14px 18px; border-bottom:1px solid var(--border);
+}
+tbody td{padding:13px 18px; font-weight:600; border-bottom:1px solid rgba(255,255,255,0.05);}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:nth-child(odd){background:rgba(255,255,255,0.02);}
+td.rank-cell{font-family:'Share Tech Mono',monospace; color:var(--muted);}
+td.score-cell{font-family:'Share Tech Mono',monospace; color:var(--neon-gold); font-weight:700;}
+tr.top1 td.score-cell{color:var(--neon-gold); text-shadow:0 0 8px rgba(255,210,63,0.6);}
+tr.lucky-row td{color:var(--muted); font-style:italic;}
+tr.lucky-row td.rank-cell{font-style:normal; font-size:1.1rem;}
+tr.lucky-first td{border-top:2px dashed rgba(255,210,63,0.5); padding-top:18px;}
+.lucky-badge{
+  font-family:'Share Tech Mono',monospace; font-size:0.7rem; letter-spacing:0.5px;
+  color:var(--neon-gold); font-style:normal; margin-top:3px; opacity:0.85;
+}
+
+.stats-footer{display:flex; justify-content:center; gap:14px; flex-wrap:wrap;}
+
+.footer-credit{
+  text-align:center; font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:var(--muted);
+  letter-spacing:1.5px; margin-top:auto; padding-top:34px; opacity:0.7;
+}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+<canvas id="fireworksCanvas"></canvas>
+<div class="grid-floor"></div>
+<div class="scanlines"></div>
+
+<div id="app">
+
+  <!-- ===================== COVER ===================== -->
+  <section id="screen-cover" class="screen active">
+    <div class="eyebrow">Sistema de Evaluación Interactiva</div>
+    <div class="cover-wheel-wrap">
+      <div class="pointer"></div>
+      <div class="cover-wheel"></div>
+    </div>
+    <div class="title-block">
+      <h1 class="glitch-title">RULETA DEL<br><span>CONOCIMIENTO</span></h1>
+      <p class="subtitle">📊 Módulo 2 · Funciones avanzadas de Excel</p>
+    </div>
+    <button class="btn btn-primary" id="btnIniciar">▶ Iniciar</button>
+    <p class="credit-tag">By Jarlin Figueroa</p>
+  </section>
+
+  <!-- ===================== SETUP ===================== -->
+  <section id="screen-setup" class="screen">
+    <div class="setup-header">
+      <h2>🎮 Prepara la Partida</h2>
+      <p class="subtitle" style="font-size:1rem;">Agrega participantes y elige cuántas preguntas quieres jugar</p>
+    </div>
+    <div class="setup-grid">
+      <div class="panel">
+        <h3>👥 Participantes <span class="count-pill" id="countPill">0 / 15</span></h3>
+        <div class="add-row">
+          <input type="text" id="participantInput" placeholder="Nombre del estudiante..." maxlength="24">
+          <button class="btn btn-pink" id="btnAgregar">＋ Agregar</button>
+        </div>
+        <div class="warn-msg" id="warnMsg"></div>
+        <ul class="participant-list" id="participantList">
+          <li class="empty-hint">Aún no has agregado participantes.</li>
+        </ul>
+        <div class="section-divider"></div>
+        <label class="switch-row" id="noRepeatSwitchRow">
+          <span class="switch-info">
+            <span class="switch-title">🔁 Evitar que un mismo estudiante repita turno</span>
+            <span class="switch-desc"><b id="noRepeatStatus">Desactivado</b> — actívalo para configurar el enfriamiento</span>
+          </span>
+          <span class="switch-toggle">
+            <input type="checkbox" id="noRepeatCheckbox">
+            <span class="switch-track"><span class="switch-thumb"></span></span>
+          </span>
+        </label>
+        <div class="switch-details" id="noRepeatDetails" style="display:none;">
+          <div class="qcount-row">
+            <input type="number" id="cooldownInput" min="1" max="14" value="3">
+            <span class="qcount-label">turnos deben pasar antes de que el mismo estudiante pueda volver a salir</span>
+          </div>
+          <div class="info-box" style="margin-bottom:0;">
+            Ejemplo: con un enfriamiento de <b id="cooldownExample">3</b>, si a un estudiante le toca responder, no podrá volver a
+            salir en la ruleta hasta que hayan girado otros <b id="cooldownExample2">3</b> compañeros diferentes.
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>❓ Preguntas</h3>
+        <div class="category-row">
+          <label class="cat-toggle checked" id="catConceptosLabel">
+            <input type="checkbox" id="catConceptos" checked>
+            <span class="box"></span>
+            <span>
+              <span class="cat-label">💡 Conceptos clave</span>
+              <span class="cat-desc">BUSCARX, SI, SI.CONJUNTO, CONTAR/SUMAR.SI.CONJUNTO, texto y fechas</span>
+            </span>
+          </label>
+          <label class="cat-toggle checked" id="catFormulasLabel">
+            <input type="checkbox" id="catFormulas" checked>
+            <span class="box"></span>
+            <span>
+              <span class="cat-label">🧮 ¿Qué devuelve la fórmula?</span>
+              <span class="cat-desc">Ejercicios cortos: calcula el resultado o elige la fórmula correcta</span>
+            </span>
+          </label>
+          <label class="cat-toggle checked" id="catBaseLabel">
+            <input type="checkbox" id="catBase" checked>
+            <span class="box"></span>
+            <span>
+              <span class="cat-label">📋 Práctica con tblReclamaciones</span>
+              <span class="cat-desc">Preguntas sobre la base de práctica del Módulo 2 (50 reclamaciones)</span>
+            </span>
+          </label>
+          <label class="cat-toggle cat-toggle-disabled" id="catCustomLabel">
+            <input type="checkbox" id="catCustom" disabled>
+            <span class="box"></span>
+            <span>
+              <span class="cat-label">📝 Mis Preguntas (<span id="catCustomCount">0</span>)</span>
+              <span class="cat-desc" id="catCustomDesc">Se habilita cuando agregues al menos una pregunta propia más abajo</span>
+            </span>
+          </label>
+        </div>
+        <div class="pool-info" id="poolInfo"></div>
+        <div class="qcount-row">
+          <input type="number" id="qCountInput" min="1" max="60" value="10">
+          <span class="qcount-label">preguntas para esta partida</span>
+        </div>
+        <div class="preset-chips">
+          <button class="chip" data-preset="5">5</button>
+          <button class="chip active" data-preset="10">10</button>
+          <button class="chip" data-preset="15">15</button>
+          <button class="chip" data-preset="20">20</button>
+          <button class="chip" data-preset="60" data-role="all">Todas (60)</button>
+        </div>
+        <div class="section-divider"></div>
+        <div class="qcount-row">
+          <input type="number" id="timeCountInput" min="5" max="60" value="30">
+          <span class="qcount-label">segundos para responder cada pregunta <span style="color:var(--muted); font-size:0.82rem;">(mín. 5, máx. 60)</span></span>
+        </div>
+        <div class="preset-chips">
+          <button class="chip time-chip" data-time="10">10s</button>
+          <button class="chip time-chip active" data-time="30">30s</button>
+          <button class="chip time-chip" data-time="45">45s</button>
+          <button class="chip time-chip" data-time="60">60s</button>
+        </div>
+        <div class="info-box" id="infoBox">
+          Cada ronda: gira la ruleta 🎡 → se selecciona un estudiante al azar → responde en <b id="infoBoxSeconds">30 segundos</b> ⏱ →
+          respuesta correcta = <b>+10 puntos</b>. Los estudiantes pueden repetir turno.
+        </div>
+      </div>
+    </div>
+
+    <div class="panel custom-panel">
+      <div class="custom-panel-header">
+        <h3 style="margin-bottom:0;">📝 Tus Propias Preguntas</h3>
+        <button type="button" class="btn btn-ghost" id="btnToggleCustomPanel">🙈 Ocultar</button>
+      </div>
+
+      <div id="customPanelBody">
+        <label class="switch-row" id="customSwitchRow">
+          <span class="switch-info">
+            <span class="switch-title">✏️ Agregar mis propias preguntas</span>
+            <span class="switch-desc"><b id="customStatus">Desactivado</b> — actívalo para escribirlas o subir un archivo</span>
+          </span>
+          <span class="switch-toggle">
+            <input type="checkbox" id="customEnableCheckbox">
+            <span class="switch-track"><span class="switch-thumb"></span></span>
+          </span>
+        </label>
+
+        <div class="switch-details" id="customDetails" style="display:none;">
+          <div class="custom-tabs">
+            <button type="button" class="tab-btn active" id="tabBtnManual" data-tab="manual">➕ Escribirlas manualmente</button>
+            <button type="button" class="tab-btn" id="tabBtnFile" data-tab="file">📁 Subir un archivo</button>
+          </div>
+
+          <div class="tab-panel" id="tabManual">
+            <div class="custom-field">
+              <label class="custom-field-label">Pregunta</label>
+              <textarea id="customQText" rows="2" placeholder="Escribe aquí la pregunta..."></textarea>
+            </div>
+            <div class="custom-field">
+              <label class="custom-field-label">Opciones de respuesta (marca cuál es la correcta)</label>
+              <div class="custom-option-row">
+                <input type="radio" name="customCorrect" id="customCorrect0" value="0" checked>
+                <input type="text" id="customOpt0" placeholder="Opción A" maxlength="120">
+              </div>
+              <div class="custom-option-row">
+                <input type="radio" name="customCorrect" id="customCorrect1" value="1">
+                <input type="text" id="customOpt1" placeholder="Opción B" maxlength="120">
+              </div>
+              <div class="custom-option-row">
+                <input type="radio" name="customCorrect" id="customCorrect2" value="2">
+                <input type="text" id="customOpt2" placeholder="Opción C" maxlength="120">
+              </div>
+              <div class="custom-option-row">
+                <input type="radio" name="customCorrect" id="customCorrect3" value="3">
+                <input type="text" id="customOpt3" placeholder="Opción D" maxlength="120">
+              </div>
+            </div>
+            <div class="warn-msg" id="customManualWarn"></div>
+            <button type="button" class="btn btn-pink" id="btnAddCustomQ">➕ Agregar Pregunta</button>
+          </div>
+
+          <div class="tab-panel" id="tabFile" style="display:none;">
+            <div class="info-box">
+              Sube un archivo <b>.csv</b> o <b>.json</b> con tus preguntas.<br><br>
+              <b>Formato CSV</b> (una pregunta por línea, separada por comas):<br>
+              <code class="code-line">pregunta,opción1,opción2,opción3,opción4,respuesta_correcta</code><br>
+              La <i>respuesta_correcta</i> puede ser el texto exacto de la opción o un número del 1 al 4.<br><br>
+              <b>Formato JSON</b> (lista de objetos):<br>
+              <code class="code-line">[{"q":"¿Pregunta?","options":["A","B","C","D"],"correct":"A"}]</code>
+            </div>
+            <input type="file" id="customFileInput" accept=".csv,.json,.txt">
+            <div class="warn-msg" id="customFileWarn"></div>
+          </div>
+        </div>
+
+        <div class="custom-list-wrap">
+          <h3 style="margin-bottom:10px;">📋 Preguntas Agregadas <span class="count-pill" id="customCountPill">0</span></h3>
+          <ul class="custom-question-list" id="customQuestionList">
+            <li class="empty-hint">Aún no has agregado preguntas propias.</li>
+          </ul>
+          <button type="button" class="btn btn-ghost" id="btnClearCustom" style="margin-top:12px;">🗑 Vaciar todas mis preguntas</button>
+        </div>
+      </div>
+
+      <div class="collapsed-summary" id="customCollapsedSummary" style="display:none;">
+        🙈 Panel oculto para presentar en videollamada — <b id="collapsedCount">0</b> preguntas guardadas y a salvo de miradas.
+      </div>
+    </div>
+
+    <div class="setup-footer">
+      <button class="btn btn-primary" id="btnComenzar">🚀 Comenzar Juego</button>
+    </div>
+    <p class="footer-credit">RULETA DEL CONOCIMIENTO · MÓDULO 2 · By Jarlin Figueroa</p>
+
+    <button type="button" class="btn btn-primary floating-start-btn" id="btnComenzarFloating" title="Comenzar Juego">🚀 Comenzar</button>
+  </section>
+
+  <!-- ===================== GAME ===================== -->
+  <section id="screen-game" class="screen">
+    <div class="game-topbar">
+      <div class="round-badge" id="roundBadge">Pregunta 0 / 0</div>
+      <div class="scoreboard-mini" id="scoreboardMini"></div>
+    </div>
+
+    <div class="game-grid">
+      <div class="wheel-column">
+        <div class="wheel-frame">
+          <div class="glow-ring"></div>
+          <div class="pointer"></div>
+          <div id="wheelSvgContainer"></div>
+        </div>
+        <button class="spin-btn" id="btnSpin">🎡 Girar Ruleta</button>
+        <div class="finish-btn-wrap">
+          <button class="btn btn-ghost" id="btnFinalizar">🏠 Finalizar y volver al inicio</button>
+        </div>
+      </div>
+
+      <div class="stage" id="stage">
+        <div class="stage-idle">
+          <div class="big-icon">🎯</div>
+          <h3>¡Gira la ruleta para seleccionar al próximo participante!</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STATS ===================== -->
+  <section id="screen-stats" class="screen">
+    <div class="stats-header">
+      <h2>🏆 Resultados Finales</h2>
+      <p class="subtitle" style="font-size:1rem;">Tabla de puntuaciones · Ruleta del Conocimiento · Módulo 2</p>
+    </div>
+    <div class="podium" id="podium"></div>
+    <div class="stats-table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Estudiante</th><th>Veces seleccionado</th><th>Puntos</th></tr></thead>
+        <tbody id="statsBody"></tbody>
+      </table>
+    </div>
+    <div class="stats-footer">
+      <button class="btn btn-pink" id="btnNuevaPartida">🔄 Nueva Partida</button>
+    </div>
+    <p class="footer-credit">RULETA DEL CONOCIMIENTO · MÓDULO 2 · By Jarlin Figueroa</p>
+  </section>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ==================================================================
+   BANCO DE PREGUNTAS — Módulo 2 · Conceptos clave (20 preguntas)
+   ================================================================== */
+const QUESTIONS_CONCEPTOS = [
+  {q:"¿Qué hace la función BUSCARX?", options:["Busca un valor en una columna y devuelve el dato de la misma fila en otra columna","Suma todos los valores de una columna","Cuenta cuántas celdas tienen texto","Ordena la tabla de mayor a menor"], correct:"Busca un valor en una columna y devuelve el dato de la misma fila en otra columna"},
+  {q:"Si BUSCARX no encuentra el valor y no tiene el 4.º argumento (si_no_se_encuentra), ¿qué muestra?", options:["#N/D","0","Una celda vacía","#¡DIV/0!"], correct:"#N/D"},
+  {q:"¿Para qué sirve el 4.º argumento de BUSCARX, por ejemplo \"No existe\"?", options:["Para mostrar un mensaje propio en lugar del error #N/D","Para buscar en otra hoja","Para ordenar los resultados","Para sumar el resultado"], correct:"Para mostrar un mensaje propio en lugar del error #N/D"},
+  {q:"¿Qué ventaja tiene BUSCARX frente a BUSCARV?", options:["Puede devolver datos de una columna que está a la izquierda de la columna buscada","Solo funciona con números","Necesita que la tabla esté ordenada","Solo busca en la primera columna"], correct:"Puede devolver datos de una columna que está a la izquierda de la columna buscada"},
+  {q:"¿Cuántos resultados posibles puede mostrar una función SI sencilla?", options:["Dos: uno si la prueba es verdadera y otro si es falsa","Solo uno","Tres o más","Ninguno, solo devuelve VERDADERO"], correct:"Dos: uno si la prueba es verdadera y otro si es falsa"},
+  {q:"En =SI(prueba_lógica; valor_si_verdadero; valor_si_falso), ¿qué es la prueba lógica?", options:["La pregunta de sí o no, por ejemplo: ¿el monto es mayor o igual a 50,000?","El texto que se muestra al final","La columna donde se busca","El total de la suma"], correct:"La pregunta de sí o no, por ejemplo: ¿el monto es mayor o igual a 50,000?"},
+  {q:"¿Para qué sirve SI.CONJUNTO?", options:["Para revisar varias condiciones en orden y devolver el resultado de la primera que se cumpla","Para sumar con varias condiciones","Para unir varios textos","Para buscar un valor en otra hoja"], correct:"Para revisar varias condiciones en orden y devolver el resultado de la primera que se cumpla"},
+  {q:"En SI.CONJUNTO, ¿para qué se pone VERDADERO; \"Bajo\" al final?", options:["Para atrapar todo lo que no cumplió ninguna condición anterior","Para que la fórmula sea más rápida","Para convertir el resultado en número","Es obligatorio en todas las funciones"], correct:"Para atrapar todo lo que no cumplió ninguna condición anterior"},
+  {q:"¿Por qué en SI.CONJUNTO conviene empezar por el valor más alto (>=100000 antes que >=5000)?", options:["Porque devuelve la primera condición que se cumple y lo grande se quedaría en la condición menor","Porque Excel solo lee números grandes","Porque así ocupa menos espacio","No importa el orden"], correct:"Porque devuelve la primera condición que se cumple y lo grande se quedaría en la condición menor"},
+  {q:"¿Qué hace CONTAR.SI.CONJUNTO?", options:["Cuenta cuántas filas cumplen todas las condiciones indicadas","Suma los montos de una columna","Busca un valor y devuelve otro","Cuenta los caracteres de un texto"], correct:"Cuenta cuántas filas cumplen todas las condiciones indicadas"},
+  {q:"Si CONTAR.SI.CONJUNTO tiene dos criterios (ARS y Tipo de Servicio), ¿cuándo cuenta una fila?", options:["Solo cuando cumple los dos criterios a la vez","Cuando cumple cualquiera de los dos","Cuando no cumple ninguno","Siempre cuenta todas las filas"], correct:"Solo cuando cumple los dos criterios a la vez"},
+  {q:"¿Qué hace SUMAR.SI.CONJUNTO?", options:["Suma los valores de una columna solo en las filas que cumplen las condiciones","Cuenta las filas que cumplen una condición","Devuelve el valor más alto","Une varios textos en uno"], correct:"Suma los valores de una columna solo en las filas que cumplen las condiciones"},
+  {q:"¿Cuál es el error más común al pasar de SUMAR.SI a SUMAR.SI.CONJUNTO?", options:["Olvidar que en SUMAR.SI.CONJUNTO el rango a sumar va PRIMERO","Usar comillas en los textos","Usar la tabla estructurada","Escribir el signo ="], correct:"Olvidar que en SUMAR.SI.CONJUNTO el rango a sumar va PRIMERO"},
+  {q:"¿Qué tipo de resultado devuelven IZQUIERDA, DERECHA y EXTRAE?", options:["Siempre texto","Siempre un número","Siempre una fecha","Un valor lógico VERDADERO o FALSO"], correct:"Siempre texto"},
+  {q:"¿Qué hace la función LARGO?", options:["Cuenta cuántos caracteres tiene un texto","Devuelve la palabra más larga","Alarga el ancho de la columna","Cuenta las filas de la tabla"], correct:"Cuenta cuántos caracteres tiene un texto"},
+  {q:"¿Para qué se usa ENCONTRAR(\" \"; texto)?", options:["Para saber en qué posición está el primer espacio del texto","Para borrar los espacios","Para contar las palabras","Para reemplazar los espacios por guiones"], correct:"Para saber en qué posición está el primer espacio del texto"},
+  {q:"Para Excel, ¿qué es realmente una fecha?", options:["Un número: los días contados desde el 1 de enero de 1900","Un texto con barras","Una imagen del calendario","Un valor lógico"], correct:"Un número: los días contados desde el 1 de enero de 1900"},
+  {q:"Si una fecha aparece alineada a la IZQUIERDA en la celda, ¿qué significa?", options:["Que Excel la tomó como texto y las funciones de fecha pueden dar #¡VALOR!","Que es una fecha correcta","Que es una fecha del año pasado","Que tiene formato de moneda"], correct:"Que Excel la tomó como texto y las funciones de fecha pueden dar #¡VALOR!"},
+  {q:"¿Qué significa [@Prestador] dentro de una fórmula de la tabla?", options:["El valor de la columna Prestador en la misma fila","Toda la columna Prestador","El primer prestador de la tabla","Un error de escritura"], correct:"El valor de la columna Prestador en la misma fila"},
+  {q:"En Excel 365 en español, ¿qué carácter separa los argumentos de una función?", options:["Punto y coma (;)","Coma (,)","Dos puntos (:)","Barra (/)"], correct:"Punto y coma (;)"}
+];
+
+/* ==================================================================
+   BANCO DE PREGUNTAS — ¿Qué devuelve la fórmula? (20 preguntas)
+   ================================================================== */
+const QUESTIONS_FORMULAS = [
+  {q:"Si A2 contiene REC-1077, ¿qué devuelve =DERECHA(A2;4)?", options:["1077","REC-","REC-1077","C-10"], correct:"1077"},
+  {q:"Si B2 contiene 001-4888762-3, ¿qué devuelve =IZQUIERDA(B2;3)?", options:["001","-3","001-","488"], correct:"001"},
+  {q:"¿Qué devuelve =LARGO(\"REC-1077\")?", options:["8","7","4","1077"], correct:"8"},
+  {q:"¿Qué devuelve =EXTRAE(\"001-4888762-3\";5;7)?", options:["4888762","001-488","-488876","8762-3"], correct:"4888762"},
+  {q:"¿Qué devuelve =ENCONTRAR(\" \";\"Ramón Féliz\")?", options:["6","5","1","11"], correct:"6"},
+  {q:"¿Qué devuelve =IZQUIERDA(\"Ramón Féliz\";ENCONTRAR(\" \";\"Ramón Féliz\")-1)?", options:["Ramón","Féliz","Ramón Féliz","R"], correct:"Ramón"},
+  {q:"¿Qué devuelve =SUSTITUIR(\"001-4888762-3\";\"-\";\"\")?", options:["00148887623","001 4888762 3","001-4888762-3","#¡VALOR!"], correct:"00148887623"},
+  {q:"Si A2 = 75000, ¿qué devuelve =SI(A2>=50000;\"Alto costo\";\"Regular\")?", options:["Alto costo","Regular","VERDADERO","75000"], correct:"Alto costo"},
+  {q:"Si A2 = 12257, ¿qué devuelve =SI.CONJUNTO(A2>=100000;\"Crítico\";A2>=20000;\"Alto\";A2>=5000;\"Medio\";VERDADERO;\"Bajo\")?", options:["Medio","Alto","Bajo","Crítico"], correct:"Medio"},
+  {q:"Si A2 = 3158, ¿qué devuelve =SI.CONJUNTO(A2>=100000;\"Crítico\";A2>=20000;\"Alto\";A2>=5000;\"Medio\";VERDADERO;\"Bajo\")?", options:["Bajo","Medio","Alto","#N/D"], correct:"Bajo"},
+  {q:"Con el orden INCORRECTO: si A2 = 155647, ¿qué devuelve =SI.CONJUNTO(A2>=5000;\"Medio\";A2>=100000;\"Crítico\";VERDADERO;\"Bajo\")?", options:["Medio","Crítico","Bajo","#¡VALOR!"], correct:"Medio"},
+  {q:"¿Qué error tiene =SI(A2>=\"50000\";\"Alto\";\"Bajo\")?", options:["El número 50000 no debe ir entre comillas","Faltan comillas en \"Alto\"","SI no acepta el signo >=","No tiene ningún error"], correct:"El número 50000 no debe ir entre comillas"},
+  {q:"¿Qué devuelve =MES(FECHA(2025;2;14))?", options:["2","14","2025","febrero"], correct:"2"},
+  {q:"¿Qué devuelve =TEXTO(FECHA(2025;3;16);\"mmmm\")?", options:["marzo","3","16","domingo"], correct:"marzo"},
+  {q:"El 4 de enero de 2025 fue sábado. ¿Qué devuelve =DIASEM(FECHA(2025;1;4);2)?", options:["6","7","1","4"], correct:"6"},
+  {q:"¿Qué devuelve =FECHA(2025;3;1)-FECHA(2025;2;1)?", options:["28","30","1","31"], correct:"28"},
+  {q:"¿Cuál fórmula cuenta las emergencias de SeNaSa?", options:["=CONTAR.SI.CONJUNTO(tblReclamaciones[ARS];\"SeNaSa\";tblReclamaciones[Tipo de Servicio];\"Emergencia\")","=CONTAR.SI.CONJUNTO(\"SeNaSa\";tblReclamaciones[ARS];\"Emergencia\")","=SUMAR.SI.CONJUNTO(tblReclamaciones[ARS];\"SeNaSa\")","=BUSCARX(\"SeNaSa\";tblReclamaciones[ARS];\"Emergencia\")"], correct:"=CONTAR.SI.CONJUNTO(tblReclamaciones[ARS];\"SeNaSa\";tblReclamaciones[Tipo de Servicio];\"Emergencia\")"},
+  {q:"¿Cuál fórmula suma el monto reclamado de SeNaSa?", options:["=SUMAR.SI.CONJUNTO(tblReclamaciones[Monto Reclamado];tblReclamaciones[ARS];\"SeNaSa\")","=SUMAR.SI.CONJUNTO(tblReclamaciones[ARS];\"SeNaSa\";tblReclamaciones[Monto Reclamado])","=CONTAR.SI.CONJUNTO(tblReclamaciones[Monto Reclamado];\"SeNaSa\")","=SUMA(\"SeNaSa\")"], correct:"=SUMAR.SI.CONJUNTO(tblReclamaciones[Monto Reclamado];tblReclamaciones[ARS];\"SeNaSa\")"},
+  {q:"¿Cómo se escribe el criterio \"mayor o igual a 100,000\" dentro de CONTAR.SI.CONJUNTO?", options:["\">=100000\"",">=\"100000\"","=>100000","(>=100000)"], correct:"\">=100000\""},
+  {q:"Si el monto mínimo está escrito en la celda B2, ¿cómo se escribe el criterio \"mayor o igual a B2\"?", options:["\">=\"&B2","\">=B2\"",">=B2","\"B2>=\""], correct:"\">=\"&B2"}
+];
+
+/* ==================================================================
+   BANCO DE PREGUNTAS — Práctica con tblReclamaciones (20 preguntas)
+   Base: Modulo2-Base-Reclamaciones.xlsx (50 reclamaciones, enero–junio 2025)
+   ================================================================== */
+const QUESTIONS_BASE = [
+  {q:"En la base de práctica, ¿qué devuelve =CONTAR.SI.CONJUNTO(tblReclamaciones[ARS];\"MAPFRE Salud ARS\")?", options:["16","10","9","8"], correct:"16"},
+  {q:"En la base de práctica, ¿cuántas reclamaciones tiene ARS Humano?", options:["10","7","16","12"], correct:"10"},
+  {q:"En la base de práctica, ¿cuántas reclamaciones tiene SeNaSa?", options:["9","8","10","3"], correct:"9"},
+  {q:"En la base de práctica, ¿cuántas reclamaciones tiene ARS Universal?", options:["7","9","5","10"], correct:"7"},
+  {q:"En la base de práctica, ¿cuántas reclamaciones tiene Primera ARS?", options:["8","6","9","16"], correct:"8"},
+  {q:"En la base de práctica, ¿cuántas emergencias tiene SeNaSa? (ARS = SeNaSa y Tipo de Servicio = Emergencia)", options:["3","9","5","1"], correct:"3"},
+  {q:"¿Qué devuelve =CONTAR.SI.CONJUNTO(tblReclamaciones[Monto Reclamado];\">=100000\") en la base de práctica?", options:["8","5","12","3"], correct:"8"},
+  {q:"En la base de práctica, ¿cuántas reclamaciones son de Hospitalización?", options:["10","8","12","6"], correct:"10"},
+  {q:"En la base de práctica, ¿cuántas filas tienen el Prestador \"No Registrado\"?", options:["5","3","2","8"], correct:"5"},
+  {q:"En la base de práctica, ¿cuántas filas tienen la Provincia \"No Registrado\"?", options:["3","5","0","1"], correct:"3"},
+  {q:"En la base de práctica, ¿cuántas filas tienen el Tipo de Servicio \"No Registrado\"?", options:["3","5","2","0"], correct:"3"},
+  {q:"En la base de práctica, ¿cuántas reclamaciones son de febrero de 2025?", options:["12","10","8","15"], correct:"12"},
+  {q:"¿Qué devuelve =BUSCARX(\"REC-1077\";tblReclamaciones[ID Reclamación];tblReclamaciones[ARS])?", options:["ARS Humano","SeNaSa","MAPFRE Salud ARS","#N/D"], correct:"ARS Humano"},
+  {q:"¿Qué devuelve =BUSCARX(\"REC-1133\";tblReclamaciones[ID Reclamación];tblReclamaciones[Tipo de Servicio])?", options:["Hospitalización","Emergencia","Consulta","Laboratorio"], correct:"Hospitalización"},
+  {q:"¿Qué devuelve =BUSCARX(\"REC-9999\";tblReclamaciones[ID Reclamación];tblReclamaciones[ARS];\"No existe\")?", options:["No existe","#N/D","0","REC-9999"], correct:"No existe"},
+  {q:"¿Qué devuelve =BUSCARX(\"REC 1077\";tblReclamaciones[ID Reclamación];tblReclamaciones[ARS]) si en la base el ID es REC-1077 (con guion)?", options:["#N/D","ARS Humano","REC-1077","0"], correct:"#N/D"},
+  {q:"En la base de práctica, ¿qué devuelve =MAX(tblReclamaciones[Monto Reclamado])?", options:["RD$ 174,865.00","RD$ 155,647.00","RD$ 147,899.00","RD$ 235,950.50"], correct:"RD$ 174,865.00"},
+  {q:"¿Qué devuelve =SUMAR.SI.CONJUNTO(tblReclamaciones[Monto Reclamado];tblReclamaciones[ARS];\"SeNaSa\") en la base de práctica?", options:["RD$ 235,950.50","RD$ 174,865.00","RD$ 61,085.50","RD$ 9.00"], correct:"RD$ 235,950.50"},
+  {q:"La reclamación REC-1224 tiene un monto de RD$ 146,387.50. Con la columna Nivel de costo (Crítico ≥100,000 · Alto ≥20,000 · Medio ≥5,000 · Bajo), ¿qué muestra?", options:["Crítico","Alto","Medio","Bajo"], correct:"Crítico"},
+  {q:"La reclamación REC-1210 es del 26/04/2025 (sábado). ¿Qué devuelve =SI(DIASEM([@[Fecha de Servicio]];2)>5;\"Fin de semana\";\"Laboral\")?", options:["Fin de semana","Laboral","6","sábado"], correct:"Fin de semana"}
+];
+
+/* ==================================================================
+   ESTADO
+   ================================================================== */
+let participants = [];      // {name, score, timesSelected}
+let totalRounds = 10;
+let currentRound = 0;
+let questionQueue = [];
+let currentQuestion = null;
+let selectedIdx = null;
+let isSpinning = false;
+let currentRotation = 0;
+let timerInterval = null;
+let timeLeft = 30;
+let tickTimeout = null;
+let answerTime = 30;
+let noRepeatEnabled = false;
+let cooldownTurns = 3;
+let selectionHistory = [];
+let customQuestions = [];
+const TIMER_CIRC = 2 * Math.PI * 22;
+
+/* ==================================================================
+   UTILIDADES
+   ================================================================== */
+function $(id){ return document.getElementById(id); }
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  $(id).classList.add('active');
+}
+function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
+
+/* ==================================================================
+   AUDIO — sintetizado con Web Audio API (estilo cinemático arcade)
+   ================================================================== */
+let audioCtx = null;
+let musicOn = false;
+let musicTimeout = null;
+let bgIndex = 0;
+const BG_SCALE = [82.41, 82.41, 98.00, 82.41, 73.42, 82.41, 61.74, 73.42]; // riff grave en Mi menor
+
+function ensureAudio(){
+  if(!audioCtx){
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if(audioCtx.state === 'suspended'){ audioCtx.resume(); }
+}
+
+function playBassNote(freq){
+  if(!audioCtx) return;
+  const t = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 700;
+  osc.type = 'sawtooth';
+  osc2.type = 'square';
+  osc.frequency.value = freq;
+  osc2.frequency.value = freq * 2;
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(0.16, t + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.32);
+  osc.connect(filter); osc2.connect(filter);
+  const gain2 = audioCtx.createGain();
+  gain2.gain.value = 0.35;
+  osc2.connect(gain2); gain2.connect(gain);
+  filter.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start(t); osc2.start(t);
+  osc.stop(t + 0.34); osc2.stop(t + 0.34);
+}
+
+function playGong(){
+  if(!audioCtx) return;
+  const t = audioCtx.currentTime;
+  const bufferSize = audioCtx.sampleRate * 1.4;
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i=0;i<bufferSize;i++){ data[i] = (Math.random()*2-1) * Math.pow(1 - i/bufferSize, 2); }
+  const noise = audioCtx.createBufferSource();
+  noise.buffer = buffer;
+  const bp = audioCtx.createBiquadFilter();
+  bp.type = 'bandpass';
+  bp.frequency.value = 180;
+  bp.Q.value = 0.7;
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0.22, t);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.3);
+  noise.connect(bp); bp.connect(gain); gain.connect(audioCtx.destination);
+  noise.start(t); noise.stop(t + 1.4);
+}
+
+function bgStep(){
+  if(!musicOn) return;
+  const freq = BG_SCALE[bgIndex % BG_SCALE.length];
+  playBassNote(freq);
+  if(bgIndex % 8 === 0){ playGong(); }
+  bgIndex++;
+  musicTimeout = setTimeout(bgStep, 380);
+}
+function startBackgroundMusic(){
+  ensureAudio();
+  if(musicOn) return;
+  musicOn = true;
+  bgIndex = 0;
+  bgStep();
+}
+function stopBackgroundMusic(){
+  musicOn = false;
+  clearTimeout(musicTimeout);
+}
+
+function playTick(){
+  if(!audioCtx) return;
+  const t = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'square';
+  osc.frequency.value = 1100;
+  gain.gain.setValueAtTime(0.10, t);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(t); osc.stop(t + 0.05);
+}
+
+function playReveal(){
+  if(!audioCtx) return;
+  const t = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(160, t);
+  osc.frequency.exponentialRampToValueAtTime(760, t + 0.35);
+  gain.gain.setValueAtTime(0.001, t);
+  gain.gain.exponentialRampToValueAtTime(0.22, t + 0.08);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(t); osc.stop(t + 0.5);
+  playGong();
+}
+
+function playCorrect(){
+  if(!audioCtx) return;
+  const notes = [523.25, 659.25, 783.99, 1046.5];
+  notes.forEach(function(freq, i){
+    const t = audioCtx.currentTime + i*0.09;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.22, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(t); osc.stop(t + 0.24);
+  });
+}
+
+function playWrong(){
+  if(!audioCtx) return;
+  const t = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(220, t);
+  osc.frequency.exponentialRampToValueAtTime(70, t + 0.5);
+  gain.gain.setValueAtTime(0.20, t);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(t); osc.stop(t + 0.56);
+}
+
+function playBeep(){
+  if(!audioCtx) return;
+  const t = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'square';
+  osc.frequency.value = 880;
+  gain.gain.setValueAtTime(0.14, t);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(t); osc.stop(t + 0.13);
+}
+
+/* ---- Música festiva de victoria (pantalla de resultados) ---- */
+let victoryOn = false;
+let victoryTimeout = null;
+let victoryIndex = 0;
+const VICTORY_SCALE = [523.25, 659.25, 783.99, 1046.5, 783.99, 659.25, 987.77, 1318.5]; // arpegio festivo en Do mayor
+
+function playVictoryNote(freq, accent){
+  if(!audioCtx) return;
+  const t = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'triangle';
+  osc2.type = 'sine';
+  osc.frequency.value = freq;
+  osc2.frequency.value = freq * 2;
+  const peak = accent ? 0.22 : 0.15;
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(peak, t + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+  const gain2 = audioCtx.createGain();
+  gain2.gain.value = 0.3;
+  osc.connect(gain); osc2.connect(gain2); gain2.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start(t); osc2.start(t);
+  osc.stop(t + 0.24); osc2.stop(t + 0.24);
+}
+
+function playBell(){
+  if(!audioCtx) return;
+  const t = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = 1568;
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(0.16, t + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.6);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(t); osc.stop(t + 0.65);
+}
+
+function victoryStep(){
+  if(!victoryOn) return;
+  const freq = VICTORY_SCALE[victoryIndex % VICTORY_SCALE.length];
+  const accent = victoryIndex % VICTORY_SCALE.length === 0;
+  playVictoryNote(freq, accent);
+  if(victoryIndex % 4 === 0){ playBell(); }
+  victoryIndex++;
+  victoryTimeout = setTimeout(victoryStep, 210);
+}
+function startVictoryMusic(){
+  ensureAudio();
+  stopBackgroundMusic();
+  if(victoryOn) return;
+  victoryOn = true;
+  victoryIndex = 0;
+  victoryStep();
+}
+function stopVictoryMusic(){
+  victoryOn = false;
+  clearTimeout(victoryTimeout);
+}
+
+function startTicking(totalDuration){
+  let elapsed = 0;
+  let delay = 55;
+  function tick(){
+    if(elapsed >= totalDuration) return;
+    playTick();
+    elapsed += delay;
+    delay = Math.min(delay * 1.07, 260);
+    tickTimeout = setTimeout(tick, delay);
+  }
+  tick();
+}
+function stopTicking(){ clearTimeout(tickTimeout); }
+
+/* ==================================================================
+   FONDO DE PARTÍCULAS
+   ================================================================== */
+(function initParticles(){
+  const canvas = $('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles;
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  function makeParticles(){
+    const count = Math.min(70, Math.floor(w/22));
+    particles = [];
+    const colors = ['#21e6ff','#ff2fa0','#b026ff','#ffd23f'];
+    for(let i=0;i<count;i++){
+      particles.push({
+        x:Math.random()*w, y:Math.random()*h,
+        r:Math.random()*1.8+0.6,
+        vy:Math.random()*0.35+0.08,
+        vx:(Math.random()-0.5)*0.15,
+        c: colors[Math.floor(Math.random()*colors.length)],
+        a: Math.random()*0.6+0.2
+      });
+    }
+  }
+  function loop(){
+    ctx.clearRect(0,0,w,h);
+    particles.forEach(function(p){
+      p.y -= p.vy; p.x += p.vx;
+      if(p.y < -5){ p.y = h+5; p.x = Math.random()*w; }
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = p.c;
+      ctx.globalAlpha = p.a;
+      ctx.shadowColor = p.c;
+      ctx.shadowBlur = 6;
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(loop);
+  }
+  window.addEventListener('resize', function(){ resize(); makeParticles(); });
+  resize(); makeParticles(); loop();
+})();
+
+/* ==================================================================
+   FUEGOS ARTIFICIALES — pantalla de resultados
+   ================================================================== */
+const fireworks = (function(){
+  const canvas = $('fireworksCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, rockets = [], sparks = [];
+  let running = false, animId = null, launchTimeout = null;
+  const COLORS = ['#21e6ff','#ff2fa0','#b026ff','#ffd23f','#2bffa8','#ffffff'];
+
+  function resize(){ w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize);
+
+  function launchRocket(){
+    const x = w * (0.15 + Math.random()*0.7);
+    const targetY = h * (0.15 + Math.random()*0.30);
+    rockets.push({
+      x: x, y: h, targetY: targetY,
+      vy: -(7 + Math.random()*3),
+      color: COLORS[Math.floor(Math.random()*COLORS.length)]
+    });
+  }
+
+  function explode(x, y, color){
+    const count = 46 + Math.floor(Math.random()*20);
+    for(let i=0;i<count;i++){
+      const angle = (Math.PI*2*i)/count + Math.random()*0.2;
+      const speed = 2 + Math.random()*4;
+      sparks.push({
+        x:x, y:y,
+        vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed,
+        life:1, decay:0.010 + Math.random()*0.012,
+        color: Math.random() < 0.3 ? COLORS[Math.floor(Math.random()*COLORS.length)] : color,
+        r: 1.6 + Math.random()*1.6
+      });
+    }
+  }
+
+  function scheduleLaunch(){
+    if(!running) return;
+    launchRocket();
+    if(Math.random() < 0.35){ setTimeout(launchRocket, 180 + Math.random()*220); }
+    launchTimeout = setTimeout(scheduleLaunch, 550 + Math.random()*700);
+  }
+
+  function loop(){
+    if(!running) return;
+    ctx.fillStyle = 'rgba(5,1,16,0.20)';
+    ctx.fillRect(0,0,w,h);
+
+    for(let i=rockets.length-1;i>=0;i--){
+      const r = rockets[i];
+      r.y += r.vy;
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, 2.4, 0, Math.PI*2);
+      ctx.fillStyle = r.color;
+      ctx.shadowColor = r.color; ctx.shadowBlur = 10;
+      ctx.fill();
+      if(r.y <= r.targetY){
+        explode(r.x, r.y, r.color);
+        rockets.splice(i,1);
+      }
+    }
+    ctx.shadowBlur = 0;
+
+    for(let i=sparks.length-1;i>=0;i--){
+      const s = sparks[i];
+      s.x += s.vx; s.y += s.vy;
+      s.vy += 0.045;
+      s.vx *= 0.99;
+      s.life -= s.decay;
+      if(s.life <= 0){ sparks.splice(i,1); continue; }
+      ctx.globalAlpha = Math.max(s.life, 0);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = s.color;
+      ctx.shadowColor = s.color; ctx.shadowBlur = 8;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+
+    animId = requestAnimationFrame(loop);
+  }
+
+  function start(){
+    if(running) return;
+    running = true;
+    resize();
+    canvas.style.display = 'block';
+    rockets = []; sparks = [];
+    launchRocket();
+    scheduleLaunch();
+    loop();
+  }
+  function stop(){
+    running = false;
+    canvas.style.display = 'none';
+    clearTimeout(launchTimeout);
+    cancelAnimationFrame(animId);
+    rockets = []; sparks = [];
+    ctx.clearRect(0,0,w,h);
+  }
+  return { start: start, stop: stop };
+})();
+
+/* ==================================================================
+   PANTALLA: SETUP — Participantes
+   ================================================================== */
+const participantInput = $('participantInput');
+const participantListEl = $('participantList');
+const countPill = $('countPill');
+const warnMsg = $('warnMsg');
+const btnComenzar = $('btnComenzar');
+
+function flashWarn(msg){
+  warnMsg.textContent = msg;
+  setTimeout(function(){ if(warnMsg.textContent === msg) warnMsg.textContent = ''; }, 2600);
+}
+
+function addParticipant(){
+  const val = participantInput.value.trim();
+  if(!val){ flashWarn('Escribe un nombre antes de agregar.'); return; }
+  if(participants.length >= 15){ flashWarn('Ya alcanzaste el máximo de 15 participantes.'); return; }
+  if(participants.some(function(p){ return p.name.toLowerCase() === val.toLowerCase(); })){
+    flashWarn('Ese nombre ya fue agregado.'); return;
+  }
+  participants.push({ name: val, score: 0, timesSelected: 0 });
+  participantInput.value = '';
+  renderParticipants();
+  participantInput.focus();
+}
+
+function removeParticipant(idx){
+  participants.splice(idx, 1);
+  renderParticipants();
+}
+
+function renderParticipants(){
+  countPill.textContent = participants.length + ' / 15';
+  if(participants.length === 0){
+    participantListEl.innerHTML = '<li class="empty-hint">Aún no has agregado participantes.</li>';
+  } else {
+    participantListEl.innerHTML = participants.map(function(p, i){
+      return '<li class="participant-item">'
+        + '<span class="num">' + (i+1) + '</span>'
+        + '<span class="pname">' + escapeHtml(p.name) + '</span>'
+        + '<button class="rm" data-idx="' + i + '" title="Eliminar">✕</button>'
+        + '</li>';
+    }).join('');
+  }
+  document.getElementById('participantInput').disabled = participants.length >= 15;
+  document.getElementById('btnAgregar').disabled = participants.length >= 15;
+  btnComenzar.disabled = participants.length < 2;
+}
+
+participantListEl.addEventListener('click', function(e){
+  const btn = e.target.closest('.rm');
+  if(btn){ removeParticipant(parseInt(btn.dataset.idx, 10)); }
+});
+$('btnAgregar').addEventListener('click', addParticipant);
+participantInput.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); addParticipant(); } });
+
+/* Categorías y banco de preguntas dinámico */
+const catConceptosInput = $('catConceptos');
+const catFormulasInput = $('catFormulas');
+const catBaseInput = $('catBase');
+const catCustomInput = $('catCustom');
+const catConceptosLabel = $('catConceptosLabel');
+const catFormulasLabel = $('catFormulasLabel');
+const catBaseLabel = $('catBaseLabel');
+const catCustomLabel = $('catCustomLabel');
+const catCustomCountEl = $('catCustomCount');
+const poolInfoEl = $('poolInfo');
+const allChip = document.querySelector('.chip[data-role="all"]');
+
+function getSelectedPool(){
+  let pool = [];
+  if(catConceptosInput.checked) pool = pool.concat(QUESTIONS_CONCEPTOS);
+  if(catFormulasInput.checked) pool = pool.concat(QUESTIONS_FORMULAS);
+  if(catBaseInput.checked) pool = pool.concat(QUESTIONS_BASE);
+  if(catCustomInput.checked && !catCustomInput.disabled) pool = pool.concat(customQuestions);
+  return pool;
+}
+
+function updateQuestionPoolUI(){
+  const poolSize = getSelectedPool().length;
+  const max = Math.max(poolSize, 1);
+  qCountInput.max = max;
+  let v = parseInt(qCountInput.value, 10);
+  if(isNaN(v) || v < 1) v = 1;
+  if(v > max) v = max;
+  qCountInput.value = v;
+
+  if(allChip){
+    allChip.dataset.preset = max;
+    allChip.textContent = 'Todas (' + max + ')';
+  }
+  document.querySelectorAll('.chip:not(.time-chip)').forEach(function(c){
+    const p = parseInt(c.dataset.preset, 10);
+    c.style.display = p > max ? 'none' : '';
+    c.classList.toggle('active', p === v);
+  });
+
+  poolInfoEl.textContent = poolSize === 0
+    ? '⚠ Selecciona al menos una categoría para jugar.'
+    : '📦 ' + poolSize + ' preguntas disponibles según las categorías elegidas';
+}
+
+function handleCategoryToggle(e){
+  const anyChecked = catConceptosInput.checked || catFormulasInput.checked || catBaseInput.checked || (catCustomInput.checked && !catCustomInput.disabled);
+  if(!anyChecked && e && e.target){
+    // Nunca permitir 0 categorías: revertir la última que se desmarcó
+    e.target.checked = true;
+  }
+  catConceptosLabel.classList.toggle('checked', catConceptosInput.checked);
+  catFormulasLabel.classList.toggle('checked', catFormulasInput.checked);
+  catBaseLabel.classList.toggle('checked', catBaseInput.checked);
+  catCustomLabel.classList.toggle('checked', catCustomInput.checked && !catCustomInput.disabled);
+  updateQuestionPoolUI();
+}
+catConceptosInput.addEventListener('change', handleCategoryToggle);
+catFormulasInput.addEventListener('change', handleCategoryToggle);
+catBaseInput.addEventListener('change', handleCategoryToggle);
+catCustomInput.addEventListener('change', handleCategoryToggle);
+
+
+/* Selector de cantidad de preguntas */
+const qCountInput = $('qCountInput');
+const presetChips = document.querySelectorAll('.chip:not(.time-chip)');
+qCountInput.addEventListener('input', function(){
+  let v = parseInt(qCountInput.value, 10);
+  if(isNaN(v)) return;
+  const max = parseInt(qCountInput.max, 10) || 60;
+  v = clamp(v, 1, max);
+  presetChips.forEach(function(c){
+    c.classList.toggle('active', parseInt(c.dataset.preset,10) === v);
+  });
+});
+qCountInput.addEventListener('blur', function(){
+  const max = parseInt(qCountInput.max, 10) || 60;
+  let v = parseInt(qCountInput.value, 10);
+  if(isNaN(v) || v < 1) v = 1;
+  if(v > max) v = max;
+  qCountInput.value = v;
+});
+presetChips.forEach(function(chip){
+  chip.addEventListener('click', function(){
+    const v = parseInt(chip.dataset.preset, 10);
+    qCountInput.value = v;
+    presetChips.forEach(function(c){ c.classList.remove('active'); });
+    chip.classList.add('active');
+  });
+});
+updateQuestionPoolUI();
+
+/* Selector de tiempo de respuesta (5 a 60 segundos) */
+const timeCountInput = $('timeCountInput');
+const timeChips = document.querySelectorAll('.time-chip');
+const infoBoxSeconds = $('infoBoxSeconds');
+
+function updateAnswerTimeUI(){
+  let v = parseInt(timeCountInput.value, 10);
+  if(isNaN(v)) v = 30;
+  v = clamp(v, 5, 60);
+  timeCountInput.value = v;
+  answerTime = v;
+  timeChips.forEach(function(c){
+    c.classList.toggle('active', parseInt(c.dataset.time,10) === v);
+  });
+  infoBoxSeconds.textContent = v + ' segundo' + (v === 1 ? '' : 's');
+}
+timeCountInput.addEventListener('input', function(){
+  let v = parseInt(timeCountInput.value, 10);
+  if(isNaN(v)) return;
+  v = clamp(v, 5, 60);
+  answerTime = v;
+  timeChips.forEach(function(c){
+    c.classList.toggle('active', parseInt(c.dataset.time,10) === v);
+  });
+  infoBoxSeconds.textContent = v + ' segundo' + (v === 1 ? '' : 's');
+});
+timeCountInput.addEventListener('blur', updateAnswerTimeUI);
+timeChips.forEach(function(chip){
+  chip.addEventListener('click', function(){
+    const v = parseInt(chip.dataset.time, 10);
+    timeCountInput.value = v;
+    updateAnswerTimeUI();
+  });
+});
+updateAnswerTimeUI();
+
+/* Opción: evitar que un mismo estudiante repita turno */
+const noRepeatCheckbox = $('noRepeatCheckbox');
+const noRepeatDetails = $('noRepeatDetails');
+const noRepeatStatus = $('noRepeatStatus');
+const cooldownInput = $('cooldownInput');
+const cooldownExample = $('cooldownExample');
+const cooldownExample2 = $('cooldownExample2');
+
+function updateCooldownUI(){
+  let v = parseInt(cooldownInput.value, 10);
+  if(isNaN(v)) v = 3;
+  v = clamp(v, 1, 14);
+  cooldownInput.value = v;
+  cooldownTurns = v;
+  cooldownExample.textContent = v;
+  cooldownExample2.textContent = v;
+}
+
+noRepeatCheckbox.addEventListener('change', function(){
+  noRepeatEnabled = noRepeatCheckbox.checked;
+  noRepeatDetails.style.display = noRepeatEnabled ? 'block' : 'none';
+  noRepeatStatus.textContent = noRepeatEnabled ? 'Activado' : 'Desactivado';
+  if(noRepeatEnabled){ updateCooldownUI(); }
+});
+cooldownInput.addEventListener('input', function(){
+  let v = parseInt(cooldownInput.value, 10);
+  if(isNaN(v)) return;
+  cooldownTurns = clamp(v, 1, 14);
+  cooldownExample.textContent = cooldownTurns;
+  cooldownExample2.textContent = cooldownTurns;
+});
+cooldownInput.addEventListener('blur', updateCooldownUI);
+updateCooldownUI();
+
+/* ==================================================================
+   PREGUNTAS PROPIAS DEL USUARIO (manual o archivo)
+   ================================================================== */
+const customEnableCheckbox = $('customEnableCheckbox');
+const customDetails = $('customDetails');
+const customStatus = $('customStatus');
+const customQuestionList = $('customQuestionList');
+const customCountPill = $('customCountPill');
+const customManualWarn = $('customManualWarn');
+const customFileWarn = $('customFileWarn');
+
+function flashCustomWarn(el, msg, isError){
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--bad)' : 'var(--neon-gold)';
+  setTimeout(function(){ if(el.textContent === msg) el.textContent = ''; }, 3800);
+}
+
+/* Interruptor principal: mostrar/ocultar el constructor */
+customEnableCheckbox.addEventListener('change', function(){
+  const on = customEnableCheckbox.checked;
+  customDetails.style.display = on ? 'block' : 'none';
+  customStatus.textContent = on ? 'Activado' : 'Desactivado';
+});
+
+/* Pestañas: Manual vs Archivo */
+const tabBtnManual = $('tabBtnManual');
+const tabBtnFile = $('tabBtnFile');
+const tabManual = $('tabManual');
+const tabFile = $('tabFile');
+function setActiveTab(tab){
+  const isManual = tab === 'manual';
+  tabBtnManual.classList.toggle('active', isManual);
+  tabBtnFile.classList.toggle('active', !isManual);
+  tabManual.style.display = isManual ? 'block' : 'none';
+  tabFile.style.display = isManual ? 'none' : 'block';
+}
+tabBtnManual.addEventListener('click', function(){ setActiveTab('manual'); });
+tabBtnFile.addEventListener('click', function(){ setActiveTab('file'); });
+
+/* Renderizado de la lista de preguntas propias + habilitar/deshabilitar categoría */
+function renderCustomQuestions(){
+  customCountPill.textContent = customQuestions.length;
+  catCustomCountEl.textContent = customQuestions.length;
+  const collapsedCountEl = document.getElementById('collapsedCount');
+  if(collapsedCountEl){ collapsedCountEl.textContent = customQuestions.length; }
+
+  if(customQuestions.length === 0){
+    customQuestionList.innerHTML = '<li class="empty-hint">Aún no has agregado preguntas propias.</li>';
+    catCustomLabel.classList.add('cat-toggle-disabled');
+    catCustomInput.disabled = true;
+    catCustomInput.checked = false;
+    catCustomLabel.classList.remove('checked');
+    $('catCustomDesc').textContent = 'Se habilita cuando agregues al menos una pregunta propia más abajo';
+  } else {
+    customQuestionList.innerHTML = customQuestions.map(function(cq, i){
+      return '<li class="custom-question-item">'
+        + '<span class="cqi-num">' + (i+1) + '</span>'
+        + '<span class="cqi-body"><div class="cqi-q">' + escapeHtml(cq.q) + '</div>'
+        + '<div class="cqi-a">✔ ' + escapeHtml(cq.correct) + '</div></span>'
+        + '<button class="rm" data-idx="' + i + '" title="Eliminar">✕</button>'
+        + '</li>';
+    }).join('');
+    catCustomLabel.classList.remove('cat-toggle-disabled');
+    catCustomInput.disabled = false;
+    $('catCustomDesc').textContent = 'Tus preguntas escritas o cargadas por archivo';
+    // Auto-activar la categoría la primera vez que se agrega una pregunta
+    if(!catCustomInput.checked){
+      catCustomInput.checked = true;
+      catCustomLabel.classList.add('checked');
+    }
+  }
+  updateQuestionPoolUI();
+}
+customQuestionList.addEventListener('click', function(e){
+  const btn = e.target.closest('.rm');
+  if(btn){
+    customQuestions.splice(parseInt(btn.dataset.idx,10), 1);
+    renderCustomQuestions();
+  }
+});
+$('btnClearCustom').addEventListener('click', function(){
+  customQuestions = [];
+  renderCustomQuestions();
+});
+
+/* Agregar pregunta manualmente */
+$('btnAddCustomQ').addEventListener('click', function(){
+  const qText = $('customQText').value.trim();
+  const opts = [$('customOpt0').value.trim(), $('customOpt1').value.trim(), $('customOpt2').value.trim(), $('customOpt3').value.trim()];
+  const correctIdx = parseInt(document.querySelector('input[name="customCorrect"]:checked').value, 10);
+
+  if(!qText){ flashCustomWarn(customManualWarn, 'Escribe el texto de la pregunta.', true); return; }
+  if(opts.some(function(o){ return !o; })){ flashCustomWarn(customManualWarn, 'Completa las 4 opciones de respuesta.', true); return; }
+
+  customQuestions.push({ q: qText, options: opts, correct: opts[correctIdx] });
+  renderCustomQuestions();
+  flashCustomWarn(customManualWarn, '✔ Pregunta agregada correctamente.', false);
+
+  $('customQText').value = '';
+  $('customOpt0').value = ''; $('customOpt1').value = ''; $('customOpt2').value = ''; $('customOpt3').value = '';
+  document.getElementById('customCorrect0').checked = true;
+  $('customQText').focus();
+});
+
+/* Subida de archivo CSV o JSON */
+function parseCSVLine(line){
+  const result = [];
+  let cur = '';
+  let inQuotes = false;
+  for(let i=0;i<line.length;i++){
+    const ch = line[i];
+    if(inQuotes){
+      if(ch === '"'){
+        if(line[i+1] === '"'){ cur += '"'; i++; } else { inQuotes = false; }
+      } else { cur += ch; }
+    } else {
+      if(ch === '"'){ inQuotes = true; }
+      else if(ch === ','){ result.push(cur); cur = ''; }
+      else { cur += ch; }
+    }
+  }
+  result.push(cur);
+  return result.map(function(s){ return s.trim(); });
+}
+
+function parseCustomCSV(text){
+  const lines = text.split(/\r?\n/).filter(function(l){ return l.trim() !== ''; });
+  const parsed = [];
+  let skipped = 0;
+  lines.forEach(function(line, idx){
+    const cols = parseCSVLine(line);
+    // Saltar posible fila de encabezado
+    if(idx === 0 && /pregunta/i.test(cols[0] || '')){ return; }
+    if(cols.length < 6){ skipped++; return; }
+    const q = cols[0];
+    const opts = [cols[1], cols[2], cols[3], cols[4]];
+    let correctRaw = cols[5];
+    if(!q || opts.some(function(o){ return !o; }) || !correctRaw){ skipped++; return; }
+    let correctText = null;
+    const asNum = parseInt(correctRaw, 10);
+    if(!isNaN(asNum) && asNum >= 1 && asNum <= 4 && String(asNum) === correctRaw.trim()){
+      correctText = opts[asNum - 1];
+    } else {
+      const match = opts.find(function(o){ return o.toLowerCase() === correctRaw.toLowerCase(); });
+      correctText = match || null;
+    }
+    if(!correctText){ skipped++; return; }
+    parsed.push({ q: q, options: opts, correct: correctText });
+  });
+  return { parsed: parsed, skipped: skipped };
+}
+
+function parseCustomJSON(text){
+  let data;
+  try{ data = JSON.parse(text); } catch(err){ return { parsed: [], skipped: 0, error: true }; }
+  if(!Array.isArray(data)) data = [data];
+  const parsed = [];
+  let skipped = 0;
+  data.forEach(function(item){
+    if(!item || typeof item !== 'object'){ skipped++; return; }
+    const q = item.q || item.question || item.pregunta;
+    const opts = item.options || item.opciones || item.answers;
+    const correctRaw = item.correct || item.respuesta || item.answer;
+    if(!q || !Array.isArray(opts) || opts.length !== 4 || !correctRaw){ skipped++; return; }
+    const cleanOpts = opts.map(function(o){ return String(o).trim(); });
+    const match = cleanOpts.find(function(o){ return o.toLowerCase() === String(correctRaw).trim().toLowerCase(); });
+    if(!match){ skipped++; return; }
+    parsed.push({ q: String(q).trim(), options: cleanOpts, correct: match });
+  });
+  return { parsed: parsed, skipped: skipped };
+}
+
+$('customFileInput').addEventListener('change', function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const text = ev.target.result;
+    const isJSON = /\.json$/i.test(file.name) || text.trim().startsWith('[') || text.trim().startsWith('{');
+    const result = isJSON ? parseCustomJSON(text) : parseCustomCSV(text);
+
+    if(result.error){
+      flashCustomWarn(customFileWarn, '❌ El archivo JSON no tiene un formato válido.', true);
+      return;
+    }
+    if(result.parsed.length === 0){
+      flashCustomWarn(customFileWarn, '⚠ No se encontraron preguntas válidas en el archivo.', true);
+      return;
+    }
+    customQuestions = customQuestions.concat(result.parsed);
+    renderCustomQuestions();
+    let msg = '✔ ' + result.parsed.length + ' preguntas cargadas correctamente.';
+    if(result.skipped > 0){ msg += ' (' + result.skipped + ' filas ignoradas por formato inválido)'; }
+    flashCustomWarn(customFileWarn, msg, false);
+  };
+  reader.onerror = function(){
+    flashCustomWarn(customFileWarn, '❌ No se pudo leer el archivo.', true);
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+renderCustomQuestions();
+
+/* Contraer/mostrar el panel completo (para no exponer preguntas en videollamadas) */
+const btnToggleCustomPanel = $('btnToggleCustomPanel');
+const customPanelBody = $('customPanelBody');
+const customCollapsedSummary = $('customCollapsedSummary');
+let customPanelCollapsed = false;
+function updateCustomPanelCollapse(){
+  customPanelBody.style.display = customPanelCollapsed ? 'none' : 'block';
+  customCollapsedSummary.style.display = customPanelCollapsed ? 'flex' : 'none';
+  btnToggleCustomPanel.textContent = customPanelCollapsed ? '👁 Mostrar' : '🙈 Ocultar';
+  $('collapsedCount').textContent = customQuestions.length;
+}
+btnToggleCustomPanel.addEventListener('click', function(){
+  customPanelCollapsed = !customPanelCollapsed;
+  updateCustomPanelCollapse();
+});
+updateCustomPanelCollapse();
+
+/* ==================================================================
+   NAVEGACIÓN ENTRE PANTALLAS
+   ================================================================== */
+$('btnIniciar').addEventListener('click', function(){
+  ensureAudio();
+  startBackgroundMusic();
+  showScreen('screen-setup');
+});
+
+function scrollSetupToWarning(){
+  const el = $('warnMsg');
+  if(el){ el.scrollIntoView({ behavior:'smooth', block:'center' }); }
+}
+
+function handleComenzarClick(){
+  if(participants.length < 2){ flashWarn('Agrega al menos 2 participantes para iniciar.'); scrollSetupToWarning(); return; }
+  const pool = getSelectedPool();
+  if(pool.length === 0){ flashWarn('Selecciona al menos una categoría de preguntas.'); scrollSetupToWarning(); return; }
+  let v = parseInt(qCountInput.value, 10);
+  if(isNaN(v)) v = 10;
+  totalRounds = clamp(v, 1, pool.length);
+  currentRound = 0;
+  selectionHistory = [];
+  participants.forEach(function(p){ p.score = 0; p.timesSelected = 0; });
+  questionQueue = shuffle(pool).slice(0, totalRounds);
+  currentRotation = 0;
+  buildWheelSVG();
+  updateScoreboardMini();
+  updateRoundBadge();
+  resetStage();
+  showScreen('screen-game');
+  ensureAudio();
+  startBackgroundMusic();
+}
+btnComenzar.addEventListener('click', handleComenzarClick);
+$('btnComenzarFloating').addEventListener('click', handleComenzarClick);
+
+/* ==================================================================
+   RULETA (SVG)
+   ================================================================== */
+const WHEEL_COLORS = ['#21e6ff', '#ff2fa0', '#b026ff', '#ffd23f'];
+
+function buildWheelSVG(){
+  const n = participants.length;
+  const size = 480;
+  const cx = size/2, cy = size/2, r = size/2 - 10;
+  const seg = 360 / n;
+  let paths = '', texts = '';
+
+  let fontSize, maxChars;
+  if(n <= 4){ fontSize = 28; maxChars = 15; }
+  else if(n <= 6){ fontSize = 25; maxChars = 13; }
+  else if(n <= 8){ fontSize = 22; maxChars = 12; }
+  else if(n <= 10){ fontSize = 20; maxChars = 11; }
+  else if(n <= 13){ fontSize = 18; maxChars = 10; }
+  else { fontSize = 16; maxChars = 9; }
+
+  for(let i=0;i<n;i++){
+    const start = i*seg - 90;
+    const end = start + seg;
+    const startRad = start * Math.PI/180;
+    const endRad = end * Math.PI/180;
+    const x1 = cx + r*Math.cos(startRad);
+    const y1 = cy + r*Math.sin(startRad);
+    const x2 = cx + r*Math.cos(endRad);
+    const y2 = cy + r*Math.sin(endRad);
+    const largeArc = seg > 180 ? 1 : 0;
+    const color = WHEEL_COLORS[i % WHEEL_COLORS.length];
+    paths += '<path d="M ' + cx + ',' + cy + ' L ' + x1.toFixed(2) + ',' + y1.toFixed(2)
+      + ' A ' + r + ',' + r + ' 0 ' + largeArc + ' 1 ' + x2.toFixed(2) + ',' + y2.toFixed(2)
+      + ' Z" fill="' + color + '" fill-opacity="0.85" stroke="#0a0018" stroke-width="3"/>';
+
+    const midAngle = start + seg/2;
+    const textRadius = r * 0.68;
+    const tx = cx + textRadius*Math.cos(midAngle*Math.PI/180);
+    const ty = cy + textRadius*Math.sin(midAngle*Math.PI/180);
+    const rot = midAngle + 90;
+    let name = participants[i].name;
+    if(name.length > maxChars) name = name.slice(0, maxChars-1) + '…';
+    texts += '<text x="' + tx.toFixed(2) + '" y="' + ty.toFixed(2) + '" transform="rotate(' + rot.toFixed(2) + ' ' + tx.toFixed(2) + ' ' + ty.toFixed(2) + ')" text-anchor="middle" dominant-baseline="middle" class="wheel-label" style="font-size:' + fontSize + 'px;">' + escapeHtml(name) + '</text>';
+  }
+
+  const svg = ''
+    + '<svg viewBox="0 0 ' + size + ' ' + size + '" id="wheelSvg">'
+    + '<defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">'
+    + '<stop offset="0%" stop-color="#21e6ff"/><stop offset="50%" stop-color="#ff2fa0"/><stop offset="100%" stop-color="#ffd23f"/>'
+    + '</linearGradient></defs>'
+    + '<g id="wheelGroup" style="transform-origin:' + cx + 'px ' + cy + 'px;">'
+    + '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r+6) + '" fill="none" stroke="url(#ringGrad)" stroke-width="6"/>'
+    + paths + texts
+    + '<circle cx="' + cx + '" cy="' + cy + '" r="42" fill="#0a0018" stroke="#ffd23f" stroke-width="4"/>'
+    + '<text x="' + cx + '" y="' + (cy+7) + '" text-anchor="middle" class="wheel-hub-text">JF</text>'
+    + '</g></svg>';
+
+  $('wheelSvgContainer').innerHTML = svg;
+}
+
+function pickNextParticipant(){
+  const n = participants.length;
+  let eligible = [];
+  for(let i=0;i<n;i++){ eligible.push(i); }
+
+  if(noRepeatEnabled && n > 1){
+    const cd = clamp(cooldownTurns, 1, n - 1);
+    const recent = selectionHistory.slice(-cd);
+    const filtered = eligible.filter(function(i){ return recent.indexOf(i) === -1; });
+    if(filtered.length > 0){ eligible = filtered; }
+  }
+  return eligible[Math.floor(Math.random() * eligible.length)];
+}
+
+function spin(){
+  if(isSpinning) return;
+  if(currentRound >= totalRounds) return;
+  isSpinning = true;
+  ensureAudio();
+  $('btnSpin').disabled = true;
+
+  selectedIdx = pickNextParticipant();
+  selectionHistory.push(selectedIdx);
+  participants[selectedIdx].timesSelected++;
+
+  const n = participants.length;
+  const seg = 360 / n;
+  const centerAngle = selectedIdx * seg + seg/2;
+  const targetMod = (360 - centerAngle + 360) % 360;
+  const currentMod = currentRotation % 360;
+  const delta = (targetMod - currentMod + 360) % 360;
+  const extraSpins = 6 + Math.floor(Math.random()*3);
+  currentRotation += 360*extraSpins + delta;
+
+  const wheelGroup = document.getElementById('wheelGroup');
+  if(wheelGroup){ wheelGroup.style.transform = 'rotate(' + currentRotation + 'deg)'; }
+
+  startTicking(4500);
+
+  setTimeout(function(){
+    isSpinning = false;
+    stopTicking();
+    revealSelection();
+  }, 4600);
+}
+$('btnSpin').addEventListener('click', spin);
+
+/* ==================================================================
+   FLUJO DE PREGUNTAS
+   ================================================================== */
+const stage = $('stage');
+
+function resetStage(){
+  stage.innerHTML = '<div class="stage-idle"><div class="big-icon">🎯</div>'
+    + '<h3>¡Gira la ruleta para seleccionar al próximo participante!</h3></div>';
+  $('btnSpin').disabled = (currentRound >= totalRounds);
+}
+
+function revealSelection(){
+  playReveal();
+  const p = participants[selectedIdx];
+  stage.innerHTML = '<div class="reveal-sub">Turno de</div>'
+    + '<div class="reveal-name">' + escapeHtml(p.name) + '</div>'
+    + '<div class="reveal-sub">Preparando la pregunta…</div>';
+  updateScoreboardMini();
+  setTimeout(showQuestion, 1300);
+}
+
+function showQuestion(){
+  currentQuestion = questionQueue[currentRound];
+  currentRound++;
+  updateRoundBadge();
+
+  const opts = shuffle(currentQuestion.options);
+  const letters = ['A','B','C','D'];
+  const p = participants[selectedIdx];
+
+  stage.innerHTML = ''
+    + '<div class="question-card">'
+    + '<div class="q-player-banner">'
+    + '<span class="pname">🎤 ' + escapeHtml(p.name) + '</span>'
+    + '<div class="timer-wrap">'
+    + '<div class="timer-ring"><svg><circle class="bg" cx="26" cy="26" r="22"/>'
+    + '<circle class="fg" id="timerCircle" cx="26" cy="26" r="22" stroke-dasharray="' + TIMER_CIRC.toFixed(1) + '" stroke-dashoffset="0"/>'
+    + '</svg><div class="timer-num" id="timerNum">' + answerTime + '</div></div>'
+    + '</div></div>'
+    + '<div class="q-text">' + escapeHtml(currentQuestion.q) + '</div>'
+    + '<div class="options-grid" id="optionsGrid">'
+    + opts.map(function(opt, i){
+        return '<button class="option-btn" data-answer="' + encodeURIComponent(opt) + '">'
+          + '<span class="opt-letter">' + letters[i] + '</span><span>' + escapeHtml(opt) + '</span></button>';
+      }).join('')
+    + '</div>'
+    + '<div class="feedback-line" id="feedbackLine"></div>'
+    + '<div class="continue-wrap" id="continueWrap"></div>'
+    + '</div>';
+
+  document.querySelectorAll('#optionsGrid .option-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      selectOption(btn, decodeURIComponent(btn.dataset.answer));
+    });
+  });
+
+  startTimer(answerTime);
+}
+
+function startTimer(seconds){
+  timeLeft = seconds;
+  updateTimerDisplay();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(function(){
+    timeLeft--;
+    updateTimerDisplay();
+    if(timeLeft <= 5 && timeLeft > 0){ playBeep(); }
+    if(timeLeft <= 0){
+      clearInterval(timerInterval);
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay(){
+  const numEl = $('timerNum');
+  const circleEl = $('timerCircle');
+  if(!numEl || !circleEl) return;
+  numEl.textContent = Math.max(timeLeft, 0);
+  numEl.classList.toggle('urgent', timeLeft <= 5);
+  const frac = Math.max(timeLeft,0) / answerTime;
+  circleEl.setAttribute('stroke-dashoffset', (TIMER_CIRC * (1-frac)).toFixed(1));
+  circleEl.style.stroke = timeLeft <= 5 ? 'var(--bad)' : 'var(--neon-gold)';
+}
+
+function lockOptions(){
+  document.querySelectorAll('#optionsGrid .option-btn').forEach(function(btn){ btn.disabled = true; });
+}
+
+function selectOption(chosenBtn, answerText){
+  clearInterval(timerInterval);
+  lockOptions();
+  const isCorrect = answerText === currentQuestion.correct;
+
+  document.querySelectorAll('#optionsGrid .option-btn').forEach(function(btn){
+    const val = decodeURIComponent(btn.dataset.answer);
+    if(val === currentQuestion.correct){ btn.classList.add('correct'); }
+    else if(btn === chosenBtn){ btn.classList.add('wrong'); }
+    else { btn.classList.add('dim'); }
+  });
+
+  const fb = $('feedbackLine');
+  if(isCorrect){
+    participants[selectedIdx].score += 10;
+    playCorrect();
+    fb.textContent = '¡Correcto! +10 puntos ⚡';
+    fb.className = 'feedback-line ok';
+  } else {
+    playWrong();
+    fb.textContent = 'Incorrecto 💥 La respuesta correcta era: ' + currentQuestion.correct;
+    fb.className = 'feedback-line bad';
+  }
+  updateScoreboardMini();
+  showContinueButton();
+}
+
+function handleTimeout(){
+  lockOptions();
+  document.querySelectorAll('#optionsGrid .option-btn').forEach(function(btn){
+    const val = decodeURIComponent(btn.dataset.answer);
+    if(val === currentQuestion.correct){ btn.classList.add('correct'); } else { btn.classList.add('dim'); }
+  });
+  playWrong();
+  const fb = $('feedbackLine');
+  fb.textContent = '¡Se acabó el tiempo! ⏰ La respuesta correcta era: ' + currentQuestion.correct;
+  fb.className = 'feedback-line bad';
+  updateScoreboardMini();
+  showContinueButton();
+}
+
+function showContinueButton(){
+  const wrap = $('continueWrap');
+  if(currentRound >= totalRounds){
+    wrap.innerHTML = '<button class="btn btn-primary" id="btnVerResultados">🏆 Ver Resultados</button>';
+    $('btnVerResultados').addEventListener('click', endGame);
+  } else {
+    wrap.innerHTML = '<button class="btn btn-pink" id="btnGirarDeNuevo">🎡 Girar de Nuevo</button>';
+    $('btnGirarDeNuevo').addEventListener('click', resetStage);
+  }
+}
+
+/* ==================================================================
+   MARCADOR Y RONDA
+   ================================================================== */
+function updateRoundBadge(){
+  $('roundBadge').textContent = 'Pregunta ' + Math.min(currentRound, totalRounds) + ' / ' + totalRounds;
+}
+
+function updateScoreboardMini(){
+  const el = $('scoreboardMini');
+  const maxScore = Math.max.apply(null, participants.map(function(p){ return p.score; }).concat([0]));
+  el.innerHTML = participants.map(function(p, i){
+    let cls = 'score-chip';
+    if(p.score === maxScore && maxScore > 0) cls += ' leading';
+    if(i === selectedIdx) cls += ' active-player';
+    return '<span class="' + cls + '">' + escapeHtml(p.name) + ': <b>' + p.score + '</b></span>';
+  }).join('');
+}
+
+function backToHome(){
+  clearInterval(timerInterval);
+  stopTicking();
+  stopVictoryMusic();
+  fireworks.stop();
+  isSpinning = false;
+  currentRound = 0;
+  selectedIdx = null;
+  selectionHistory = [];
+  participants.forEach(function(p){ p.score = 0; p.timesSelected = 0; });
+  showScreen('screen-cover');
+}
+
+$('btnFinalizar').addEventListener('click', backToHome);
+
+/* ==================================================================
+   PANTALLA DE ESTADÍSTICAS
+   ================================================================== */
+function endGame(){
+  clearInterval(timerInterval);
+  stopTicking();
+  ensureAudio();
+  startVictoryMusic();
+  fireworks.start();
+
+  const played = participants.filter(function(p){ return p.timesSelected > 0; })
+    .sort(function(a,b){ return b.score - a.score; });
+  const notPlayed = participants.filter(function(p){ return p.timesSelected === 0; })
+    .sort(function(a,b){ return a.name.localeCompare(b.name, 'es'); });
+
+  const podiumEl = $('podium');
+  const medals = ['🥇','🥈','🥉'];
+  const slotClasses = ['first','second','third'];
+  const top3 = played.slice(0,3);
+  const order = top3.length === 3 ? [1,0,2] : top3.map(function(_,i){return i;});
+  podiumEl.innerHTML = order.filter(function(i){ return top3[i]; }).map(function(i){
+    const p = top3[i];
+    return '<div class="podium-slot ' + slotClasses[i] + '">'
+      + '<div class="medal">' + medals[i] + '</div>'
+      + '<div class="pname">' + escapeHtml(p.name) + '</div>'
+      + '<div class="pscore">' + p.score + ' pts</div>'
+      + '<div class="podium-bar"><span class="podium-rank">' + (i+1) + '</span></div>'
+      + '</div>';
+  }).join('');
+
+  let rowsHtml = played.map(function(p, i){
+    return '<tr class="' + (i===0 ? 'top1' : '') + '">'
+      + '<td class="rank-cell">' + (i+1) + '</td>'
+      + '<td>' + escapeHtml(p.name) + '</td>'
+      + '<td>' + p.timesSelected + '</td>'
+      + '<td class="score-cell">' + p.score + '</td>'
+      + '</tr>';
+  }).join('');
+
+  if(notPlayed.length){
+    rowsHtml += notPlayed.map(function(p, i){
+      return '<tr class="lucky-row' + (i===0 ? ' lucky-first' : '') + '">'
+        + '<td class="rank-cell">🍀</td>'
+        + '<td>' + escapeHtml(p.name) + '<div class="lucky-badge">Ganador por la vía de la suerte</div></td>'
+        + '<td>0</td>'
+        + '<td class="score-cell">0</td>'
+        + '</tr>';
+    }).join('');
+  }
+
+  $('statsBody').innerHTML = rowsHtml;
+  showScreen('screen-stats');
+}
+
+$('btnNuevaPartida').addEventListener('click', function(){
+  stopVictoryMusic();
+  fireworks.stop();
+  participants.forEach(function(p){ p.score = 0; p.timesSelected = 0; });
+  selectedIdx = null;
+  currentRound = 0;
+  selectionHistory = [];
+  renderParticipants();
+  showScreen('screen-setup');
+  startBackgroundMusic();
+});
+
+/* Inicialización */
+renderParticipants();
+
+})();
+</script>
+</body>
+</html>
