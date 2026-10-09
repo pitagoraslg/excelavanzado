@@ -77,7 +77,7 @@
             <div style="padding: 8px 12px 10px; font-size: 14px;">
               Escribe un ID de reclamación en <strong>A2</strong> de una hoja nueva y, en <strong>B2</strong>, trae el <strong>Afiliado</strong>. Si el ID no existe, debe decir <em>No existe</em>.
               <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
-                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=BUSCARX(A2,tblReclamaciones[ID Reclamación],tblReclamaciones[Afiliado],"No existe")</code>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=BUSCARX(A2;tblReclamaciones[ID Reclamación];tblReclamaciones[Afiliado];"No existe")</code>
               </details>
             </div>
           </details>
@@ -103,7 +103,7 @@
             <div style="padding: 8px 12px 10px; font-size: 14px;">
               Agrega a la tabla la columna <strong>Categoría</strong>: si el <strong>Monto Reclamado</strong> es de 50,000 o más, que diga <em>Alto costo</em>; si no, <em>Regular</em>.
               <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
-                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SI([@[Monto Reclamado]]&gt;=50000,"Alto costo","Regular")</code>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SI([@[Monto Reclamado]]&gt;=50000;"Alto costo";"Regular")</code>
               </details>
             </div>
           </details>
@@ -129,7 +129,7 @@
             <div style="padding: 8px 12px 10px; font-size: 14px;">
               Crea la columna <strong>Nivel</strong>: <em>Muy alto</em> si el monto es 100,000 o más, <em>Alto</em> si es 50,000 o más y <em>Normal</em> en cualquier otro caso.
               <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
-                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SI.CONJUNTO([@[Monto Reclamado]]&gt;=100000,"Muy alto",[@[Monto Reclamado]]&gt;=50000,"Alto",VERDADERO,"Normal")</code>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SI.CONJUNTO([@[Monto Reclamado]]&gt;=100000;"Muy alto";[@[Monto Reclamado]]&gt;=50000;"Alto";VERDADERO;"Normal")</code>
               </details>
             </div>
           </details>
@@ -155,7 +155,7 @@
             <div style="padding: 8px 12px 10px; font-size: 14px;">
               ¿Cuántas reclamaciones de la ARS <strong>SeNaSa</strong> son de tipo <strong>Emergencia</strong>? Escribe la fórmula en una celda libre.
               <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
-                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=CONTAR.SI.CONJUNTO(tblReclamaciones[ARS],"SeNaSa",tblReclamaciones[Tipo de Servicio],"Emergencia")</code>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=CONTAR.SI.CONJUNTO(tblReclamaciones[ARS];"SeNaSa";tblReclamaciones[Tipo de Servicio];"Emergencia")</code>
               </details>
             </div>
           </details>
@@ -181,7 +181,7 @@
             <div style="padding: 8px 12px 10px; font-size: 14px;">
               ¿Cuánto dinero suman las reclamaciones de <strong>SeNaSa</strong> de tipo <strong>Emergencia</strong>? Compara con el reto del video 4: misma lógica, ahora sumando.
               <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
-                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SUMAR.SI.CONJUNTO(tblReclamaciones[Monto Reclamado],tblReclamaciones[ARS],"SeNaSa",tblReclamaciones[Tipo de Servicio],"Emergencia")</code>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SUMAR.SI.CONJUNTO(tblReclamaciones[Monto Reclamado];tblReclamaciones[ARS];"SeNaSa";tblReclamaciones[Tipo de Servicio];"Emergencia")</code>
               </details>
             </div>
           </details>
@@ -207,7 +207,7 @@
             <div style="padding: 8px 12px 10px; font-size: 14px;">
               Crea la columna <strong>Nombre</strong> con solo el primer nombre del <strong>Afiliado</strong> (todo lo que está antes del primer espacio).
               <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
-                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=IZQUIERDA([@Afiliado],ENCONTRAR(" ",[@Afiliado])-1)</code>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=IZQUIERDA([@Afiliado];ENCONTRAR(" ";[@Afiliado])-1)</code>
               </details>
             </div>
           </details>
@@ -233,7 +233,7 @@
             <div style="padding: 8px 12px 10px; font-size: 14px;">
               Crea la columna <strong>Día</strong>: si la <strong>Fecha de Servicio</strong> cae sábado o domingo, que diga <em>Fin de semana</em>; si no, <em>Laboral</em>.
               <details style="margin: 8px 0 0;"><summary style="cursor: pointer; color: #2F6FB0; font-size: 13px;">Ver la fórmula</summary>
-                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SI(DIASEM([@[Fecha de Servicio]],2)&gt;5,"Fin de semana","Laboral")</code>
+                <code style="display: block; margin: 6px 0 0; background-color: #F3F8FD; border: 1px solid #CFE2F5; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SI(DIASEM([@[Fecha de Servicio]];2)&gt;5;"Fin de semana";"Laboral")</code>
               </details>
             </div>
           </details>
@@ -250,7 +250,7 @@
         <h3 style="margin: 0 0 6px; font-size: 18px; color: #FFFFFF;">Reto final: combínalas</h3>
         <p style="margin: 0 0 10px; font-size: 14px; color: #FFFFFF;">Cuando termines los 7 videos, intenta en una sola fórmula: busca con BUSCARX el monto de un ID y, con SI, indica si es <em>Alto costo</em> o <em>Regular</em>.</p>
         <details style="font-size: 13px;"><summary style="cursor: pointer; color: #9CC9F2; font-weight: bold;">Ver una solución</summary>
-          <code style="display: block; margin: 6px 0 0; background-color: #FFFFFF; color: #1E3A5F; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SI(BUSCARX(A2,tblReclamaciones[ID Reclamación],tblReclamaciones[Monto Reclamado])&gt;=50000,"Alto costo","Regular")</code>
+          <code style="display: block; margin: 6px 0 0; background-color: #FFFFFF; color: #1E3A5F; border-radius: 4px; padding: 6px 8px; font-size: 13px; word-break: break-word;">=SI(BUSCARX(A2;tblReclamaciones[ID Reclamación];tblReclamaciones[Monto Reclamado])&gt;=50000;"Alto costo";"Regular")</code>
         </details>
       </div>
 

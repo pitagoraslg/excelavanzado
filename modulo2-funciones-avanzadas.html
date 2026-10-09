@@ -109,7 +109,7 @@ code,.code{font-family:var(--mono)}
 .use{min-width:0;background:var(--card);border:1px solid var(--line);padding:18px 20px;display:flex;flex-direction:column;gap:8px}
 .use h3{font-size:19px}
 .use p{font-size:16.5px;line-height:1.45;color:var(--muted)}
-.use code{font-size:14px;color:var(--xl);background:var(--xl-soft);padding:3px 6px;display:inline-block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.use code{font-size:14px;color:var(--xl);background:var(--xl-soft);padding:3px 6px;display:inline-block;margin-top:2px;white-space:normal;word-break:break-word;max-width:100%}
 .pit{display:flex;gap:16px;align-items:flex-start;background:var(--warn-soft);padding:14px 18px;font-size:17px;line-height:1.45}
 .pit b{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--warn);padding-top:3px;white-space:nowrap}
 
@@ -421,7 +421,7 @@ si(box){
   const out=wireRes(box), m=box.querySelector("#si-m");
   const f=v=>v>=50000?"Alto costo":"Regular";
   const run=()=>{ const v=+m.value||0, t=v>=50000;
-    box.querySelector("[data-f]").innerHTML=`=SI(<span class="v">${num(v)}</span>>=50000; "Alto costo"; "Regular")`;
+    box.querySelector("[data-f]").innerHTML=`=SI(<span class="v">${v}</span>>=50000; "Alto costo"; "Regular")`;
     box.querySelector("[data-l]").innerHTML=`<div class="${t?"t":"s"}"><span>${t?"✓":"✗"}</span><span>¿${num(v)} >= 50,000? → VERDADERO</span><span class="r">"Alto costo"</span></div><div class="${t?"s":"t"}"><span>${t?"✗":"✓"}</span><span>Si no → FALSO</span><span class="r">"Regular"</span></div>`;
     out(f(v)); };
   const c={}; rec.forEach(r=>c[f(r.monto)]=(c[f(r.monto)]||0)+1);
