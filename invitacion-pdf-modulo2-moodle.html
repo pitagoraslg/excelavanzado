@@ -1,0 +1,89 @@
+<!-- Invitación al documento de estudio (PDF) del Módulo 2 para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes p2-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes p2-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(47,111,176,.45); } 50% { box-shadow: 0 0 0 12px rgba(47,111,176,0); } }
+  @keyframes p2-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(-4deg); } }
+  @keyframes p2-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  .p2-in { animation: p2-in .7s ease-out both; }
+  .p2-d1 { animation-delay: .1s; } .p2-d2 { animation-delay: .25s; } .p2-d3 { animation-delay: .4s; }
+  .p2-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .p2-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(30,58,95,.14); }
+  .p2-float { display: inline-block; animation: p2-float 3s ease-in-out infinite; }
+  .p2-btn { animation: p2-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .p2-btn:hover { transform: scale(1.04); background-color: #24578C !important; }
+  .p2-bar { background: linear-gradient(90deg, #9CC9F2 0%, #2F6FB0 35%, #9CC9F2 70%, #2F6FB0 100%); background-size: 200% 100%; animation: p2-shine 6s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .p2-in, .p2-btn, .p2-float, .p2-bar { animation: none !important; } }
+</style>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #000000; line-height: 1.55; background-color: #F3F8FD; border-radius: 10px; overflow: hidden; border: 1px solid #CFE2F5;">
+
+  <!-- Franja -->
+  <div class="p2-bar" style="height: 6px; background-color: #2F6FB0;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #DCEBFA;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="p2-float">📘</span></td>
+      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
+        <p class="p2-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #2F6FB0;">Material de estudio · Módulo 2</p>
+        <h2 class="p2-in p2-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 27px; font-weight: normal; line-height: 1.2; color: #1E3A5F;">Funciones avanzadas de Excel, para leer, imprimir o repasar</h2>
+        <p class="p2-in p2-d2" style="margin: 0; font-size: 15px; color: #000000;">Descarga el <strong>documento de estudio en PDF</strong>: la teoría de cada función explicada con ejemplos de la base de reclamaciones y la práctica resumida en tablas, para consultarla <strong>sin conexión</strong> o tenerla impresa junto a tu Excel.</p>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Datos rápidos -->
+  <table class="p2-in p2-d2" style="width: 100%; border-collapse: separate; border-spacing: 10px; margin: 4px 0 0;" role="presentation">
+    <tr>
+      <td class="p2-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #2F6FB0; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">📄</span><br>
+        <strong style="color: #1E3A5F; font-size: 18px;">11 páginas</strong><br>
+        <span style="font-size: 13px; color: #000000;">Tamaño carta, listas para imprimir</span>
+      </td>
+      <td class="p2-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #5AA2E6; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">🧠</span><br>
+        <strong style="color: #1E3A5F; font-size: 18px;">8 bloques</strong><br>
+        <span style="font-size: 13px; color: #000000;">Sintaxis, ejemplos y errores comunes</span>
+      </td>
+      <td class="p2-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-top: 4px solid #9CC9F2; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">✅</span><br>
+        <strong style="color: #1E3A5F; font-size: 18px;">Lista de comprobación</strong><br>
+        <span style="font-size: 13px; color: #000000;">Para revisar tu archivo antes de entregarlo</span>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 4px 26px 26px;">
+
+    <!-- Contenido -->
+    <details class="p2-in p2-d3" style="margin: 12px 0 0; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-left: 5px solid #2F6FB0; border-radius: 6px; padding: 12px 16px;">
+      <summary style="font-weight: bold; color: #1E3A5F; font-size: 16px; cursor: pointer;">📑 ¿Qué contiene el documento? (toca para ver)</summary>
+      <ol style="margin: 10px 0 4px; padding-left: 24px; columns: 2; column-gap: 24px;">
+        <li style="margin: 0 0 5px;">BUSCARX</li>
+        <li style="margin: 0 0 5px;">SI</li>
+        <li style="margin: 0 0 5px;">SI.CONJUNTO</li>
+        <li style="margin: 0 0 5px;">CONTAR.SI.CONJUNTO y el signo $</li>
+        <li style="margin: 0 0 5px;">SUMAR.SI.CONJUNTO</li>
+        <li style="margin: 0 0 5px;">Funciones de texto</li>
+        <li style="margin: 0 0 5px;">Funciones de fecha</li>
+        <li style="margin: 0 0 5px;">Proyecto: hoja CONSULTA</li>
+        <li style="margin: 0 0 5px;">Errores comunes y repaso</li>
+        <li style="margin: 0 0 5px;">Lista de comprobación</li>
+      </ol>
+    </details>
+
+    <!-- Sugerencia de uso -->
+    <div class="p2-in p2-d3" style="margin: 12px 0 0; background-color: #FFFFFF; border: 1px solid #CFE2F5; border-radius: 6px; padding: 12px 16px; font-size: 14px;">
+      <strong style="color: #1E3A5F;">💡 Cómo aprovecharlo:</strong> úsalo como guía de consulta mientras trabajas en tu archivo. Para practicar con los simuladores interactivos, entra a la presentación del Módulo 2.
+    </div>
+
+    <!-- Llamado a la acción -->
+    <div class="p2-in p2-d3" style="text-align: center; margin: 24px 0 6px;">
+      <a class="p2-btn" href="https://pitagoraslg.github.io/excelavanzado/Conceptos-Funciones-Avanzadas-Modulo2.pdf" target="_blank" rel="noopener" style="display: inline-block; background-color: #2F6FB0; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px;">⬇ Descargar el PDF</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #000000;">Se abre en una pestaña nueva. Desde ahí puedes guardarlo o imprimirlo.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #000000;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
