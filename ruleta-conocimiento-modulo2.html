@@ -599,12 +599,12 @@ tr.lucky-first td{border-top:2px dashed rgba(255,210,63,0.5); padding-top:18px;}
               <span class="cat-desc">Ejercicios cortos: calcula el resultado o elige la fórmula correcta</span>
             </span>
           </label>
-          <label class="cat-toggle checked" id="catBaseLabel">
-            <input type="checkbox" id="catBase" checked>
+          <label class="cat-toggle checked" id="catTeoriaLabel">
+            <input type="checkbox" id="catTeoria" checked>
             <span class="box"></span>
             <span>
-              <span class="cat-label">📋 Práctica con tblReclamaciones</span>
-              <span class="cat-desc">Preguntas sobre la base de práctica del Módulo 2 (50 reclamaciones)</span>
+              <span class="cat-label">📘 Teoría y buenas prácticas</span>
+              <span class="cat-desc">Qué función usar, cómo se escriben los criterios, tablas y fechas</span>
             </span>
           </label>
           <label class="cat-toggle cat-toggle-disabled" id="catCustomLabel">
@@ -841,30 +841,29 @@ const QUESTIONS_FORMULAS = [
 ];
 
 /* ==================================================================
-   BANCO DE PREGUNTAS — Práctica con tblReclamaciones (20 preguntas)
-   Base: Modulo2-Base-Reclamaciones.xlsx (50 reclamaciones, enero–junio 2025)
+   BANCO DE PREGUNTAS — Teoría y buenas prácticas (20 preguntas)
    ================================================================== */
-const QUESTIONS_BASE = [
-  {q:"En la base de práctica, ¿qué devuelve =CONTAR.SI.CONJUNTO(tblReclamaciones[ARS];\"MAPFRE Salud ARS\")?", options:["16","10","9","8"], correct:"16"},
-  {q:"En la base de práctica, ¿cuántas reclamaciones tiene ARS Humano?", options:["10","7","16","12"], correct:"10"},
-  {q:"En la base de práctica, ¿cuántas reclamaciones tiene SeNaSa?", options:["9","8","10","3"], correct:"9"},
-  {q:"En la base de práctica, ¿cuántas reclamaciones tiene ARS Universal?", options:["7","9","5","10"], correct:"7"},
-  {q:"En la base de práctica, ¿cuántas reclamaciones tiene Primera ARS?", options:["8","6","9","16"], correct:"8"},
-  {q:"En la base de práctica, ¿cuántas emergencias tiene SeNaSa? (ARS = SeNaSa y Tipo de Servicio = Emergencia)", options:["3","9","5","1"], correct:"3"},
-  {q:"¿Qué devuelve =CONTAR.SI.CONJUNTO(tblReclamaciones[Monto Reclamado];\">=100000\") en la base de práctica?", options:["8","5","12","3"], correct:"8"},
-  {q:"En la base de práctica, ¿cuántas reclamaciones son de Hospitalización?", options:["10","8","12","6"], correct:"10"},
-  {q:"En la base de práctica, ¿cuántas filas tienen el Prestador \"No Registrado\"?", options:["5","3","2","8"], correct:"5"},
-  {q:"En la base de práctica, ¿cuántas filas tienen la Provincia \"No Registrado\"?", options:["3","5","0","1"], correct:"3"},
-  {q:"En la base de práctica, ¿cuántas filas tienen el Tipo de Servicio \"No Registrado\"?", options:["3","5","2","0"], correct:"3"},
-  {q:"En la base de práctica, ¿cuántas reclamaciones son de febrero de 2025?", options:["12","10","8","15"], correct:"12"},
-  {q:"¿Qué devuelve =BUSCARX(\"REC-1077\";tblReclamaciones[ID Reclamación];tblReclamaciones[ARS])?", options:["ARS Humano","SeNaSa","MAPFRE Salud ARS","#N/D"], correct:"ARS Humano"},
-  {q:"¿Qué devuelve =BUSCARX(\"REC-1133\";tblReclamaciones[ID Reclamación];tblReclamaciones[Tipo de Servicio])?", options:["Hospitalización","Emergencia","Consulta","Laboratorio"], correct:"Hospitalización"},
-  {q:"¿Qué devuelve =BUSCARX(\"REC-9999\";tblReclamaciones[ID Reclamación];tblReclamaciones[ARS];\"No existe\")?", options:["No existe","#N/D","0","REC-9999"], correct:"No existe"},
-  {q:"¿Qué devuelve =BUSCARX(\"REC 1077\";tblReclamaciones[ID Reclamación];tblReclamaciones[ARS]) si en la base el ID es REC-1077 (con guion)?", options:["#N/D","ARS Humano","REC-1077","0"], correct:"#N/D"},
-  {q:"En la base de práctica, ¿qué devuelve =MAX(tblReclamaciones[Monto Reclamado])?", options:["RD$ 174,865.00","RD$ 155,647.00","RD$ 147,899.00","RD$ 235,950.50"], correct:"RD$ 174,865.00"},
-  {q:"¿Qué devuelve =SUMAR.SI.CONJUNTO(tblReclamaciones[Monto Reclamado];tblReclamaciones[ARS];\"SeNaSa\") en la base de práctica?", options:["RD$ 235,950.50","RD$ 174,865.00","RD$ 61,085.50","RD$ 9.00"], correct:"RD$ 235,950.50"},
-  {q:"La reclamación REC-1224 tiene un monto de RD$ 146,387.50. Con la columna Nivel de costo (Crítico ≥100,000 · Alto ≥20,000 · Medio ≥5,000 · Bajo), ¿qué muestra?", options:["Crítico","Alto","Medio","Bajo"], correct:"Crítico"},
-  {q:"La reclamación REC-1210 es del 26/04/2025 (sábado). ¿Qué devuelve =SI(DIASEM([@[Fecha de Servicio]];2)>5;\"Fin de semana\";\"Laboral\")?", options:["Fin de semana","Laboral","6","sábado"], correct:"Fin de semana"}
+const QUESTIONS_TEORIA = [
+  {q:"¿Qué ventaja tiene escribir tblReclamaciones[ARS] en lugar de un rango fijo como D2:D51?", options:["La referencia se ajusta sola cuando se agregan o quitan filas a la tabla","La fórmula se vuelve más lenta pero más bonita","Solo funciona en otra hoja","Convierte los textos en números"], correct:"La referencia se ajusta sola cuando se agregan o quitan filas a la tabla"},
+  {q:"Cuando escribes una fórmula en una columna nueva de una tabla de Excel, ¿qué ocurre?", options:["Se copia automáticamente a todas las filas de esa columna","Solo se calcula en la primera fila","Excel borra la columna","Hay que arrastrarla siempre fila por fila"], correct:"Se copia automáticamente a todas las filas de esa columna"},
+  {q:"En BUSCARX, ¿qué diferencia hay entre matriz_buscada y matriz_devuelta?", options:["En matriz_buscada Excel busca el valor; de matriz_devuelta sale la respuesta","Son la misma columna escrita dos veces","matriz_devuelta es el mensaje de error","matriz_buscada es la hoja donde se guarda el resultado"], correct:"En matriz_buscada Excel busca el valor; de matriz_devuelta sale la respuesta"},
+  {q:"¿Por qué BUSCARX no encuentra \"REC 1077\" si en la tabla está escrito \"REC-1077\"?", options:["Porque el valor buscado debe estar escrito exactamente igual, sin espacios ni caracteres distintos","Porque BUSCARX solo busca números","Porque la tabla debe estar ordenada","Porque falta el signo $"], correct:"Porque el valor buscado debe estar escrito exactamente igual, sin espacios ni caracteres distintos"},
+  {q:"Dentro de la función SI, ¿cómo se escriben los textos y los números?", options:["Los textos entre comillas y los números sin comillas","Todo entre comillas","Nada entre comillas","Los números entre comillas y los textos sin ellas"], correct:"Los textos entre comillas y los números sin comillas"},
+  {q:"¿Qué operador significa \"distinto de\" en una prueba lógica de Excel?", options:["<>","!=","=/","><"], correct:"<>"},
+  {q:"¿Cuál es la diferencia principal entre SI y SI.CONJUNTO?", options:["SI evalúa una condición con dos resultados; SI.CONJUNTO evalúa varias condiciones sin anidar funciones","No hay diferencia","SI.CONJUNTO solo trabaja con fechas","SI puede evaluar más condiciones que SI.CONJUNTO"], correct:"SI evalúa una condición con dos resultados; SI.CONJUNTO evalúa varias condiciones sin anidar funciones"},
+  {q:"Si ninguna condición de SI.CONJUNTO se cumple y no pusiste VERDADERO al final, ¿qué muestra?", options:["#N/D","0","Una celda vacía","FALSO"], correct:"#N/D"},
+  {q:"Quieres clasificar cada reclamación como Crítico, Alto, Medio o Bajo según el monto. ¿Qué función usas?", options:["SI.CONJUNTO","BUSCARX","SUMAR.SI.CONJUNTO","LARGO"], correct:"SI.CONJUNTO"},
+  {q:"Quieres saber CUÁNTAS reclamaciones tiene una ARS. ¿Qué función usas?", options:["CONTAR.SI.CONJUNTO","SUMAR.SI.CONJUNTO","BUSCARX","TEXTO"], correct:"CONTAR.SI.CONJUNTO"},
+  {q:"Quieres saber CUÁNTO DINERO reclamó en total una ARS. ¿Qué función usas?", options:["SUMAR.SI.CONJUNTO","CONTAR.SI.CONJUNTO","SI","IZQUIERDA"], correct:"SUMAR.SI.CONJUNTO"},
+  {q:"Escribes un ID de reclamación y quieres que aparezca el nombre del afiliado. ¿Qué función usas?", options:["BUSCARX","CONTAR.SI.CONJUNTO","SI.CONJUNTO","DIASEM"], correct:"BUSCARX"},
+  {q:"En el criterio \">=\"&B2, ¿para qué sirve el símbolo &?", options:["Para unir el operador >= con el valor que está en la celda B2","Para multiplicar","Para sumar dos celdas","Para indicar un error"], correct:"Para unir el operador >= con el valor que está en la celda B2"},
+  {q:"En CONTAR.SI.CONJUNTO y SUMAR.SI.CONJUNTO, ¿qué deben cumplir todos los rangos?", options:["Tener el mismo tamaño (la misma cantidad de filas)","Estar en hojas diferentes","Estar ordenados de mayor a menor","Contener solo números"], correct:"Tener el mismo tamaño (la misma cantidad de filas)"},
+  {q:"¿Para qué sirve la función VALOR()?", options:["Para convertir en número un texto que parece número, como \"001\"","Para mostrar el valor más alto","Para poner formato de moneda","Para buscar un valor en la tabla"], correct:"Para convertir en número un texto que parece número, como \"001\""},
+  {q:"¿Para qué sirve la función SUSTITUIR?", options:["Para reemplazar un texto por otro, por ejemplo quitar los guiones de una cédula","Para sumar dos textos","Para cambiar el nombre de la hoja","Para ordenar la tabla"], correct:"Para reemplazar un texto por otro, por ejemplo quitar los guiones de una cédula"},
+  {q:"Con DIASEM(fecha;2), ¿cómo se numeran los días de la semana?", options:["1 = lunes … 7 = domingo","1 = domingo … 7 = sábado","0 = lunes … 6 = domingo","1 = enero … 12 = diciembre"], correct:"1 = lunes … 7 = domingo"},
+  {q:"¿Qué muestra =TEXTO(fecha;\"dddd\")?", options:["El nombre del día de la semana, por ejemplo lunes","El nombre del mes","El año completo","La cantidad de días del mes"], correct:"El nombre del día de la semana, por ejemplo lunes"},
+  {q:"¿Por qué el resultado de =HOY()-[@[Fecha de Servicio]] cambia cada día?", options:["Porque HOY() se actualiza sola con la fecha actual","Porque la fecha de servicio se borra","Porque Excel suma un día por error","No cambia nunca"], correct:"Porque HOY() se actualiza sola con la fecha actual"},
+  {q:"¿Por qué se pueden restar dos fechas en Excel para saber los días entre ellas?", options:["Porque internamente cada fecha es un número","Porque Excel convierte las fechas en texto","Porque las fechas son imágenes","No se pueden restar fechas"], correct:"Porque internamente cada fecha es un número"}
 ];
 
 /* ==================================================================
@@ -1355,11 +1354,11 @@ participantInput.addEventListener('keydown', function(e){ if(e.key === 'Enter'){
 /* Categorías y banco de preguntas dinámico */
 const catConceptosInput = $('catConceptos');
 const catFormulasInput = $('catFormulas');
-const catBaseInput = $('catBase');
+const catTeoriaInput = $('catTeoria');
 const catCustomInput = $('catCustom');
 const catConceptosLabel = $('catConceptosLabel');
 const catFormulasLabel = $('catFormulasLabel');
-const catBaseLabel = $('catBaseLabel');
+const catTeoriaLabel = $('catTeoriaLabel');
 const catCustomLabel = $('catCustomLabel');
 const catCustomCountEl = $('catCustomCount');
 const poolInfoEl = $('poolInfo');
@@ -1369,7 +1368,7 @@ function getSelectedPool(){
   let pool = [];
   if(catConceptosInput.checked) pool = pool.concat(QUESTIONS_CONCEPTOS);
   if(catFormulasInput.checked) pool = pool.concat(QUESTIONS_FORMULAS);
-  if(catBaseInput.checked) pool = pool.concat(QUESTIONS_BASE);
+  if(catTeoriaInput.checked) pool = pool.concat(QUESTIONS_TEORIA);
   if(catCustomInput.checked && !catCustomInput.disabled) pool = pool.concat(customQuestions);
   return pool;
 }
@@ -1399,20 +1398,20 @@ function updateQuestionPoolUI(){
 }
 
 function handleCategoryToggle(e){
-  const anyChecked = catConceptosInput.checked || catFormulasInput.checked || catBaseInput.checked || (catCustomInput.checked && !catCustomInput.disabled);
+  const anyChecked = catConceptosInput.checked || catFormulasInput.checked || catTeoriaInput.checked || (catCustomInput.checked && !catCustomInput.disabled);
   if(!anyChecked && e && e.target){
     // Nunca permitir 0 categorías: revertir la última que se desmarcó
     e.target.checked = true;
   }
   catConceptosLabel.classList.toggle('checked', catConceptosInput.checked);
   catFormulasLabel.classList.toggle('checked', catFormulasInput.checked);
-  catBaseLabel.classList.toggle('checked', catBaseInput.checked);
+  catTeoriaLabel.classList.toggle('checked', catTeoriaInput.checked);
   catCustomLabel.classList.toggle('checked', catCustomInput.checked && !catCustomInput.disabled);
   updateQuestionPoolUI();
 }
 catConceptosInput.addEventListener('change', handleCategoryToggle);
 catFormulasInput.addEventListener('change', handleCategoryToggle);
-catBaseInput.addEventListener('change', handleCategoryToggle);
+catTeoriaInput.addEventListener('change', handleCategoryToggle);
 catCustomInput.addEventListener('change', handleCategoryToggle);
 
 
