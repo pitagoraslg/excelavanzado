@@ -137,6 +137,13 @@
   .module-panel{max-height:0; overflow:hidden; transition:max-height .28s ease;}
   .module-row.open .module-panel{max-height:420px;}
   .module-panel-inner{padding:0 0 30px 76px; display:flex; flex-wrap:wrap; gap:12px;}
+  .module-lock{display:flex; flex-direction:column; gap:10px; max-width:420px;}
+  .module-lock label{font-size:.92rem; color:var(--ink-soft);}
+  .module-lock div{display:flex; gap:8px;}
+  .module-lock input{flex:1; min-width:0; font:inherit; font-size:1rem; letter-spacing:.2em; padding:10px 12px; border:1px solid var(--line); background:#fff; color:var(--ink);}
+  .module-lock input:focus{outline:2px solid var(--teal); outline-offset:1px;}
+  .module-lock button{font:inherit; font-weight:600; padding:10px 18px; border:0; background:var(--navy); color:#fff; cursor:pointer;}
+  .module-lock-err{margin:0; min-height:1.2em; font-size:.88rem; color:#A33A2A;}
   .module-empty{color:var(--ink-soft); font-size:.92rem; font-style:italic; font-family:'Newsreader',serif;}
 
   .item-btn{
@@ -286,7 +293,16 @@
         { label:'Ruleta del conocimiento', href:'ruleta-conocimiento-modulo2.html', icon:'activity' }
       ]
     },
-    { num:3, title:'Próximamente', status:'En preparación', items: [] },
+    {
+      num: 3,
+      title: 'Tablas dinámicas avanzadas',
+      status: 'Disponible',
+      clave: '1827', // acceso temporal con clave; se quitará cuando el facilitador lo indique
+      items: [
+        { label:'Aspectos teóricos', href:'modulo3-tablas-dinamicas.html', icon:'concepts' },
+        { label:'Base de práctica (Excel)', href:'Modulo3-Base-Servicios.xlsx', icon:'download', download:true }
+      ]
+    },
     { num:4, title:'Próximamente', status:'En preparación', items: [] },
     { num:5, title:'Próximamente', status:'En preparación', items: [] },
     { num:6, title:'Próximamente', status:'En preparación', items: [] },
@@ -300,6 +316,10 @@
   var downloadIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5"></path><path d="M5 19h14"></path></svg>';
   var activityIcon ='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="1.4"></rect><path d="M9 3.5h6v2.5H9zM8.5 12l2.2 2.2 4.3-4.4M8.5 17h7"></path></svg>';
 
+  function itemHtml(it){
+    return '<a class="item-btn" href="'+it.href+'"'+(it.download ? ' download' : ' target="_blank" rel="noopener"')+'>'+(it.icon === 'pdf' ? pdfIcon : it.icon === 'download' ? downloadIcon : it.icon === 'activity' ? activityIcon : it.icon === 'concepts' ? conceptsIcon : it.icon === 'book' ? bookIcon : presentationIcon)+'<span>'+it.label+'</span></a>';
+  }
+
   function buildModuleList(){
     var host = document.getElementById('module-list');
     var html = '';
@@ -311,16 +331,35 @@
           + '<span class="module-chevron"></span>'
         + '</button>'
         + '<div class="module-panel"><div class="module-panel-inner">';
-      if(m.items.length){
-        m.items.forEach(function(it){
-          html += '<a class="item-btn" href="'+it.href+'"'+(it.download ? ' download' : ' target="_blank" rel="noopener"')+'>'+(it.icon === 'pdf' ? pdfIcon : it.icon === 'download' ? downloadIcon : it.icon === 'activity' ? activityIcon : it.icon === 'concepts' ? conceptsIcon : it.icon === 'book' ? bookIcon : presentationIcon)+'<span>'+it.label+'</span></a>';
-        });
+      if(m.clave){
+        html += '<form class="module-lock" data-lock="'+m.num+'" autocomplete="off">'
+          + '<label for="clave-'+m.num+'">Este módulo está protegido. Escribe la clave de acceso:</label>'
+          + '<div><input id="clave-'+m.num+'" type="password" inputmode="numeric" maxlength="12" placeholder="Clave"><button type="submit">Entrar</button></div>'
+          + '<p class="module-lock-err" role="alert"></p></form>';
+      } else if(m.items.length){
+        html += m.items.map(itemHtml).join('');
       } else {
         html += '<p class="module-empty">Contenido próximamente.</p>';
       }
       html += '</div></div></div>';
     });
     host.innerHTML = html;
+
+    host.querySelectorAll('[data-lock]').forEach(function(form){
+      var m = MODULES.filter(function(x){ return x.num === +form.dataset.lock; })[0];
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        var input = form.querySelector('input');
+        if(input.value.trim() !== m.clave){
+          form.querySelector('.module-lock-err').textContent = 'Clave incorrecta. Inténtalo de nuevo.';
+          input.select();
+          return;
+        }
+        // La presentación no vuelve a pedir la clave durante 12 horas en este navegador
+        try{ localStorage.setItem('m'+m.num+'-acceso', String(Date.now())); }catch(err){}
+        form.outerHTML = m.items.map(itemHtml).join('');
+      });
+    });
 
     host.querySelectorAll('[data-toggle]').forEach(function(btn){
       btn.addEventListener('click', function(){

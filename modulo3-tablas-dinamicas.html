@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>Módulo 3 · Tablas dinámicas avanzadas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Layout: escenario fijo 1280×720 escalado a la pantalla (proyector). Mismo motor del Módulo 2; paleta verde bosque + coral. */
+:root{
+  --bg:#ebe7de;        /* fondo fuera del escenario */
+  --paper:#f7f4ee;     /* lámina (crema) */
+  --card:#ffffff;
+  --ink:#1f3d33;       /* verde bosque */
+  --muted:#5f6b64;
+  --line:#e2ddd2;
+  --grid:#cdc6b8;
+  --xl:#c9573f;        /* coral */
+  --xl-soft:#f9e8e2;
+  --green:#2f6b52;
+  --green-soft:#e4efe8;
+  --mark:#e4efe8;      /* resaltado */
+  --mark-line:#2f6b52;
+  --warn:#9a3b2b;
+  --warn-soft:#f6e4de;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --mono:"IBM Plex Mono", Consolas, "Courier New", monospace;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);overflow:hidden}
+#viewport{position:fixed;inset:0;overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;background:var(--paper);transform-origin:center center;transform:translate(-50%,-50%);box-shadow:0 10px 40px rgba(31,61,51,.16);border-top:3px solid var(--ink);flex:none}
+.slide{position:absolute;inset:0;padding:64px 72px 70px;display:none;flex-direction:column;gap:22px}
+.slide.on{display:flex;animation:in .35s ease}
+@keyframes in{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.slide.on{animation:none}}
+
+/* chrome */
+.top{position:absolute;top:20px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;z-index:3}
+.dots{display:flex;gap:6px}
+.dots button{width:30px;height:6px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dots button.done{background:var(--grid)}
+.dots button.cur{background:var(--xl)}
+.bottom{position:absolute;bottom:18px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);z-index:3}
+.navb{display:flex;gap:8px;align-items:center}
+.btn{font-family:var(--mono);font-size:13px;border:1px solid var(--grid);background:var(--card);color:var(--ink);padding:7px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink)}
+.btn:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--xl);outline-offset:2px}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* type */
+.eyebrow{font-family:var(--mono);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--xl);display:flex;gap:14px;align-items:center}
+.eyebrow .n{font-family:var(--serif);font-size:30px;letter-spacing:0;text-transform:none}
+.eyebrow .tag{border:1px solid var(--xl);padding:2px 8px;font-size:12px}
+h1{font-family:var(--serif);font-weight:600;font-size:76px;line-height:1.02;margin:0;text-wrap:balance}
+h2{font-family:var(--serif);font-weight:600;font-size:46px;line-height:1.08;margin:0;text-wrap:balance}
+h3{font-size:20px;margin:0;font-weight:600}
+p{margin:0}
+.lead{font-size:24px;line-height:1.45;max-width:30em;color:var(--ink)}
+.muted{color:var(--muted)}
+code,.code{font-family:var(--mono)}
+
+/* cover */
+.cover{justify-content:center;gap:28px}
+.cover .mod{font-family:var(--mono);font-size:18px;letter-spacing:.14em;text-transform:uppercase;color:var(--xl)}
+.cover h1{font-size:96px;max-width:11em}
+.cover .by{font-size:24px;color:var(--muted)}
+.cover .by b{color:var(--ink);font-weight:600}
+.cover .fx{font-family:var(--mono);font-size:20px;display:flex;align-items:stretch;border:1px solid var(--grid);background:var(--card);width:max-content;max-width:100%}
+.cover .fx span{padding:10px 14px}
+.cover .fx .lbl{border-right:1px solid var(--grid);color:var(--muted);font-style:italic;font-family:var(--serif)}
+.cover .fx .caret{border-left:2px solid var(--xl);animation:blink 1s steps(1) infinite;padding:0;margin:8px 0}
+@keyframes blink{50%{opacity:0}}
+.cover .hint{font-family:var(--mono);font-size:14px;color:var(--muted)}
+
+/* index */
+.idx{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink)}
+.idx button{all:unset;cursor:pointer;padding:22px 22px 24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.idx button:nth-child(4n){border-right:0}
+.idx button:hover{background:var(--card)}
+.idx .n{font-family:var(--serif);font-size:40px;color:var(--xl);line-height:1}
+.idx .k{font-family:var(--mono);font-size:16px;color:var(--ink);font-weight:500}
+.idx .d{font-size:16px;color:var(--ink)}
+.note{font-size:15px;color:var(--muted);display:flex;gap:10px;align-items:center}
+.note b{color:var(--ink)}
+
+/* concept */
+.cols{display:grid;grid-template-columns:1.05fr 1fr;gap:44px;flex:1;min-height:0}
+.analogy{border-left:3px solid var(--xl);padding:6px 0 6px 18px;font-family:var(--serif);font-size:22px;font-style:italic;line-height:1.4;color:var(--ink)}
+.args{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);margin:0;padding:0}
+.args li{list-style:none;display:grid;grid-template-columns:200px 1fr;gap:16px;padding:11px 8px;border-bottom:1px solid var(--line);cursor:pointer;font-size:17px;line-height:1.4}
+.args li code{font-size:15px;color:var(--ink);font-weight:500}
+.args li.on{background:var(--mark)}
+
+/* uses */
+.uses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.use{min-width:0;background:var(--card);border:1px solid var(--line);padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.use h3{font-size:19px}
+.use p{font-size:16.5px;line-height:1.45;color:var(--muted)}
+.use code{font-size:14px;color:var(--green);background:var(--green-soft);padding:3px 6px;display:inline-block;margin-top:2px;white-space:normal;word-break:break-word;max-width:100%}
+.pit{display:flex;gap:16px;align-items:flex-start;background:var(--warn-soft);padding:14px 18px;font-size:17px;line-height:1.45}
+.pit b{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--warn);padding-top:3px;white-space:nowrap}
+
+/* practice */
+.prac{display:grid;grid-template-columns:430px 1fr;gap:36px;flex:1;min-height:0}
+.steps{margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:s}
+.steps li{list-style:none;display:grid;grid-template-columns:30px 1fr;gap:10px;font-size:16.5px;line-height:1.4;counter-increment:s}
+.steps li::before{content:counter(s);font-family:var(--serif);font-size:22px;color:var(--xl);line-height:1}
+.steps code{font-size:14px;background:var(--card);border:1px solid var(--line);padding:1px 5px}
+.fbar{display:flex;border:1px solid var(--grid);background:var(--card);font-family:var(--mono);font-size:14px;align-items:stretch}
+.fbar .lbl{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--xl);padding:9px 10px;border-right:1px solid var(--grid);display:flex;align-items:center}
+.fbar .f{padding:9px 12px;flex:1;min-width:0;word-break:break-word;line-height:1.45}
+.sim{background:var(--card);border:1px solid var(--grid);display:flex;flex-direction:column;min-height:0;min-width:0}
+.sim-h{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--grid);font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--paper)}
+.sim-h .live{color:var(--xl)}
+.sim-b{padding:14px 18px;display:flex;flex-direction:column;gap:12px;min-height:0;flex:1}
+.ctrls{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.ctrl{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--muted);font-family:var(--mono)}
+select{font-family:var(--sans);font-size:15px;padding:6px 9px;border:1px solid var(--grid);background:var(--card);color:var(--ink);min-width:150px}
+.res{display:flex;align-items:center;gap:16px;border:2px solid var(--xl);padding:10px 16px;position:relative;cursor:pointer}
+.res .k{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--xl)}
+.res .val{font-family:var(--serif);font-size:28px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.15}
+.res.hide .val{filter:blur(12px);user-select:none}
+.res .rev{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.res.hide .rev{color:var(--xl);font-weight:600}
+.dlbtn{display:flex;align-items:center;gap:14px;text-decoration:none;background:var(--ink);color:#fff;padding:12px 16px;border:1px solid var(--ink)}
+.dlbtn:hover{background:#163027}
+.dlbtn .ic{font-size:22px;line-height:1}
+.dlbtn b{display:block;font-size:16px;font-weight:600}
+.dlbtn small{display:block;font-family:var(--mono);font-size:11.5px;opacity:.9;margin-top:2px}
+
+/* lista de campos (simulador 1) */
+.flist{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.flist label{display:flex;align-items:center;gap:7px;font-size:14px;border:1px solid var(--line);padding:6px 8px;cursor:pointer;background:var(--paper)}
+.flist label.on{border-color:var(--green);background:var(--green-soft)}
+.areas{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:13px}
+.areas div{border:1px dashed var(--grid);padding:6px 8px;min-height:44px}
+.areas small{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.areas span{display:inline-block;background:var(--green-soft);color:var(--green);padding:1px 6px;margin:1px 2px 1px 0;font-size:12.5px}
+
+/* tabla dinámica estilo Excel */
+.pv{overflow:auto;border:1px solid var(--grid);min-height:0;flex:1}
+.pv table{border-collapse:collapse;font-size:13.5px;width:100%;font-variant-numeric:tabular-nums}
+.pv th,.pv td{padding:3px 10px;white-space:nowrap;border-bottom:1px solid var(--line)}
+.pv thead th{background:var(--green-soft);color:var(--ink);font-weight:600;text-align:right;border-bottom:1px solid var(--green);position:sticky;top:0}
+.pv thead th:first-child{text-align:left}
+.pv td{text-align:right}
+.pv td:first-child{text-align:left}
+.pv tr.tot td{font-weight:700;border-top:1px solid var(--green);border-bottom:0;background:var(--green-soft)}
+.pv td.tc,.pv th.tc{font-weight:700}
+.pv tr.first td{background:#fbefe9}
+.pv .empty{padding:16px;color:var(--muted);font-size:14px}
+
+/* segmentación */
+.slicers{display:grid;grid-template-columns:1.3fr 1fr;gap:10px}
+.slicer{border:1px solid var(--grid);background:var(--paper)}
+.slicer .sh{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;font-size:12.5px;font-weight:600;border-bottom:1px solid var(--grid)}
+.slicer .sh button{all:unset;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--xl)}
+.slicer .sb{display:flex;flex-wrap:wrap;gap:5px;padding:7px}
+.slicer .sb button{all:unset;cursor:pointer;font-size:13px;padding:4px 9px;border:1px solid var(--grid);background:var(--card);color:var(--muted)}
+.slicer .sb button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+/* gráfico */
+.chart{border:1px solid var(--grid);background:var(--card);padding:8px 8px 4px}
+.chart svg{display:block;width:100%;height:auto}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted);padding:2px 6px}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px}
+.concl{display:flex;flex-direction:column;gap:5px;overflow:auto;min-height:0;flex:1}
+.concl div{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:14px;line-height:1.35;padding:6px 8px;border:1px solid var(--line);cursor:pointer}
+.concl div b{font-family:var(--serif);color:var(--xl)}
+.concl div.hid span{filter:blur(6px);user-select:none}
+
+/* summary */
+.sum{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:2px solid var(--ink)}
+.sum>div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;padding:10px 10px;border-bottom:1px solid var(--line);align-items:baseline}
+.sum .n{font-family:var(--serif);font-size:26px;color:var(--xl)}
+.sum code{font-size:14px;display:block;color:var(--ink);margin-top:3px;font-weight:500}
+.sum p{font-size:16px;color:var(--muted)}
+.sum>div>div{min-width:0}
+
+/* acceso con clave (temporal) */
+#gate{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px}
+#gate[hidden]{display:none}
+#gate form{background:var(--paper);border-top:3px solid var(--ink);box-shadow:0 10px 40px rgba(31,61,51,.16);padding:34px 36px;width:min(420px,100%);display:flex;flex-direction:column;gap:14px}
+#gate .mod{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--xl)}
+#gate h1{font-size:34px}
+#gate p{color:var(--muted);font-size:15px;line-height:1.45}
+#gate input{font-family:var(--mono);font-size:20px;padding:10px 12px;border:1px solid var(--grid);background:var(--card);color:var(--ink);letter-spacing:.3em}
+#gate .err{color:var(--warn);font-size:14px;min-height:1.2em}
+#gate button{font-family:var(--mono);font-size:14px;padding:11px;border:0;background:var(--ink);color:#fff;cursor:pointer}
+</style>
+
+<div id="gate" hidden>
+  <form id="gateForm" autocomplete="off">
+    <div class="mod">Módulo 3</div>
+    <h1>Tablas dinámicas avanzadas</h1>
+    <p>Este contenido está protegido. Escribe la clave de acceso para continuar.</p>
+    <input id="gateIn" type="password" inputmode="numeric" maxlength="12" aria-label="Clave de acceso" placeholder="Clave">
+    <div class="err" id="gateErr" role="alert"></div>
+    <button type="submit">Entrar</button>
+  </form>
+</div>
+
+<div id="viewport"><div id="stage">
+  <div class="top"><span id="topL">MÓDULO 3 · TABLAS DINÁMICAS AVANZADAS</span><div class="dots" id="dots"></div></div>
+  <div id="slides"></div>
+  <div class="bottom">
+    <span>Jarlin Figueroa, MA</span>
+    <div class="navb">
+      <button class="btn" id="fs" title="Pantalla completa (F)">Pantalla completa</button>
+      <button class="btn" id="prev" aria-label="Anterior">← Anterior</button>
+      <span id="count" style="min-width:70px;text-align:center"></span>
+      <button class="btn primary" id="next" aria-label="Siguiente">Siguiente →</button>
+    </div>
+  </div>
+</div></div>
+
+<script>
+/* ---------- Acceso con clave (temporal; se quitará cuando el facilitador lo indique) ---------- */
+const CLAVE = "1827", KEY = "m3-acceso";
+const gate = document.getElementById("gate");
+function accesoValido(){ try{ const t=+localStorage.getItem(KEY); return t && Date.now()-t < 12*3600e3; }catch(e){ return false; } }
+let locked = !accesoValido();
+if(locked){ gate.hidden=false; setTimeout(()=>document.getElementById("gateIn").focus(),50); }
+document.getElementById("gateForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const v=document.getElementById("gateIn").value.trim();
+  if(v===CLAVE){ try{ localStorage.setItem(KEY,String(Date.now())); }catch(err){} locked=false; gate.hidden=true; }
+  else { document.getElementById("gateErr").textContent="Clave incorrecta. Inténtalo de nuevo."; document.getElementById("gateIn").select(); }
+});
+
+/* ---------- Datos: tblServicios (360 servicios, ene 2024 – dic 2025) ---------- */
+const DATA = [["SRV-1001","2024-01-06","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",4300],["SRV-1002","2024-01-06","SeNaSa","Hospital Regional Norte","Hospitalización","Distrito Nacional",103100],["SRV-1003","2024-01-08","ARS Universal","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",14600],["SRV-1004","2024-01-09","MAPFRE Salud ARS","Centro Médico Las Américas","Hospitalización","Santiago",151600],["SRV-1005","2024-01-10","ARS Humano","Policlínica Central","Consulta","San Cristóbal",2600],["SRV-1006","2024-01-19","SeNaSa","Policlínica Central","Consulta","Santo Domingo",3000],["SRV-1007","2024-01-22","ARS Universal","Clínica San Rafael","Imágenes","Santo Domingo",6200],["SRV-1008","2024-01-23","ARS Universal","Centro Médico Las Américas","Emergencia","Santo Domingo",10350],["SRV-1009","2024-01-23","SeNaSa","Clínica San Rafael","Consulta","Santiago",2700],["SRV-1010","2024-01-25","SeNaSa","Clínica San Rafael","Imágenes","Distrito Nacional",13200],["SRV-1011","2024-01-29","ARS Humano","Clínica Vista Mar","Emergencia","Santo Domingo",11850],["SRV-1012","2024-02-02","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","San Cristóbal",10250],["SRV-1013","2024-02-05","MAPFRE Salud ARS","Clínica San Rafael","Consulta","San Cristóbal",2800],["SRV-1014","2024-02-06","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santiago",3900],["SRV-1015","2024-02-09","ARS Universal","Hospital Regional Norte","Hospitalización","Distrito Nacional",155850],["SRV-1016","2024-02-10","ARS Universal","Centro Diagnóstico del Cibao","Laboratorio","Puerto Plata",2350],["SRV-1017","2024-02-14","Primera ARS","Policlínica Central","Consulta","La Vega",3450],["SRV-1018","2024-02-18","ARS Humano","Clínica Vista Mar","Consulta","Distrito Nacional",3300],["SRV-1019","2024-02-18","ARS Humano","Hospital Regional Norte","Hospitalización","Distrito Nacional",114850],["SRV-1020","2024-02-21","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","Santiago",14250],["SRV-1021","2024-03-04","ARS Universal","Centro Médico Las Américas","Hospitalización","Distrito Nacional",105100],["SRV-1022","2024-03-06","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",5300],["SRV-1023","2024-03-08","MAPFRE Salud ARS","Centro Médico Las Américas","Hospitalización","Puerto Plata",95600],["SRV-1024","2024-03-08","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","La Vega",10050],["SRV-1025","2024-03-10","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santiago",4050],["SRV-1026","2024-03-23","SeNaSa","Hospital Regional Norte","Hospitalización","San Cristóbal",96400],["SRV-1027","2024-03-25","ARS Universal","Policlínica Central","Consulta","San Cristóbal",2050],["SRV-1028","2024-03-25","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santiago",1950],["SRV-1029","2024-03-27","SeNaSa","Centro Médico Las Américas","Emergencia","Santo Domingo",5450],["SRV-1030","2024-03-29","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",2050],["SRV-1031","2024-03-30","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",9250],["SRV-1032","2024-03-30","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",5100],["SRV-1033","2024-04-01","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","Santiago",14150],["SRV-1034","2024-04-04","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santiago",2100],["SRV-1035","2024-04-05","ARS Humano","Clínica San Rafael","Imágenes","Distrito Nacional",14900],["SRV-1036","2024-04-05","SeNaSa","Clínica San Rafael","Consulta","La Vega",3300],["SRV-1037","2024-04-05","SeNaSa","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",1650],["SRV-1038","2024-04-07","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",6150],["SRV-1039","2024-04-11","SeNaSa","Centro Médico Las Américas","Hospitalización","La Vega",54050],["SRV-1040","2024-04-16","MAPFRE Salud ARS","Policlínica Central","Consulta","Santo Domingo",3100],["SRV-1041","2024-04-19","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","La Vega",4150],["SRV-1042","2024-04-19","SeNaSa","Clínica Vista Mar","Emergencia","Distrito Nacional",17150],["SRV-1043","2024-04-23","SeNaSa","Clínica Vista Mar","Consulta","Distrito Nacional",1850],["SRV-1044","2024-04-28","SeNaSa","Clínica Vista Mar","Consulta","Distrito Nacional",1100],["SRV-1045","2024-05-04","ARS Humano","Hospital Regional Norte","Hospitalización","Distrito Nacional",128850],["SRV-1046","2024-05-05","SeNaSa","Policlínica Central","Consulta","Santo Domingo",1550],["SRV-1047","2024-05-06","MAPFRE Salud ARS","Centro Médico Las Américas","Emergencia","Distrito Nacional",8200],["SRV-1048","2024-05-08","MAPFRE Salud ARS","Centro Médico Las Américas","Hospitalización","Distrito Nacional",92550],["SRV-1049","2024-05-09","MAPFRE Salud ARS","Clínica Vista Mar","Emergencia","Distrito Nacional",12350],["SRV-1050","2024-05-09","SeNaSa","Policlínica Central","Consulta","Distrito Nacional",1350],["SRV-1051","2024-05-18","ARS Universal","Centro Médico Las Américas","Emergencia","La Vega",14700],["SRV-1052","2024-05-19","SeNaSa","Clínica San Rafael","Consulta","Distrito Nacional",1200],["SRV-1053","2024-05-26","ARS Universal","Hospital Regional Norte","Imágenes","Santiago",6900],["SRV-1054","2024-05-27","ARS Humano","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",2450],["SRV-1055","2024-05-28","Primera ARS","Centro Médico Las Américas","Emergencia","Santiago",16200],["SRV-1056","2024-05-31","SeNaSa","Centro Médico Nuestra Señora","Hospitalización","Santo Domingo",137650],["SRV-1057","2024-06-01","SeNaSa","Clínica Vista Mar","Emergencia","San Cristóbal",10100],["SRV-1058","2024-06-03","Primera ARS","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",3550],["SRV-1059","2024-06-05","ARS Humano","Clínica Vista Mar","Consulta","Distrito Nacional",2600],["SRV-1060","2024-06-08","MAPFRE Salud ARS","Policlínica Central","Consulta","Distrito Nacional",1200],["SRV-1061","2024-06-12","SeNaSa","Clínica Vista Mar","Consulta","Santiago",3200],["SRV-1062","2024-06-13","ARS Universal","Centro Médico Las Américas","Emergencia","Distrito Nacional",14000],["SRV-1063","2024-06-16","SeNaSa","Hospital Regional Norte","Imágenes","Distrito Nacional",13950],["SRV-1064","2024-06-16","Primera ARS","Hospital Regional Norte","Emergencia","Santiago",12500],["SRV-1065","2024-06-18","MAPFRE Salud ARS","Clínica Vista Mar","Emergencia","Puerto Plata",11150],["SRV-1066","2024-06-26","MAPFRE Salud ARS","Clínica Vista Mar","Emergencia","Distrito Nacional",10500],["SRV-1067","2024-06-28","ARS Humano","Centro Médico Nuestra Señora","Consulta","Santo Domingo",3000],["SRV-1068","2024-07-02","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",14050],["SRV-1069","2024-07-06","ARS Humano","Hospital Regional Norte","Emergencia","Puerto Plata",6950],["SRV-1070","2024-07-07","ARS Humano","Clínica Vista Mar","Emergencia","Distrito Nacional",9650],["SRV-1071","2024-07-11","SeNaSa","Centro Médico Las Américas","Emergencia","Distrito Nacional",6700],["SRV-1072","2024-07-13","ARS Humano","Centro Diagnóstico del Cibao","Laboratorio","Santo Domingo",3600],["SRV-1073","2024-07-14","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","Santo Domingo",10050],["SRV-1074","2024-07-16","Primera ARS","Centro Médico Las Américas","Hospitalización","Santo Domingo",177650],["SRV-1075","2024-07-27","SeNaSa","Clínica San Rafael","Consulta","Distrito Nacional",2850],["SRV-1076","2024-07-29","SeNaSa","Clínica Vista Mar","Emergencia","Santo Domingo",6050],["SRV-1077","2024-07-30","ARS Humano","Centro Médico Las Américas","Hospitalización","Puerto Plata",121650],["SRV-1078","2024-07-31","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","San Cristóbal",5800],["SRV-1079","2024-07-31","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",3550],["SRV-1080","2024-08-04","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","Santiago",2800],["SRV-1081","2024-08-04","MAPFRE Salud ARS","Clínica San Rafael","Consulta","La Vega",2200],["SRV-1082","2024-08-04","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",5850],["SRV-1083","2024-08-07","ARS Humano","Clínica San Rafael","Consulta","Puerto Plata",1150],["SRV-1084","2024-08-10","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","La Vega",4900],["SRV-1085","2024-08-10","ARS Universal","Policlínica Central","Laboratorio","Distrito Nacional",4750],["SRV-1086","2024-08-12","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",3100],["SRV-1087","2024-08-18","ARS Humano","Centro Médico Nuestra Señora","Consulta","La Vega",3100],["SRV-1088","2024-08-22","ARS Humano","Centro Diagnóstico del Cibao","Laboratorio","San Cristóbal",1750],["SRV-1089","2024-08-22","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","La Vega",5750],["SRV-1090","2024-08-29","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","La Vega",4800],["SRV-1091","2024-08-30","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",3100],["SRV-1092","2024-09-03","ARS Humano","Policlínica Central","Consulta","Santo Domingo",2400],["SRV-1093","2024-09-04","ARS Humano","Centro Médico Nuestra Señora","Consulta","La Vega",1300],["SRV-1094","2024-09-05","ARS Humano","Centro Médico Las Américas","Hospitalización","Santo Domingo",107850],["SRV-1095","2024-09-06","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",2300],["SRV-1096","2024-09-09","Primera ARS","Centro Médico Las Américas","Hospitalización","Santo Domingo",136800],["SRV-1097","2024-09-12","ARS Universal","Clínica San Rafael","Consulta","Distrito Nacional",3450],["SRV-1098","2024-09-14","ARS Universal","Clínica Vista Mar","Consulta","Distrito Nacional",1350],["SRV-1099","2024-09-14","SeNaSa","Centro Médico Las Américas","Hospitalización","Puerto Plata",97800],["SRV-1100","2024-09-16","SeNaSa","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",1350],["SRV-1101","2024-09-17","SeNaSa","Policlínica Central","Consulta","Puerto Plata",3300],["SRV-1102","2024-09-18","SeNaSa","Clínica San Rafael","Consulta","Santiago",2650],["SRV-1103","2024-09-21","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","Santiago",13400],["SRV-1104","2024-10-05","ARS Humano","Hospital Regional Norte","Hospitalización","Distrito Nacional",153050],["SRV-1105","2024-10-06","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","San Cristóbal",2200],["SRV-1106","2024-10-10","SeNaSa","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",3200],["SRV-1107","2024-10-12","SeNaSa","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",1750],["SRV-1108","2024-10-18","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",5250],["SRV-1109","2024-10-20","ARS Humano","Centro Médico Nuestra Señora","Consulta","Santiago",1300],["SRV-1110","2024-10-20","SeNaSa","Centro Médico Las Américas","Hospitalización","Distrito Nacional",65100],["SRV-1111","2024-10-21","ARS Humano","Clínica San Rafael","Consulta","Distrito Nacional",2800],["SRV-1112","2024-10-21","SeNaSa","Clínica San Rafael","Consulta","La Vega",3050],["SRV-1113","2024-10-21","SeNaSa","Hospital Regional Norte","Emergencia","San Cristóbal",6550],["SRV-1114","2024-10-25","ARS Humano","Centro Médico Las Américas","Hospitalización","Distrito Nacional",132500],["SRV-1115","2024-10-25","Primera ARS","Policlínica Central","Consulta","Puerto Plata",1550],["SRV-1116","2024-10-27","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santiago",4350],["SRV-1117","2024-10-30","Primera ARS","Centro Diagnóstico del Cibao","Laboratorio","La Vega",4400],["SRV-1118","2024-11-01","SeNaSa","Centro Médico Las Américas","Emergencia","Santo Domingo",12000],["SRV-1119","2024-11-02","SeNaSa","Policlínica Central","Consulta","Santiago",1000],["SRV-1120","2024-11-03","ARS Humano","Policlínica Central","Laboratorio","Santo Domingo",3150],["SRV-1121","2024-11-05","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",3100],["SRV-1122","2024-11-06","MAPFRE Salud ARS","Clínica San Rafael","Consulta","La Vega",1050],["SRV-1123","2024-11-07","MAPFRE Salud ARS","Policlínica Central","Consulta","Puerto Plata",1950],["SRV-1124","2024-11-13","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","La Vega",3250],["SRV-1125","2024-11-14","Primera ARS","Centro Médico Nuestra Señora","Consulta","Santiago",1250],["SRV-1126","2024-11-17","ARS Universal","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",2650],["SRV-1127","2024-11-17","SeNaSa","Centro Médico Las Américas","Emergencia","Puerto Plata",6150],["SRV-1128","2024-11-18","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",2600],["SRV-1129","2024-11-19","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",4000],["SRV-1130","2024-11-25","MAPFRE Salud ARS","Centro Médico Las Américas","Emergencia","Distrito Nacional",18400],["SRV-1131","2024-11-28","ARS Humano","Centro Médico Las Américas","Hospitalización","Santo Domingo",163450],["SRV-1132","2024-11-28","SeNaSa","Centro Médico Las Américas","Hospitalización","Distrito Nacional",56300],["SRV-1133","2024-11-29","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",3050],["SRV-1134","2024-12-01","Primera ARS","Policlínica Central","Laboratorio","La Vega",5950],["SRV-1135","2024-12-02","SeNaSa","Clínica Vista Mar","Emergencia","Santiago",15350],["SRV-1136","2024-12-03","ARS Humano","Clínica Vista Mar","Emergencia","Santo Domingo",6550],["SRV-1137","2024-12-03","ARS Humano","Centro Médico Las Américas","Emergencia","La Vega",10950],["SRV-1138","2024-12-03","ARS Universal","Clínica San Rafael","Consulta","Santo Domingo",2500],["SRV-1139","2024-12-04","ARS Universal","Centro Diagnóstico del Cibao","Laboratorio","Puerto Plata",5150],["SRV-1140","2024-12-10","SeNaSa","Policlínica Central","Consulta","Distrito Nacional",1350],["SRV-1141","2024-12-13","ARS Universal","Centro Médico Las Américas","Emergencia","San Cristóbal",12800],["SRV-1142","2024-12-14","SeNaSa","Clínica Vista Mar","Consulta","Distrito Nacional",2350],["SRV-1143","2024-12-16","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","San Cristóbal",5050],["SRV-1144","2024-12-21","MAPFRE Salud ARS","Centro Médico Las Américas","Emergencia","Puerto Plata",14350],["SRV-1145","2024-12-23","SeNaSa","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",1100],["SRV-1146","2024-12-25","ARS Universal","Centro Médico Las Américas","Emergencia","Distrito Nacional",8250],["SRV-1147","2024-12-26","Primera ARS","Laboratorio Clínico Amigo","Laboratorio","La Vega",5100],["SRV-1148","2024-12-29","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","Santiago",4000],["SRV-1149","2024-12-29","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",4350],["SRV-1150","2024-12-30","SeNaSa","Hospital Regional Norte","Emergencia","Distrito Nacional",6900],["SRV-1151","2025-01-03","MAPFRE Salud ARS","Clínica San Rafael","Consulta","Santo Domingo",1850],["SRV-1152","2025-01-04","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","San Cristóbal",2850],["SRV-1153","2025-01-09","Primera ARS","Centro Diagnóstico del Cibao","Imágenes","Santo Domingo",14250],["SRV-1154","2025-01-11","SeNaSa","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",1950],["SRV-1155","2025-01-12","SeNaSa","Hospital Regional Norte","Emergencia","San Cristóbal",13000],["SRV-1156","2025-01-16","ARS Universal","Hospital Regional Norte","Imágenes","Distrito Nacional",9650],["SRV-1157","2025-01-16","SeNaSa","Hospital Regional Norte","Imágenes","La Vega",9700],["SRV-1158","2025-01-18","ARS Universal","Clínica Vista Mar","Consulta","Santo Domingo",3500],["SRV-1159","2025-01-18","ARS Humano","Clínica San Rafael","Imágenes","San Cristóbal",9500],["SRV-1160","2025-01-19","ARS Humano","Clínica Vista Mar","Consulta","San Cristóbal",3000],["SRV-1161","2025-01-20","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",3350],["SRV-1162","2025-01-26","SeNaSa","Centro Médico Las Américas","Emergencia","Distrito Nacional",18900],["SRV-1163","2025-01-27","ARS Universal","Hospital Regional Norte","Hospitalización","Santiago",137400],["SRV-1164","2025-01-28","Primera ARS","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",5800],["SRV-1165","2025-01-31","SeNaSa","Centro Médico Las Américas","Emergencia","Distrito Nacional",16900],["SRV-1166","2025-02-02","ARS Humano","Clínica San Rafael","Consulta","Santiago",1050],["SRV-1167","2025-02-03","SeNaSa","Centro Médico Las Américas","Hospitalización","Santiago",147250],["SRV-1168","2025-02-09","MAPFRE Salud ARS","Clínica San Rafael","Consulta","Santo Domingo",1200],["SRV-1169","2025-02-11","MAPFRE Salud ARS","Clínica San Rafael","Consulta","Santiago",3400],["SRV-1170","2025-02-11","SeNaSa","Centro Médico Nuestra Señora","Consulta","San Cristóbal",1250],["SRV-1171","2025-02-13","ARS Universal","Hospital Regional Norte","Imágenes","Santo Domingo",7150],["SRV-1172","2025-02-15","ARS Humano","Clínica San Rafael","Consulta","Santo Domingo",2700],["SRV-1173","2025-02-16","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","Puerto Plata",1950],["SRV-1174","2025-02-16","ARS Universal","Clínica Vista Mar","Consulta","Santiago",2650],["SRV-1175","2025-02-19","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santiago",5850],["SRV-1176","2025-02-20","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","San Cristóbal",4600],["SRV-1177","2025-02-23","ARS Humano","Centro Médico Nuestra Señora","Consulta","Santiago",2050],["SRV-1178","2025-02-24","SeNaSa","Centro Diagnóstico del Cibao","Imágenes","San Cristóbal",7800],["SRV-1179","2025-03-02","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",4700],["SRV-1180","2025-03-03","SeNaSa","Clínica San Rafael","Consulta","Santiago",2050],["SRV-1181","2025-03-03","ARS Universal","Policlínica Central","Consulta","Santo Domingo",3100],["SRV-1182","2025-03-07","SeNaSa","Clínica Vista Mar","Emergencia","Distrito Nacional",18350],["SRV-1183","2025-03-07","ARS Universal","Centro Médico Nuestra Señora","Hospitalización","La Vega",73000],["SRV-1184","2025-03-09","Primera ARS","Policlínica Central","Laboratorio","Distrito Nacional",2800],["SRV-1185","2025-03-10","Primera ARS","Centro Médico Las Américas","Hospitalización","Distrito Nacional",86800],["SRV-1186","2025-03-11","ARS Universal","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",5650],["SRV-1187","2025-03-11","SeNaSa","Centro Médico Nuestra Señora","Hospitalización","Puerto Plata",129100],["SRV-1188","2025-03-11","MAPFRE Salud ARS","Policlínica Central","Laboratorio","Puerto Plata",5450],["SRV-1189","2025-03-11","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Puerto Plata",9250],["SRV-1190","2025-03-17","MAPFRE Salud ARS","Centro Médico Las Américas","Hospitalización","Santiago",164950],["SRV-1191","2025-03-22","Primera ARS","Hospital Regional Norte","Emergencia","Distrito Nacional",14950],["SRV-1192","2025-03-22","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","Santo Domingo",2000],["SRV-1193","2025-03-29","SeNaSa","Clínica San Rafael","Consulta","Distrito Nacional",3050],["SRV-1194","2025-03-30","Primera ARS","Clínica San Rafael","Consulta","Distrito Nacional",2350],["SRV-1195","2025-04-01","SeNaSa","Clínica Vista Mar","Consulta","Santo Domingo",2000],["SRV-1196","2025-04-03","ARS Universal","Centro Médico Nuestra Señora","Consulta","Santo Domingo",1700],["SRV-1197","2025-04-04","Primera ARS","Hospital Regional Norte","Imágenes","Santiago",10300],["SRV-1198","2025-04-05","MAPFRE Salud ARS","Policlínica Central","Consulta","Santiago",1450],["SRV-1199","2025-04-06","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",4000],["SRV-1200","2025-04-11","SeNaSa","Clínica San Rafael","Imágenes","Santo Domingo",14200],["SRV-1201","2025-04-13","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",1550],["SRV-1202","2025-04-15","ARS Universal","Centro Diagnóstico del Cibao","Laboratorio","La Vega",1500],["SRV-1203","2025-04-18","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",2400],["SRV-1204","2025-04-20","MAPFRE Salud ARS","Centro Médico Las Américas","Hospitalización","La Vega",83700],["SRV-1205","2025-04-21","MAPFRE Salud ARS","Policlínica Central","Consulta","San Cristóbal",1150],["SRV-1206","2025-04-21","ARS Humano","Clínica Vista Mar","Emergencia","Santiago",14450],["SRV-1207","2025-04-22","ARS Universal","Centro Médico Nuestra Señora","Consulta","Puerto Plata",2700],["SRV-1208","2025-04-22","ARS Humano","Policlínica Central","Laboratorio","Puerto Plata",2850],["SRV-1209","2025-04-25","ARS Humano","Policlínica Central","Consulta","Santo Domingo",3000],["SRV-1210","2025-04-28","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",8950],["SRV-1211","2025-04-30","SeNaSa","Clínica Vista Mar","Emergencia","La Vega",16600],["SRV-1212","2025-05-01","Primera ARS","Hospital Regional Norte","Emergencia","Santo Domingo",18750],["SRV-1213","2025-05-04","SeNaSa","Clínica San Rafael","Consulta","San Cristóbal",2400],["SRV-1214","2025-05-04","ARS Humano","Policlínica Central","Laboratorio","Santo Domingo",5600],["SRV-1215","2025-05-05","ARS Humano","Hospital Regional Norte","Imágenes","Santo Domingo",14700],["SRV-1216","2025-05-13","ARS Humano","Policlínica Central","Consulta","Santiago",1550],["SRV-1217","2025-05-14","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","La Vega",8950],["SRV-1218","2025-05-15","ARS Universal","Policlínica Central","Laboratorio","Santiago",2650],["SRV-1219","2025-05-17","ARS Universal","Hospital Regional Norte","Emergencia","La Vega",13000],["SRV-1220","2025-05-20","ARS Humano","Centro Médico Nuestra Señora","Consulta","San Cristóbal",3100],["SRV-1221","2025-05-21","MAPFRE Salud ARS","Centro Médico Nuestra Señora","Consulta","Puerto Plata",2900],["SRV-1222","2025-05-23","ARS Humano","Policlínica Central","Laboratorio","La Vega",4750],["SRV-1223","2025-05-25","Primera ARS","Centro Médico Las Américas","Hospitalización","Distrito Nacional",67150],["SRV-1224","2025-05-26","SeNaSa","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",3950],["SRV-1225","2025-05-27","ARS Humano","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",3600],["SRV-1226","2025-05-28","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",9800],["SRV-1227","2025-05-29","SeNaSa","Clínica San Rafael","Consulta","Distrito Nacional",1700],["SRV-1228","2025-05-31","ARS Universal","Clínica San Rafael","Consulta","Distrito Nacional",1600],["SRV-1229","2025-06-01","ARS Humano","Clínica San Rafael","Consulta","Distrito Nacional",2950],["SRV-1230","2025-06-04","MAPFRE Salud ARS","Centro Médico Las Américas","Emergencia","San Cristóbal",17300],["SRV-1231","2025-06-05","SeNaSa","Clínica Vista Mar","Consulta","Puerto Plata",1850],["SRV-1232","2025-06-05","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",4800],["SRV-1233","2025-06-06","ARS Humano","Clínica San Rafael","Consulta","Distrito Nacional",2950],["SRV-1234","2025-06-10","ARS Humano","Clínica Vista Mar","Consulta","Distrito Nacional",1500],["SRV-1235","2025-06-13","MAPFRE Salud ARS","Policlínica Central","Consulta","Distrito Nacional",3450],["SRV-1236","2025-06-18","SeNaSa","Centro Médico Nuestra Señora","Consulta","Santo Domingo",2600],["SRV-1237","2025-06-18","SeNaSa","Hospital Regional Norte","Emergencia","Santo Domingo",5600],["SRV-1238","2025-06-18","MAPFRE Salud ARS","Policlínica Central","Consulta","Santiago",2050],["SRV-1239","2025-06-20","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santiago",5800],["SRV-1240","2025-06-22","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",1700],["SRV-1241","2025-06-23","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",3800],["SRV-1242","2025-06-23","Primera ARS","Clínica San Rafael","Imágenes","Distrito Nacional",12700],["SRV-1243","2025-06-24","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santiago",3100],["SRV-1244","2025-06-29","Primera ARS","Clínica San Rafael","Consulta","Santiago",1250],["SRV-1245","2025-07-03","SeNaSa","Clínica San Rafael","Imágenes","Santo Domingo",6650],["SRV-1246","2025-07-05","MAPFRE Salud ARS","Policlínica Central","Consulta","La Vega",1550],["SRV-1247","2025-07-09","Primera ARS","Centro Diagnóstico del Cibao","Laboratorio","Santo Domingo",3650],["SRV-1248","2025-07-09","Primera ARS","Centro Médico Las Américas","Emergencia","Distrito Nacional",14250],["SRV-1249","2025-07-11","ARS Humano","Hospital Regional Norte","Hospitalización","San Cristóbal",123100],["SRV-1250","2025-07-13","Primera ARS","Centro Diagnóstico del Cibao","Laboratorio","La Vega",5850],["SRV-1251","2025-07-15","Primera ARS","Centro Médico Las Américas","Hospitalización","Distrito Nacional",151950],["SRV-1252","2025-07-15","ARS Humano","Centro Médico Las Américas","Emergencia","Distrito Nacional",6100],["SRV-1253","2025-07-16","SeNaSa","Centro Diagnóstico del Cibao","Imágenes","Santo Domingo",4650],["SRV-1254","2025-07-17","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",4100],["SRV-1255","2025-07-19","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","San Cristóbal",11550],["SRV-1256","2025-07-19","SeNaSa","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",2250],["SRV-1257","2025-07-22","Primera ARS","Clínica San Rafael","Consulta","La Vega",2750],["SRV-1258","2025-07-27","ARS Humano","Policlínica Central","Consulta","Santo Domingo",1350],["SRV-1259","2025-07-27","SeNaSa","Centro Médico Nuestra Señora","Consulta","San Cristóbal",2850],["SRV-1260","2025-07-30","SeNaSa","Clínica San Rafael","Consulta","Santo Domingo",1600],["SRV-1261","2025-07-30","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santiago",5500],["SRV-1262","2025-08-01","ARS Universal","Centro Diagnóstico del Cibao","Imágenes","Santo Domingo",14650],["SRV-1263","2025-08-02","SeNaSa","Centro Diagnóstico del Cibao","Laboratorio","Santo Domingo",2100],["SRV-1264","2025-08-02","SeNaSa","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",3150],["SRV-1265","2025-08-06","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","La Vega",4050],["SRV-1266","2025-08-07","ARS Universal","Policlínica Central","Laboratorio","La Vega",5700],["SRV-1267","2025-08-09","SeNaSa","Centro Médico Las Américas","Hospitalización","Santo Domingo",85300],["SRV-1268","2025-08-15","ARS Humano","Policlínica Central","Consulta","Santiago",3000],["SRV-1269","2025-08-15","MAPFRE Salud ARS","Policlínica Central","Consulta","Distrito Nacional",1400],["SRV-1270","2025-08-15","Primera ARS","Clínica Vista Mar","Consulta","San Cristóbal",3250],["SRV-1271","2025-08-16","SeNaSa","Centro Diagnóstico del Cibao","Laboratorio","Santiago",3300],["SRV-1272","2025-08-17","ARS Humano","Clínica Vista Mar","Consulta","Puerto Plata",3050],["SRV-1273","2025-08-21","SeNaSa","Clínica Vista Mar","Consulta","Puerto Plata",2300],["SRV-1274","2025-08-21","SeNaSa","Clínica Vista Mar","Consulta","Distrito Nacional",1150],["SRV-1275","2025-08-22","SeNaSa","Centro Diagnóstico del Cibao","Imágenes","Santiago",15000],["SRV-1276","2025-08-25","ARS Humano","Centro Médico Nuestra Señora","Hospitalización","Santo Domingo",125850],["SRV-1277","2025-08-29","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","San Cristóbal",5150],["SRV-1278","2025-08-30","ARS Universal","Clínica Vista Mar","Consulta","Distrito Nacional",2000],["SRV-1279","2025-09-01","Primera ARS","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",3100],["SRV-1280","2025-09-01","ARS Humano","Policlínica Central","Consulta","Santo Domingo",2150],["SRV-1281","2025-09-02","Primera ARS","Policlínica Central","Consulta","La Vega",3350],["SRV-1282","2025-09-11","ARS Universal","Centro Médico Las Américas","Hospitalización","Santiago",78500],["SRV-1283","2025-09-11","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",5900],["SRV-1284","2025-09-15","SeNaSa","Centro Médico Las Américas","Emergencia","Distrito Nacional",10600],["SRV-1285","2025-09-15","ARS Universal","Clínica San Rafael","Consulta","Distrito Nacional",2900],["SRV-1286","2025-09-18","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",5650],["SRV-1287","2025-09-19","ARS Universal","Clínica Vista Mar","Consulta","Puerto Plata",2950],["SRV-1288","2025-09-20","ARS Universal","Centro Diagnóstico del Cibao","Laboratorio","Puerto Plata",5400],["SRV-1289","2025-09-20","ARS Humano","Hospital Regional Norte","Emergencia","Distrito Nacional",13450],["SRV-1290","2025-09-21","MAPFRE Salud ARS","Clínica San Rafael","Consulta","Puerto Plata",1550],["SRV-1291","2025-09-24","ARS Humano","Policlínica Central","Consulta","Santo Domingo",2150],["SRV-1292","2025-09-24","Primera ARS","Laboratorio Clínico Amigo","Laboratorio","Santiago",1600],["SRV-1293","2025-09-25","Primera ARS","Clínica Vista Mar","Consulta","Distrito Nacional",1650],["SRV-1294","2025-09-29","ARS Universal","Centro Médico Las Américas","Hospitalización","San Cristóbal",125500],["SRV-1295","2025-09-30","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",14100],["SRV-1296","2025-10-01","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","La Vega",5350],["SRV-1297","2025-10-08","SeNaSa","Hospital Regional Norte","Hospitalización","Santo Domingo",47900],["SRV-1298","2025-10-10","MAPFRE Salud ARS","Clínica San Rafael","Imágenes","Santiago",13400],["SRV-1299","2025-10-11","ARS Humano","Centro Médico Las Américas","Emergencia","Puerto Plata",5450],["SRV-1300","2025-10-11","SeNaSa","Centro Médico Nuestra Señora","Consulta","Santo Domingo",2300],["SRV-1301","2025-10-14","MAPFRE Salud ARS","Clínica San Rafael","Imágenes","San Cristóbal",13600],["SRV-1302","2025-10-15","SeNaSa","Policlínica Central","Consulta","Distrito Nacional",2950],["SRV-1303","2025-10-15","ARS Universal","Centro Diagnóstico del Cibao","Imágenes","La Vega",10650],["SRV-1304","2025-10-16","MAPFRE Salud ARS","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",3250],["SRV-1305","2025-10-17","SeNaSa","Centro Diagnóstico del Cibao","Imágenes","Puerto Plata",6050],["SRV-1306","2025-10-19","MAPFRE Salud ARS","Hospital Regional Norte","Emergencia","San Cristóbal",16600],["SRV-1307","2025-10-20","ARS Humano","Hospital Regional Norte","Imágenes","Santiago",11450],["SRV-1308","2025-10-21","SeNaSa","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",11800],["SRV-1309","2025-10-23","ARS Humano","Centro Médico Nuestra Señora","Consulta","San Cristóbal",2050],["SRV-1310","2025-10-26","SeNaSa","Clínica San Rafael","Imágenes","Distrito Nacional",8300],["SRV-1311","2025-10-27","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","Santiago",10750],["SRV-1312","2025-10-29","Primera ARS","Hospital Regional Norte","Hospitalización","Santiago",155100],["SRV-1313","2025-10-30","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Santiago",4050],["SRV-1314","2025-10-30","ARS Humano","Hospital Regional Norte","Hospitalización","Puerto Plata",153850],["SRV-1315","2025-10-30","SeNaSa","Centro Médico Las Américas","Emergencia","Distrito Nacional",10500],["SRV-1316","2025-11-02","SeNaSa","Centro Médico Nuestra Señora","Consulta","Santo Domingo",2600],["SRV-1317","2025-11-05","ARS Universal","Hospital Regional Norte","Imágenes","Distrito Nacional",4750],["SRV-1318","2025-11-06","SeNaSa","Centro Médico Las Américas","Emergencia","Santo Domingo",14850],["SRV-1319","2025-11-06","MAPFRE Salud ARS","Centro Médico Las Américas","Hospitalización","Distrito Nacional",176200],["SRV-1320","2025-11-07","SeNaSa","Hospital Regional Norte","Emergencia","Distrito Nacional",11250],["SRV-1321","2025-11-08","MAPFRE Salud ARS","Clínica Vista Mar","Consulta","La Vega",2100],["SRV-1322","2025-11-09","ARS Humano","Centro Médico Las Américas","Emergencia","Puerto Plata",13150],["SRV-1323","2025-11-11","MAPFRE Salud ARS","Hospital Regional Norte","Emergencia","Santiago",11500],["SRV-1324","2025-11-12","Primera ARS","Clínica Vista Mar","Emergencia","Puerto Plata",6100],["SRV-1325","2025-11-12","MAPFRE Salud ARS","Centro Médico Nuestra Señora","Consulta","San Cristóbal",2150],["SRV-1326","2025-11-13","SeNaSa","Centro Médico Nuestra Señora","Consulta","Santo Domingo",2300],["SRV-1327","2025-11-16","Primera ARS","Centro Diagnóstico del Cibao","Laboratorio","Santiago",3400],["SRV-1328","2025-11-17","SeNaSa","Centro Médico Nuestra Señora","Hospitalización","La Vega",156450],["SRV-1329","2025-11-18","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",3300],["SRV-1330","2025-11-21","SeNaSa","Clínica Vista Mar","Emergencia","Puerto Plata",16250],["SRV-1331","2025-11-23","ARS Universal","Policlínica Central","Consulta","Distrito Nacional",2000],["SRV-1332","2025-11-23","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","San Cristóbal",2200],["SRV-1333","2025-11-24","MAPFRE Salud ARS","Policlínica Central","Consulta","La Vega",3300],["SRV-1334","2025-11-25","SeNaSa","Policlínica Central","Consulta","Santiago",3350],["SRV-1335","2025-11-29","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Santiago",5700],["SRV-1336","2025-11-29","SeNaSa","Hospital Regional Norte","Hospitalización","Santo Domingo",102300],["SRV-1337","2025-11-30","ARS Humano","Clínica San Rafael","Consulta","Distrito Nacional",3150],["SRV-1338","2025-12-01","ARS Humano","Policlínica Central","Consulta","Santiago",2800],["SRV-1339","2025-12-02","ARS Universal","Hospital Regional Norte","Hospitalización","Santiago",70150],["SRV-1340","2025-12-02","ARS Humano","Policlínica Central","Consulta","Santiago",2850],["SRV-1341","2025-12-04","SeNaSa","Clínica Vista Mar","Consulta","Santo Domingo",3400],["SRV-1342","2025-12-04","ARS Universal","Clínica Vista Mar","Emergencia","Distrito Nacional",7300],["SRV-1343","2025-12-04","ARS Universal","Clínica San Rafael","Consulta","Santo Domingo",1200],["SRV-1344","2025-12-05","MAPFRE Salud ARS","Hospital Regional Norte","Emergencia","Distrito Nacional",19850],["SRV-1345","2025-12-07","ARS Humano","Clínica San Rafael","Consulta","Distrito Nacional",3050],["SRV-1346","2025-12-07","ARS Universal","Centro Diagnóstico del Cibao","Imágenes","Santo Domingo",6550],["SRV-1347","2025-12-09","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santiago",3950],["SRV-1348","2025-12-10","SeNaSa","Clínica Vista Mar","Consulta","Santo Domingo",2400],["SRV-1349","2025-12-12","ARS Humano","Centro Médico Las Américas","Emergencia","Puerto Plata",8500],["SRV-1350","2025-12-13","ARS Universal","Hospital Regional Norte","Emergencia","San Cristóbal",11000],["SRV-1351","2025-12-13","Primera ARS","Policlínica Central","Consulta","Distrito Nacional",1300],["SRV-1352","2025-12-13","MAPFRE Salud ARS","Clínica Vista Mar","Consulta","Distrito Nacional",1400],["SRV-1353","2025-12-14","ARS Universal","Clínica San Rafael","Imágenes","Distrito Nacional",9400],["SRV-1354","2025-12-19","ARS Humano","Hospital Regional Norte","Imágenes","Santiago",7500],["SRV-1355","2025-12-23","ARS Humano","Hospital Regional Norte","Imágenes","Santiago",4900],["SRV-1356","2025-12-23","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","San Cristóbal",4050],["SRV-1357","2025-12-25","ARS Universal","Policlínica Central","Laboratorio","Santiago",2600],["SRV-1358","2025-12-27","SeNaSa","Policlínica Central","Consulta","Santo Domingo",1350],["SRV-1359","2025-12-28","SeNaSa","Centro Médico Nuestra Señora","Consulta","Santiago",1250],["SRV-1360","2025-12-28","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santiago",1700]];
+const rec = DATA.map(r=>({id:r[0],fecha:r[1],ars:r[2],pss:r[3],tipo:r[4],prov:r[5],monto:r[6],anio:r[1].slice(0,4),mes:+r[1].slice(5,7)}));
+rec.forEach(r=>{ r.trim="Trim."+(Math.floor((r.mes-1)/3)+1); r.mesK=r.anio+"-"+String(r.mes).padStart(2,"0"); });
+const MESC=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const num0 = n => n.toLocaleString("en-US",{maximumFractionDigits:0});
+const num2 = n => n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const pct = n => (n*100).toFixed(2)+"%";
+const opts = (arr,sel) => arr.map(v=>`<option${v===sel?" selected":""}>${esc(v)}</option>`).join("");
+
+/* Campos de la lista de campos (nombre visible → clave interna) */
+const F = {"ARS":"ars","PSS":"pss","Tipo de Servicio":"tipo","Provincia":"prov","Años":"anio","Trimestres":"trim","Meses":"mes"};
+const AGG = {"Cuenta de ID Servicio":"count","Suma de Monto":"sum","Promedio de Monto":"avg","Máx. de Monto":"max"};
+const lab = (k,v) => k==="mes" ? MESC[v-1] : String(v);
+
+/* Motor de tabla dinámica: agrupa por fila (y columna opcional) y calcula */
+function pivot(rows, rk, ck, agg){
+  const acc = {}, keyR = new Set(), keyC = new Set();
+  const add = (a,r)=>{ a.n++; a.s+=r.monto; a.m=Math.max(a.m,r.monto); };
+  const cell = (r,c)=>{ const k=r+"\u0001"+c; return acc[k]||(acc[k]={n:0,s:0,m:0}); };
+  rows.forEach(x=>{ const r=x[rk], c=ck?x[ck]:"·"; keyR.add(r); keyC.add(c);
+    add(cell(r,c),x); add(cell(r,"\u0002"),x); add(cell("\u0002",c),x); add(cell("\u0002","\u0002"),x); });
+  const val = a => !a||!a.n ? null : agg==="count"?a.n : agg==="sum"?a.s : agg==="avg"?a.s/a.n : a.m;
+  const sortK = (k,set)=>[...set].sort((a,b)=> (k==="mes"||k==="anio")? a-b : String(a).localeCompare(String(b),"es"));
+  return { rk, ck, agg, rows:sortK(rk,keyR), cols:ck?sortK(ck,keyC):["·"],
+    v:(r,c)=>val(acc[r+"\u0001"+c]), rt:r=>val(acc[r+"\u0001\u0002"]), ct:c=>val(acc["\u0002\u0001"+c]), g:()=>val(acc["\u0002\u0001\u0002"]) };
+}
+/* Dibuja la tabla dinámica como en Excel (Etiquetas de fila · … · Total general) */
+function pivotHtml(p, o={}){
+  if(!p.rows.length) return `<div class="empty">No hay datos con los filtros elegidos.</div>`;
+  const fmt = v => v===null?"":o.pct? pct(v/p.g()) : p.agg==="count"? num0(v) : num2(v);
+  let rows = p.rows.slice();
+  if(o.order==="desc") rows.sort((a,b)=>p.rt(b)-p.rt(a)); else if(o.order==="asc") rows.sort((a,b)=>p.rt(a)-p.rt(b));
+  if(o.top) rows = rows.slice(0,o.top);
+  const multi = !!p.ck;
+  const head = `<tr><th>Etiquetas de fila</th>${multi?p.cols.map(c=>`<th>${esc(lab(p.ck,c))}</th>`).join("")+`<th class="tc">Total general</th>`:`<th>${esc(o.vlabel||"")}</th>`}</tr>`;
+  const body = rows.map((r,i)=>`<tr class="${o.mark&&i===0?"first":""}"><td>${esc(lab(p.rk,r))}</td>${multi?p.cols.map(c=>`<td>${fmt(p.v(r,c))}</td>`).join("")+`<td class="tc">${fmt(p.rt(r))}</td>`:`<td>${fmt(p.rt(r))}</td>`}</tr>`).join("");
+  const tot = `<tr class="tot"><td>Total general</td>${multi?p.cols.map(c=>`<td>${fmt(p.ct(c))}</td>`).join("")+`<td>${fmt(p.g())}</td>`:`<td>${fmt(o.top?rows.reduce((s,r)=>s+(p.agg==="count"||p.agg==="sum"?p.rt(r):0),0)||p.g():p.g())}</td>`}</tr>`;
+  return `<table><thead>${head}</thead><tbody>${body}${tot}</tbody></table>`;
+}
+const top1 = (p,dir="desc") => p.rows.slice().sort((a,b)=>dir==="desc"?p.rt(b)-p.rt(a):p.rt(a)-p.rt(b))[0];
+
+/* ---------- Contenido de los 7 temas ---------- */
+const TOPICS = [
+{ k:"Crear la tabla dinámica", d:"Resumir miles de filas sin fórmulas.",
+  def:"Una tabla dinámica resume una base completa en segundos: agrupa, cuenta y suma la información sin escribir una sola fórmula.",
+  ana:"Es como pedirle un resumen a un asistente: «agrúpame por ARS y dime cuántas hay», y te entrega el cuadro listo.",
+  partsT:"Partes de la herramienta · toca cada una",
+  parts:[["Tabla de origen","tblServicios: los datos originales. La tabla dinámica nunca modifica la base."],["Lista de campos","Los encabezados de la tabla: ID Servicio, Fecha, ARS, PSS, Tipo de Servicio, Provincia y Monto."],["Las 4 áreas","Filtros, Columnas, Filas y Valores: ahí se arrastran los campos."],["Informe","El cuadro resumen que aparece en la hoja nueva."],["Actualizar","Si la base cambia: clic derecho en el informe › Actualizar."]],
+  uses:[["Resumir sin fórmulas","Contar y sumar 360 filas en segundos, sin escribir CONTAR.SI.CONJUNTO.","Insertar › Tabla dinámica"],
+        ["Responder a la dirección","¿Quién tiene más registros? ¿Dónde se concentra el gasto?","Filas: ARS · Valores: Cuenta de ID Servicio"],
+        ["Cambiar el análisis al instante","Arrastra otro campo y el cuadro se reorganiza solo.","Filas: Provincia ⇄ Tipo de Servicio"],
+        ["Base para gráficos y tableros","Desde la tabla dinámica salen los gráficos y las segmentaciones.","Analizar tabla dinámica › Gráfico dinámico"]],
+  pit:"Si la base tiene filas vacías, encabezados repetidos o celdas combinadas, el resumen sale incompleto. Por eso partimos de una tabla (tblServicios): basta con Actualizar para que el informe incluya las filas nuevas.",
+  steps:["Abre <code>Modulo3-Base-Servicios.xlsx</code> y haz clic en cualquier celda de la tabla, por ejemplo <code>A2</code>.","Ve a <code>Insertar › Tabla dinámica</code>. En «Tabla o rango» debe decir <code>tblServicios</code>.","Elige <code>Nueva hoja de cálculo</code> › <code>Aceptar</code>. Renombra la hoja como <code>TD_ARS</code>.","Marca la casilla <code>ARS</code> en la lista de campos: aparecen las 5 ARS en la columna A."],
+  conf:"Origen: tblServicios · Destino: hoja nueva TD_ARS", sim:"crear" },
+
+{ k:"Las 4 áreas", d:"Filas, Columnas, Valores y Filtros.",
+  def:"Cada campo se arrastra a un área. Filas y Columnas deciden cómo se agrupa; Valores, qué se calcula; Filtros, qué datos entran al informe.",
+  ana:"Es como armar un cuadro en la pizarra: decides qué va a la izquierda (filas), qué va arriba (columnas) y qué número va en cada casilla (valores).",
+  partsT:"Las 4 áreas · toca cada una",
+  parts:[["Filas","Las categorías que bajan por la izquierda. Ej.: ARS."],["Columnas","Las categorías que van arriba, a lo ancho. Ej.: Años."],["Valores","El cálculo de cada casilla. Ej.: Cuenta de ID Servicio."],["Filtros","Un filtro general para todo el informe. Ej.: Provincia = Santiago."]],
+  uses:[["ARS con más registros","Una fila por ARS con su cantidad de servicios.","Filas: ARS · Valores: Cuenta de ID Servicio"],
+        ["ARS por tipo de servicio","Cruza dos campos en una matriz.","Filas: ARS · Columnas: Tipo de Servicio"],
+        ["Analizar una provincia","El mismo informe, solo para una provincia.","Filtros: Provincia = Santiago"],
+        ["Monto por ARS","Cambia el campo de Valores para ver dinero en vez de cantidad.","Filas: ARS · Valores: Suma de Monto"]],
+  pit:"Un campo de texto (ID Servicio) en Valores se CUENTA; un campo numérico (Monto) se SUMA. Para contar registros usa un campo que nunca esté vacío, como ID Servicio.",
+  steps:["En la hoja <code>TD_ARS</code>, deja <code>ARS</code> en Filas.","Arrastra <code>ID Servicio</code> al área <code>Valores</code>: aparece «Cuenta de ID Servicio».","Clic derecho sobre un número › <code>Ordenar › Ordenar de mayor a menor</code>.","Resultado esperado: <b>SeNaSa</b> encabeza con <b>107</b> de los <b>360</b> registros."],
+  conf:"Filas: ARS · Valores: Cuenta de ID Servicio", sim:"areas" },
+
+{ k:"Resumir y mostrar valores", d:"Cuenta, Suma, Promedio y % del total.",
+  def:"En el área Valores puedes cambiar el cálculo (Cuenta, Suma, Promedio) y la forma de mostrarlo (número o porcentaje del total).",
+  ana:"Es la misma información vista con distintos lentes: cuántos son, cuánto suman, cuánto vale uno en promedio y qué pedazo del pastel representa cada grupo.",
+  partsT:"Configuración de campo de valor · toca cada opción",
+  parts:[["Cuenta","Cuántos registros hay. Responde «¿cuántos servicios?»."],["Suma","El total de dinero. Responde «¿cuánto se reclamó?»."],["Promedio","El monto típico de un servicio."],["Máx. / Mín.","El valor más alto o más bajo de cada grupo."],["% del total general","En «Mostrar valores como»: qué parte del total aporta cada fila."]],
+  uses:[["Servicios más frecuentes","Cantidad de servicios por tipo.","Filas: Tipo de Servicio · Valores: Cuenta de ID Servicio"],
+        ["Peso de cada provincia","Qué parte de todas las operaciones aporta cada una.","Mostrar valores como › % del total general"],
+        ["Costo promedio","Cuánto vale en promedio una hospitalización frente a una consulta.","Resumir valores por › Promedio"],
+        ["Dos cálculos a la vez","Arrastra el mismo campo dos veces a Valores: uno como número y otro como %.","Valores: Cuenta + % del total general"]],
+  pit:"El cálculo no se cambia escribiendo en la celda: se cambia en «Configuración de campo de valor» (clic derecho sobre un número). El porcentaje está en la pestaña «Mostrar valores como», no en «Resumir valores por».",
+  steps:["Inserta una tabla dinámica nueva en la hoja <code>TD_Servicios</code>.","Filas: <code>Tipo de Servicio</code> · Valores: <code>ID Servicio</code> (Cuenta).","Arrastra otra vez <code>ID Servicio</code> a Valores › clic derecho › <code>Mostrar valores como › % del total general</code>.","Resultado esperado: <b>Consulta</b> es el más frecuente con <b>121</b> servicios (<b>33.61 %</b>)."],
+  conf:"Filas: Tipo de Servicio · Valores: Cuenta de ID Servicio y % del total general", sim:"resumir" },
+
+{ k:"Ordenar y filtrar", d:"Ver primero lo más importante (Top).",
+  def:"Ordenar pone arriba lo más importante. Los filtros de valor dejan solo los mejores (Diez mejores) o los que pasan un límite.",
+  ana:"Es como la tabla de posiciones del béisbol: ordenas de mayor a menor y te fijas en los primeros lugares.",
+  partsT:"Herramientas · toca cada una",
+  parts:[["Ordenar","Clic derecho sobre un número › Ordenar de mayor a menor."],["Filtro de etiqueta","Filtra por el nombre. Ej.: PSS que «contiene» Clínica."],["Diez mejores","Filtro de valor: deja solo los N primeros. Ej.: los 3 PSS con más monto."],["Mayor que","Filtro de valor: deja solo los que pasan un límite. Ej.: más de 1,000,000."]],
+  uses:[["Entidades con mayor monto","PSS ordenados por dinero, de mayor a menor.","Filas: PSS · Valores: Suma de Monto · Ordenar ↓"],
+        ["Top 3 de prestadores","Solo los tres PSS que más montos reportan.","Filtros de valor › Diez mejores › 3"],
+        ["ARS con mayor monto","Las ARS ordenadas por dinero reclamado.","Filas: ARS · Valores: Suma de Monto · Ordenar ↓"],
+        ["Grandes cuentas","Solo las entidades que pasan RD$ 1,000,000.","Filtros de valor › Mayor que › 1000000"]],
+  pit:"El filtro «Diez mejores» se aplica desde la flecha de «Etiquetas de fila» › Filtros de valor, no desde una segmentación. Revisa que use el campo correcto (Suma de Monto y no Cuenta).",
+  steps:["Inserta una tabla dinámica nueva en la hoja <code>TD_Montos</code>.","Filas: <code>PSS</code> · Valores: <code>Monto</code> (Suma), con formato de número y 2 decimales.","Ordena de mayor a menor. Luego flecha de Etiquetas de fila › <code>Filtros de valor › Diez mejores</code> › <code>3</code>.","Resultado esperado: <b>Centro Médico Las Américas</b> lidera con <b>3,020,300.00</b>."],
+  conf:"Filas: PSS · Valores: Suma de Monto · Orden de mayor a menor · Diez mejores: 3", sim:"top" },
+
+{ k:"Agrupar fechas", d:"Años, trimestres y meses.",
+  def:"Al poner una fecha en Filas, Excel la agrupa en Años, Trimestres y Meses. Así se ve cómo cambian los datos con el tiempo.",
+  ana:"Es como pasar de mirar recibos sueltos a mirar el calendario: en lugar de 360 fechas ves 24 meses, 8 trimestres o 2 años.",
+  partsT:"Agrupar por · toca cada nivel",
+  parts:[["Años","2024 y 2025: compara los dos períodos."],["Trimestres","Trim.1 a Trim.4: muestra la temporada más fuerte."],["Meses","ene a dic: el detalle mes a mes."],["Días","Casi nunca se usa en un resumen: demasiado detalle."]],
+  uses:[["Comportamiento por mes","Cuenta de servicios en cada mes.","Filas: Fecha (Meses) · Valores: Cuenta de ID Servicio"],
+        ["Comparar 2024 con 2025","Meses en filas y años en columnas, lado a lado.","Filas: Meses · Columnas: Años"],
+        ["Temporada alta","Qué trimestre concentra más servicios.","Agrupar › Trimestres"],
+        ["Crecimiento entre períodos","Cuánto cambió 2025 respecto a 2024.","Mostrar valores como › % de diferencia de"]],
+  pit:"Si Excel dice «No se puede agrupar esa selección», en la columna Fecha hay fechas guardadas como texto o celdas vacías. Las fechas reales se alinean a la derecha.",
+  steps:["Inserta una tabla dinámica nueva en la hoja <code>TD_Meses</code>.","Arrastra <code>Fecha</code> a Filas. Clic derecho en una fecha › <code>Agrupar</code> › marca <code>Meses</code> y <code>Años</code>.","Mueve <code>Años</code> a Columnas. Valores: <code>ID Servicio</code> (Cuenta).","Resultado esperado: <b>2024 = 150</b> y <b>2025 = 210</b> servicios. Diciembre es el mes más alto en los dos años."],
+  conf:"Filas: Fecha (Meses) · Columnas: Fecha (Años) · Valores: Cuenta de ID Servicio", sim:"fechas" },
+
+{ k:"Segmentaciones y escala de tiempo", d:"Filtrar con botones.",
+  def:"Una segmentación de datos es un panel de botones para filtrar la tabla dinámica con un clic. La escala de tiempo hace lo mismo con las fechas.",
+  ana:"Es el control remoto del informe: aprietas «SeNaSa» y todo el cuadro cambia para mostrar solo esa ARS.",
+  partsT:"Herramientas · toca cada una",
+  parts:[["Segmentación","Botones de un campo (ARS, Provincia). Un clic filtra el informe."],["Selección múltiple","Ctrl + clic, o el botón de selección múltiple, para elegir varias opciones."],["Borrar filtro","El embudo con la X, en la esquina, vuelve a mostrar todo."],["Escala de tiempo","Barra de fechas para elegir años, trimestres o meses."],["Conexiones de informe","Una misma segmentación puede mover varias tablas dinámicas."]],
+  uses:[["Ver una sola ARS","El informe completo, solo para SeNaSa.","Insertar segmentación de datos › ARS"],
+        ["Comparar provincias","Elige dos provincias a la vez con selección múltiple.","Segmentación: Provincia (Ctrl + clic)"],
+        ["Elegir un período","Muestra solo 2025 o solo un trimestre.","Insertar escala de tiempo › Fecha"],
+        ["Tablero conectado","Una segmentación filtra todas las tablas dinámicas a la vez.","Segmentación › Conexiones de informe"]],
+  pit:"Si al hacer clic en la segmentación solo cambia una tabla dinámica, falta conectarla: clic derecho sobre la segmentación › Conexiones de informe › marca las demás.",
+  steps:["En la hoja <code>TD_Servicios</code>, haz clic dentro de la tabla dinámica.","<code>Analizar tabla dinámica › Insertar segmentación de datos</code> › marca <code>ARS</code>.","<code>Insertar escala de tiempo</code> › marca <code>Fecha</code> y cambia el nivel a <code>AÑOS</code>.","Prueba <b>SeNaSa</b> + <b>2025</b> y compara con el simulador."],
+  conf:"Segmentación: ARS · Escala de tiempo: Fecha (Años)", sim:"segmentacion" },
+
+{ k:"Gráficos y conclusiones", d:"Mostrar y explicar los resultados.",
+  def:"Un gráfico dinámico dibuja la tabla dinámica y cambia con ella. Con los resultados se redactan conclusiones: frases cortas basadas en números.",
+  ana:"Es como el informe del médico: no basta con los resultados del laboratorio, hay que escribir el diagnóstico en palabras claras.",
+  partsT:"Una buena conclusión · toca cada parte",
+  parts:[["Dato","Un número exacto que salió de la tabla dinámica. Ej.: 107 registros."],["Comparación","Frente a quién o a cuándo. Ej.: más que cualquier otra ARS."],["Significado","Qué quiere decir para tomar decisiones."],["Fuente","De qué tabla dinámica salió, para poder comprobarlo."]],
+  uses:[["Gráfico por mes","Columnas que muestran la tendencia de los 24 meses.","Analizar tabla dinámica › Gráfico dinámico › Columna agrupada"],
+        ["Gráfico por servicio","Qué parte del total aporta cada tipo.","Gráfico dinámico › Circular"],
+        ["Conclusión bien escrita","Dato + comparación + significado.","«SeNaSa tiene 107 de 360 registros (29.72 %), la ARS con más volumen.»"],
+        ["Conclusión mal escrita","Una opinión sin datos no es una conclusión.","«SeNaSa es la mejor ARS.» ✗"]],
+  pit:"Una conclusión no es una opinión. «Hospitalización es lo más caro» es débil; «Hospitalización tiene 42 servicios (11.67 %) pero suma RD$ 4,889,250 (73.07 % del monto)» sí es una conclusión.",
+  steps:["Haz clic en la tabla dinámica de <code>TD_Meses</code> › <code>Analizar tabla dinámica › Gráfico dinámico</code> › <code>Columna agrupada</code>.","Usa la segmentación y mira cómo cambia el gráfico.","En la hoja <code>Consigna</code>, escribe 5 conclusiones con dato + comparación + significado.","Compara tus conclusiones con las del simulador (clic para revelar)."],
+  conf:"Gráfico dinámico: Columna agrupada · Origen: TD_Meses", sim:"grafico" }
+];
+const QT=["¿Qué es una tabla dinámica?","¿Qué son las 4 áreas?","¿Cómo se resumen los valores?","¿Cómo se ordena y se filtra?","¿Qué es agrupar fechas?","¿Qué es una segmentación de datos?","¿Qué es un gráfico dinámico?"];
+const SH=["Insertar › Tabla dinámica › tblServicios","Filas · Columnas · Valores · Filtros","Configuración de campo de valor › Cuenta · Suma · %","Ordenar ↓ · Filtros de valor › Diez mejores","Agrupar › Años · Trimestres · Meses","Insertar segmentación · Insertar escala de tiempo","Gráfico dinámico + conclusión = dato · comparación · significado"];
+
+/* ---------- Construcción de diapositivas ---------- */
+const S = [];
+S.push({topic:-1, html:`<div class="slide cover">
+  <div class="mod">Módulo 3</div>
+  <h1>Tablas dinámicas avanzadas</h1>
+  <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
+  <div class="fx"><span class="lbl">TD</span><span>Filas: ARS · Valores: Cuenta de ID Servicio</span><span class="caret"></span></div>
+  <div class="hint">Base de práctica: tblServicios · ${rec.length} servicios · ene 2024 – dic 2025 · use ← → para avanzar</div>
+</div>`});
+
+S.push({topic:-1, html:`<div class="slide">
+  <div class="eyebrow">Contenido</div>
+  <h2>Siete herramientas, una misma base</h2>
+  <p class="lead" style="font-size:20px">Cada tema tiene tres láminas: <b>concepto</b>, <b>utilidad</b> y <b>práctica en vivo</b> con la base de servicios de salud.</p>
+  <div class="idx">${TOPICS.map((t,i)=>`<button data-go="${2+i*3}"><span class="n">0${i+1}</span><span class="k">${t.k}</span><span class="d">${t.d}</span></button>`).join("")}</div>
+  <p class="note"><b>Objetivo:</b> usar tablas dinámicas y sus herramientas para analizar información y sacar conclusiones útiles para la toma de decisiones.</p>
+</div>`});
+
+TOPICS.forEach((t,i)=>{
+  const n = "0"+(i+1);
+  const eb = tag => `<div class="eyebrow"><span class="n">${n}</span><span>${t.k}</span><span class="tag">${tag}</span></div>`;
+  S.push({topic:i, html:`<div class="slide">${eb("Concepto")}
+    <div class="cols">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <h2>${QT[i]}</h2>
+        <p class="lead">${t.def}</p>
+        <p class="analogy">${t.ana}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <h3 class="muted" style="font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase">${t.partsT}</h3>
+        <ul class="args">${t.parts.map((a,j)=>`<li data-a="${j}"><div><code>${esc(a[0])}</code></div><div>${esc(a[1])}</div></li>`).join("")}</ul>
+      </div>
+    </div></div>`, init:el=>{
+      el.querySelectorAll("[data-a]").forEach(x=>x.addEventListener("click",()=>el.querySelectorAll("[data-a]").forEach(y=>y.classList.toggle("on",y===x))));
+    }});
+  S.push({topic:i, html:`<div class="slide">${eb("Utilidad")}
+    <h2>¿Para qué nos sirve en el trabajo?</h2>
+    <div class="uses">${t.uses.map(u=>`<div class="use"><h3>${u[0]}</h3><p>${u[1]}</p><code>${esc(u[2])}</code></div>`).join("")}</div>
+    <div class="pit"><b>Error común</b><span>${t.pit}</span></div></div>`});
+  S.push({topic:i, html:`<div class="slide">${eb("Práctica en vivo")}
+    <div class="prac">
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <h2 style="font-size:38px">Hagámoslo juntos</h2>
+        <ol class="steps">${t.steps.map(s=>`<li><span>${s}</span></li>`).join("")}</ol>
+        <div class="fbar"><span class="lbl">TD</span><span class="f">${esc(t.conf)}</span></div>${i===0?`<a class="dlbtn" href="Modulo3-Base-Servicios.xlsx" download><span class="ic">⬇</span><span><b>Descarga la base de práctica</b><small>Modulo3-Base-Servicios.xlsx · tabla tblServicios · ${rec.length} filas</small></span></a>`:""}
+      </div>
+      <div class="sim"></div>
+    </div></div>`, init:el=>SIMS[t.sim](el.querySelector(".sim"))});
+});
+
+S.push({topic:-1, html:`<div class="slide">
+  <div class="eyebrow">Resumen</div>
+  <h2>Lo que aprendimos hoy</h2>
+  <div class="sum">${TOPICS.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${esc(SH[i])}</code></div></div>`).join("")}
+  <div><span class="n">✓</span><div><p>Entrega</p><code>Tablas dinámicas + segmentaciones + 5 conclusiones</code></div></div></div>
+</div>`});
+
+/* ---------- Simuladores ---------- */
+function head(title){ return `<div class="sim-h"><span>${title}</span><span class="live">● en vivo</span></div>`; }
+function resBox(label){ return `<div class="res hide" data-res><div><div class="k">${label}</div><div class="val" data-val>—</div></div><span class="rev" data-rev>Clic para revelar</span></div>`; }
+function wireRes(box){ const r=box.querySelector("[data-res]"); r.addEventListener("click",()=>{r.classList.toggle("hide"); r.querySelector("[data-rev]").textContent=r.classList.contains("hide")?"Clic para revelar":"Clic para ocultar";}); return v=>{r.querySelector("[data-val]").textContent=v;}; }
+const fmtAgg = (agg,v) => agg==="count"? num0(v) : num2(v);
+
+const SIMS = {
+crear(box){
+  const CAMPOS=[["ID Servicio","id"],["Fecha","fecha"],["ARS","ars"],["PSS","pss"],["Tipo de Servicio","tipo"],["Provincia","prov"],["Monto","monto"]];
+  box.innerHTML = head("Simulador · lista de campos")+`<div class="sim-b">
+    <div class="ctrl">Marca los campos, como en el panel de la derecha de Excel</div>
+    <div class="flist">${CAMPOS.map(c=>`<label data-c="${c[1]}"><input type="checkbox" value="${c[1]}"${c[1]==="ars"?" checked":""}>${c[0]}</label>`).join("")}</div>
+    <div class="areas"><div><small>Filtros</small></div><div><small>Columnas</small></div><div data-ar><small>Filas</small></div><div data-av><small>Valores</small></div></div>
+    <div class="pv" data-p></div></div>`;
+  const run=()=>{
+    const on=[...box.querySelectorAll("input:checked")].map(x=>x.value);
+    box.querySelectorAll(".flist label").forEach(l=>l.classList.toggle("on",on.includes(l.dataset.c)));
+    const rowF=["ars","tipo","prov","pss"].find(k=>on.includes(k)) || (on.includes("fecha")?"anio":null);
+    const vals=[]; if(on.includes("id")) vals.push(["count","Cuenta de ID Servicio"]); if(on.includes("monto")) vals.push(["sum","Suma de Monto"]);
+    const nombre={ars:"ARS",tipo:"Tipo de Servicio",prov:"Provincia",pss:"PSS",anio:"Fecha (Años)"};
+    box.querySelector("[data-ar]").innerHTML=`<small>Filas</small>${rowF?`<span>${nombre[rowF]}</span>`:""}`;
+    box.querySelector("[data-av]").innerHTML=`<small>Valores</small>${vals.map(v=>`<span>${v[1]}</span>`).join("")}`;
+    const pv=box.querySelector("[data-p]");
+    if(!rowF && !vals.length){ pv.innerHTML=`<div class="empty">Marca al menos un campo para construir el informe.</div>`; return; }
+    if(!rowF){ pv.innerHTML=`<table><thead><tr>${vals.map(v=>`<th>${v[1]}</th>`).join("")}</tr></thead><tbody><tr class="tot">${vals.map(v=>{const p=pivot(rec,"anio",null,v[0]);return `<td>${fmtAgg(v[0],p.g())}</td>`;}).join("")}</tr></tbody></table>`; return; }
+    const ps=vals.map(v=>pivot(rec,rowF,null,v[0])), base=pivot(rec,rowF,null,"count");
+    pv.innerHTML=`<table><thead><tr><th>Etiquetas de fila</th>${vals.map(v=>`<th>${v[1]}</th>`).join("")}</tr></thead><tbody>${base.rows.map(r=>`<tr><td>${esc(r)}</td>${ps.map((p,j)=>`<td>${fmtAgg(vals[j][0],p.rt(r))}</td>`).join("")}</tr>`).join("")}<tr class="tot"><td>Total general</td>${ps.map((p,j)=>`<td>${fmtAgg(vals[j][0],p.g())}</td>`).join("")}</tr></tbody></table>`;
+  };
+  box.querySelectorAll("input").forEach(x=>x.onchange=run); run();
+},
+areas(box){
+  const NONE="(ninguno)", PROVS=[...new Set(rec.map(r=>r.prov))].sort((a,b)=>a.localeCompare(b,"es"));
+  box.innerHTML = head("Simulador · las 4 áreas")+`<div class="sim-b">
+    <div class="ctrls">
+      <label class="ctrl">Filtros · Provincia<select data-f>${opts(["(Todas)"].concat(PROVS),"(Todas)")}</select></label>
+      <label class="ctrl">Filas<select data-r>${opts(["ARS","PSS","Tipo de Servicio","Provincia"],"ARS")}</select></label>
+      <label class="ctrl">Columnas<select data-c>${opts([NONE,"Años","Tipo de Servicio"],NONE)}</select></label>
+      <label class="ctrl">Valores<select data-v>${opts(["Cuenta de ID Servicio","Suma de Monto"],"Cuenta de ID Servicio")}</select></label>
+    </div>${resBox("Primer lugar en Filas")}<div class="pv" data-p></div></div>`;
+  const out=wireRes(box), q=s=>box.querySelector(s);
+  const run=()=>{
+    const rows=q("[data-f]").value==="(Todas)"?rec:rec.filter(r=>r.prov===q("[data-f]").value);
+    const ck=q("[data-c]").value===NONE?null:F[q("[data-c]").value];
+    const p=pivot(rows,F[q("[data-r]").value],ck===F[q("[data-r]").value]?null:ck,AGG[q("[data-v]").value]);
+    q("[data-p]").innerHTML=pivotHtml(p,{order:"desc",vlabel:q("[data-v]").value,mark:true});
+    const t=top1(p); out(t?`${t} · ${fmtAgg(p.agg,p.rt(t))}`:"—");
+  };
+  box.querySelectorAll("select").forEach(s=>s.onchange=run); run();
+},
+resumir(box){
+  box.innerHTML = head("Simulador · resumir y mostrar valores")+`<div class="sim-b">
+    <div class="ctrls">
+      <label class="ctrl">Filas<select data-r>${opts(["Tipo de Servicio","Provincia","ARS","PSS"],"Tipo de Servicio")}</select></label>
+      <label class="ctrl">Resumir valores por<select data-a>${opts(["Cuenta","Suma","Promedio","Máx."],"Cuenta")}</select></label>
+      <label class="ctrl">Mostrar valores como<select data-m>${opts(["Sin cálculo","% del total general"],"Sin cálculo")}</select></label>
+    </div>${resBox("Primer lugar")}<div class="pv" data-p></div></div>`;
+  const out=wireRes(box), q=s=>box.querySelector(s), A={"Cuenta":"count","Suma":"sum","Promedio":"avg","Máx.":"max"}, L={"Cuenta":"Cuenta de ID Servicio","Suma":"Suma de Monto","Promedio":"Promedio de Monto","Máx.":"Máx. de Monto"};
+  const run=()=>{
+    const agg=A[q("[data-a]").value], usePct=q("[data-m]").value!=="Sin cálculo"&&(agg==="count"||agg==="sum");
+    q("[data-m]").disabled=!(agg==="count"||agg==="sum"); if(q("[data-m]").disabled) q("[data-m]").value="Sin cálculo";
+    const p=pivot(rec,F[q("[data-r]").value],null,agg);
+    q("[data-p]").innerHTML=pivotHtml(p,{order:"desc",pct:usePct,vlabel:L[q("[data-a]").value]+(usePct?" (%)":""),mark:true});
+    const t=top1(p); out(`${t} · ${usePct?pct(p.rt(t)/p.g()):fmtAgg(agg,p.rt(t))}`);
+  };
+  box.querySelectorAll("select").forEach(s=>s.onchange=run); run();
+},
+top(box){
+  box.innerHTML = head("Simulador · ordenar y Diez mejores")+`<div class="sim-b">
+    <div class="ctrls">
+      <label class="ctrl">Filas (entidad)<select data-r>${opts(["PSS","ARS","Provincia"],"PSS")}</select></label>
+      <label class="ctrl">Valores<select data-v>${opts(["Suma de Monto","Cuenta de ID Servicio"],"Suma de Monto")}</select></label>
+      <label class="ctrl">Ordenar<select data-o>${opts(["De mayor a menor","De menor a mayor"],"De mayor a menor")}</select></label>
+      <label class="ctrl">Diez mejores<select data-t>${opts(["Todos","3 mejores","5 mejores"],"3 mejores")}</select></label>
+    </div>${resBox("Primer lugar")}<div class="pv" data-p></div></div>`;
+  const out=wireRes(box), q=s=>box.querySelector(s);
+  const run=()=>{
+    const agg=AGG[q("[data-v]").value], p=pivot(rec,F[q("[data-r]").value],null,agg);
+    const tsel=q("[data-t]").value, topN=tsel==="Todos"?0:parseInt(tsel,10);
+    // «Diez mejores» siempre toma los N más altos; el orden solo cambia cómo se muestran
+    let keep=p.rows.slice().sort((a,b)=>p.rt(b)-p.rt(a)); if(topN) keep=keep.slice(0,topN);
+    const p2=Object.assign({},p,{rows:keep});
+    q("[data-p]").innerHTML=pivotHtml(p2,{order:q("[data-o]").value==="De mayor a menor"?"desc":"asc",vlabel:q("[data-v]").value,mark:true});
+    if(topN){ const sub=keep.reduce((s,r)=>s+p.rt(r),0); q("[data-p]").querySelector(".tot td:last-child").textContent=fmtAgg(agg,sub); }
+    const t=top1(p); out(`${t} · ${fmtAgg(agg,p.rt(t))}`);
+  };
+  box.querySelectorAll("select").forEach(s=>s.onchange=run); run();
+},
+fechas(box){
+  box.innerHTML = head("Simulador · agrupar fechas")+`<div class="sim-b">
+    <div class="ctrls">
+      <label class="ctrl">Agrupar Filas por<select data-g>${opts(["Meses","Trimestres","Años"],"Meses")}</select></label>
+      <label class="ctrl">Columnas<select data-c>${opts(["Años","(ninguno)"],"Años")}</select></label>
+      <label class="ctrl">Valores<select data-v>${opts(["Cuenta de ID Servicio","Suma de Monto"],"Cuenta de ID Servicio")}</select></label>
+    </div>${resBox("Cambio de 2024 a 2025")}<div class="pv" data-p></div></div>`;
+  const out=wireRes(box), q=s=>box.querySelector(s);
+  const run=()=>{
+    const g=F[q("[data-g]").value], agg=AGG[q("[data-v]").value];
+    const ck=q("[data-c]").value==="Años"&&g!=="anio"?"anio":null;
+    const p=pivot(rec,g,ck,agg);
+    q("[data-p]").innerHTML=pivotHtml(p,{vlabel:q("[data-v]").value});
+    const y=pivot(rec,"anio",null,agg), a=y.rt("2024"), b=y.rt("2025");
+    out(`${fmtAgg(agg,a)} → ${fmtAgg(agg,b)} (${b>=a?"+":""}${((b-a)/a*100).toFixed(2)} %)`);
+  };
+  box.querySelectorAll("select").forEach(s=>s.onchange=run); run();
+},
+segmentacion(box){
+  const ARS=[...new Set(rec.map(r=>r.ars))].sort((a,b)=>a.localeCompare(b,"es"));
+  const selA=new Set(ARS); let anio="Todo";
+  box.innerHTML = head("Simulador · segmentación y escala de tiempo")+`<div class="sim-b">
+    <div class="slicers">
+      <div class="slicer"><div class="sh">ARS <button data-clr title="Borrar filtro">✕ Borrar filtro</button></div><div class="sb" data-a>${ARS.map(a=>`<button data-v="${esc(a)}" class="on">${esc(a)}</button>`).join("")}</div></div>
+      <div class="slicer"><div class="sh">Fecha · AÑOS</div><div class="sb" data-y>${["Todo","2024","2025"].map(y=>`<button data-v="${y}" class="${y==="Todo"?"on":""}">${y}</button>`).join("")}</div></div>
+    </div>
+    <div class="ctrl">Clic = solo esa ARS · Ctrl + clic = agregar o quitar varias</div>
+    ${resBox("Registros que muestra el informe")}<div class="pv" data-p></div></div>`;
+  const out=wireRes(box);
+  const paint=()=>{ box.querySelectorAll("[data-a] button").forEach(b=>b.classList.toggle("on",selA.has(b.dataset.v))); box.querySelectorAll("[data-y] button").forEach(b=>b.classList.toggle("on",b.dataset.v===anio)); };
+  const run=()=>{
+    paint();
+    const rows=rec.filter(r=>selA.has(r.ars)&&(anio==="Todo"||r.anio===anio));
+    const p=pivot(rows,"tipo",null,"count");
+    box.querySelector("[data-p]").innerHTML=pivotHtml(p,{order:"desc",vlabel:"Cuenta de ID Servicio"});
+    out(`${rows.length} de ${rec.length}`);
+  };
+  box.querySelectorAll("[data-a] button").forEach(b=>b.onclick=e=>{
+    const v=b.dataset.v;
+    if(e.ctrlKey||e.metaKey){ if(selA.has(v)&&selA.size>1) selA.delete(v); else selA.add(v); }
+    else { selA.clear(); selA.add(v); }
+    run();
+  });
+  box.querySelector("[data-clr]").onclick=()=>{ ARS.forEach(a=>selA.add(a)); run(); };
+  box.querySelectorAll("[data-y] button").forEach(b=>b.onclick=()=>{ anio=b.dataset.v; run(); });
+  run();
+},
+grafico(box){
+  const CON=[
+    "SeNaSa es la ARS con mayor volumen: 107 de 360 registros (29.72 %), seguida de ARS Humano con 89.",
+    "Consulta es el servicio más frecuente (121 servicios, 33.61 %); Hospitalización es el menos frecuente (42), pero suma RD$ 4,889,250, el 73.07 % del monto total.",
+    "Distrito Nacional concentra 112 operaciones (31.11 %), muy por encima de Santo Domingo (69) y Santiago (63), las provincias que le siguen.",
+    "Centro Médico Las Américas es el PSS con mayor monto: RD$ 3,020,300 (45.14 % del total), por las hospitalizaciones que atiende.",
+    "Los registros crecieron de 150 en 2024 a 210 en 2025 (+40 %); en ambos años el cuarto trimestre es el más alto (47 y 65) y febrero el mes más bajo (9 y 13)."
+  ];
+  box.innerHTML = head("Simulador · gráfico dinámico")+`<div class="sim-b">
+    <div class="ctrls">
+      <label class="ctrl">Eje (Filas)<select data-r>${opts(["Meses","ARS","Tipo de Servicio","Provincia"],"Meses")}</select></label>
+      <label class="ctrl">Valores<select data-v>${opts(["Cuenta de ID Servicio","Suma de Monto"],"Cuenta de ID Servicio")}</select></label>
+    </div>
+    <div class="chart"><div data-svg></div><div class="legend"><span><i style="background:#2f6b52"></i>2024</span><span><i style="background:#c9573f"></i>2025</span></div></div>
+    <div class="ctrl">Conclusiones del análisis · clic en cada una para revelarla</div>
+    <div class="concl">${CON.map((c,i)=>`<div class="hid"><b>${i+1}</b><span>${esc(c)}</span></div>`).join("")}</div></div>`;
+  const q=s=>box.querySelector(s);
+  box.querySelectorAll(".concl div").forEach(d=>d.onclick=()=>d.classList.toggle("hid"));
+  const run=()=>{
+    const rk=F[q("[data-r]").value], agg=AGG[q("[data-v]").value], p=pivot(rec,rk,"anio",agg);
+    const W=760,H=200,pl=58,pb=26,pt=10, n=p.rows.length, gw=(W-pl-10)/n, bw=Math.min(22,gw*0.38);
+    let mx=0; p.rows.forEach(r=>p.cols.forEach(c=>mx=Math.max(mx,p.v(r,c)||0)));
+    const mag=Math.pow(10,Math.floor(Math.log10(mx))); const step=[1,2,5,10].map(f=>f*mag/2).find(st=>mx/st<=6); const nt=Math.ceil(mx/step), top=nt*step;
+    const y=v=>pt+(H-pt-pb)*(1-v/top);
+    let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gráfico de columnas">`;
+    for(let k=0;k<=nt;k++){ const v=step*k; s+=`<line x1="${pl}" x2="${W-6}" y1="${y(v)}" y2="${y(v)}" stroke="#e2ddd2"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#5f6b64" font-family="IBM Plex Mono">${agg==="count"?num0(v):num0(v/1000)+"k"}</text>`; }
+    p.rows.forEach((r,i)=>{ const x0=pl+i*gw+gw/2;
+      p.cols.forEach((c,j)=>{ const v=p.v(r,c)||0; s+=`<rect x="${x0+(j?2:-bw-2)}" y="${y(v)}" width="${bw}" height="${H-pb-y(v)}" fill="${j?"#c9573f":"#2f6b52"}"><title>${lab(rk,r)} ${c}: ${fmtAgg(agg,v)}</title></rect>`; });
+      const t=lab(rk,r); s+=`<text x="${x0}" y="${H-8}" text-anchor="middle" font-size="${n>8?11:10.5}" fill="#1f3d33" font-family="IBM Plex Sans">${esc(t.length>16?t.slice(0,15)+"…":t)}</text>`; });
+    q("[data-svg]").innerHTML=s+"</svg>";
+  };
+  box.querySelectorAll("select").forEach(s=>s.onchange=run); run();
+}
+};
+
+/* ---------- Motor ---------- */
+const wrap=document.getElementById("slides");
+wrap.innerHTML=S.map(s=>s.html).join("");
+const els=[...wrap.children];
+els.forEach((el,i)=>S[i].init&&S[i].init(el));
+wrap.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(+b.dataset.go)));
+const dots=document.getElementById("dots");
+dots.innerHTML=TOPICS.map((t,i)=>`<button title="${t.k}" aria-label="Ir a ${t.k}" data-t="${i}"></button>`).join("");
+dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(2+3*b.dataset.t));
+let cur=0;
+function go(i){
+  cur=Math.max(0,Math.min(els.length-1,i));
+  els.forEach((e,j)=>e.classList.toggle("on",j===cur));
+  const tp=S[cur].topic;
+  dots.querySelectorAll("button").forEach((b,j)=>{b.classList.toggle("cur",j===tp);b.classList.toggle("done",tp>j||(tp<0&&cur>1));});
+  document.getElementById("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
+  document.getElementById("topL").textContent = tp<0?"MÓDULO 3 · TABLAS DINÁMICAS AVANZADAS":`MÓDULO 3 · TEMA 0${tp+1} DE 07 · ${TOPICS[tp].k.toUpperCase()}`;
+  document.getElementById("prev").disabled=cur===0; document.getElementById("next").disabled=cur===els.length-1;
+}
+document.getElementById("prev").onclick=()=>go(cur-1);
+document.getElementById("next").onclick=()=>go(cur+1);
+document.getElementById("fs").onclick=()=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{}); }catch(e){} };
+document.addEventListener("keydown",e=>{
+  if(locked) return;
+  const tag=(e.target.tagName||"").toLowerCase();
+  if(tag==="input"||tag==="select") return;
+  if(["ArrowRight","PageDown"].includes(e.key)||(e.key===" "&&tag!=="button")){e.preventDefault();go(cur+1);}
+  else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==="Home") go(0); else if(e.key==="End") go(els.length-1);
+  else if(e.key==="f"||e.key==="F") document.getElementById("fs").click();
+});
+function fit(){ const st=document.getElementById("stage"); const s=Math.min((innerWidth-16)/1280,(innerHeight-16)/720); st.style.transform=`translate(-50%,-50%) scale(${s})`; }
+addEventListener("resize",fit); fit(); go((parseInt(location.hash.slice(1),10)||1)-1);
+</script>
