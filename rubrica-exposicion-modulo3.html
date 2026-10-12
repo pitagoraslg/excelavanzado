@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rúbrica de exposición · Módulo 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap">
+<style>
+:root{
+  --bg:#ebe7de;
+  --paper:#f7f4ee;     /* crema */
+  --card:#ffffff;
+  --ink:#1f3d33;       /* verde bosque */
+  --muted:#5f6b64;
+  --line:#e2ddd2;
+  --grid:#cdc6b8;
+  --xl:#c9573f;        /* coral */
+  --xl-soft:#f9e8e2;
+  --green:#2f6b52;
+  --green-soft:#e4efe8;
+  --warn:#9a3b2b;
+  --warn-soft:#f6e4de;
+  --gold:#f0bd45;
+  --night:#10241d;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --mono:"IBM Plex Mono", Consolas, "Courier New", monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;text-wrap:balance}
+h1,h2{font-family:var(--serif);font-weight:600;line-height:1.08}
+h3{font-size:17px;font-weight:600}
+p{margin:0}
+a{color:var(--green)}
+.muted{color:var(--muted)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--xl)}
+.loading{min-height:100vh;display:grid;place-items:center;font-family:var(--mono);color:var(--muted)}
+
+/* ---------- comunes ---------- */
+.wrap{max-width:680px;margin:0 auto;padding:20px 16px 56px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:22px}
+.topline a{color:var(--muted);text-decoration:none}
+.topline a:hover{color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.stack>*+*{margin-top:16px}
+.btn{font:600 15px/1.2 var(--sans);border:1px solid var(--grid);background:#fff;color:var(--ink);padding:11px 18px;border-radius:10px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn.primary:hover{background:#163027}
+.btn.coral{background:var(--xl);border-color:var(--xl);color:#fff}
+.btn.danger{color:var(--warn);border-color:#e3c3b9}
+.btn.sm{padding:6px 10px;font-size:13px;border-radius:8px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:999px;background:var(--green-soft);color:var(--green);white-space:nowrap}
+.pill.closed{background:var(--xl-soft);color:var(--xl)}
+.pill.open::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--grid);flex:none}
+.dot.on{background:#2fa36b;box-shadow:0 0 0 3px rgba(47,163,107,.18)}
+.err{color:var(--warn);font-size:14px;min-height:1.2em}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:10px;font-size:15px;opacity:0;pointer-events:none;transition:.3s;z-index:100;max-width:calc(100% - 32px);text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+
+/* ---------- jurado ---------- */
+.hello h1{font-size:clamp(30px,6vw,40px)}
+.names{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.name-btn{font:500 16px/1.3 var(--sans);text-align:left;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:56px}
+.name-btn:hover:not(:disabled){border-color:var(--ink);background:var(--green-soft)}
+.name-btn:disabled{cursor:not-allowed;color:var(--muted);background:var(--paper)}
+.name-btn small{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--xl)}
+.crit-mini{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.crit-mini li{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.crit-mini b{font-weight:600}
+.crit-mini span{font-family:var(--mono);font-size:13px;color:var(--xl)}
+.crit-mini small{grid-column:1/-1;color:var(--muted);font-size:14px}
+.round-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.crit-title{font-size:clamp(28px,6vw,38px);margin-top:6px}
+.crit-desc{color:var(--muted);font-size:17px;margin-top:8px}
+.expo-tag{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px 14px;background:var(--xl-soft);border-radius:10px;font-size:16px}
+.expo-tag b{font-weight:600}
+.field label{display:block;font-weight:600;margin-bottom:6px}
+.field .hint{font-size:14px;color:var(--muted);margin-bottom:8px}
+.pts-row{display:flex;align-items:center;gap:12px}
+.pts-in{font:600 30px/1 var(--mono);width:150px;padding:12px 14px;border:2px solid var(--grid);border-radius:12px;color:var(--ink);background:#fff}
+.pts-row .of{font:500 20px var(--mono);color:var(--muted)}
+textarea{width:100%;min-height:130px;font:16px/1.5 var(--sans);padding:12px 14px;border:2px solid var(--grid);border-radius:12px;color:var(--ink);resize:vertical;background:#fff}
+.pts-in:focus,textarea:focus,input:focus{outline:none;border-color:var(--green)}
+.charc{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:right;margin-top:4px}
+.sent{text-align:center}
+.sent .check{width:64px;height:64px;border-radius:50%;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-size:34px;margin:0 auto 10px;animation:popin .5s}
+@keyframes popin{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.myvote{background:var(--paper);border-radius:10px;padding:14px;text-align:left}
+.myvote .p{font:600 22px var(--mono);color:var(--xl)}
+.mini-score{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini-score>div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.mini-score .nm{font-size:14px;color:var(--muted)}
+.mini-score .v{font:600 28px var(--serif)}
+.mini-score .v small{font:500 14px var(--mono);color:var(--muted)}
+.result-big{font:600 clamp(54px,14vw,84px)/1 var(--serif);color:var(--xl)}
+.result-big small{font:500 22px var(--mono);color:var(--muted)}
+.foot-link{margin-top:34px;text-align:center;font-size:13px}
+.foot-link a{color:var(--muted)}
+
+/* ---------- pantalla ---------- */
+.screen{min-height:100vh;display:flex;flex-direction:column;background:var(--paper)}
+.scr-head{display:flex;align-items:center;gap:20px;padding:14px 28px;background:#fff;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.prog{flex:1;min-width:200px;display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.prog .track{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.prog .track i{display:block;height:100%;background:var(--xl);transition:width .6s}
+.scr-main{flex:1;display:grid;grid-template-columns:minmax(0,1.65fr) minmax(320px,1fr);gap:24px;padding:24px 28px}
+.crit-card{background:var(--ink);color:#fff;border-radius:16px;padding:26px 28px;position:relative;overflow:hidden}
+.crit-card .eyebrow{color:#f3b9a8}
+.crit-card h1{font-size:clamp(34px,4vw,54px);margin-top:8px}
+.crit-card p{color:#cfe0d8;font-size:clamp(16px,1.5vw,20px);margin-top:10px;max-width:46em}
+.crit-card .evaluando{margin-top:18px;display:inline-flex;gap:10px;align-items:center;background:rgba(255,255,255,.1);padding:10px 16px;border-radius:999px;font-size:clamp(16px,1.5vw,20px)}
+.crit-card .evaluando b{color:var(--gold)}
+.feed-title{margin:24px 0 12px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.feed{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;align-content:start}
+.fcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;animation:feedin .55s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes feedin{from{opacity:0;transform:translateY(16px) scale(.94)}to{opacity:1;transform:none}}
+.fcard .fh{display:flex;align-items:center;gap:10px}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font:600 13px var(--mono);flex:none}
+.fcard .fn{font-weight:600;flex:1;min-width:0;line-height:1.25}
+.fcard .fp{font:600 18px var(--mono);color:var(--xl);white-space:nowrap}
+.fcard .fp small{font-size:12px;color:var(--muted)}
+.fcard .fc{margin-top:10px;font-size:clamp(15px,1.25vw,18px);line-height:1.45;overflow-wrap:anywhere}
+.fcard.upd{animation:flash 1s}
+@keyframes flash{0%{background:var(--xl-soft)}100%{background:#fff}}
+.scr-right{display:flex;flex-direction:column;gap:16px}
+.avg-card{text-align:center;position:relative}
+.avg-card .lbl{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.big-avg{font:600 clamp(60px,6.5vw,104px)/1 var(--serif);color:var(--ink);margin:8px 0 4px}
+.big-avg small{font:500 clamp(18px,1.6vw,24px) var(--mono);color:var(--muted)}
+.avg-card.closed{border-color:var(--xl);box-shadow:0 0 0 4px var(--xl-soft)}
+.avg-card.closed .big-avg{color:var(--xl)}
+.avg-card.flash{animation:ring 1.4s}
+@keyframes ring{0%{transform:scale(1)}20%{transform:scale(1.05)}100%{transform:scale(1)}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.chip{font:500 12px var(--mono);padding:4px 8px;border-radius:999px;background:var(--paper);color:var(--muted);border:1px solid var(--line);transition:.3s}
+.chip.ok{background:var(--green-soft);color:var(--green);border-color:#c6dccf}
+.expo-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;position:relative;transition:.3s}
+.expo-card.active{border-color:var(--xl);box-shadow:0 0 0 3px var(--xl-soft)}
+.expo-card .eh{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.expo-card .en{font-weight:600;line-height:1.25}
+.expo-card .en small{display:block;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.expo-card .et{font:600 40px/1 var(--serif);white-space:nowrap}
+.expo-card .et small{font:500 14px var(--mono);color:var(--muted)}
+.bars{display:grid;gap:5px;margin-top:12px}
+.brow{display:grid;grid-template-columns:104px 1fr 44px;gap:8px;align-items:center;font-size:12.5px;color:var(--muted)}
+.brow.cur{color:var(--ink);font-weight:600}
+.brow b{font:500 12px var(--mono);text-align:right;color:var(--ink)}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--green);border-radius:4px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.brow.cur .bar i{background:var(--xl)}
+.plus{position:absolute;right:18px;top:-6px;font:700 34px var(--serif);color:var(--xl);pointer-events:none;animation:plusup 2s forwards}
+@keyframes plusup{0%{opacity:0;transform:translateY(20px) scale(.6)}15%{opacity:1;transform:translateY(0) scale(1.15)}70%{opacity:1;transform:translateY(-20px) scale(1)}100%{opacity:0;transform:translateY(-40px)}}
+.intro{display:grid;place-items:center;padding:40px 24px}
+.intro-in{max-width:1100px;width:100%}
+.intro h1{font-size:clamp(44px,6vw,80px);margin-top:10px}
+.intro .lead{font-size:clamp(18px,2vw,24px);color:var(--muted);margin-top:8px}
+.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:30px}
+.expos{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+.expos div{background:var(--ink);color:#fff;border-radius:14px;padding:18px 20px;font:600 clamp(20px,2.2vw,28px)/1.2 var(--serif)}
+.expos small{display:block;font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#f3b9a8;margin-bottom:6px}
+.jur-grid{display:grid;grid-template-columns:1fr;gap:6px;margin-top:10px}
+.jur{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;background:#fff;border:1px solid var(--line);font-size:15px;transition:.3s}
+.jur.on{border-color:#c6dccf;background:var(--green-soft)}
+.join{margin-top:26px;padding:14px 18px;border-radius:12px;background:#fff;border:1px dashed var(--grid);font-size:17px}
+.join code{font-family:var(--mono);color:var(--xl);overflow-wrap:anywhere}
+
+/* ---------- final con fuegos artificiales ---------- */
+.final{position:fixed;inset:0;z-index:50;overflow:auto;color:#fff;background:radial-gradient(ellipse at 50% 115%,#2b6352 0%,#13302a 45%,#0a1713 100%)}
+.final canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.final-in{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:clamp(28px,6vh,64px) 16px 48px;text-align:center}
+.f-eyebrow{font-family:var(--mono);font-size:clamp(11px,1.2vw,14px);letter-spacing:.16em;text-transform:uppercase;color:#f3b9a8;animation:fade .8s both}
+.f-who{font:600 clamp(32px,6vw,72px)/1.05 var(--serif);margin-top:14px;animation:fade .8s .2s both;text-wrap:balance}
+.f-score{margin-top:clamp(10px,3vh,30px);animation:zoom 1s .35s both}
+.f-score .n{font:700 clamp(110px,24vw,280px)/.9 var(--serif);color:var(--gold);text-shadow:0 0 50px rgba(240,189,69,.45);font-variant-numeric:tabular-nums}
+.f-score .o{display:block;font:500 clamp(20px,3vw,34px) var(--mono);color:#cfe3da;margin-top:8px}
+.fbars{max-width:760px;margin:clamp(20px,4vh,40px) auto 0;display:grid;gap:10px;text-align:left}
+.frow{display:grid;grid-template-columns:minmax(120px,240px) 1fr 128px;gap:14px;align-items:center;font-size:clamp(14px,1.6vw,17px);animation:fade .6s both;animation-delay:var(--d)}
+.frow b{font:500 clamp(13px,1.4vw,16px) var(--mono);text-align:right;white-space:nowrap;color:var(--gold)}
+.fbar{height:12px;background:rgba(255,255,255,.12);border-radius:6px;overflow:hidden}
+.fbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f0bd45,#f28a5c);border-radius:6px;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+.f-prev{display:inline-flex;gap:8px;margin-top:20px;font:500 14px var(--mono);color:#cfe3da;background:rgba(255,255,255,.08);padding:8px 14px;border-radius:999px;animation:fade 1s 1.4s both}
+.jrank{max-width:820px;margin:clamp(20px,4vh,36px) auto 0;display:grid;gap:10px;text-align:left}
+.jcard{display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;padding:12px 18px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);animation:rise .7s both;animation-delay:var(--d)}
+.jcard .r{font:600 22px var(--serif);color:#cfe3da;text-align:center}
+.jcard .nm{font-size:clamp(17px,2vw,22px);font-weight:600}
+.jcard .nm small{display:block;font:500 12px var(--mono);color:#f3b9a8;letter-spacing:.08em;text-transform:uppercase}
+.jcard .v{font:700 clamp(30px,4vw,44px)/1 var(--serif);color:var(--gold);font-variant-numeric:tabular-nums}
+.jcard .v small{font:500 14px var(--mono);color:#cfe3da}
+.jcard.top{background:rgba(240,189,69,.16);border-color:rgba(240,189,69,.55)}
+.jcard.me{outline:3px solid var(--gold);outline-offset:2px}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes zoom{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:none}}
+
+/* ---------- profesor ---------- */
+.prof{max-width:1440px;margin:0 auto;padding:0 16px 48px}
+.pbar{position:sticky;top:0;z-index:10;background:var(--paper);padding:14px 0 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.pnow{font:600 clamp(20px,2.4vw,28px)/1.2 var(--serif);margin-top:4px}
+.pnext{font-size:14px;color:var(--muted);margin-top:2px}
+.pnext kbd{font:600 11px var(--mono);border:1px solid var(--grid);border-bottom-width:2px;border-radius:4px;padding:1px 5px;background:#fff}
+.pctrl{display:flex;gap:8px;flex-wrap:wrap}
+.pctrl .btn.primary{min-width:220px}
+.ptools{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.pgrid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+.pgrid .span2{grid-column:1/-1}
+.pgrid h3{margin-bottom:12px}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
+.tbl td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl td.num{font-family:var(--mono);white-space:nowrap}
+.tbl tr.none td{color:var(--muted)}
+.tbl .cmt{overflow-wrap:anywhere}
+.tbl tfoot td{font-weight:600;border-bottom:0}
+.tbl .cur{background:var(--xl-soft)}
+.tbl-wrap{overflow-x:auto}
+.nrow{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:#fff}
+.nrow .nh{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.nrow .nn{flex:1;min-width:160px;line-height:1.25}
+.nrow .nn small{display:block;font-size:12px;color:var(--muted)}
+.ninput{font:600 18px var(--mono);width:84px;padding:7px 10px;border:2px solid var(--grid);border-radius:8px;text-align:center;color:var(--ink)}
+.ninput.saved{border-color:#2fa36b}
+.ninput.bad{border-color:var(--warn)}
+.nrow details{margin-top:6px;font-size:14px}
+.nrow summary{cursor:pointer;color:var(--green);font-size:13px}
+.ncoms{display:grid;gap:6px;margin-top:8px}
+.ncoms div{background:var(--paper);border-radius:8px;padding:8px 10px}
+.ncoms b{font:500 12px var(--mono);color:var(--xl)}
+.hint{font-size:14px;color:var(--muted);margin:-6px 0 12px}
+.gate{max-width:420px;margin:12vh auto 0;text-align:center}
+.gate form{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.gate input{font:600 20px var(--mono);width:150px;padding:10px 12px;border:2px solid var(--grid);border-radius:10px;text-align:center}
+
+@media (max-width:1000px){
+  .scr-main{grid-template-columns:1fr;padding:16px}
+  .scr-head{padding:12px 16px}
+  .pgrid{grid-template-columns:1fr}
+  .intro-grid,.expos{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .frow{grid-template-columns:1fr auto;gap:4px 10px}
+  .frow .fbar{grid-column:1/-1;grid-row:2}
+  .jcard{grid-template-columns:36px 1fr auto;padding:10px 12px;gap:10px}
+  .pctrl .btn.primary{min-width:0;flex:1}
+  .brow{grid-template-columns:90px 1fr 40px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div id="app"><div class="loading">Conectando…</div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* Firebase (mismo proyecto que el Módulo 1) */
+(function(){
+  var firebaseConfig = {
+    apiKey: "AIzaSyCLrT88lr0by0elfhI6bwdbgFN3u3ORCDI",
+    authDomain: "excel-avanzado-icadep.firebaseapp.com",
+    databaseURL: "https://excel-avanzado-icadep-default-rtdb.firebaseio.com",
+    projectId: "excel-avanzado-icadep",
+    storageBucket: "excel-avanzado-icadep.firebasestorage.app",
+    messagingSenderId: "391674719896",
+    appId: "1:391674719896:web:738cc75c1d9720dd7caaed"
+  };
+  var APP_CDNS = [
+    "https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/firebase/10.13.2/firebase-app-compat.min.js"
+  ];
+  var DB_CDNS = [
+    "https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/firebase/10.13.2/firebase-database-compat.min.js"
+  ];
+  function loadScript(src){
+    return new Promise(function(resolve, reject){
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = function(){ resolve(true); };
+      s.onerror = function(){ reject(new Error('load failed: ' + src)); };
+      document.head.appendChild(s);
+    });
+  }
+  function loadWithFallback(urls){
+    var i = 0;
+    function tryNext(){
+      if(i >= urls.length) return Promise.reject(new Error('all sources failed'));
+      return loadScript(urls[i++]).catch(tryNext);
+    }
+    return tryNext();
+  }
+  function showLoadError(){
+    document.getElementById('app').innerHTML =
+      '<div class="wrap"><div class="card" style="text-align:center;margin-top:12vh">' +
+      '<h2 style="margin-bottom:12px">No se pudo conectar</h2>' +
+      '<p class="muted">No logramos cargar el servicio en tiempo real. Revisa tu conexión a internet o intenta desde otra red (por ejemplo, datos móviles) y recarga la página.</p>' +
+      '</div></div>';
+  }
+  loadWithFallback(APP_CDNS)
+    .then(function(){ return loadWithFallback(DB_CDNS); })
+    .then(function(){
+      if(typeof firebase === 'undefined'){ showLoadError(); return; }
+      firebase.initializeApp(firebaseConfig);
+      window.EXCEL_DB_READY = firebase.database();
+      window.dispatchEvent(new Event('excel-firebase-ready'));
+    })
+    .catch(showLoadError);
+})();
+</script>
+
+<script>
+(function(){
+'use strict';
+
+/* =========================================================
+   CONFIGURACIÓN
+   ========================================================= */
+const ROOT = 'rubricaM3';
+const PROFE_CLAVE = '7319';   // clave del panel del profesor
+
+const EXPOS = [
+  { nombre:'Alenny Tejeda Montero', corto:'Alenny' },
+  { nombre:'Crispatri Albenia Borbón Silva', corto:'Crispatri' }
+];
+const JURADOS = [
+  'Adriana García Hidalgo',
+  'Ángel Rodolfo Mariano Ventura',
+  'Hector José Donastorg Vásquez',
+  'Jorge Antonio Suazo Bello',
+  'Katherinne Liliana Paulino Rosario',
+  'Rachell Gómez',
+  'Winnifer Valdez Medina',
+  'Yasmiry Mejía Núñez',
+  'Katherine Suriel'
+].map((nombre, i) => ({ id:'j' + (i + 1), nombre }));
+const CRIT = [
+  { nombre:'Dominio del tema',           corto:'Dominio',        max:1.5,  desc:'Entiende lo que explica, no lo memorizó, y responde con seguridad.' },
+  { nombre:'Desempeño práctico',         corto:'Práctica',       max:1.5,  desc:'Construye la tabla dinámica en vivo en Excel con agilidad y sin errores.' },
+  { nombre:'Expresión oral',             corto:'Expresión oral', max:1.25, desc:'Voz clara, buena dicción y fluidez, sin muletillas ni leer.' },
+  { nombre:'Capacidad didáctica',        corto:'Didáctica',      max:1.25, desc:'Enseña paso a paso; el público podría repetir lo que vio.' },
+  { nombre:'Poder de convencimiento',    corto:'Convencimiento', max:1.25, desc:'Transmite seguridad y deja al público con ganas de usar tablas dinámicas.' },
+  { nombre:'Interacción con el público', corto:'Interacción',    max:1.25, desc:'Hace preguntas, invita a participar por micrófono o chat y mantiene la atención.' },
+  { nombre:'Presentación visual',        corto:'Presentación',   max:1,    desc:'Pantalla compartida legible, zoom adecuado y diapositivas ordenadas.' },
+  { nombre:'Calidad del material',       corto:'Material',       max:1,    desc:'Sin faltas de ortografía, buena redacción, datos correctos y fuentes citadas.' }
+];
+const NR = CRIT.length * EXPOS.length;    // 16 rondas: criterio 1 (A, B), criterio 2 (A, B)…
+const MIN_COMENTARIO = 15;
+const PASOS_FINAL = 3;                    // 1 Alenny · 2 Crispatri · 3 jurados
+
+const MODO = (new URLSearchParams(location.search).get('modo') || 'jurado').toLowerCase();
+const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const app = document.getElementById('app');
+
+/* ---------- almacenamiento local seguro ---------- */
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set(k, v){ try { localStorage.setItem(k, v); } catch(e){} },
+  del(k){ try { localStorage.removeItem(k); } catch(e){} }
+};
+let DEV = store.get('rubM3-dev');
+if(!DEV){ DEV = 'd' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36); store.set('rubM3-dev', DEV); }
+
+/* ---------- estado ---------- */
+let db = null;
+let S = null;
+let jid = MODO === 'jurado' ? store.get('rubM3-jurado') : null;
+let editando = false;
+let lastKey = null;
+
+function norm(v){
+  v = v || {};
+  return {
+    estado: Object.assign({ fase:'inicio', ronda:0, abierta:false, registro:false, finalPaso:1 }, v.estado || {}),
+    reclamos: v.reclamos || {},
+    conectados: v.conectados || {},
+    votos: v.votos || {},
+    cerradas: v.cerradas || {},
+    notas: v.notas || {}
+  };
+}
+
+/* ---------- utilidades ---------- */
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+const f2 = n => (Math.round(n * 100) / 100).toFixed(2);
+const r2 = n => Math.round(n * 100) / 100;
+const iniciales = n => n.split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+const jur = id => JURADOS.find(j => j.id === id);
+const critDe = r => CRIT[Math.floor(r / EXPOS.length)];
+const expoDe = r => r % EXPOS.length;
+const $ = (sel, el) => (el || document).querySelector(sel);
+const $$ = (sel, el) => Array.from((el || document).querySelectorAll(sel));
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function parseNum(s){
+  s = String(s).trim().replace(',', '.');
+  if(!/^(\d+(\.\d{1,2})?|\.\d{1,2})$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+
+/* Cuenta animada de un número */
+function animNum(el, to, dec, dur){
+  if(!el) return;
+  dec = dec == null ? 2 : dec;
+  if(to == null){ el.textContent = '—'; el.dataset.v = ''; return; }
+  const from = el.dataset.v === undefined || el.dataset.v === '' ? 0 : parseFloat(el.dataset.v);
+  el.dataset.v = to;
+  cancelAnimationFrame(el._raf);
+  if(RM || Math.abs(from - to) < 1e-9){ el.textContent = to.toFixed(dec); return; }
+  const t0 = performance.now(); dur = dur || 900;
+  const step = now => {
+    const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = (from + (to - from) * e).toFixed(dec);
+    if(k < 1) el._raf = requestAnimationFrame(step);
+  };
+  el._raf = requestAnimationFrame(step);
+}
+
+/* ---------- cálculos ---------- */
+const votosDe = r => (S.votos['r' + r] || {});
+const cerrada = r => !!S.cerradas['r' + r];
+function promedio(r){
+  const v = Object.values(votosDe(r)).map(x => +x.pts).filter(n => isFinite(n));
+  return v.length ? r2(v.reduce((a, b) => a + b, 0) / v.length) : null;
+}
+function puntaje(e, c){
+  const r = c * EXPOS.length + e;
+  return cerrada(r) ? (promedio(r) || 0) : null;
+}
+function total(e){
+  let t = 0;
+  for(let c = 0; c < CRIT.length; c++){ const p = puntaje(e, c); if(p != null) t += p; }
+  return r2(t);
+}
+const conectado = id => !!(S.conectados[id] && Object.keys(S.conectados[id]).length);
+const rondasVotadas = id => { let n = 0; for(let r = 0; r < NR; r++) if(votosDe(r)[id]) n++; return n; };
+function notaJurado(id){ const n = S.notas[id]; return n == null || n === '' ? null : +n; }
+
+/* =========================================================
+   RENDER GENERAL
+   ========================================================= */
+function render(){
+  if(!S) return;
+  if(MODO === 'jurado') chequearReclamo();
+  const key = MODO + '|' + claveVista();
+  if(key !== lastKey){
+    lastKey = key;
+    finalOff();
+    construir();
+  }
+  actualizar();
+}
+function claveVista(){
+  const e = S.estado;
+  if(MODO === 'profesor') return 'p';
+  if(e.fase === 'final') return 'f' + e.finalPaso;
+  if(MODO === 'pantalla') return e.fase === 'ronda' ? 'r' + e.ronda : 'ini';
+  // jurado
+  if(!jid) return 'sel|' + e.registro;
+  if(e.fase === 'inicio') return 'ini|' + jid;
+  const mio = votosDe(e.ronda)[jid];
+  if(e.abierta) return 'r' + e.ronda + '|form|' + (mio && !editando ? 'ok' : 'edit');
+  return 'r' + e.ronda + '|cerrada';
+}
+function construir(){
+  const e = S.estado;
+  if(MODO === 'profesor') return buildProfesor();
+  if(e.fase === 'final') return buildFinal(e.finalPaso);
+  if(MODO === 'pantalla') return e.fase === 'ronda' ? buildPantallaRonda() : buildPantallaInicio();
+  return buildJurado();
+}
+function actualizar(){
+  const e = S.estado;
+  if(MODO === 'profesor') return updProfesor();
+  if(e.fase === 'final') return;
+  if(MODO === 'pantalla') return e.fase === 'ronda' ? updPantallaRonda() : updPantallaInicio();
+  return updJurado();
+}
+
+/* =========================================================
+   JURADO
+   ========================================================= */
+let presRef = null;
+function presencia(){
+  if(presRef){ presRef.onDisconnect().cancel(); presRef.remove(); presRef = null; }
+  if(jid){
+    presRef = db.ref(ROOT + '/conectados/' + jid + '/' + DEV);
+    presRef.onDisconnect().remove();
+    presRef.set(true);
+  }
+}
+function chequearReclamo(){
+  if(!jid) return;
+  const c = S.reclamos[jid];
+  if(c === DEV) return;
+  jid = null; editando = false;
+  store.del('rubM3-jurado');
+  presencia();
+  toast(c ? 'Tu nombre fue liberado por el profesor. Vuelve a elegirlo.' : 'Elige tu nombre para participar.');
+}
+function elegir(id){
+  if(!S.estado.registro) return;
+  db.ref(ROOT + '/reclamos/' + id).transaction(
+    cur => (cur == null || cur === DEV) ? DEV : undefined,
+    (err, ok) => {
+      if(err){ toast('No se pudo registrar. Intenta de nuevo.'); return; }
+      if(!ok){ toast('Ese nombre ya está en uso en otro dispositivo.'); return; }
+      jid = id; store.set('rubM3-jurado', id); presencia(); render();
+    }
+  );
+}
+function salir(){
+  if(!confirm('¿Quieres cambiar de nombre?')) return;
+  const id = jid;
+  jid = null; store.del('rubM3-jurado'); presencia();
+  db.ref(ROOT + '/reclamos/' + id).transaction(cur => cur === DEV ? null : undefined);
+  render();
+}
+
+function topline(){
+  return `<div class="topline"><a href="index.html">← Inicio</a><span>Módulo 3 · Rúbrica de exposición</span></div>`;
+}
+function miniScoreHTML(){
+  return `<div class="mini-score">${EXPOS.map((x, e) =>
+    `<div><div class="nm">${esc(x.corto)} · acumulado</div><div class="v"><span data-tot="${e}">0.00</span> <small>/ 10</small></div></div>`).join('')}</div>`;
+}
+
+function buildJurado(){
+  const e = S.estado;
+  let h = '<div class="wrap">' + topline();
+
+  if(!jid){
+    h += `<div class="stack hello">
+      <div class="eyebrow">Jurado</div>
+      <h1>¿Quién eres?</h1>`;
+    if(!e.registro){
+      h += `<div class="card"><p><b>El registro todavía no está activo.</b></p><p class="muted" style="margin-top:6px">Espera a que el profesor lo active. Esta pantalla se actualiza sola.</p></div>`;
+    } else {
+      h += `<p class="muted">Toca tu nombre. Solo puedes elegirlo en un dispositivo.</p>
+        <div class="names">${JURADOS.map(j => `<button class="name-btn" data-j="${j.id}"><span>${esc(j.nombre)}</span><small></small></button>`).join('')}</div>`;
+    }
+    h += `</div>`;
+  }
+  else if(e.fase === 'inicio'){
+    h += `<div class="stack hello">
+      <div class="eyebrow">Jurado registrado</div>
+      <h1>Hola, ${esc(jur(jid).nombre.split(' ')[0])}</h1>
+      <div class="card"><p>Ya estás dentro. La evaluación empieza cuando el profesor abra la primera ronda; tu pantalla cambiará sola.</p>
+      <p class="muted" style="margin-top:8px">En cada ronda pondrás los puntos de un criterio para una expositora y justificarás tu puntuación con un comentario. Los comentarios se leen en vivo.</p></div>
+      <h3>Criterios de la rúbrica (10 puntos)</h3>
+      <ul class="crit-mini">${CRIT.map((c, i) => `<li><b>${i + 1}. ${esc(c.nombre)}</b><span>${c.max} ${c.max === 1 ? 'pt' : 'pts'}</span><small>${esc(c.desc)}</small></li>`).join('')}</ul>
+      <p class="foot-link"><a href="#" id="jSalir">No soy ${esc(jur(jid).nombre.split(' ')[0])} · cambiar nombre</a></p>
+    </div>`;
+  }
+  else {
+    const r = e.ronda, c = critDe(r), ex = EXPOS[expoDe(r)];
+    const mio = votosDe(r)[jid];
+    h += `<div class="stack">
+      <div class="round-head"><span class="eyebrow">Ronda ${r + 1} de ${NR} · Criterio ${Math.floor(r / EXPOS.length) + 1} de ${CRIT.length}</span>
+      <span class="pill ${e.abierta ? 'open' : 'closed'}">${e.abierta ? 'Votación abierta' : 'Ronda cerrada'}</span></div>
+      <div class="card">
+        <h2 class="crit-title">${esc(c.nombre)}</h2>
+        <p class="crit-desc">${esc(c.desc)}</p>
+        <div class="expo-tag">Evaluando a <b>${esc(ex.nombre)}</b></div>
+      </div>`;
+    if(e.abierta && (!mio || editando)){
+      h += `<form class="card stack" id="jForm" novalidate>
+        <div class="field"><label for="jPts">Tus puntos</label>
+          <p class="hint">De 0 a ${c.max}. Puedes usar decimales, por ejemplo 0.5 o 1.2.</p>
+          <div class="pts-row"><input id="jPts" class="pts-in" type="text" inputmode="decimal" autocomplete="off" placeholder="0.0" value="${mio ? mio.pts : ''}"><span class="of">/ ${c.max}</span></div></div>
+        <div class="field"><label for="jCom">Justifica tu puntuación</label>
+          <p class="hint">¿Por qué le das esos puntos? Este comentario se leerá en vivo.</p>
+          <textarea id="jCom" maxlength="600" placeholder="Escribe tu comentario…">${mio ? esc(mio.com) : ''}</textarea>
+          <div class="charc" id="jCount"></div></div>
+        <p class="err" id="jErr"></p>
+        <button class="btn primary" type="submit" style="width:100%;padding:14px">${mio ? 'Guardar cambios' : 'Enviar evaluación'}</button>
+        ${mio ? '<button class="btn" type="button" id="jCancel" style="width:100%">Cancelar</button>' : ''}
+      </form>`;
+    } else if(e.abierta){
+      h += `<div class="card stack sent">
+        <div class="check">✓</div><h3>Tu evaluación fue enviada</h3>
+        <div class="myvote"><div class="p">${f2(mio.pts)} / ${c.max}</div><p style="margin-top:6px">${esc(mio.com)}</p></div>
+        <p class="muted" id="jProg"></p>
+        <button class="btn" id="jEdit">Editar mi evaluación</button>
+      </div>`;
+    } else {
+      h += `<div class="card stack" style="text-align:center">
+        <p class="muted">Promedio que recibió ${esc(ex.corto)} en este criterio</p>
+        <div class="result-big"><span id="jAvg">0.00</span> <small>/ ${c.max}</small></div>
+        ${mio ? `<div class="myvote"><p class="muted" style="font-size:14px">Tu evaluación</p><div class="p">${f2(mio.pts)} / ${c.max}</div><p style="margin-top:4px">${esc(mio.com)}</p></div>`
+              : `<p class="err">No enviaste evaluación en esta ronda.</p>`}
+        <p class="muted">Espera la siguiente ronda.</p>
+      </div>`;
+    }
+    h += `<h3>Puntos acumulados</h3>${miniScoreHTML()}</div>`;
+  }
+  h += '</div>';
+  app.innerHTML = h;
+
+  $$('.name-btn').forEach(b => b.addEventListener('click', () => elegir(b.dataset.j)));
+  const s = $('#jSalir'); if(s) s.addEventListener('click', ev => { ev.preventDefault(); salir(); });
+  const ed = $('#jEdit'); if(ed) ed.addEventListener('click', () => { editando = true; render(); });
+  const ca = $('#jCancel'); if(ca) ca.addEventListener('click', () => { editando = false; render(); });
+  const f = $('#jForm');
+  if(f){
+    const com = $('#jCom'), cnt = $('#jCount');
+    const upc = () => { const n = com.value.trim().length; cnt.textContent = n < MIN_COMENTARIO ? `Mínimo ${MIN_COMENTARIO} caracteres (${n})` : `${n} caracteres`; };
+    com.addEventListener('input', upc); upc();
+    f.addEventListener('submit', ev => { ev.preventDefault(); enviarVoto(); });
+  }
+}
+
+function enviarVoto(){
+  const e = S.estado, r = e.ronda, c = critDe(r);
+  const err = $('#jErr');
+  const pts = parseNum($('#jPts').value);
+  const com = $('#jCom').value.trim();
+  if(isNaN(pts)){ err.textContent = 'Escribe tus puntos con números, por ejemplo 1.2'; return; }
+  if(pts < 0 || pts > c.max){ err.textContent = `Los puntos deben estar entre 0 y ${c.max}.`; return; }
+  if(com.length < MIN_COMENTARIO){ err.textContent = `Justifica tu puntuación con al menos ${MIN_COMENTARIO} caracteres.`; return; }
+  if(e.fase !== 'ronda' || !e.abierta){ err.textContent = 'La ronda ya se cerró.'; return; }
+  const btn = $('#jForm button[type=submit]'); btn.disabled = true;
+  db.ref(ROOT + '/votos/r' + r + '/' + jid).set({ pts: r2(pts), com, t: firebase.database.ServerValue.TIMESTAMP })
+    .then(() => { editando = false; render(); })
+    .catch(() => { btn.disabled = false; err.textContent = 'No se pudo enviar. Revisa tu conexión e intenta de nuevo.'; });
+}
+
+function updJurado(){
+  $$('.name-btn').forEach(b => {
+    const c = S.reclamos[b.dataset.j], usado = c && c !== DEV;
+    b.disabled = !!usado;
+    b.querySelector('small').textContent = usado ? 'En uso' : '';
+  });
+  $$('[data-tot]').forEach(el => animNum(el, total(+el.dataset.tot)));
+  const p = $('#jProg');
+  if(p) p.textContent = `${Object.keys(votosDe(S.estado.ronda)).length} de ${JURADOS.length} jurados han enviado su evaluación.`;
+  const a = $('#jAvg'); if(a) animNum(a, promedio(S.estado.ronda) || 0, 2, 1200);
+}
+
+/* =========================================================
+   PANTALLA (para proyectar)
+   ========================================================= */
+function urlJurados(){ return location.origin + location.pathname; }
+
+function buildPantallaInicio(){
+  app.innerHTML = `<div class="screen intro"><div class="intro-in">
+    <div class="eyebrow">ICADEP · Excel Avanzado · Módulo 3</div>
+    <h1>Rúbrica de exposición</h1>
+    <p class="lead">Tablas dinámicas avanzadas · Valor: 10 puntos</p>
+    <div class="expos">${EXPOS.map((x, i) => `<div><small>Expositora ${i + 1}</small>${esc(x.nombre)}</div>`).join('')}</div>
+    <div class="intro-grid">
+      <div><h3>Jurados</h3><div class="jur-grid" id="sJur">${JURADOS.map(j => `<div class="jur" data-j="${j.id}"><span class="dot"></span>${esc(j.nombre)}</div>`).join('')}</div></div>
+      <div><h3>Criterios</h3><ul class="crit-mini" style="margin-top:10px">${CRIT.map((c, i) => `<li><b>${i + 1}. ${esc(c.nombre)}</b><span>${c.max} ${c.max === 1 ? 'pt' : 'pts'}</span></li>`).join('')}</ul></div>
+    </div>
+    <div class="join" id="sJoin"></div>
+  </div></div>`;
+}
+function updPantallaInicio(){
+  $$('#sJur .jur').forEach(el => el.classList.toggle('on', conectado(el.dataset.j)));
+  const n = JURADOS.filter(j => conectado(j.id)).length;
+  $('#sJoin').innerHTML = S.estado.registro
+    ? `<b>Registro abierto (${n} de ${JURADOS.length} conectados).</b> Entra a <code>${esc(urlJurados())}</code> y elige tu nombre.`
+    : `<span class="muted">El registro de jurados se activará en un momento.</span>`;
+}
+
+let pantPrev = null;   // para detectar el cierre de una ronda
+function buildPantallaRonda(){
+  const r = S.estado.ronda, c = critDe(r), e = expoDe(r), ci = Math.floor(r / EXPOS.length);
+  pantPrev = { r, cerrada: cerrada(r) };
+  app.innerHTML = `<div class="screen">
+    <header class="scr-head">
+      <div class="brand">ICADEP · Módulo 3 · Rúbrica de exposición</div>
+      <div class="prog"><span>Ronda ${r + 1} de ${NR}</span><div class="track"><i style="width:${(r + 1) / NR * 100}%"></i></div></div>
+      <span class="pill" id="sStatus"></span>
+    </header>
+    <main class="scr-main">
+      <section>
+        <div class="crit-card">
+          <div class="eyebrow">Criterio ${ci + 1} de ${CRIT.length} · vale ${c.max} ${c.max === 1 ? 'punto' : 'puntos'}</div>
+          <h1>${esc(c.nombre)}</h1>
+          <p>${esc(c.desc)}</p>
+          <div class="evaluando">Evaluando a <b>${esc(EXPOS[e].nombre)}</b></div>
+        </div>
+        <h3 class="feed-title"><span>Comentarios de los jurados</span><span class="muted" id="sCount2" style="font-weight:400;font-size:14px"></span></h3>
+        <p class="muted" id="sEmpty">Esperando las primeras evaluaciones…</p>
+        <div class="feed" id="sFeed"></div>
+      </section>
+      <aside class="scr-right">
+        <div class="card avg-card" id="sAvgCard">
+          <div class="lbl" id="sAvgLbl">Promedio en vivo</div>
+          <div class="big-avg"><span id="sAvg">—</span><small> / ${c.max}</small></div>
+          <div class="muted" id="sCount"></div>
+          <div class="chips">${JURADOS.map(j => `<span class="chip" data-j="${j.id}">${esc(iniciales(j.nombre))}</span>`).join('')}</div>
+        </div>
+        ${EXPOS.map((x, i) => `<div class="expo-card ${i === e ? 'active' : ''}" data-e="${i}">
+          <div class="eh"><div class="en"><small>${i === e ? 'En evaluación' : 'Expositora ' + (i + 1)}</small>${esc(x.nombre)}</div>
+          <div class="et"><span data-tot="${i}">0.00</span><small> / 10</small></div></div>
+          <div class="bars">${CRIT.map((cc, k) => `<div class="brow ${k === ci && i === e ? 'cur' : ''}"><span>${esc(cc.corto)}</span><div class="bar"><i data-b="${i}-${k}"></i></div><b data-bv="${i}-${k}">—</b></div>`).join('')}</div>
+        </div>`).join('')}
+      </aside>
+    </main>
+  </div>`;
+}
+function updPantallaRonda(){
+  const r = S.estado.ronda, c = critDe(r), e = expoDe(r), cer = cerrada(r);
+  const vs = votosDe(r);
+  const ids = Object.keys(vs).sort((a, b) => (vs[a].t || 0) - (vs[b].t || 0));
+
+  const st = $('#sStatus');
+  st.className = 'pill ' + (cer ? 'closed' : 'open');
+  st.textContent = cer ? 'Ronda cerrada' : 'Votación abierta';
+
+  // tarjetas de comentarios
+  const feed = $('#sFeed');
+  $$('.fcard', feed).forEach(el => { if(!vs[el.dataset.j]) el.remove(); });
+  ids.forEach(id => {
+    const v = vs[id], firma = v.pts + '|' + v.com;
+    let el = $('.fcard[data-j="' + id + '"]', feed);
+    const html = `<div class="fh"><span class="avatar">${esc(iniciales(jur(id).nombre))}</span><span class="fn">${esc(jur(id).nombre)}</span><span class="fp">${f2(v.pts)}<small> / ${c.max}</small></span></div><p class="fc">${esc(v.com)}</p>`;
+    if(!el){
+      el = document.createElement('div'); el.className = 'fcard'; el.dataset.j = id;
+      el.innerHTML = html; el.dataset.f = firma; feed.appendChild(el);
+    } else if(el.dataset.f !== firma){
+      el.innerHTML = html; el.dataset.f = firma;
+      el.classList.remove('upd'); void el.offsetWidth; el.classList.add('upd');
+    }
+  });
+  $('#sEmpty').style.display = ids.length ? 'none' : '';
+  const cnt = `${ids.length} de ${JURADOS.length} jurados han evaluado`;
+  $('#sCount').textContent = cnt;
+  $('#sCount2').textContent = cnt;
+  $$('.chip').forEach(ch => ch.classList.toggle('ok', !!vs[ch.dataset.j]));
+
+  // promedio de la ronda
+  const card = $('#sAvgCard');
+  card.classList.toggle('closed', cer);
+  $('#sAvgLbl').textContent = cer ? 'Promedio final del criterio' : 'Promedio en vivo';
+  animNum($('#sAvg'), promedio(r), 2, 1000);
+
+  // acumulados
+  $$('[data-tot]').forEach(el => animNum(el, total(+el.dataset.tot), 2, 1400));
+  for(let i = 0; i < EXPOS.length; i++) for(let k = 0; k < CRIT.length; k++){
+    const p = puntaje(i, k);
+    $('[data-b="' + i + '-' + k + '"]').style.width = p == null ? '0' : (p / CRIT[k].max * 100) + '%';
+    $('[data-bv="' + i + '-' + k + '"]').textContent = p == null ? '—' : f2(p);
+  }
+
+  // efecto al cerrar la ronda
+  if(pantPrev && pantPrev.r === r && !pantPrev.cerrada && cer){
+    card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash');
+    const ec = $('.expo-card[data-e="' + e + '"]');
+    const plus = document.createElement('div');
+    plus.className = 'plus'; plus.textContent = '+' + f2(promedio(r) || 0);
+    ec.appendChild(plus); setTimeout(() => plus.remove(), 2100);
+  }
+  pantPrev = { r, cerrada: cer };
+}
+
+/* =========================================================
+   PANTALLA FINAL + FUEGOS ARTIFICIALES
+   ========================================================= */
+const FW = {
+  cv:null, ctx:null, ps:[], rk:[], raf:0, iv:0, w:0, h:0, cols:['#f0bd45','#f28a5c','#7fd1b0','#ffffff','#f6a6c1','#9cc8ff','#ffd86b'],
+  start(cv){
+    this.stop();
+    this.cv = cv; this.ctx = cv.getContext('2d');
+    this.resize(); this._rs = () => this.resize(); addEventListener('resize', this._rs);
+    const loop = () => { this.tick(); this.raf = requestAnimationFrame(loop); };
+    this.raf = requestAnimationFrame(loop);
+    this.iv = setInterval(() => this.launch(1 + (Math.random() * 2 | 0)), RM ? 2500 : 650);
+  },
+  stop(){
+    cancelAnimationFrame(this.raf); clearInterval(this.iv);
+    if(this._rs) removeEventListener('resize', this._rs);
+    this.ps = []; this.rk = []; this.cv = null;
+  },
+  resize(){
+    const d = Math.min(window.devicePixelRatio || 1, 2);
+    this.w = innerWidth; this.h = innerHeight;
+    this.cv.width = this.w * d; this.cv.height = this.h * d;
+    this.ctx.setTransform(d, 0, 0, d, 0, 0);
+  },
+  launch(n){
+    for(let i = 0; i < n; i++){
+      const ty = this.h * (0.12 + Math.random() * 0.38);
+      this.rk.push({ x:this.w * (0.1 + Math.random() * 0.8), y:this.h + 10, vx:(Math.random() - .5) * 2,
+        vy:-Math.sqrt(2 * 0.12 * (this.h - ty)) * (0.95 + Math.random() * 0.1),
+        col:this.cols[Math.random() * this.cols.length | 0] });
+    }
+  },
+  volley(n){ for(let i = 0; i < n; i++) setTimeout(() => this.launch(1), i * 180); },
+  burst(x, y, col){
+    const n = 70 + (Math.random() * 60 | 0), big = Math.random() * 2 + 4;
+    for(let i = 0; i < n; i++){
+      const a = Math.random() * Math.PI * 2, s = Math.random() * big + 1;
+      this.ps.push({ x, y, vx:Math.cos(a) * s, vy:Math.sin(a) * s, life:1, dec:0.007 + Math.random() * 0.012,
+        col:Math.random() < .2 ? '#ffffff' : col, sz:1.4 + Math.random() * 1.8 });
+    }
+  },
+  tick(){
+    const c = this.ctx; if(!c) return;
+    c.globalCompositeOperation = 'destination-out';
+    c.fillStyle = 'rgba(0,0,0,0.2)'; c.fillRect(0, 0, this.w, this.h);
+    c.globalCompositeOperation = 'lighter';
+    for(let i = this.rk.length - 1; i >= 0; i--){
+      const k = this.rk[i];
+      k.x += k.vx; k.y += k.vy; k.vy += 0.12;
+      c.globalAlpha = 1; c.fillStyle = k.col;
+      c.beginPath(); c.arc(k.x, k.y, 2.4, 0, 6.283); c.fill();
+      if(k.vy >= -0.6){ this.burst(k.x, k.y, k.col); this.rk.splice(i, 1); }
+    }
+    for(let i = this.ps.length - 1; i >= 0; i--){
+      const p = this.ps[i];
+      p.vx *= 0.985; p.vy = p.vy * 0.985 + 0.05; p.x += p.vx; p.y += p.vy; p.life -= p.dec;
+      if(p.life <= 0){ this.ps.splice(i, 1); continue; }
+      c.globalAlpha = p.life; c.fillStyle = p.col;
+      c.beginPath(); c.arc(p.x, p.y, p.sz, 0, 6.283); c.fill();
+    }
+    c.globalAlpha = 1;
+  }
+};
+function finalOff(){ FW.stop(); const f = $('.final'); if(f) f.remove(); }
+
+function buildFinal(paso){
+  app.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'final';
+  let h = '<canvas></canvas><div class="final-in">';
+  if(paso <= EXPOS.length){
+    const e = paso - 1, t = total(e);
+    h += `<div class="f-eyebrow">Resultado final · Exposición de tablas dinámicas</div>
+      <div class="f-who">${esc(EXPOS[e].nombre)}</div>
+      <div class="f-score"><span class="n" id="fN">0.00</span><span class="o">de 10 puntos</span></div>
+      <div class="fbars">${CRIT.map((c, i) => { const p = puntaje(e, i) || 0;
+        return `<div class="frow" style="--d:${1.2 + i * 0.12}s"><span>${esc(c.nombre)}</span><div class="fbar"><i data-w="${p / c.max * 100}"></i></div><b>${f2(p)} / ${c.max}</b></div>`; }).join('')}</div>
+      ${e > 0 ? `<div class="f-prev">${EXPOS.slice(0, e).map((x, i) => esc(x.corto) + ': ' + f2(total(i))).join(' · ')}</div>` : ''}`;
+    wrap.innerHTML = h + '</div>';
+    app.appendChild(wrap);
+    setTimeout(() => animNum($('#fN'), t, 2, 2400), 500);
+    setTimeout(() => $$('.fbar i', wrap).forEach((b, i) => setTimeout(() => { b.style.width = b.dataset.w + '%'; }, i * 120)), 1300);
+  } else {
+    const lista = JURADOS.map(j => ({ j, n:notaJurado(j.id) }))
+      .sort((a, b) => (b.n == null ? -1 : b.n) - (a.n == null ? -1 : a.n));
+    const maxN = Math.max.apply(null, lista.map(x => x.n == null ? -1 : x.n));
+    h += `<div class="f-eyebrow">Resultado final · Jurados</div>
+      <div class="f-who">Puntos de los evaluadores</div>
+      <div class="jrank">${lista.map((x, i) => `<div class="jcard ${x.n != null && x.n === maxN ? 'top' : ''} ${x.j.id === jid ? 'me' : ''}" style="--d:${0.6 + i * 0.25}s">
+        <span class="r">${x.n != null && x.n === maxN ? '★' : i + 1}</span>
+        <span class="nm">${x.j.id === jid ? '<small>Tú</small>' : ''}${esc(x.j.nombre)}</span>
+        <span class="v"><span data-jn="${x.n == null ? '' : x.n}" data-dl="${0.6 + i * 0.25}">${x.n == null ? '—' : '0.0'}</span><small> / 10</small></span></div>`).join('')}</div>
+      <div class="f-prev">${EXPOS.map((x, i) => esc(x.corto) + ': ' + f2(total(i)) + ' / 10').join(' · ')}</div>`;
+    wrap.innerHTML = h + '</div>';
+    app.appendChild(wrap);
+    $$('[data-jn]', wrap).forEach(el => { if(el.dataset.jn !== '') setTimeout(() => animNum(el, +el.dataset.jn, 1, 1200), +el.dataset.dl * 1000); });
+  }
+  FW.start($('canvas', wrap));
+  FW.volley(RM ? 2 : 9);
+}
+
+/* =========================================================
+   PROFESOR
+   ========================================================= */
+function siguienteTexto(){
+  const e = S.estado;
+  if(e.fase === 'inicio') return `Abrir ronda 1: ${CRIT[0].nombre} · ${EXPOS[0].corto}`;
+  if(e.fase === 'ronda' && e.abierta) return `Cerrar ronda ${e.ronda + 1} y mostrar promedio`;
+  if(e.fase === 'ronda'){
+    if(e.ronda < NR - 1){ const r = e.ronda + 1; return `Abrir ronda ${r + 1}: ${critDe(r).nombre} · ${EXPOS[expoDe(r)].corto}`; }
+    return `Ir a la pantalla final (${EXPOS[0].corto})`;
+  }
+  if(e.finalPaso < EXPOS.length) return `Revelar nota de ${EXPOS[e.finalPaso].corto}`;
+  if(e.finalPaso < PASOS_FINAL) return 'Revelar puntos de los jurados';
+  return '';
+}
+function estadoTexto(){
+  const e = S.estado;
+  if(e.fase === 'inicio') return 'Antes de empezar';
+  if(e.fase === 'ronda') return `Ronda ${e.ronda + 1} de ${NR} · ${critDe(e.ronda).nombre} · ${EXPOS[expoDe(e.ronda)].corto} · ${e.abierta ? 'votación abierta' : 'cerrada'}`;
+  return `Pantalla final · paso ${e.finalPaso} de ${PASOS_FINAL}` + (e.finalPaso <= EXPOS.length ? ` (${EXPOS[e.finalPaso - 1].corto})` : ' (jurados)');
+}
+
+function avanzar(dir){
+  const e = S.estado, u = {};
+  if(dir > 0){
+    if(e.fase === 'inicio'){
+      Object.assign(u, { 'estado/fase':'ronda', 'estado/ronda':0, 'estado/abierta':true });
+    } else if(e.fase === 'ronda' && e.abierta){
+      const n = Object.keys(votosDe(e.ronda)).length;
+      if(n < JURADOS.length && !confirm(`Han evaluado ${n} de ${JURADOS.length} jurados. ¿Cerrar la ronda de todos modos?`)) return;
+      u['estado/abierta'] = false; u['cerradas/r' + e.ronda] = true;
+    } else if(e.fase === 'ronda'){
+      if(e.ronda < NR - 1) Object.assign(u, { 'estado/ronda':e.ronda + 1, 'estado/abierta':true });
+      else Object.assign(u, { 'estado/fase':'final', 'estado/finalPaso':1 });
+    } else if(e.fase === 'final' && e.finalPaso < PASOS_FINAL){
+      if(e.finalPaso === PASOS_FINAL - 1){
+        const faltan = JURADOS.filter(j => notaJurado(j.id) == null);
+        if(faltan.length && !confirm(`Faltan las notas de: ${faltan.map(j => j.nombre).join(', ')}.\n¿Revelar de todos modos?`)) return;
+      }
+      u['estado/finalPaso'] = e.finalPaso + 1;
+    } else return;
+  } else {
+    if(e.fase === 'final' && e.finalPaso > 1) u['estado/finalPaso'] = e.finalPaso - 1;
+    else if(e.fase === 'final') Object.assign(u, { 'estado/fase':'ronda', 'estado/ronda':NR - 1, 'estado/abierta':false });
+    else if(e.fase === 'ronda' && !e.abierta) Object.assign(u, { 'estado/abierta':true, ['cerradas/r' + e.ronda]:null });
+    else if(e.fase === 'ronda' && e.ronda > 0) Object.assign(u, { 'estado/ronda':e.ronda - 1, 'estado/abierta':false });
+    else if(e.fase === 'ronda') Object.assign(u, { 'estado/fase':'inicio', 'estado/abierta':false });
+    else return;
+  }
+  db.ref(ROOT).update(u).catch(() => toast('No se pudo guardar. Revisa tu conexión.'));
+}
+
+function buildProfesor(){
+  app.innerHTML = `<div class="prof">
+    <header class="pbar">
+      <div><div class="eyebrow">Panel del profesor · Rúbrica Módulo 3</div><div class="pnow" id="pNow"></div><div class="pnext" id="pNext"></div></div>
+      <div class="pctrl"><button class="btn" id="bBack">← Atrás</button><button class="btn primary" id="bNext">Siguiente →</button></div>
+    </header>
+    <div class="ptools">
+      <button class="btn" id="bReg"></button>
+      <a class="btn" href="?modo=pantalla" target="_blank" rel="noopener">Abrir pantalla para proyectar ↗</a>
+      <button class="btn danger" id="bReset">Reiniciar todo</button>
+    </div>
+    <div class="pgrid">
+      <section class="card"><h3 id="pVTitle">Evaluaciones de la ronda</h3><div id="pVotos"></div></section>
+      <section class="card">
+        <h3>Notas de los jurados (sobre 10)</h3>
+        <p class="hint">Solo tú las ves. Se revelan en el último paso de la pantalla final. Se guardan al salir de la casilla.</p>
+        <div id="pNotas">${JURADOS.map(j => `<div class="nrow" data-j="${j.id}">
+          <div class="nh"><span class="dot"></span><div class="nn">${esc(j.nombre)}<small class="nmeta"></small></div>
+          <input class="ninput" type="text" inputmode="decimal" placeholder="0–10" aria-label="Nota de ${esc(j.nombre)}">
+          <button class="btn sm lib" type="button">Liberar nombre</button></div>
+          <details><summary>Ver sus comentarios (<span class="ncount">0</span>)</summary><div class="ncoms"></div></details>
+        </div>`).join('')}</div>
+      </section>
+      <section class="card span2"><h3>Puntaje de las expositoras (promedio de los jurados)</h3><div class="tbl-wrap" id="pTabla"></div></section>
+    </div>
+  </div>`;
+
+  $('#bNext').addEventListener('click', () => avanzar(1));
+  $('#bBack').addEventListener('click', () => avanzar(-1));
+  $('#bReg').addEventListener('click', () => db.ref(ROOT + '/estado/registro').set(!S.estado.registro));
+  $('#bReset').addEventListener('click', () => {
+    if(!confirm('¿Borrar TODAS las evaluaciones, notas y registros y empezar de cero?')) return;
+    if(!confirm('Esta acción no se puede deshacer. ¿Confirmas?')) return;
+    db.ref(ROOT).set({ estado:{ fase:'inicio', ronda:0, abierta:false, registro:false, finalPaso:1 } });
+  });
+  $$('#pNotas .nrow').forEach(row => {
+    const id = row.dataset.j, inp = $('.ninput', row);
+    const guardar = () => {
+      const s = inp.value.trim();
+      if(s === ''){ db.ref(ROOT + '/notas/' + id).remove(); inp.classList.remove('bad', 'saved'); return; }
+      const n = parseNum(s);
+      if(isNaN(n) || n < 0 || n > 10){ inp.classList.add('bad'); inp.classList.remove('saved'); toast('La nota debe ser un número de 0 a 10.'); return; }
+      inp.classList.remove('bad');
+      db.ref(ROOT + '/notas/' + id).set(r2(n)).then(() => { inp.classList.add('saved'); setTimeout(() => inp.classList.remove('saved'), 1200); });
+    };
+    inp.addEventListener('change', guardar);
+    inp.addEventListener('keydown', ev => { if(ev.key === 'Enter'){ ev.preventDefault(); inp.blur(); } });
+    $('.lib', row).addEventListener('click', () => {
+      if(confirm(`¿Liberar el nombre de ${jur(id).nombre}? Podrá volver a elegirlo desde otro dispositivo.`)){
+        db.ref(ROOT).update({ ['reclamos/' + id]:null, ['conectados/' + id]:null });
+      }
+    });
+  });
+  $('#pVotos').addEventListener('click', ev => {
+    const b = ev.target.closest('[data-del]'); if(!b) return;
+    if(confirm(`¿Quitar la evaluación de ${jur(b.dataset.del).nombre} en esta ronda?`)) db.ref(ROOT + '/votos/r' + S.estado.ronda + '/' + b.dataset.del).remove();
+  });
+}
+
+function updProfesor(){
+  const e = S.estado;
+  $('#pNow').textContent = estadoTexto();
+  const sig = siguienteTexto();
+  $('#pNext').innerHTML = sig ? `Siguiente (<kbd>Enter</kbd>): ${esc(sig)}` : 'Fin de la evaluación.';
+  $('#bNext').disabled = !sig;
+  $('#bBack').disabled = e.fase === 'inicio';
+  const reg = $('#bReg');
+  reg.textContent = e.registro ? 'Cerrar registro de jurados' : 'Activar registro de jurados';
+  reg.className = 'btn ' + (e.registro ? '' : 'coral');
+
+  // evaluaciones de la ronda actual
+  if(e.fase === 'ronda'){
+    const r = e.ronda, c = critDe(r), vs = votosDe(r), pr = promedio(r);
+    $('#pVTitle').textContent = `Ronda ${r + 1}: ${c.nombre} · ${EXPOS[expoDe(r)].corto} (máx. ${c.max})`;
+    $('#pVotos').innerHTML = `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Jurado</th><th>Puntos</th><th>Comentario</th><th></th></tr></thead><tbody>
+      ${JURADOS.map(j => { const v = vs[j.id];
+        return v ? `<tr><td>${esc(j.nombre)}</td><td class="num">${f2(v.pts)}</td><td class="cmt">${esc(v.com)}</td><td><button class="btn sm danger" data-del="${j.id}" title="Quitar">✕</button></td></tr>`
+                 : `<tr class="none"><td><span class="dot ${conectado(j.id) ? 'on' : ''}"></span> ${esc(j.nombre)}</td><td class="num">—</td><td>${conectado(j.id) ? 'Escribiendo…' : 'No conectado'}</td><td></td></tr>`; }).join('')}
+      </tbody><tfoot><tr><td>Promedio (${Object.keys(vs).length} de ${JURADOS.length})</td><td class="num">${pr == null ? '—' : f2(pr)}</td><td colspan="2"></td></tr></tfoot></table></div>`;
+  } else if(e.fase === 'inicio'){
+    const n = JURADOS.filter(j => conectado(j.id)).length;
+    $('#pVTitle').textContent = 'Registro de jurados';
+    $('#pVotos').innerHTML = `<p>${n} de ${JURADOS.length} jurados conectados.</p>
+      <p class="muted" style="margin-top:8px">${e.registro ? 'El registro está abierto: los jurados ya pueden elegir su nombre.' : 'Activa el registro para que los jurados elijan su nombre.'}</p>
+      <p class="muted" style="margin-top:8px">Enlace para los jurados: <code>${esc(urlJurados())}</code></p>`;
+  } else {
+    $('#pVTitle').textContent = 'Pantalla final';
+    $('#pVotos').innerHTML = `<p>${esc(estadoTexto())}.</p><p class="muted" style="margin-top:8px">Usa Siguiente para revelar cada resultado en la pantalla proyectada y en los dispositivos de los jurados.</p>`;
+  }
+
+  // notas y comentarios por jurado
+  $$('#pNotas .nrow').forEach(row => {
+    const id = row.dataset.j;
+    $('.dot', row).classList.toggle('on', conectado(id));
+    const nv = rondasVotadas(id);
+    $('.nmeta', row).textContent = `${conectado(id) ? 'Conectado' : S.reclamos[id] ? 'Registrado, desconectado' : 'Sin registrar'} · evaluó ${nv} de ${NR} rondas`;
+    const inp = $('.ninput', row), n = notaJurado(id);
+    if(document.activeElement !== inp && !inp.classList.contains('bad')) inp.value = n == null ? '' : n;
+    $('.lib', row).style.display = S.reclamos[id] ? '' : 'none';
+    $('.ncount', row).textContent = nv;
+    let hc = '';
+    for(let r = 0; r < NR; r++){ const v = votosDe(r)[id];
+      if(v) hc += `<div><b>R${r + 1} · ${esc(critDe(r).corto)} · ${esc(EXPOS[expoDe(r)].corto)} · ${f2(v.pts)}/${critDe(r).max}</b><br>${esc(v.com)}</div>`; }
+    const box = $('.ncoms', row);
+    if(box.dataset.h !== hc){ box.innerHTML = hc || '<span class="muted">Todavía no hay comentarios.</span>'; box.dataset.h = hc; }
+  });
+
+  // tabla de puntajes
+  const curR = e.fase === 'ronda' ? e.ronda : -1;
+  $('#pTabla').innerHTML = `<table class="tbl"><thead><tr><th>Criterio</th><th>Máx.</th>${EXPOS.map(x => `<th>${esc(x.corto)}</th>`).join('')}</tr></thead><tbody>
+    ${CRIT.map((c, k) => `<tr><td>${esc(c.nombre)}</td><td class="num">${c.max}</td>${EXPOS.map((x, i) => { const r = k * EXPOS.length + i, p = puntaje(i, k);
+      const live = r === curR && !cerrada(r) ? promedio(r) : null;
+      return `<td class="num ${r === curR ? 'cur' : ''}">${p != null ? f2(p) : live != null ? f2(live) + ' <span class="muted">(en vivo)</span>' : '—'}</td>`; }).join('')}</tr>`).join('')}
+    </tbody><tfoot><tr><td>Total</td><td class="num">10</td>${EXPOS.map((x, i) => `<td class="num">${f2(total(i))}</td>`).join('')}</tr></tfoot></table>`;
+}
+
+function gateProfesor(){
+  app.innerHTML = `<div class="wrap"><div class="card gate">
+    <div class="eyebrow">Rúbrica · Módulo 3</div>
+    <h2 style="margin-top:8px">Panel del profesor</h2>
+    <p class="muted" style="margin-top:8px">Escribe la clave del profesor.</p>
+    <form id="gForm"><input id="gKey" type="password" inputmode="numeric" autocomplete="off" aria-label="Clave"><button class="btn primary">Entrar</button></form>
+    <p class="err" id="gErr" style="margin-top:10px"></p>
+  </div></div>`;
+  $('#gKey').focus();
+  $('#gForm').addEventListener('submit', ev => {
+    ev.preventDefault();
+    if($('#gKey').value.trim() !== PROFE_CLAVE){ $('#gErr').textContent = 'Clave incorrecta.'; return; }
+    store.set('rubM3-profe', 'ok');
+    app.innerHTML = '<div class="loading">Conectando…</div>';
+    iniciar();
+  });
+}
+
+/* =========================================================
+   ARRANQUE
+   ========================================================= */
+function iniciar(){
+  db.ref(ROOT).on('value', snap => { S = norm(snap.val()); render(); },
+    () => { app.innerHTML = '<div class="wrap"><div class="card"><h2>Sin acceso a los datos</h2><p class="muted">Recarga la página.</p></div></div>'; });
+  if(MODO === 'jurado'){
+    db.ref('.info/connected').on('value', s => { if(s.val() === true && jid) presencia(); });
+  }
+  if(MODO === 'profesor'){
+    document.addEventListener('keydown', ev => {
+      if(ev.key !== 'Enter' || !S) return;
+      // En casillas de texto Enter sirve para escribir; en cualquier otro lugar (incluido un botón con foco) avanza
+      if(['INPUT', 'TEXTAREA', 'SUMMARY', 'SELECT'].includes(ev.target.tagName)) return;
+      ev.preventDefault();
+      if(ev.repeat) return;
+      if(ev.target.blur) ev.target.blur();
+      avanzar(1);
+    });
+  }
+}
+function boot(){
+  db = window.EXCEL_DB_READY;
+  if(MODO === 'profesor' && store.get('rubM3-profe') !== 'ok') gateProfesor();
+  else iniciar();
+}
+if(window.EXCEL_DB_READY) boot();
+else window.addEventListener('excel-firebase-ready', boot);
+
+})();
+</script>
+</body>
+</html>
