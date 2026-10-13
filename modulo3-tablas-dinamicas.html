@@ -311,15 +311,15 @@ const TOPICS = [
   conf:"Filas: Mes · Columnas: Año · Valores: Cuenta de ID Servicio", sim:"fechas" },
 
 { k:"Segmentaciones de datos", d:"Filtrar con botones.",
-  def:"Una segmentación de datos es un panel de botones para filtrar la tabla dinámica con un clic. Con la columna Año también sirve para elegir el período.",
+  def:"Una segmentación de datos es un panel de botones para filtrar la tabla dinámica con un clic. Se inserta con un clic dentro de la tabla dinámica › pestaña Analizar › Segmentación.",
   ana:"Es el control remoto del informe: aprietas «SeNaSa» y todo el cuadro cambia para mostrar solo esa ARS.",
   partsT:"Herramientas · toca cada una",
   parts:[["Segmentación","Botones de un campo (ARS, Provincia, Año). Un clic filtra el informe."],["Selección múltiple","El botón de selección múltiple, o Ctrl + clic, para elegir varias opciones."],["Borrar filtro","El embudo con la X, en la esquina, vuelve a mostrar todo."],["Segmentación por Año","Con la columna de ayuda Año, eliges 2024 o 2025 con un clic."]],
-  uses:[["Ver una sola ARS","El informe completo, solo para SeNaSa.","Insertar segmentación de datos › ARS"],
+  uses:[["Ver una sola ARS","El informe completo, solo para SeNaSa.","Analizar › Segmentación › ARS"],
         ["Comparar provincias","Elige dos provincias a la vez con selección múltiple.","Segmentación: Provincia"],
-        ["Elegir un año","Muestra solo 2024 o solo 2025.","Insertar segmentación de datos › Año"],
+        ["Elegir un año","Muestra solo 2024 o solo 2025.","Analizar › Segmentación › Año"],
         ["Presentar en una reunión","Respondes «¿y solo SeNaSa en 2025?» con dos clics.","Segmentaciones: ARS + Año"]],
-  pit:"Haz clic dentro de la tabla dinámica antes de insertar la segmentación. Si no ves el campo Año en la lista, clic derecho en la tabla dinámica › Actualizar.",
+  pit:"La pestaña Analizar solo aparece cuando la celda activa está dentro de la tabla dinámica. Si haces clic fuera, la pestaña desaparece de la cinta.",
   steps:["En <code>TD_ARS</code>, haz clic dentro de la tabla dinámica (si no ves <code>Año</code>, clic derecho › <code>Actualizar</code>).","Pestaña <code>Tabla dinámica</code> (en escritorio: <code>Analizar tabla dinámica</code>) › <code>Insertar segmentación de datos</code> › marca <code>ARS</code> y <code>Año</code>.","Haz clic en <b>SeNaSa</b> y luego en <b>2025</b>.","Resultado: <b>60</b> servicios. Con <b>2024</b> salen <b>47</b>. El embudo con la X borra el filtro."],
   conf:"Segmentaciones: ARS y Año · sobre TD_ARS", sim:"segmentacion" },
 
@@ -337,9 +337,11 @@ const TOPICS = [
   conf:"Gráfico: Columna agrupada · Origen: TD_Meses", sim:"grafico" }
 ];
 const QT=["¿Qué es una tabla dinámica?","¿Qué son las 4 áreas?","¿Cómo se resumen los valores?","¿Cómo se ordena y se filtra?","¿Cómo analizo por año y por mes?","¿Qué es una segmentación de datos?","¿Cómo muestro y explico los resultados?"];
-const SH=["Insertar › Tabla dinámica › tblServicios","Filas · Columnas · Valores · Filtros","Clic derecho › Resumir valores por · Mostrar valores como","Clic derecho › Ordenar ↓ · área Filtros","=AÑO([@Fecha]) · =MES([@Fecha]) › Filas: Mes · Columnas: Año","Insertar segmentación de datos › ARS · Año","Insertar › Gráfico + conclusión = dato · comparación · significado"];
+const SH=["Insertar › Tabla dinámica › tblServicios","Filas · Columnas · Valores · Filtros","Clic derecho › Resumir valores por · Mostrar valores como","Clic derecho › Ordenar ↓ · área Filtros","=AÑO([@Fecha]) · =MES([@Fecha]) › Filas: Mes · Columnas: Año","Analizar › Segmentación › ARS · Año","Insertar › Gráfico + conclusión = dato · comparación · significado"];
 
 /* ---------- Construcción de diapositivas ---------- */
+const CON_PRACTICA = 4;   // del tema 5 en adelante solo teoría (concepto y utilidad)
+const INICIO = []; TOPICS.reduce((ix,t,i)=>{ INICIO[i]=ix; return ix+(i<CON_PRACTICA?3:2); }, 2);
 const S = [];
 S.push({topic:-1, html:`<div class="slide cover">
   <div class="mod">Módulo 3</div>
@@ -352,8 +354,8 @@ S.push({topic:-1, html:`<div class="slide cover">
 S.push({topic:-1, html:`<div class="slide">
   <div class="eyebrow">Contenido</div>
   <h2>Siete herramientas, una misma base</h2>
-  <p class="lead" style="font-size:20px">Cada tema tiene tres láminas: <b>concepto</b>, <b>utilidad</b> y <b>práctica en vivo</b> con la base de servicios de salud.</p>
-  <div class="idx">${TOPICS.map((t,i)=>`<button data-go="${2+i*3}"><span class="n">0${i+1}</span><span class="k">${t.k}</span><span class="d">${t.d}</span></button>`).join("")}</div>
+  <p class="lead" style="font-size:20px">Cada tema tiene <b>concepto</b> y <b>utilidad</b>. Los temas 1 a 4 incluyen además una <b>práctica en vivo</b> con la base de servicios de salud.</p>
+  <div class="idx">${TOPICS.map((t,i)=>`<button data-go="${INICIO[i]}"><span class="n">0${i+1}</span><span class="k">${t.k}</span><span class="d">${t.d}</span></button>`).join("")}</div>
   <p class="note"><b>Objetivo:</b> usar tablas dinámicas en Excel (Microsoft 365, en la computadora o en el navegador) para analizar información y sacar conclusiones útiles para la toma de decisiones.</p>
 </div>`});
 
@@ -378,7 +380,7 @@ TOPICS.forEach((t,i)=>{
     <h2>¿Para qué nos sirve en el trabajo?</h2>
     <div class="uses">${t.uses.map(u=>`<div class="use"><h3>${u[0]}</h3><p>${u[1]}</p><code>${esc(u[2])}</code></div>`).join("")}</div>
     <div class="pit"><b>Error común</b><span>${t.pit}</span></div></div>`});
-  S.push({topic:i, html:`<div class="slide">${eb("Práctica en vivo")}
+  if(i<CON_PRACTICA) S.push({topic:i, html:`<div class="slide">${eb("Práctica en vivo")}
     <div class="prac">
       <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
         <h2 style="font-size:38px">Hagámoslo juntos</h2>
@@ -574,7 +576,7 @@ els.forEach((el,i)=>S[i].init&&S[i].init(el));
 wrap.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(+b.dataset.go)));
 const dots=document.getElementById("dots");
 dots.innerHTML=TOPICS.map((t,i)=>`<button title="${t.k}" aria-label="Ir a ${t.k}" data-t="${i}"></button>`).join("");
-dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(2+3*b.dataset.t));
+dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INICIO[b.dataset.t]));
 let cur=0;
 function go(i){
   cur=Math.max(0,Math.min(els.length-1,i));
