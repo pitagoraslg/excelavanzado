@@ -1005,7 +1005,8 @@ function buildProfesor(){
   $('#bReset').addEventListener('click', () => {
     if(!confirm('¿Borrar TODAS las evaluaciones, notas y registros y empezar de cero?')) return;
     if(!confirm('Esta acción no se puede deshacer. ¿Confirmas?')) return;
-    db.ref(ROOT).set({ estado:{ fase:'inicio', ronda:0, abierta:false, registro:false, finalPaso:1 } });
+    // El registro se queda como estaba para no tener que volver a activarlo
+    db.ref(ROOT).set({ estado:{ fase:'inicio', ronda:0, abierta:false, registro:!!S.estado.registro, finalPaso:1 } });
   });
   $$('#pNotas .nrow').forEach(row => {
     const id = row.dataset.j, inp = $('.ninput', row);
