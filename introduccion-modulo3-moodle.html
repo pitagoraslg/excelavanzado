@@ -1,0 +1,177 @@
+<!-- Introducción al Módulo 3 para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la introducción se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes m3-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes m3-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(201,87,63,.45); } 50% { box-shadow: 0 0 0 12px rgba(201,87,63,0); } }
+  @keyframes m3-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(-6deg); } }
+  @keyframes m3-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  @keyframes m3-grow { from { width: 0; } }
+  @keyframes m3-pop { 0% { opacity: 0; transform: scale(.6); } 70% { transform: scale(1.12); } 100% { opacity: 1; transform: none; } }
+  .m3-in { animation: m3-in .7s ease-out both; }
+  .m3-d1 { animation-delay: .1s; } .m3-d2 { animation-delay: .25s; } .m3-d3 { animation-delay: .4s; } .m3-d4 { animation-delay: .55s; }
+  .m3-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .m3-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(31,61,51,.14); }
+  .m3-float { display: inline-block; animation: m3-float 3.2s ease-in-out infinite; }
+  .m3-bar { background: linear-gradient(90deg, #E4EFE8 0%, #1F3D33 30%, #C9573F 55%, #E4EFE8 80%, #1F3D33 100%); background-size: 200% 100%; animation: m3-shine 7s linear infinite; }
+  .m3-g { animation: m3-grow 1.4s cubic-bezier(.2,.8,.2,1) both; }
+  .m3-g1 { animation-delay: .6s; } .m3-g2 { animation-delay: .75s; } .m3-g3 { animation-delay: .9s; } .m3-g4 { animation-delay: 1.05s; } .m3-g5 { animation-delay: 1.2s; }
+  .m3-num { display: inline-block; animation: m3-pop .5s ease-out both; }
+  .m3-n1 { animation-delay: 1.5s; } .m3-n2 { animation-delay: 1.65s; } .m3-n3 { animation-delay: 1.8s; } .m3-n4 { animation-delay: 1.95s; } .m3-n5 { animation-delay: 2.1s; } .m3-n6 { animation-delay: 2.4s; }
+  .m3-btn { animation: m3-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .m3-btn:hover { transform: scale(1.04); background-color: #163027 !important; }
+  .m3-btn2:hover { background-color: #F9E8E2 !important; }
+  .m3-row { transition: background-color .2s ease; }
+  .m3-row:hover { background-color: #F1F6F2; }
+  details.m3-det > summary { cursor: pointer; }
+  @media (prefers-reduced-motion: reduce) { .m3-in, .m3-btn, .m3-float, .m3-bar, .m3-g, .m3-num { animation: none !important; } }
+</style>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #1F2A26; line-height: 1.55; background-color: #F7F4EE; border-radius: 10px; overflow: hidden; border: 1px solid #E2DDD2;">
+
+  <div class="m3-bar" style="height: 6px; background-color: #1F3D33;"></div>
+
+  <!-- Encabezado -->
+  <div style="background-color: #1F3D33; color: #FFFFFF; padding: 28px 30px 26px; text-align: center;">
+    <p class="m3-in" style="margin: 0 0 10px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #F3B9A8;">Excel Avanzado · Módulo 3 · Instituto ICADEP-XXI</p>
+    <p class="m3-in m3-d1" style="margin: 0 0 6px; font-size: 42px; line-height: 1;"><span class="m3-float">🔄</span></p>
+    <h2 class="m3-in m3-d1" style="margin: 0 0 10px; font-family: Georgia, 'Times New Roman', serif; font-size: 32px; font-weight: normal; line-height: 1.2; color: #FFFFFF;">Tablas dinámicas avanzadas</h2>
+    <p class="m3-in m3-d2" style="margin: 0 auto; max-width: 620px; font-size: 16px; color: #DCE9E2;">Tienes <strong style="color: #FFFFFF;">360 servicios de salud</strong> en una tabla. ¿Qué ARS tiene más? ¿En qué provincia se concentra el gasto? Una tabla dinámica te lo responde <strong style="color: #FFFFFF;">en segundos y sin escribir una sola fórmula</strong>.</p>
+  </div>
+
+  <!-- Mini tabla dinámica animada -->
+  <div class="m3-in m3-d2" style="margin: 18px 22px 0; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-radius: 8px; padding: 16px 18px;">
+    <p style="margin: 0 0 4px; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; color: #C9573F;">👀 Así se ve una tabla dinámica</p>
+    <p style="margin: 0 0 12px; font-family: Consolas, monospace; font-size: 13px; color: #5F6B64;">Filas: <strong style="color: #1F3D33;">ARS</strong> &nbsp;·&nbsp; Valores: <strong style="color: #1F3D33;">Cuenta de ID Servicio</strong></p>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px;" role="presentation">
+      <tr>
+        <td style="padding: 5px 8px 5px 0; width: 150px; white-space: nowrap;">SeNaSa</td>
+        <td style="padding: 5px 0;"><div class="m3-g m3-g1" style="height: 14px; width: 100%; background-color: #C9573F; border-radius: 3px;"></div></td>
+        <td style="padding: 5px 0 5px 10px; width: 46px; text-align: right; font-family: Consolas, monospace; font-weight: bold; color: #1F3D33;"><span class="m3-num m3-n1">107</span></td>
+      </tr>
+      <tr>
+        <td style="padding: 5px 8px 5px 0; white-space: nowrap;">ARS Humano</td>
+        <td style="padding: 5px 0;"><div class="m3-g m3-g2" style="height: 14px; width: 83%; background-color: #2F6B52; border-radius: 3px;"></div></td>
+        <td style="padding: 5px 0 5px 10px; text-align: right; font-family: Consolas, monospace; font-weight: bold; color: #1F3D33;"><span class="m3-num m3-n2">89</span></td>
+      </tr>
+      <tr>
+        <td style="padding: 5px 8px 5px 0; white-space: nowrap;">MAPFRE Salud ARS</td>
+        <td style="padding: 5px 0;"><div class="m3-g m3-g3" style="height: 14px; width: 61%; background-color: #2F6B52; border-radius: 3px;"></div></td>
+        <td style="padding: 5px 0 5px 10px; text-align: right; font-family: Consolas, monospace; font-weight: bold; color: #1F3D33;"><span class="m3-num m3-n3">65</span></td>
+      </tr>
+      <tr>
+        <td style="padding: 5px 8px 5px 0; white-space: nowrap;">ARS Universal</td>
+        <td style="padding: 5px 0;"><div class="m3-g m3-g4" style="height: 14px; width: 59%; background-color: #2F6B52; border-radius: 3px;"></div></td>
+        <td style="padding: 5px 0 5px 10px; text-align: right; font-family: Consolas, monospace; font-weight: bold; color: #1F3D33;"><span class="m3-num m3-n4">63</span></td>
+      </tr>
+      <tr>
+        <td style="padding: 5px 8px 5px 0; white-space: nowrap;">Primera ARS</td>
+        <td style="padding: 5px 0;"><div class="m3-g m3-g5" style="height: 14px; width: 34%; background-color: #2F6B52; border-radius: 3px;"></div></td>
+        <td style="padding: 5px 0 5px 10px; text-align: right; font-family: Consolas, monospace; font-weight: bold; color: #1F3D33;"><span class="m3-num m3-n5">36</span></td>
+      </tr>
+      <tr>
+        <td style="padding: 8px 8px 0 0; border-top: 2px solid #1F3D33; font-weight: bold; color: #1F3D33;">Total general</td>
+        <td style="padding: 8px 0 0; border-top: 2px solid #1F3D33;"></td>
+        <td style="padding: 8px 0 0 10px; border-top: 2px solid #1F3D33; text-align: right; font-family: Consolas, monospace; font-weight: bold; color: #C9573F;"><span class="m3-num m3-n6">360</span></td>
+      </tr>
+    </table>
+    <p style="margin: 12px 0 0; font-size: 13px; color: #5F6B64;">Cinco clics y la respuesta aparece: <strong style="color: #1F3D33;">SeNaSa</strong> tiene casi 1 de cada 3 servicios. Así vas a trabajar en este módulo.</p>
+  </div>
+
+  <!-- Datos rápidos -->
+  <table class="m3-in m3-d3" style="width: 100%; border-collapse: separate; border-spacing: 10px; margin: 8px 0 0;" role="presentation">
+    <tr>
+      <td class="m3-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #1F3D33; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">🧩</span><br>
+        <strong style="color: #1F3D33; font-size: 18px;">7 herramientas</strong><br>
+        <span style="font-size: 13px; color: #5F6B64;">De crear la tabla a sacar conclusiones</span>
+      </td>
+      <td class="m3-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #C9573F; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">🖥️</span><br>
+        <strong style="color: #1F3D33; font-size: 18px;">24 láminas</strong><br>
+        <span style="font-size: 13px; color: #5F6B64;">Con simuladores de tablas dinámicas</span>
+      </td>
+      <td class="m3-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #2F6B52; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">🏥</span><br>
+        <strong style="color: #1F3D33; font-size: 18px;">360 servicios</strong><br>
+        <span style="font-size: 13px; color: #5F6B64;">Base de práctica 2024 – 2025</span>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 4px 26px 26px;">
+
+    <!-- Objetivo -->
+    <h3 class="m3-in m3-d3" style="margin: 14px 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1F3D33;">🎯 ¿Qué lograrás?</h3>
+    <p class="m3-in m3-d3" style="margin: 0;">Convertir una base grande en <strong>respuestas claras</strong>: resumir, comparar, filtrar, ver cómo cambian los datos con el tiempo y presentar un <strong>gráfico con una conclusión</strong> que cualquiera entienda.</p>
+
+    <!-- Los 7 temas -->
+    <h3 class="m3-in m3-d3" style="margin: 20px 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1F3D33;">📚 Los siete temas</h3>
+    <table class="m3-in m3-d3" style="width: 100%; border-collapse: collapse; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-radius: 6px; font-size: 14px;" role="presentation">
+      <tr class="m3-row"><td style="padding: 9px 12px; border-bottom: 1px solid #ECE7DC; width: 36px; font-family: Georgia, serif; font-size: 18px; color: #C9573F;">01</td><td style="padding: 9px 4px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Crear la tabla dinámica</td><td style="padding: 9px 12px; border-bottom: 1px solid #ECE7DC;">Resumir miles de filas sin fórmulas.</td></tr>
+      <tr class="m3-row"><td style="padding: 9px 12px; border-bottom: 1px solid #ECE7DC; font-family: Georgia, serif; font-size: 18px; color: #C9573F;">02</td><td style="padding: 9px 4px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Las 4 áreas</td><td style="padding: 9px 12px; border-bottom: 1px solid #ECE7DC;">Filas, Columnas, Valores y Filtros.</td></tr>
+      <tr class="m3-row"><td style="padding: 9px 12px; border-bottom: 1px solid #ECE7DC; font-family: Georgia, serif; font-size: 18px; color: #C9573F;">03</td><td style="padding: 9px 4px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Resumir y mostrar valores</td><td style="padding: 9px 12px; border-bottom: 1px solid #ECE7DC;">Cuenta, Suma, Promedio y % del total.</td></tr>
+      <tr class="m3-row"><td style="padding: 9px 12px; border-bottom: 1px solid #ECE7DC; font-family: Georgia, serif; font-size: 18px; color: #C9573F;">04</td><td style="padding: 9px 4px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Ordenar y filtrar</td><td style="padding: 9px 12px; border-bottom: 1px solid #ECE7DC;">Lo más importante arriba y los «Diez mejores».</td></tr>
+      <tr class="m3-row"><td style="padding: 9px 12px; border-bottom: 1px solid #ECE7DC; font-family: Georgia, serif; font-size: 18px; color: #C9573F;">05</td><td style="padding: 9px 4px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Agrupar fechas</td><td style="padding: 9px 12px; border-bottom: 1px solid #ECE7DC;">Años, trimestres y meses en un clic.</td></tr>
+      <tr class="m3-row"><td style="padding: 9px 12px; border-bottom: 1px solid #ECE7DC; font-family: Georgia, serif; font-size: 18px; color: #C9573F;">06</td><td style="padding: 9px 4px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Segmentaciones y escala de tiempo</td><td style="padding: 9px 12px; border-bottom: 1px solid #ECE7DC;">Botones para filtrar de forma visual.</td></tr>
+      <tr class="m3-row"><td style="padding: 9px 12px; font-family: Georgia, serif; font-size: 18px; color: #C9573F;">07</td><td style="padding: 9px 4px; font-weight: bold; color: #1F3D33;">Gráficos y conclusiones</td><td style="padding: 9px 12px;">Del cuadro al gráfico y a una decisión.</td></tr>
+    </table>
+
+    <!-- Cómo está organizado -->
+    <h3 class="m3-in m3-d4" style="margin: 20px 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1F3D33;">🧭 Cada tema tiene tres láminas</h3>
+    <table class="m3-in m3-d4" style="width: 100%; border-collapse: separate; border-spacing: 8px 0;" role="presentation">
+      <tr>
+        <td class="m3-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-radius: 6px; padding: 12px; vertical-align: top; font-size: 13.5px;"><span style="font-size: 22px;">💡</span><br><strong style="color: #1F3D33;">Concepto</strong><br>Qué es, una comparación de la vida diaria y sus partes explicadas una por una.</td>
+        <td class="m3-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-radius: 6px; padding: 12px; vertical-align: top; font-size: 13.5px;"><span style="font-size: 22px;">🛠️</span><br><strong style="color: #1F3D33;">Utilidad</strong><br>Usos reales en el trabajo y el error más común que debes evitar.</td>
+        <td class="m3-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-radius: 6px; padding: 12px; vertical-align: top; font-size: 13.5px;"><span style="font-size: 22px;">✍️</span><br><strong style="color: #1F3D33;">Práctica en vivo</strong><br>Pasos exactos para hacerlo en tu Excel y un simulador para comprobar el resultado.</td>
+      </tr>
+    </table>
+
+    <!-- Antes de empezar -->
+    <details class="m3-det m3-in m3-d4" style="margin: 20px 0 0; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-left: 5px solid #1F3D33; border-radius: 6px; padding: 12px 16px;">
+      <summary style="font-weight: bold; color: #1F3D33; font-size: 16px;">📥 Antes de empezar <span style="font-weight: normal; font-size: 13px; color: #5F6B64;">(toca para ver)</span></summary>
+      <ol style="margin: 10px 0 4px; padding-left: 22px; font-size: 14px;">
+        <li style="margin: 0 0 6px;">Descarga la <strong>base de práctica</strong> (botón de abajo). La tabla se llama <strong>tblServicios</strong> y tiene 7 columnas: ID Servicio, Fecha, ARS, PSS, Tipo de Servicio, Provincia y Monto.</li>
+        <li style="margin: 0 0 6px;">Ten <strong>Excel abierto junto a la presentación</strong> y haz cada «Práctica en vivo» en tu archivo.</li>
+        <li style="margin: 0 0 6px;">La presentación te pedirá una <strong>clave de acceso</strong>: te la comparte el facilitador.</li>
+        <li style="margin: 0 0 6px;"><strong>Para moverte:</strong> flechas ← → o los botones Anterior y Siguiente; la tecla <strong>F</strong> activa la pantalla completa.</li>
+      </ol>
+    </details>
+
+    <!-- Exposición con rúbrica en vivo -->
+    <details class="m3-det m3-in m3-d4" style="margin: 10px 0 0; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-left: 5px solid #C9573F; border-radius: 6px; padding: 12px 16px;">
+      <summary style="font-weight: bold; color: #1F3D33; font-size: 16px;">🎤 Exposición con rúbrica en vivo <span style="font-weight: normal; font-size: 13px; color: #5F6B64;">(toca para ver)</span></summary>
+      <p style="margin: 10px 0 8px; font-size: 14px;">Dos compañeras expondrán sobre tablas dinámicas y <strong>el resto del grupo será el jurado</strong>. La exposición vale <strong>10 puntos</strong>.</p>
+      <ol style="margin: 0 0 10px; padding-left: 22px; font-size: 14px;">
+        <li style="margin: 0 0 6px;">Entra a la rúbrica desde tu celular, tableta o computadora y <strong>elige tu nombre</strong>.</li>
+        <li style="margin: 0 0 6px;">El facilitador abre <strong>un criterio a la vez</strong>. Das tus puntos (puedes usar decimales, como 1.2) y <strong>justificas con un comentario</strong>.</li>
+        <li style="margin: 0 0 6px;">Los comentarios <strong>se leen en vivo</strong> y la nota de cada criterio es el <strong>promedio</strong> de todo el jurado.</li>
+        <li style="margin: 0 0 6px;">Tú también recibes una nota del facilitador, sobre 10, por la <strong>calidad de tus comentarios</strong>. Se revela al final, con fuegos artificiales. 🎆</li>
+      </ol>
+      <table style="width: 100%; border-collapse: collapse; font-size: 13.5px;" role="presentation">
+        <tr style="background-color: #F7F4EE;"><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC;">Dominio del tema</td><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F;">1.5</td></tr>
+        <tr><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC;">Desempeño práctico</td><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F;">1.5</td></tr>
+        <tr style="background-color: #F7F4EE;"><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC;">Expresión oral</td><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F;">1.25</td></tr>
+        <tr><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC;">Capacidad didáctica</td><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F;">1.25</td></tr>
+        <tr style="background-color: #F7F4EE;"><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC;">Poder de convencimiento</td><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F;">1.25</td></tr>
+        <tr><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC;">Interacción con el público</td><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F;">1.25</td></tr>
+        <tr style="background-color: #F7F4EE;"><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC;">Presentación visual</td><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F;">1</td></tr>
+        <tr><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC;">Calidad del material</td><td style="padding: 6px 10px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F;">1</td></tr>
+        <tr><td style="padding: 7px 10px; font-weight: bold; color: #1F3D33;">Total</td><td style="padding: 7px 10px; text-align: right; font-family: Consolas, monospace; font-weight: bold; color: #1F3D33;">10</td></tr>
+      </table>
+    </details>
+
+    <!-- Consejo -->
+    <div class="m3-in m3-d4" style="margin: 16px 0 0; background-color: #E4EFE8; border-left: 5px solid #2F6B52; border-radius: 6px; padding: 12px 16px; font-size: 14px;">
+      💡 <strong style="color: #1F3D33;">Consejo:</strong> antes de mirar cada resultado en el simulador, <strong>predice</strong> qué va a salir. Si aciertas, ya lo entendiste; si no, ahí está lo que tienes que repasar.
+    </div>
+
+    <!-- Llamado a la acción -->
+    <div class="m3-in m3-d4" style="text-align: center; margin: 24px 0 8px;">
+      <a class="m3-btn" href="https://pitagoraslg.github.io/excelavanzado/modulo3-tablas-dinamicas.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #1F3D33; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px; margin: 4px 6px;">▶ Entrar a la presentación</a>
+      <a class="m3-btn2" href="https://pitagoraslg.github.io/excelavanzado/Modulo3-Base-Servicios.xlsx" style="display: inline-block; background-color: #FFFFFF; color: #C9573F; border: 2px solid #C9573F; text-decoration: none; font-weight: bold; font-size: 17px; padding: 13px 28px; border-radius: 30px; margin: 4px 6px;">⬇ Base de práctica</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #5F6B64;">Se abre en una pestaña nueva. Se ve mejor en computadora o en pantalla grande.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #5F6B64;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
