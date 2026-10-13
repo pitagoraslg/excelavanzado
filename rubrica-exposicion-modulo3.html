@@ -236,6 +236,8 @@ textarea{width:100%;min-height:130px;font:16px/1.5 var(--sans);padding:12px 14px
 .ncoms div{background:var(--paper);border-radius:8px;padding:8px 10px}
 .ncoms b{font:500 12px var(--mono);color:var(--xl)}
 .hint{font-size:14px;color:var(--muted);margin:-6px 0 12px}
+.cierre{margin-top:18px;padding:16px;border:1px dashed var(--grid);border-radius:12px;display:grid;gap:10px}
+.cierre-btns{display:flex;gap:8px;flex-wrap:wrap}
 .gate{max-width:420px;margin:12vh auto 0;text-align:center}
 .gate form{display:flex;gap:8px;justify-content:center;margin-top:16px}
 .gate input{font:600 20px var(--mono);width:150px;padding:10px 12px;border:2px solid var(--grid);border-radius:10px;text-align:center}
@@ -825,9 +827,15 @@ const FW = {
     const loop = () => { this.tick(); this.raf = requestAnimationFrame(loop); };
     this.raf = requestAnimationFrame(loop);
     this.iv = setInterval(() => this.launch(1 + (Math.random() * 2 | 0)), RM ? 2500 : 650);
+    // Duran 10 segundos: luego no se lanzan más y, cuando se apagan los últimos, se detiene la animación
+    this.fin = setTimeout(() => {
+      clearInterval(this.iv);
+      const esperar = () => { if(this.ps.length || this.rk.length) this.fin = setTimeout(esperar, 300); else { cancelAnimationFrame(this.raf); this.ctx.clearRect(0, 0, this.w, this.h); } };
+      esperar();
+    }, 10000);
   },
   stop(){
-    cancelAnimationFrame(this.raf); clearInterval(this.iv);
+    cancelAnimationFrame(this.raf); clearInterval(this.iv); clearTimeout(this.fin);
     if(this._rs) removeEventListener('resize', this._rs);
     this.ps = []; this.rk = []; this.cv = null;
   },
@@ -845,7 +853,7 @@ const FW = {
         col:this.cols[Math.random() * this.cols.length | 0] });
     }
   },
-  volley(n){ for(let i = 0; i < n; i++) setTimeout(() => this.launch(1), i * 180); },
+  volley(n){ for(let i = 0; i < n; i++) setTimeout(() => { if(this.cv) this.launch(1); }, i * 180); },
   burst(x, y, col){
     const n = 70 + (Math.random() * 60 | 0), big = Math.random() * 2 + 4;
     for(let i = 0; i < n; i++){
@@ -976,6 +984,7 @@ function buildProfesor(){
       <button class="btn" id="bReg"></button>
       <a class="btn" href="?modo=pantalla" target="_blank" rel="noopener">Abrir pantalla para proyectar ↗</a>
       <button class="btn" id="bLibTodos">Liberar todos los nombres</button>
+      <button class="btn" id="bPdf">Exportar resultados (PDF)</button>
       <button class="btn danger" id="bReset">Reiniciar todo</button>
     </div>
     <div class="pgrid">
@@ -1002,12 +1011,8 @@ function buildProfesor(){
       db.ref(ROOT).update({ reclamos:null, conectados:null });
     }
   });
-  $('#bReset').addEventListener('click', () => {
-    if(!confirm('¿Borrar TODAS las evaluaciones, notas y registros y empezar de cero?')) return;
-    if(!confirm('Esta acción no se puede deshacer. ¿Confirmas?')) return;
-    // El registro se queda como estaba para no tener que volver a activarlo
-    db.ref(ROOT).set({ estado:{ fase:'inicio', ronda:0, abierta:false, registro:!!S.estado.registro, finalPaso:1 } });
-  });
+  $('#bReset').addEventListener('click', reiniciar);
+  $('#bPdf').addEventListener('click', exportarPdf);
   $$('#pNotas .nrow').forEach(row => {
     const id = row.dataset.j, inp = $('.ninput', row);
     const guardar = () => {
@@ -1027,9 +1032,126 @@ function buildProfesor(){
     });
   });
   $('#pVotos').addEventListener('click', ev => {
+    const act = ev.target.closest('[data-act]');
+    if(act){ if(act.dataset.act === 'pdf') exportarPdf(); else reiniciar(); return; }
     const b = ev.target.closest('[data-del]'); if(!b) return;
     if(confirm(`¿Quitar la evaluación de ${jur(b.dataset.del).nombre} en esta ronda?`)) db.ref(ROOT + '/votos/r' + S.estado.ronda + '/' + b.dataset.del).remove();
   });
+}
+
+let pdfExportado = false;
+function hayDatos(){ return Object.keys(S.votos).length > 0 || Object.keys(S.notas).length > 0; }
+function reiniciar(){
+  if(hayDatos() && !pdfExportado && !confirm('Todavía no has exportado el PDF de resultados en esta sesión. ¿Reiniciar de todos modos?')) return;
+  if(!confirm('¿Borrar TODAS las evaluaciones, notas y registros y empezar de cero?')) return;
+  if(!confirm('Esta acción no se puede deshacer. ¿Confirmas?')) return;
+  // El registro se queda como estaba para no tener que volver a activarlo
+  db.ref(ROOT).set({ estado:{ fase:'inicio', ronda:0, abierta:false, registro:!!S.estado.registro, finalPaso:1 } })
+    .then(() => { pdfExportado = false; toast('Se reinició la rúbrica.'); });
+}
+
+/* ---------- exportar resultados a PDF (jsPDF + autoTable, se cargan solo al exportar) ---------- */
+function cargarScript(urls){
+  return urls.reduce((p, u) => p.catch(() => new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = u; s.onload = res; s.onerror = () => { s.remove(); rej(); };
+    document.head.appendChild(s);
+  })), Promise.reject());
+}
+let pdfLibs = null;
+function cargarPdf(){
+  if(!pdfLibs){
+    pdfLibs = cargarScript([
+      'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+      'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js'
+    ]).then(() => cargarScript([
+      'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js',
+      'https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js'
+    ]));
+    pdfLibs.catch(() => { pdfLibs = null; });
+  }
+  return pdfLibs;
+}
+async function exportarPdf(){
+  toast('Generando el PDF…');
+  try { await cargarPdf(); }
+  catch(e){ toast('No se pudo cargar el generador de PDF. Revisa tu conexión e intenta de nuevo.'); return; }
+
+  const doc = new window.jspdf.jsPDF({ unit:'pt', format:'letter' });
+  const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight(), M = 48;
+  const VERDE = [31, 61, 51], CORAL = [201, 87, 63], GRIS = [95, 107, 100], CREMA = [247, 244, 238];
+  const ahora = new Date();
+  const fecha = ahora.toLocaleDateString('es-DO', { day:'numeric', month:'long', year:'numeric' }) + ', ' +
+                ahora.toLocaleTimeString('es-DO', { hour:'2-digit', minute:'2-digit' });
+  const base = { theme:'grid', margin:{ left:M, right:M }, styles:{ fontSize:10, cellPadding:5, textColor:[31, 61, 51], lineColor:[226, 221, 210] },
+                 headStyles:{ fillColor:VERDE, textColor:255 }, footStyles:{ fillColor:CREMA, textColor:VERDE, fontStyle:'bold' } };
+  let y = 0;
+  const titulo = (txt, espacio) => {
+    if(y > H - (espacio || 120)){ doc.addPage(); y = 60; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(...VERDE);
+    doc.text(txt, M, y); y += 8;
+  };
+  const tabla = opts => { doc.autoTable(Object.assign({}, base, { startY:y }, opts)); y = doc.lastAutoTable.finalY + 26; };
+
+  // Encabezado
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...CORAL);
+  doc.text('ICADEP · EXCEL AVANZADO · MÓDULO 3', M, 56);
+  doc.setFontSize(22); doc.setTextColor(...VERDE);
+  doc.text('Rúbrica de exposición: resultados', M, 84);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(...GRIS);
+  doc.text('Tablas dinámicas avanzadas · Valor: 10 puntos · Exportado el ' + fecha, M, 102);
+  y = 132;
+
+  titulo('Puntuación final de las expositoras');
+  tabla({ head:[['Expositora', 'Puntuación final']],
+    body:EXPOS.map((x, i) => [x.nombre, f2(total(i)) + ' / 10']),
+    styles:Object.assign({}, base.styles, { fontSize:12 }),
+    columnStyles:{ 1:{ halign:'right', fontStyle:'bold', cellWidth:140 } } });
+
+  titulo('Puntuación por criterio (promedio de los jurados)');
+  tabla({ head:[['Criterio', 'Máx.', ...EXPOS.map(x => x.corto)]],
+    body:CRIT.map((c, k) => [c.nombre, String(c.max), ...EXPOS.map((x, i) => { const p = puntaje(i, k); return p == null ? 'Sin cerrar' : f2(p); })]),
+    foot:[['Total', { content:'10', styles:{ halign:'center' } }, ...EXPOS.map((x, i) => ({ content:f2(total(i)), styles:{ halign:'right' } }))]],
+    columnStyles:{ 1:{ halign:'center', cellWidth:50 }, 2:{ halign:'right', cellWidth:90 }, 3:{ halign:'right', cellWidth:90 } } });
+
+  titulo('Puntuación de los jurados (nota del profesor)');
+  const lista = JURADOS.map(j => ({ j, n:notaJurado(j.id) }))
+    .sort((a, b) => (b.n == null ? -1 : b.n) - (a.n == null ? -1 : a.n));
+  tabla({ head:[['#', 'Jurado', 'Rondas evaluadas', 'Nota']],
+    body:lista.map((x, i) => [String(i + 1), x.j.nombre, rondasVotadas(x.j.id) + ' de ' + NR, x.n == null ? 'Sin nota' : f2(x.n) + ' / 10']),
+    columnStyles:{ 0:{ halign:'center', cellWidth:30 }, 2:{ halign:'center', cellWidth:110 }, 3:{ halign:'right', fontStyle:'bold', cellWidth:90 } } });
+
+  // Detalle de cada ronda con los comentarios
+  doc.addPage(); y = 60;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.setTextColor(...VERDE);
+  doc.text('Detalle de las evaluaciones por ronda', M, y); y += 28;
+  for(let r = 0; r < NR; r++){
+    const c = critDe(r), vs = votosDe(r), pr = promedio(r);
+    titulo(`Ronda ${r + 1} · ${c.nombre} · ${EXPOS[expoDe(r)].nombre}`, 140);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(...GRIS);
+    doc.text(`Promedio: ${pr == null ? 'sin evaluaciones' : f2(pr) + ' de ' + c.max}${cerrada(r) ? '' : ' (ronda no cerrada)'}`, M, y + 6);
+    y += 14;
+    const filas = JURADOS.filter(j => vs[j.id]).map(j => [j.nombre, f2(vs[j.id].pts), vs[j.id].com]);
+    tabla({ head:[['Jurado', 'Puntos', 'Comentario']],
+      body:filas.length ? filas : [['—', '—', 'Sin evaluaciones en esta ronda']],
+      styles:Object.assign({}, base.styles, { fontSize:9 }),
+      columnStyles:{ 0:{ cellWidth:130 }, 1:{ halign:'center', cellWidth:50 } } });
+  }
+
+  // Pie de página
+  const n = doc.getNumberOfPages();
+  for(let i = 1; i <= n; i++){
+    doc.setPage(i);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...GRIS);
+    doc.text('Rúbrica de exposición · Módulo 3 · ICADEP', M, H - 24);
+    doc.text(`Página ${i} de ${n}`, W - M, H - 24, { align:'right' });
+  }
+
+  const iso = ahora.getFullYear() + '-' + String(ahora.getMonth() + 1).padStart(2, '0') + '-' + String(ahora.getDate()).padStart(2, '0');
+  doc.save(`Rubrica-Modulo3-Resultados-${iso}.pdf`);
+  pdfExportado = true;
+  toast('PDF descargado. Revisa tu carpeta de Descargas.');
+  render();
 }
 
 function updProfesor(){
@@ -1060,7 +1182,11 @@ function updProfesor(){
       <p class="muted" style="margin-top:8px">Enlace para los jurados: <code>${esc(urlJurados())}</code></p>`;
   } else {
     $('#pVTitle').textContent = 'Pantalla final';
-    $('#pVotos').innerHTML = `<p>${esc(estadoTexto())}.</p><p class="muted" style="margin-top:8px">Usa Siguiente para revelar cada resultado en la pantalla proyectada y en los dispositivos de los jurados.</p>`;
+    $('#pVotos').innerHTML = `<p>${esc(estadoTexto())}.</p><p class="muted" style="margin-top:8px">Usa Siguiente para revelar cada resultado en la pantalla proyectada y en los dispositivos de los jurados.</p>
+      <div class="cierre"><h3>Al terminar la actividad</h3>
+        <div class="cierre-btns"><button class="btn primary" data-act="pdf">1. Exportar resultados (PDF)</button>
+        <button class="btn danger" data-act="reset">2. Reiniciar todo</button></div>
+        <p class="muted" style="font-size:14px">${pdfExportado ? '✓ Ya exportaste el PDF en esta sesión.' : 'Exporta el PDF antes de reiniciar: al reiniciar se borran todos los resultados.'}</p></div>`;
   }
 
   // notas y comentarios por jurado
