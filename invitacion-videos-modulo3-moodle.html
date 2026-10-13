@@ -1,0 +1,140 @@
+<!-- Invitación a los videos del Módulo 3 para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
+<!-- Si Moodle elimina los <iframe>, «Ver aquí sin salir» queda vacío, pero la miniatura sigue abriendo el video en YouTube. -->
+<style>
+  @keyframes v3-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  @keyframes v3-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(201,87,63,.45); } 50% { box-shadow: 0 0 0 12px rgba(201,87,63,0); } }
+  @keyframes v3-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(-4deg); } }
+  @keyframes v3-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  @keyframes v3-play { 0%, 100% { transform: translate(-50%,-50%) scale(1); } 50% { transform: translate(-50%,-50%) scale(1.12); } }
+  .v3-in { animation: v3-in .7s ease-out both; }
+  .v3-d1 { animation-delay: .1s; } .v3-d2 { animation-delay: .25s; } .v3-d3 { animation-delay: .4s; } .v3-d4 { animation-delay: .55s; } .v3-d5 { animation-delay: .7s; }
+  .v3-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .v3-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(31,61,51,.18); }
+  .v3-thumb img { transition: transform .35s ease, filter .35s ease; }
+  .v3-card:hover .v3-thumb img { transform: scale(1.06); filter: brightness(.85); }
+  .v3-play { animation: v3-play 2s ease-in-out infinite; }
+  .v3-float { display: inline-block; animation: v3-float 3s ease-in-out infinite; }
+  .v3-btn { animation: v3-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .v3-btn:hover { transform: scale(1.04); background-color: #163027 !important; }
+  .v3-bar { background: linear-gradient(90deg, #E4EFE8 0%, #1F3D33 30%, #C9573F 55%, #E4EFE8 80%, #1F3D33 100%); background-size: 200% 100%; animation: v3-shine 7s linear infinite; }
+  .v3-pick { transition: background-color .2s ease, color .2s ease, transform .15s ease; }
+  .v3-pick:hover { transform: translateY(-2px); }
+  details.v3-more > summary { list-style: none; }
+  details.v3-more > summary::-webkit-details-marker { display: none; }
+  details.v3-more[open] > summary { background-color: #E4EFE8 !important; }
+  details.v3-guia[open] > summary { background-color: #1F3D33 !important; color: #FFFFFF !important; }
+  @media (prefers-reduced-motion: reduce) { .v3-in, .v3-btn, .v3-float, .v3-bar, .v3-play { animation: none !important; } }
+</style>
+
+<div style="max-width: 900px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #1F2A26; line-height: 1.55; background-color: #F7F4EE; border-radius: 10px; overflow: hidden; border: 1px solid #E2DDD2;">
+
+  <div class="v3-bar" style="height: 6px; background-color: #1F3D33;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #1F3D33;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="v3-float">🎬</span></td>
+      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
+        <p class="v3-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #F3B9A8;">Videos de apoyo · Módulo 3</p>
+        <h2 class="v3-in v3-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 27px; font-weight: normal; line-height: 1.2; color: #FFFFFF;">Tablas dinámicas en video: mira, pausa y hazlo en tu Excel</h2>
+        <p class="v3-in v3-d2" style="margin: 0; font-size: 15px; color: #DCE9E2;">Tres videos para <strong style="color: #FFFFFF;">repasar lo de la clase a tu ritmo</strong>. Ábrelos con la base de práctica a mano: pausa el video, repite el paso en tu archivo y sigue.</p>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 6px 22px 26px;">
+
+    <!-- ¿Por cuál empiezo? -->
+    <p class="v3-in v3-d2" style="margin: 16px 0 8px; font-weight: bold; color: #1F3D33; font-size: 16px;">🧭 ¿Por cuál empiezo? Toca el Excel que usas:</p>
+    <div class="v3-in v3-d2" style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <div style="flex: 1 1 200px;">
+          <details class="v3-guia v3-pick" style="background-color: #FFFFFF; border: 1px solid #E2DDD2; border-radius: 8px;">
+            <summary style="cursor: pointer; list-style: none; padding: 10px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; color: #1F3D33; text-align: center;">🌐 Excel en el navegador<br><span style="font-weight: normal; font-size: 12px;">(Office 365 en línea)</span></summary>
+            <div style="padding: 8px 12px 12px; font-size: 13.5px;">Empieza por el <strong>video 1</strong> y luego mira los <strong>tips</strong> del video 3.</div>
+          </details>
+        </div>
+        <div style="flex: 1 1 200px;">
+          <details class="v3-guia v3-pick" style="background-color: #FFFFFF; border: 1px solid #E2DDD2; border-radius: 8px;">
+            <summary style="cursor: pointer; list-style: none; padding: 10px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; color: #1F3D33; text-align: center;">💻 Excel instalado<br><span style="font-weight: normal; font-size: 12px;">(Office de escritorio)</span></summary>
+            <div style="padding: 8px 12px 12px; font-size: 13.5px;">Empieza por el <strong>video 2</strong>: va de lo básico a lo avanzado. Después, el video 3.</div>
+          </details>
+        </div>
+        <div style="flex: 1 1 200px;">
+          <details class="v3-guia v3-pick" style="background-color: #FFFFFF; border: 1px solid #E2DDD2; border-radius: 8px;">
+            <summary style="cursor: pointer; list-style: none; padding: 10px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; color: #1F3D33; text-align: center;">❓ No estoy seguro<br><span style="font-weight: normal; font-size: 12px;">(toca para saberlo)</span></summary>
+            <div style="padding: 8px 12px 12px; font-size: 13.5px;">Si abres Excel <strong>desde una página web</strong> (Office.com, Teams u OneDrive), usas el del navegador: <strong>video 1</strong>. Si lo abres desde un ícono de tu computadora, es el de escritorio: <strong>video 2</strong>.</div>
+          </details>
+        </div>
+      </div>
+
+    <!-- Videos -->
+    <div style="display: flex; flex-wrap: wrap; gap: 14px; margin: 18px 0 0;">
+
+      <!-- 1 · Office 365 -->
+      <div class="v3-card v3-in v3-d3" style="flex: 1 1 250px; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #1F3D33; border-radius: 8px; overflow: hidden;">
+        <a class="v3-thumb" href="https://youtu.be/Dg8h4Dyl6oo" target="_blank" rel="noopener" style="display: block; position: relative; overflow: hidden; background-color: #1F3D33;">
+          <img src="https://img.youtube.com/vi/Dg8h4Dyl6oo/hqdefault.jpg" alt="Video: crear tablas dinámicas y trabajar con ellas en Office 365" style="display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;">
+          <span class="v3-play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 54px; height: 54px; line-height: 54px; border-radius: 50%; background-color: rgba(201,87,63,.92); color: #FFFFFF; font-size: 22px; text-align: center;">▶</span>
+          <span style="position: absolute; top: 10px; left: 10px; background-color: #FFFFFF; color: #1F3D33; font-weight: bold; font-size: 13px; border-radius: 12px; padding: 2px 10px;">Video 1</span>
+          <span style="position: absolute; top: 10px; right: 10px; background-color: #C9573F; color: #FFFFFF; font-weight: bold; font-size: 12px; border-radius: 12px; padding: 2px 10px;">Office 365</span>
+        </a>
+        <div style="padding: 12px 14px 14px;">
+          <h3 style="margin: 0 0 4px; font-size: 17px; color: #1F3D33;">Crear tablas dinámicas y trabajar con ellas</h3>
+          <p style="margin: 0 0 10px; font-size: 14px;">Cómo insertar la tabla dinámica, colocar los campos en sus áreas y hacer su gráfico, en Excel de Office 365.</p>
+          <details class="v3-more" style="border: 1px solid #E2DDD2; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1F3D33; background-color: #F7F4EE; border-radius: 6px;">▶ Ver aquí sin salir</summary>
+            <div style="padding: 8px;"><iframe src="https://www.youtube-nocookie.com/embed/Dg8h4Dyl6oo" title="Crear tablas dinámicas y trabajar con ellas" style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 4px;" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
+          </details>
+        </div>
+      </div>
+
+      <!-- 2 · Escritorio (enlace pendiente) -->
+      <div class="v3-card v3-in v3-d4" style="flex: 1 1 250px; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #C9573F; border-radius: 8px; overflow: hidden;">
+        <div style="display: block; position: relative; aspect-ratio: 16 / 9; background-color: #1F3D33; text-align: center;">
+          <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 46px; line-height: 1;">💻</span>
+          <span style="position: absolute; top: 10px; left: 10px; background-color: #FFFFFF; color: #1F3D33; font-weight: bold; font-size: 13px; border-radius: 12px; padding: 2px 10px;">Video 2</span>
+          <span style="position: absolute; top: 10px; right: 10px; background-color: #2F6B52; color: #FFFFFF; font-weight: bold; font-size: 12px; border-radius: 12px; padding: 2px 10px;">Escritorio</span>
+        </div>
+        <div style="padding: 12px 14px 14px;">
+          <h3 style="margin: 0 0 4px; font-size: 17px; color: #1F3D33;">Tablas dinámicas: básico, intermedio y avanzado</h3>
+          <p style="margin: 0 0 10px; font-size: 14px;">Un recorrido completo de menos a más, para quienes usan el Excel instalado en la computadora (Office de escritorio).</p>
+          <p style="margin: 0; padding: 8px 12px; font-size: 13px; color: #5F6B64; background-color: #F7F4EE; border-radius: 6px;">⏳ Enlace disponible pronto.</p>
+        </div>
+      </div>
+
+      <!-- 3 · Tips -->
+      <div class="v3-card v3-in v3-d5" style="flex: 1 1 250px; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #2F6B52; border-radius: 8px; overflow: hidden;">
+        <a class="v3-thumb" href="https://youtu.be/tCcxRJQIP0Y" target="_blank" rel="noopener" style="display: block; position: relative; overflow: hidden; background-color: #1F3D33;">
+          <img src="https://img.youtube.com/vi/tCcxRJQIP0Y/hqdefault.jpg" alt="Video: tips de tablas dinámicas" style="display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;">
+          <span class="v3-play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 54px; height: 54px; line-height: 54px; border-radius: 50%; background-color: rgba(201,87,63,.92); color: #FFFFFF; font-size: 22px; text-align: center;">▶</span>
+          <span style="position: absolute; top: 10px; left: 10px; background-color: #FFFFFF; color: #1F3D33; font-weight: bold; font-size: 13px; border-radius: 12px; padding: 2px 10px;">Video 3</span>
+          <span style="position: absolute; top: 10px; right: 10px; background-color: #F0BD45; color: #1F3D33; font-weight: bold; font-size: 12px; border-radius: 12px; padding: 2px 10px;">Para todos</span>
+        </a>
+        <div style="padding: 12px 14px 14px;">
+          <h3 style="margin: 0 0 4px; font-size: 17px; color: #1F3D33;">Tips de tablas dinámicas</h3>
+          <p style="margin: 0 0 10px; font-size: 14px;">Trucos para trabajar más rápido y presentar mejor tus tablas dinámicas. Ideal después de ver el video 1 o el 2.</p>
+          <details class="v3-more" style="border: 1px solid #E2DDD2; border-radius: 6px;">
+            <summary style="cursor: pointer; padding: 8px 12px; font-weight: bold; font-size: 14px; color: #1F3D33; background-color: #F7F4EE; border-radius: 6px;">▶ Ver aquí sin salir</summary>
+            <div style="padding: 8px;"><iframe src="https://www.youtube-nocookie.com/embed/tCcxRJQIP0Y" title="Tips de tablas dinámicas" style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 4px;" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
+          </details>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Consejo -->
+    <div class="v3-in v3-d5" style="margin: 16px 0 0; background-color: #E4EFE8; border-left: 5px solid #2F6B52; border-radius: 6px; padding: 12px 16px; font-size: 14px;">
+      💡 <strong style="color: #1F3D33;">Consejo:</strong> no veas el video de corrido. Cuando el video haga algo nuevo, <strong>pausa</strong>, hazlo en tu archivo y luego continúa. Si en tu Excel un menú no aparece igual, es normal: el Excel del navegador y el de escritorio cambian un poco.
+    </div>
+
+    <!-- Llamado a la acción -->
+    <div class="v3-in v3-d5" style="text-align: center; margin: 24px 0 6px;">
+      <a class="v3-btn" href="https://youtu.be/Dg8h4Dyl6oo" target="_blank" rel="noopener" style="display: inline-block; background-color: #1F3D33; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px; margin: 4px 6px;">▶ Empezar por el video 1</a>
+      <a href="https://pitagoraslg.github.io/excelavanzado/Modulo3-Base-Servicios.xlsx" style="display: inline-block; background-color: #FFFFFF; color: #C9573F; border: 2px solid #C9573F; text-decoration: none; font-weight: bold; font-size: 17px; padding: 13px 28px; border-radius: 30px; margin: 4px 6px;">⬇ Base de práctica</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #5F6B64;">Los videos se abren en YouTube, en una pestaña nueva.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #5F6B64;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
