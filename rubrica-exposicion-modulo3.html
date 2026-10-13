@@ -496,17 +496,41 @@ function actualizar(){
 /* =========================================================
    JURADO
    ========================================================= */
-let presRef = null;
+let presRef = null, claimRef = null;
+let reclamando = !!jid;   // al abrir con un nombre guardado, se recupera antes de comprobarlo
 function presencia(){
   if(presRef){ presRef.onDisconnect().cancel(); presRef.remove(); presRef = null; }
+  if(claimRef){ claimRef.onDisconnect().cancel(); claimRef = null; }
   if(jid){
     presRef = db.ref(ROOT + '/conectados/' + jid + '/' + DEV);
     presRef.onDisconnect().remove();
     presRef.set(true);
+    // Si el jurado cierra la página o pierde la conexión, su nombre queda libre
+    claimRef = db.ref(ROOT + '/reclamos/' + jid);
+    claimRef.onDisconnect().remove();
   }
 }
-function chequearReclamo(){
+/* Al abrir la página o al volver la conexión, el dispositivo recupera su nombre si sigue libre */
+function recuperar(){
   if(!jid) return;
+  reclamando = true;
+  db.ref(ROOT + '/reclamos/' + jid).transaction(
+    cur => (cur == null || cur === DEV) ? DEV : undefined,
+    (err, ok) => {
+      reclamando = false;
+      if(!err && ok) presencia();
+      else {
+        jid = null; editando = false;
+        store.del('rubM3-jurado');
+        presencia();
+        toast(err ? 'No se pudo recuperar tu nombre. Elígelo de nuevo.' : 'Tu nombre ya está en uso en otro dispositivo.');
+      }
+      render();
+    }
+  );
+}
+function chequearReclamo(){
+  if(!jid || reclamando) return;
   const c = S.reclamos[jid];
   if(c === DEV) return;
   jid = null; editando = false;
@@ -973,7 +997,7 @@ function buildProfesor(){
     inp.addEventListener('change', guardar);
     inp.addEventListener('keydown', ev => { if(ev.key === 'Enter'){ ev.preventDefault(); inp.blur(); } });
     $('.lib', row).addEventListener('click', () => {
-      if(confirm(`¿Liberar el nombre de ${jur(id).nombre}? Podrá volver a elegirlo desde otro dispositivo.`)){
+      if(confirm(`¿Liberar el nombre de ${jur(id).nombre}? Su dispositivo actual saldrá y podrá elegirlo desde otro. Sus evaluaciones no se borran.`)){
         db.ref(ROOT).update({ ['reclamos/' + id]:null, ['conectados/' + id]:null });
       }
     });
@@ -1066,7 +1090,7 @@ function iniciar(){
   db.ref(ROOT).on('value', snap => { S = norm(snap.val()); render(); },
     () => { app.innerHTML = '<div class="wrap"><div class="card"><h2>Sin acceso a los datos</h2><p class="muted">Recarga la página.</p></div></div>'; });
   if(MODO === 'jurado'){
-    db.ref('.info/connected').on('value', s => { if(s.val() === true && jid) presencia(); });
+    db.ref('.info/connected').on('value', s => { if(s.val() === true && jid) recuperar(); });
   }
   if(MODO === 'profesor'){
     document.addEventListener('keydown', ev => {
