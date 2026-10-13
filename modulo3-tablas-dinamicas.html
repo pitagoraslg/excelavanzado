@@ -212,9 +212,9 @@ const pct = n => (n*100).toFixed(2)+"%";
 const opts = (arr,sel) => arr.map(v=>`<option${v===sel?" selected":""}>${esc(v)}</option>`).join("");
 
 /* Campos de la lista de campos (nombre visible → clave interna) */
-const F = {"ARS":"ars","PSS":"pss","Tipo de Servicio":"tipo","Provincia":"prov","Años":"anio","Trimestres":"trim","Meses":"mes"};
+const F = {"ARS":"ars","PSS":"pss","Tipo de Servicio":"tipo","Provincia":"prov","Año":"anio","Mes":"mes"};
 const AGG = {"Cuenta de ID Servicio":"count","Suma de Monto":"sum","Promedio de Monto":"avg","Máx. de Monto":"max"};
-const lab = (k,v) => k==="mes" ? MESC[v-1] : String(v);
+const lab = (k,v) => String(v);
 
 /* Motor de tabla dinámica: agrupa por fila (y columna opcional) y calcula */
 function pivot(rows, rk, ck, agg){
@@ -249,95 +249,95 @@ const TOPICS = [
   def:"Una tabla dinámica resume una base completa en segundos: agrupa, cuenta y suma la información sin escribir una sola fórmula.",
   ana:"Es como pedirle un resumen a un asistente: «agrúpame por ARS y dime cuántas hay», y te entrega el cuadro listo.",
   partsT:"Partes de la herramienta · toca cada una",
-  parts:[["Tabla de origen","tblServicios: los datos originales. La tabla dinámica nunca modifica la base."],["Lista de campos","Los encabezados de la tabla: ID Servicio, Fecha, ARS, PSS, Tipo de Servicio, Provincia y Monto."],["Las 4 áreas","Filtros, Columnas, Filas y Valores: ahí se arrastran los campos."],["Informe","El cuadro resumen que aparece en la hoja nueva."],["Actualizar","Si la base cambia: clic derecho en el informe › Actualizar."]],
-  uses:[["Resumir sin fórmulas","Contar y sumar 360 filas en segundos, sin escribir CONTAR.SI.CONJUNTO.","Insertar › Tabla dinámica"],
+  parts:[["Tabla de origen","tblServicios: los datos originales. La tabla dinámica nunca modifica la base."],["Campos de tabla dinámica","El panel de la derecha con los encabezados: ID Servicio, Fecha, ARS, PSS, Tipo de Servicio, Provincia y Monto."],["Las 4 áreas","Filtros, Columnas, Filas y Valores: ahí se colocan los campos."],["Informe","El cuadro resumen que aparece en la hoja nueva."],["Actualizar","Si la base cambia: clic derecho en el informe › Actualizar."]],
+  uses:[["Resumir sin fórmulas","Contar y sumar 360 filas en segundos.","Insertar › Tabla dinámica"],
         ["Responder a la dirección","¿Quién tiene más registros? ¿Dónde se concentra el gasto?","Filas: ARS · Valores: Cuenta de ID Servicio"],
-        ["Cambiar el análisis al instante","Arrastra otro campo y el cuadro se reorganiza solo.","Filas: Provincia ⇄ Tipo de Servicio"],
-        ["Base para gráficos y tableros","Desde la tabla dinámica salen los gráficos y las segmentaciones.","Analizar tabla dinámica › Gráfico dinámico"]],
-  pit:"Si la base tiene filas vacías, encabezados repetidos o celdas combinadas, el resumen sale incompleto. Por eso partimos de una tabla (tblServicios): basta con Actualizar para que el informe incluya las filas nuevas.",
-  steps:["Abre <code>Modulo3-Base-Servicios.xlsx</code> y haz clic en cualquier celda de la tabla, por ejemplo <code>A2</code>.","Ve a <code>Insertar › Tabla dinámica</code>. En «Tabla o rango» debe decir <code>tblServicios</code>.","Elige <code>Nueva hoja de cálculo</code> › <code>Aceptar</code>. Renombra la hoja como <code>TD_ARS</code>.","Marca la casilla <code>ARS</code> en la lista de campos: aparecen las 5 ARS en la columna A."],
-  conf:"Origen: tblServicios · Destino: hoja nueva TD_ARS", sim:"crear" },
+        ["Cambiar el análisis al instante","Cambia un campo por otro y el cuadro se reorganiza solo.","Filas: Provincia ⇄ Tipo de Servicio"],
+        ["Base para gráficos","Desde la tabla dinámica sale un gráfico que cambia con ella.","Clic en la tabla › Insertar › Gráfico"]],
+  pit:"Haz clic dentro de la tabla tblServicios antes de insertar. Si seleccionas solo unas celdas, la tabla dinámica resume solo esas celdas y los totales salen incompletos.",
+  steps:["Abre <code>Modulo3-Base-Servicios.xlsx</code> en Excel (Microsoft 365) y haz clic en la celda <code>A2</code>.","Ve a <code>Insertar › Tabla dinámica</code>. Deja <code>tblServicios</code> y elige <code>Nueva hoja</code>.","Haz doble clic en la pestaña de la hoja nueva y llámala <code>TD_ARS</code>.","En el panel <b>Campos de tabla dinámica</b>, marca <code>ARS</code>: aparecen las <b>5 ARS</b>."],
+  conf:"Origen: tblServicios · Destino: hoja nueva TD_ARS · Filas: ARS", sim:"crear" },
 
 { k:"Las 4 áreas", d:"Filas, Columnas, Valores y Filtros.",
-  def:"Cada campo se arrastra a un área. Filas y Columnas deciden cómo se agrupa; Valores, qué se calcula; Filtros, qué datos entran al informe.",
+  def:"Cada campo va a un área. Filas y Columnas deciden cómo se agrupa; Valores, qué se calcula; Filtros, qué datos entran al informe.",
   ana:"Es como armar un cuadro en la pizarra: decides qué va a la izquierda (filas), qué va arriba (columnas) y qué número va en cada casilla (valores).",
   partsT:"Las 4 áreas · toca cada una",
-  parts:[["Filas","Las categorías que bajan por la izquierda. Ej.: ARS."],["Columnas","Las categorías que van arriba, a lo ancho. Ej.: Años."],["Valores","El cálculo de cada casilla. Ej.: Cuenta de ID Servicio."],["Filtros","Un filtro general para todo el informe. Ej.: Provincia = Santiago."]],
+  parts:[["Filas","Las categorías que bajan por la izquierda. Ej.: ARS."],["Columnas","Las categorías que van arriba, a lo ancho. Ej.: Tipo de Servicio."],["Valores","El cálculo de cada casilla. Ej.: Cuenta de ID Servicio."],["Filtros","Un filtro general para todo el informe. Ej.: Provincia = Santiago."]],
   uses:[["ARS con más registros","Una fila por ARS con su cantidad de servicios.","Filas: ARS · Valores: Cuenta de ID Servicio"],
         ["ARS por tipo de servicio","Cruza dos campos en una matriz.","Filas: ARS · Columnas: Tipo de Servicio"],
         ["Analizar una provincia","El mismo informe, solo para una provincia.","Filtros: Provincia = Santiago"],
-        ["Monto por ARS","Cambia el campo de Valores para ver dinero en vez de cantidad.","Filas: ARS · Valores: Suma de Monto"]],
-  pit:"Un campo de texto (ID Servicio) en Valores se CUENTA; un campo numérico (Monto) se SUMA. Para contar registros usa un campo que nunca esté vacío, como ID Servicio.",
-  steps:["En la hoja <code>TD_ARS</code>, deja <code>ARS</code> en Filas.","Arrastra <code>ID Servicio</code> al área <code>Valores</code>: aparece «Cuenta de ID Servicio».","Clic derecho sobre un número › <code>Ordenar › Ordenar de mayor a menor</code>.","Resultado esperado: <b>SeNaSa</b> encabeza con <b>107</b> de los <b>360</b> registros."],
+        ["Monto por ARS","Dinero en vez de cantidad.","Filas: ARS · Valores: Suma de Monto"]],
+  pit:"Si solo marcas la casilla de ID Servicio, Excel lo pone en Filas porque es texto. Arrástralo hasta el cuadro Valores para que se cuente. Monto sí va solo a Valores porque es un número.",
+  steps:["En <code>TD_ARS</code>, deja <code>ARS</code> en <b>Filas</b>.","Arrastra <code>ID Servicio</code> hasta el cuadro <b>Valores</b>: debe decir «Cuenta de ID Servicio».","Clic derecho sobre un número › <code>Ordenar › Ordenar de mayor a menor</code>.","Resultado: <b>SeNaSa</b> encabeza con <b>107</b> de los <b>360</b> registros."],
   conf:"Filas: ARS · Valores: Cuenta de ID Servicio", sim:"areas" },
 
 { k:"Resumir y mostrar valores", d:"Cuenta, Suma, Promedio y % del total.",
-  def:"En el área Valores puedes cambiar el cálculo (Cuenta, Suma, Promedio) y la forma de mostrarlo (número o porcentaje del total).",
-  ana:"Es la misma información vista con distintos lentes: cuántos son, cuánto suman, cuánto vale uno en promedio y qué pedazo del pastel representa cada grupo.",
-  partsT:"Configuración de campo de valor · toca cada opción",
-  parts:[["Cuenta","Cuántos registros hay. Responde «¿cuántos servicios?»."],["Suma","El total de dinero. Responde «¿cuánto se reclamó?»."],["Promedio","El monto típico de un servicio."],["Máx. / Mín.","El valor más alto o más bajo de cada grupo."],["% del total general","En «Mostrar valores como»: qué parte del total aporta cada fila."]],
+  def:"Con clic derecho sobre un número cambias el cálculo (Resumir valores por: Cuenta, Suma, Promedio) o la forma de verlo (Mostrar valores como: % del total general).",
+  ana:"Es mirar el mismo pastel de varias formas: cuántos pedazos hay, cuánto pesa en total, cuánto pesa un pedazo típico y qué parte del pastel es cada uno.",
+  partsT:"Clic derecho sobre un número · toca cada opción",
+  parts:[["Resumir valores por › Cuenta","Cuántos registros hay: «¿cuántos servicios?»."],["Resumir valores por › Suma","El total de dinero: «¿cuánto se reclamó?»."],["Resumir valores por › Promedio","El monto típico de un servicio."],["Mostrar valores como › % del total general","Qué parte del total aporta cada fila."]],
   uses:[["Servicios más frecuentes","Cantidad de servicios por tipo.","Filas: Tipo de Servicio · Valores: Cuenta de ID Servicio"],
         ["Peso de cada provincia","Qué parte de todas las operaciones aporta cada una.","Mostrar valores como › % del total general"],
         ["Costo promedio","Cuánto vale en promedio una hospitalización frente a una consulta.","Resumir valores por › Promedio"],
-        ["Dos cálculos a la vez","Arrastra el mismo campo dos veces a Valores: uno como número y otro como %.","Valores: Cuenta + % del total general"]],
-  pit:"El cálculo no se cambia escribiendo en la celda: se cambia en «Configuración de campo de valor» (clic derecho sobre un número). El porcentaje está en la pestaña «Mostrar valores como», no en «Resumir valores por».",
-  steps:["Inserta una tabla dinámica nueva en la hoja <code>TD_Servicios</code>.","Filas: <code>Tipo de Servicio</code> · Valores: <code>ID Servicio</code> (Cuenta).","Arrastra otra vez <code>ID Servicio</code> a Valores › clic derecho › <code>Mostrar valores como › % del total general</code>.","Resultado esperado: <b>Consulta</b> es el más frecuente con <b>121</b> servicios (<b>33.61 %</b>)."],
+        ["Cantidad y % a la vez","Pon el mismo campo dos veces en Valores: uno como número y otro como %.","Valores: Cuenta + % del total general"]],
+  pit:"El cálculo no se cambia escribiendo en la celda. Haz clic derecho sobre un número: «Resumir valores por» cambia el cálculo y «Mostrar valores como» lo convierte en porcentaje.",
+  steps:["Crea la hoja <code>TD_Servicios</code> con una tabla dinámica nueva: Filas <code>Tipo de Servicio</code> y Valores <code>ID Servicio</code> (Cuenta).","Arrastra otra vez <code>ID Servicio</code> a <b>Valores</b>: aparece una segunda columna.","Clic derecho sobre un número de esa segunda columna › <code>Mostrar valores como › % del total general</code>.","Resultado: <b>Consulta</b> es el más frecuente con <b>121</b> servicios (<b>33.61 %</b>)."],
   conf:"Filas: Tipo de Servicio · Valores: Cuenta de ID Servicio y % del total general", sim:"resumir" },
 
-{ k:"Ordenar y filtrar", d:"Ver primero lo más importante (Top).",
-  def:"Ordenar pone arriba lo más importante. Los filtros de valor dejan solo los mejores (Diez mejores) o los que pasan un límite.",
+{ k:"Ordenar y filtrar", d:"Ver primero lo más importante.",
+  def:"Ordenar pone arriba lo más importante. Filtrar deja solo los elementos que te interesan: marcas o desmarcas casillas, o eliges un valor en el área Filtros.",
   ana:"Es como la tabla de posiciones del béisbol: ordenas de mayor a menor y te fijas en los primeros lugares.",
   partsT:"Herramientas · toca cada una",
-  parts:[["Ordenar","Clic derecho sobre un número › Ordenar de mayor a menor."],["Filtro de etiqueta","Filtra por el nombre. Ej.: PSS que «contiene» Clínica."],["Diez mejores","Filtro de valor: deja solo los N primeros. Ej.: los 3 PSS con más monto."],["Mayor que","Filtro de valor: deja solo los que pasan un límite. Ej.: más de 1,000,000."]],
+  parts:[["Ordenar","Clic derecho sobre un número › Ordenar › Ordenar de mayor a menor."],["Flecha de Etiquetas de fila","Marca solo los elementos que quieres ver. Ej.: dos PSS para compararlos."],["Área Filtros","Un filtro general para todo el informe. Ej.: Tipo de Servicio = Hospitalización."],["Seleccionar todo","Vuelve a marcar todas las casillas y quita el filtro."]],
   uses:[["Entidades con mayor monto","PSS ordenados por dinero, de mayor a menor.","Filas: PSS · Valores: Suma de Monto · Ordenar ↓"],
-        ["Top 3 de prestadores","Solo los tres PSS que más montos reportan.","Filtros de valor › Diez mejores › 3"],
-        ["ARS con mayor monto","Las ARS ordenadas por dinero reclamado.","Filas: ARS · Valores: Suma de Monto · Ordenar ↓"],
-        ["Grandes cuentas","Solo las entidades que pasan RD$ 1,000,000.","Filtros de valor › Mayor que › 1000000"]],
-  pit:"El filtro «Diez mejores» se aplica desde la flecha de «Etiquetas de fila» › Filtros de valor, no desde una segmentación. Revisa que use el campo correcto (Suma de Monto y no Cuenta).",
-  steps:["Inserta una tabla dinámica nueva en la hoja <code>TD_Montos</code>.","Filas: <code>PSS</code> · Valores: <code>Monto</code> (Suma), con formato de número y 2 decimales.","Ordena de mayor a menor. Luego flecha de Etiquetas de fila › <code>Filtros de valor › Diez mejores</code> › <code>3</code>.","Resultado esperado: <b>Centro Médico Las Américas</b> lidera con <b>3,020,300.00</b>."],
-  conf:"Filas: PSS · Valores: Suma de Monto · Orden de mayor a menor · Diez mejores: 3", sim:"top" },
+        ["ARS con mayor monto","Las ARS ordenadas por dinero.","Filas: ARS · Valores: Suma de Monto · Ordenar ↓"],
+        ["Solo un tipo de servicio","El ranking, pero solo con hospitalizaciones.","Filtros: Tipo de Servicio = Hospitalización"],
+        ["Comparar dos entidades","Deja solo las que te interesan.","Flecha de Etiquetas de fila › marca 2"]],
+  pit:"Para ordenar por dinero, haz clic derecho sobre un número de la columna de valores. Si lo haces sobre un nombre, Excel ordena alfabéticamente (A a Z).",
+  steps:["Crea la hoja <code>TD_Montos</code> con una tabla dinámica nueva: Filas <code>PSS</code> y marca <code>Monto</code> (sale «Suma de Monto»).","Clic derecho sobre un número › <code>Ordenar › Ordenar de mayor a menor</code>.","Resultado: <b>Centro Médico Las Américas</b> lidera con <b>3,020,300</b>.","Arrastra <code>Tipo de Servicio</code> a <b>Filtros</b> y elige <code>Hospitalización</code>: sigue primero, con <b>2,725,300</b>."],
+  conf:"Filas: PSS · Valores: Suma de Monto · Orden de mayor a menor · Filtros: Tipo de Servicio", sim:"top" },
 
-{ k:"Agrupar fechas", d:"Años, trimestres y meses.",
-  def:"Al poner una fecha en Filas, Excel la agrupa en Años, Trimestres y Meses. Así se ve cómo cambian los datos con el tiempo.",
-  ana:"Es como pasar de mirar recibos sueltos a mirar el calendario: en lugar de 360 fechas ves 24 meses, 8 trimestres o 2 años.",
-  partsT:"Agrupar por · toca cada nivel",
-  parts:[["Años","2024 y 2025: compara los dos períodos."],["Trimestres","Trim.1 a Trim.4: muestra la temporada más fuerte."],["Meses","ene a dic: el detalle mes a mes."],["Días","Casi nunca se usa en un resumen: demasiado detalle."]],
-  uses:[["Comportamiento por mes","Cuenta de servicios en cada mes.","Filas: Fecha (Meses) · Valores: Cuenta de ID Servicio"],
-        ["Comparar 2024 con 2025","Meses en filas y años en columnas, lado a lado.","Filas: Meses · Columnas: Años"],
-        ["Temporada alta","Qué trimestre concentra más servicios.","Agrupar › Trimestres"],
-        ["Crecimiento entre períodos","Cuánto cambió 2025 respecto a 2024.","Mostrar valores como › % de diferencia de"]],
-  pit:"Si Excel dice «No se puede agrupar esa selección», en la columna Fecha hay fechas guardadas como texto o celdas vacías. Las fechas reales se alinean a la derecha.",
-  steps:["Inserta una tabla dinámica nueva en la hoja <code>TD_Meses</code>.","Arrastra <code>Fecha</code> a Filas. Clic derecho en una fecha › <code>Agrupar</code> › marca <code>Meses</code> y <code>Años</code>.","Mueve <code>Años</code> a Columnas. Valores: <code>ID Servicio</code> (Cuenta).","Resultado esperado: <b>2024 = 150</b> y <b>2025 = 210</b> servicios. Diciembre es el mes más alto en los dos años."],
-  conf:"Filas: Fecha (Meses) · Columnas: Fecha (Años) · Valores: Cuenta de ID Servicio", sim:"fechas" },
+{ k:"Fechas: Año y Mes", d:"Columnas de ayuda con AÑO y MES.",
+  def:"En Excel para la web la tabla dinámica no agrupa fechas. La solución, que funciona en cualquier Excel, es agregar a la base dos columnas de ayuda: Año y Mes, con las funciones AÑO y MES.",
+  ana:"Es como ponerle etiqueta a cada recibo: en vez de 360 fechas sueltas, cada servicio lleva escrito su año y su mes, y la tabla dinámica solo tiene que juntarlos.",
+  partsT:"Las piezas · toca cada una",
+  parts:[["=AÑO([@Fecha])","Devuelve el año de la fecha de esa fila: 2024 o 2025."],["=MES([@Fecha])","Devuelve el número del mes: 1 (enero) a 12 (diciembre)."],["[@Fecha]","Significa «la fecha de esta misma fila de la tabla»."],["Columna calculada","Escribes la fórmula una vez y la tabla la copia sola en las 360 filas."],["Actualizar","Las tablas dinámicas que ya existían ven Año y Mes después de Actualizar."]],
+  uses:[["Servicios por mes","Cuenta de servicios en cada mes.","Filas: Mes · Valores: Cuenta de ID Servicio"],
+        ["Comparar 2024 con 2025","Meses en filas y años en columnas, lado a lado.","Filas: Mes · Columnas: Año"],
+        ["Mes más alto y más bajo","Ordena para ver el mes con más y con menos servicios.","Ordenar › Ordenar de mayor a menor"],
+        ["Monto por año","Cuánto dinero hubo en cada año.","Filas: Año · Valores: Suma de Monto"]],
+  pit:"Año y Mes son números: si solo marcas su casilla, Excel los manda a Valores y los suma (saldría 728,850 en vez de 2024 y 2025). Arrástralos a Filas o a Columnas.",
+  steps:["En la hoja <code>Servicios</code>, escribe <code>Año</code> en <code>H1</code> y <code>Mes</code> en <code>I1</code>: la tabla se amplía sola.","En <code>H2</code> escribe <code>=AÑO([@Fecha])</code> y en <code>I2</code> <code>=MES([@Fecha])</code>. Se copian solas hasta la fila 361.","Crea la hoja <code>TD_Meses</code> con una tabla dinámica nueva: arrastra <code>Mes</code> a Filas, <code>Año</code> a Columnas e <code>ID Servicio</code> a Valores.","Resultado: <b>2024 = 150</b> y <b>2025 = 210</b>. El mes <b>12</b> (diciembre) es el más alto en los dos años."],
+  conf:"Filas: Mes · Columnas: Año · Valores: Cuenta de ID Servicio", sim:"fechas" },
 
-{ k:"Segmentaciones y escala de tiempo", d:"Filtrar con botones.",
-  def:"Una segmentación de datos es un panel de botones para filtrar la tabla dinámica con un clic. La escala de tiempo hace lo mismo con las fechas.",
+{ k:"Segmentaciones de datos", d:"Filtrar con botones.",
+  def:"Una segmentación de datos es un panel de botones para filtrar la tabla dinámica con un clic. Con la columna Año también sirve para elegir el período.",
   ana:"Es el control remoto del informe: aprietas «SeNaSa» y todo el cuadro cambia para mostrar solo esa ARS.",
   partsT:"Herramientas · toca cada una",
-  parts:[["Segmentación","Botones de un campo (ARS, Provincia). Un clic filtra el informe."],["Selección múltiple","Ctrl + clic, o el botón de selección múltiple, para elegir varias opciones."],["Borrar filtro","El embudo con la X, en la esquina, vuelve a mostrar todo."],["Escala de tiempo","Barra de fechas para elegir años, trimestres o meses."],["Conexiones de informe","Una misma segmentación puede mover varias tablas dinámicas."]],
+  parts:[["Segmentación","Botones de un campo (ARS, Provincia, Año). Un clic filtra el informe."],["Selección múltiple","El botón de selección múltiple, o Ctrl + clic, para elegir varias opciones."],["Borrar filtro","El embudo con la X, en la esquina, vuelve a mostrar todo."],["Segmentación por Año","Con la columna de ayuda Año, eliges 2024 o 2025 con un clic."]],
   uses:[["Ver una sola ARS","El informe completo, solo para SeNaSa.","Insertar segmentación de datos › ARS"],
-        ["Comparar provincias","Elige dos provincias a la vez con selección múltiple.","Segmentación: Provincia (Ctrl + clic)"],
-        ["Elegir un período","Muestra solo 2025 o solo un trimestre.","Insertar escala de tiempo › Fecha"],
-        ["Tablero conectado","Una segmentación filtra todas las tablas dinámicas a la vez.","Segmentación › Conexiones de informe"]],
-  pit:"Si al hacer clic en la segmentación solo cambia una tabla dinámica, falta conectarla: clic derecho sobre la segmentación › Conexiones de informe › marca las demás.",
-  steps:["En la hoja <code>TD_Servicios</code>, haz clic dentro de la tabla dinámica.","<code>Analizar tabla dinámica › Insertar segmentación de datos</code> › marca <code>ARS</code>.","<code>Insertar escala de tiempo</code> › marca <code>Fecha</code> y cambia el nivel a <code>AÑOS</code>.","Prueba <b>SeNaSa</b> + <b>2025</b> y compara con el simulador."],
-  conf:"Segmentación: ARS · Escala de tiempo: Fecha (Años)", sim:"segmentacion" },
+        ["Comparar provincias","Elige dos provincias a la vez con selección múltiple.","Segmentación: Provincia"],
+        ["Elegir un año","Muestra solo 2024 o solo 2025.","Insertar segmentación de datos › Año"],
+        ["Presentar en una reunión","Respondes «¿y solo SeNaSa en 2025?» con dos clics.","Segmentaciones: ARS + Año"]],
+  pit:"Haz clic dentro de la tabla dinámica antes de insertar la segmentación. Si no ves el campo Año en la lista, clic derecho en la tabla dinámica › Actualizar.",
+  steps:["En <code>TD_ARS</code>, haz clic dentro de la tabla dinámica (si no ves <code>Año</code>, clic derecho › <code>Actualizar</code>).","Pestaña <code>Tabla dinámica</code> (en escritorio: <code>Analizar tabla dinámica</code>) › <code>Insertar segmentación de datos</code> › marca <code>ARS</code> y <code>Año</code>.","Haz clic en <b>SeNaSa</b> y luego en <b>2025</b>.","Resultado: <b>60</b> servicios. Con <b>2024</b> salen <b>47</b>. El embudo con la X borra el filtro."],
+  conf:"Segmentaciones: ARS y Año · sobre TD_ARS", sim:"segmentacion" },
 
 { k:"Gráficos y conclusiones", d:"Mostrar y explicar los resultados.",
-  def:"Un gráfico dinámico dibuja la tabla dinámica y cambia con ella. Con los resultados se redactan conclusiones: frases cortas basadas en números.",
+  def:"Un gráfico creado desde la tabla dinámica la dibuja y cambia con ella. Con los resultados se redactan conclusiones: frases cortas basadas en números.",
   ana:"Es como el informe del médico: no basta con los resultados del laboratorio, hay que escribir el diagnóstico en palabras claras.",
   partsT:"Una buena conclusión · toca cada parte",
   parts:[["Dato","Un número exacto que salió de la tabla dinámica. Ej.: 107 registros."],["Comparación","Frente a quién o a cuándo. Ej.: más que cualquier otra ARS."],["Significado","Qué quiere decir para tomar decisiones."],["Fuente","De qué tabla dinámica salió, para poder comprobarlo."]],
-  uses:[["Gráfico por mes","Columnas que muestran la tendencia de los 24 meses.","Analizar tabla dinámica › Gráfico dinámico › Columna agrupada"],
-        ["Gráfico por servicio","Qué parte del total aporta cada tipo.","Gráfico dinámico › Circular"],
+  uses:[["Gráfico por mes","Columnas que comparan 2024 y 2025 mes a mes.","Clic en TD_Meses › Insertar › Gráfico › Columna agrupada"],
+        ["Gráfico por servicio","Qué parte del total aporta cada tipo.","Clic en TD_Servicios › Insertar › Gráfico › Circular"],
         ["Conclusión bien escrita","Dato + comparación + significado.","«SeNaSa tiene 107 de 360 registros (29.72 %), la ARS con más volumen.»"],
         ["Conclusión mal escrita","Una opinión sin datos no es una conclusión.","«SeNaSa es la mejor ARS.» ✗"]],
   pit:"Una conclusión no es una opinión. «Hospitalización es lo más caro» es débil; «Hospitalización tiene 42 servicios (11.67 %) pero suma RD$ 4,889,250 (73.07 % del monto)» sí es una conclusión.",
-  steps:["Haz clic en la tabla dinámica de <code>TD_Meses</code> › <code>Analizar tabla dinámica › Gráfico dinámico</code> › <code>Columna agrupada</code>.","Usa la segmentación y mira cómo cambia el gráfico.","En la hoja <code>Consigna</code>, escribe 5 conclusiones con dato + comparación + significado.","Compara tus conclusiones con las del simulador (clic para revelar)."],
-  conf:"Gráfico dinámico: Columna agrupada · Origen: TD_Meses", sim:"grafico" }
+  steps:["Haz clic dentro de la tabla dinámica de <code>TD_Meses</code>.","<code>Insertar › Gráfico</code> › <code>Columna agrupada</code>: aparece el gráfico con 2024 y 2025.","Cambia el título por una conclusión: «Diciembre es el mes con más servicios en 2024 y 2025».","En la hoja <code>Consigna</code>, escribe 5 conclusiones con dato + comparación + significado."],
+  conf:"Gráfico: Columna agrupada · Origen: TD_Meses", sim:"grafico" }
 ];
-const QT=["¿Qué es una tabla dinámica?","¿Qué son las 4 áreas?","¿Cómo se resumen los valores?","¿Cómo se ordena y se filtra?","¿Qué es agrupar fechas?","¿Qué es una segmentación de datos?","¿Qué es un gráfico dinámico?"];
-const SH=["Insertar › Tabla dinámica › tblServicios","Filas · Columnas · Valores · Filtros","Configuración de campo de valor › Cuenta · Suma · %","Ordenar ↓ · Filtros de valor › Diez mejores","Agrupar › Años · Trimestres · Meses","Insertar segmentación · Insertar escala de tiempo","Gráfico dinámico + conclusión = dato · comparación · significado"];
+const QT=["¿Qué es una tabla dinámica?","¿Qué son las 4 áreas?","¿Cómo se resumen los valores?","¿Cómo se ordena y se filtra?","¿Cómo analizo por año y por mes?","¿Qué es una segmentación de datos?","¿Cómo muestro y explico los resultados?"];
+const SH=["Insertar › Tabla dinámica › tblServicios","Filas · Columnas · Valores · Filtros","Clic derecho › Resumir valores por · Mostrar valores como","Clic derecho › Ordenar ↓ · área Filtros","=AÑO([@Fecha]) · =MES([@Fecha]) › Filas: Mes · Columnas: Año","Insertar segmentación de datos › ARS · Año","Insertar › Gráfico + conclusión = dato · comparación · significado"];
 
 /* ---------- Construcción de diapositivas ---------- */
 const S = [];
@@ -354,7 +354,7 @@ S.push({topic:-1, html:`<div class="slide">
   <h2>Siete herramientas, una misma base</h2>
   <p class="lead" style="font-size:20px">Cada tema tiene tres láminas: <b>concepto</b>, <b>utilidad</b> y <b>práctica en vivo</b> con la base de servicios de salud.</p>
   <div class="idx">${TOPICS.map((t,i)=>`<button data-go="${2+i*3}"><span class="n">0${i+1}</span><span class="k">${t.k}</span><span class="d">${t.d}</span></button>`).join("")}</div>
-  <p class="note"><b>Objetivo:</b> usar tablas dinámicas y sus herramientas para analizar información y sacar conclusiones útiles para la toma de decisiones.</p>
+  <p class="note"><b>Objetivo:</b> usar tablas dinámicas en Excel (Microsoft 365, en la computadora o en el navegador) para analizar información y sacar conclusiones útiles para la toma de decisiones.</p>
 </div>`});
 
 TOPICS.forEach((t,i)=>{
@@ -393,7 +393,7 @@ S.push({topic:-1, html:`<div class="slide">
   <div class="eyebrow">Resumen</div>
   <h2>Lo que aprendimos hoy</h2>
   <div class="sum">${TOPICS.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${esc(SH[i])}</code></div></div>`).join("")}
-  <div><span class="n">✓</span><div><p>Entrega</p><code>Tablas dinámicas + segmentaciones + 5 conclusiones</code></div></div></div>
+  <div><span class="n">✓</span><div><p>Entrega</p><code>Hojas TD_ + segmentaciones + gráfico + 5 conclusiones</code></div></div></div>
 </div>`});
 
 /* ---------- Simuladores ---------- */
@@ -404,18 +404,18 @@ const fmtAgg = (agg,v) => agg==="count"? num0(v) : num2(v);
 
 const SIMS = {
 crear(box){
-  const CAMPOS=[["ID Servicio","id"],["Fecha","fecha"],["ARS","ars"],["PSS","pss"],["Tipo de Servicio","tipo"],["Provincia","prov"],["Monto","monto"]];
+  const CAMPOS=[["ARS","ars"],["PSS","pss"],["Tipo de Servicio","tipo"],["Provincia","prov"],["Monto","monto"]];
   box.innerHTML = head("Simulador · lista de campos")+`<div class="sim-b">
-    <div class="ctrl">Marca los campos, como en el panel de la derecha de Excel</div>
+    <div class="ctrl">Marca los campos, como en el panel Campos de tabla dinámica (el texto va a Filas; Monto, a Valores)</div>
     <div class="flist">${CAMPOS.map(c=>`<label data-c="${c[1]}"><input type="checkbox" value="${c[1]}"${c[1]==="ars"?" checked":""}>${c[0]}</label>`).join("")}</div>
     <div class="areas"><div><small>Filtros</small></div><div><small>Columnas</small></div><div data-ar><small>Filas</small></div><div data-av><small>Valores</small></div></div>
     <div class="pv" data-p></div></div>`;
   const run=()=>{
     const on=[...box.querySelectorAll("input:checked")].map(x=>x.value);
     box.querySelectorAll(".flist label").forEach(l=>l.classList.toggle("on",on.includes(l.dataset.c)));
-    const rowF=["ars","tipo","prov","pss"].find(k=>on.includes(k)) || (on.includes("fecha")?"anio":null);
-    const vals=[]; if(on.includes("id")) vals.push(["count","Cuenta de ID Servicio"]); if(on.includes("monto")) vals.push(["sum","Suma de Monto"]);
-    const nombre={ars:"ARS",tipo:"Tipo de Servicio",prov:"Provincia",pss:"PSS",anio:"Fecha (Años)"};
+    const rowF=["ars","tipo","prov","pss"].find(k=>on.includes(k)) || null;
+    const vals=[]; if(on.includes("monto")) vals.push(["sum","Suma de Monto"]);
+    const nombre={ars:"ARS",tipo:"Tipo de Servicio",prov:"Provincia",pss:"PSS"};
     box.querySelector("[data-ar]").innerHTML=`<small>Filas</small>${rowF?`<span>${nombre[rowF]}</span>`:""}`;
     box.querySelector("[data-av]").innerHTML=`<small>Valores</small>${vals.map(v=>`<span>${v[1]}</span>`).join("")}`;
     const pv=box.querySelector("[data-p]");
@@ -432,7 +432,7 @@ areas(box){
     <div class="ctrls">
       <label class="ctrl">Filtros · Provincia<select data-f>${opts(["(Todas)"].concat(PROVS),"(Todas)")}</select></label>
       <label class="ctrl">Filas<select data-r>${opts(["ARS","PSS","Tipo de Servicio","Provincia"],"ARS")}</select></label>
-      <label class="ctrl">Columnas<select data-c>${opts([NONE,"Años","Tipo de Servicio"],NONE)}</select></label>
+      <label class="ctrl">Columnas<select data-c>${opts([NONE,"Tipo de Servicio","Año"],NONE)}</select></label>
       <label class="ctrl">Valores<select data-v>${opts(["Cuenta de ID Servicio","Suma de Monto"],"Cuenta de ID Servicio")}</select></label>
     </div>${resBox("Primer lugar en Filas")}<div class="pv" data-p></div></div>`;
   const out=wireRes(box), q=s=>box.querySelector(s);
@@ -463,37 +463,38 @@ resumir(box){
   box.querySelectorAll("select").forEach(s=>s.onchange=run); run();
 },
 top(box){
-  box.innerHTML = head("Simulador · ordenar y Diez mejores")+`<div class="sim-b">
+  const TIPOS=["(Todos)"].concat([...new Set(rec.map(r=>r.tipo))].sort((a,b)=>a.localeCompare(b,"es")));
+  box.innerHTML = head("Simulador · ordenar y filtrar")+`<div class="sim-b">
     <div class="ctrls">
+      <label class="ctrl">Filtros · Tipo de Servicio<select data-f>${opts(TIPOS,"(Todos)")}</select></label>
       <label class="ctrl">Filas (entidad)<select data-r>${opts(["PSS","ARS","Provincia"],"PSS")}</select></label>
       <label class="ctrl">Valores<select data-v>${opts(["Suma de Monto","Cuenta de ID Servicio"],"Suma de Monto")}</select></label>
-      <label class="ctrl">Ordenar<select data-o>${opts(["De mayor a menor","De menor a mayor"],"De mayor a menor")}</select></label>
-      <label class="ctrl">Diez mejores<select data-t>${opts(["Todos","3 mejores","5 mejores"],"3 mejores")}</select></label>
+      <label class="ctrl">Ordenar<select data-o>${opts(["De mayor a menor","De menor a mayor","A a Z (por nombre)"],"De mayor a menor")}</select></label>
     </div>${resBox("Primer lugar")}<div class="pv" data-p></div></div>`;
   const out=wireRes(box), q=s=>box.querySelector(s);
   const run=()=>{
-    const agg=AGG[q("[data-v]").value], p=pivot(rec,F[q("[data-r]").value],null,agg);
-    const tsel=q("[data-t]").value, topN=tsel==="Todos"?0:parseInt(tsel,10);
-    // «Diez mejores» siempre toma los N más altos; el orden solo cambia cómo se muestran
-    let keep=p.rows.slice().sort((a,b)=>p.rt(b)-p.rt(a)); if(topN) keep=keep.slice(0,topN);
-    const p2=Object.assign({},p,{rows:keep});
-    q("[data-p]").innerHTML=pivotHtml(p2,{order:q("[data-o]").value==="De mayor a menor"?"desc":"asc",vlabel:q("[data-v]").value,mark:true});
-    if(topN){ const sub=keep.reduce((s,r)=>s+p.rt(r),0); q("[data-p]").querySelector(".tot td:last-child").textContent=fmtAgg(agg,sub); }
+    const f=q("[data-f]").value, rows=f==="(Todos)"?rec:rec.filter(r=>r.tipo===f);
+    const agg=AGG[q("[data-v]").value], p=pivot(rows,F[q("[data-r]").value],null,agg), o=q("[data-o]").value;
+    q("[data-p]").innerHTML=pivotHtml(p,{order:o==="De mayor a menor"?"desc":o==="De menor a mayor"?"asc":"",vlabel:q("[data-v]").value,mark:o!=="A a Z (por nombre)"});
     const t=top1(p); out(`${t} · ${fmtAgg(agg,p.rt(t))}`);
   };
   box.querySelectorAll("select").forEach(s=>s.onchange=run); run();
 },
 fechas(box){
-  box.innerHTML = head("Simulador · agrupar fechas")+`<div class="sim-b">
+  const muestra=rec.filter((r,i)=>i===0||i===149||i===359);
+  box.innerHTML = head("Simulador · columnas Año y Mes")+`<div class="sim-b">
+    <div class="ctrl">Hoja Servicios · columnas de ayuda (H y I)</div>
+    <div class="pv"><table><thead><tr><th>ID Servicio</th><th>Fecha</th><th>H · Año<br><small>=AÑO([@Fecha])</small></th><th>I · Mes<br><small>=MES([@Fecha])</small></th></tr></thead>
+      <tbody>${muestra.map(r=>`<tr><td>${r.id}</td><td>${r.fecha.slice(8,10)}/${r.fecha.slice(5,7)}/${r.anio}</td><td>${r.anio}</td><td>${r.mes}</td></tr>`).join("")}</tbody></table></div>
     <div class="ctrls">
-      <label class="ctrl">Agrupar Filas por<select data-g>${opts(["Meses","Trimestres","Años"],"Meses")}</select></label>
-      <label class="ctrl">Columnas<select data-c>${opts(["Años","(ninguno)"],"Años")}</select></label>
+      <label class="ctrl">Filas<select data-g>${opts(["Mes","Año"],"Mes")}</select></label>
+      <label class="ctrl">Columnas<select data-c>${opts(["Año","(ninguno)"],"Año")}</select></label>
       <label class="ctrl">Valores<select data-v>${opts(["Cuenta de ID Servicio","Suma de Monto"],"Cuenta de ID Servicio")}</select></label>
     </div>${resBox("Cambio de 2024 a 2025")}<div class="pv" data-p></div></div>`;
   const out=wireRes(box), q=s=>box.querySelector(s);
   const run=()=>{
     const g=F[q("[data-g]").value], agg=AGG[q("[data-v]").value];
-    const ck=q("[data-c]").value==="Años"&&g!=="anio"?"anio":null;
+    const ck=q("[data-c]").value==="Año"&&g!=="anio"?"anio":null;
     const p=pivot(rec,g,ck,agg);
     q("[data-p]").innerHTML=pivotHtml(p,{vlabel:q("[data-v]").value});
     const y=pivot(rec,"anio",null,agg), a=y.rt("2024"), b=y.rt("2025");
@@ -504,19 +505,19 @@ fechas(box){
 segmentacion(box){
   const ARS=[...new Set(rec.map(r=>r.ars))].sort((a,b)=>a.localeCompare(b,"es"));
   const selA=new Set(ARS); let anio="Todo";
-  box.innerHTML = head("Simulador · segmentación y escala de tiempo")+`<div class="sim-b">
+  box.innerHTML = head("Simulador · segmentaciones de datos")+`<div class="sim-b">
     <div class="slicers">
       <div class="slicer"><div class="sh">ARS <button data-clr title="Borrar filtro">✕ Borrar filtro</button></div><div class="sb" data-a>${ARS.map(a=>`<button data-v="${esc(a)}" class="on">${esc(a)}</button>`).join("")}</div></div>
-      <div class="slicer"><div class="sh">Fecha · AÑOS</div><div class="sb" data-y>${["Todo","2024","2025"].map(y=>`<button data-v="${y}" class="${y==="Todo"?"on":""}">${y}</button>`).join("")}</div></div>
+      <div class="slicer"><div class="sh">Año</div><div class="sb" data-y>${["Todo","2024","2025"].map(y=>`<button data-v="${y}" class="${y==="Todo"?"on":""}">${y}</button>`).join("")}</div></div>
     </div>
-    <div class="ctrl">Clic = solo esa ARS · Ctrl + clic = agregar o quitar varias</div>
+    <div class="ctrl">Clic = solo esa ARS · Ctrl + clic (o selección múltiple) = agregar o quitar varias</div>
     ${resBox("Registros que muestra el informe")}<div class="pv" data-p></div></div>`;
   const out=wireRes(box);
   const paint=()=>{ box.querySelectorAll("[data-a] button").forEach(b=>b.classList.toggle("on",selA.has(b.dataset.v))); box.querySelectorAll("[data-y] button").forEach(b=>b.classList.toggle("on",b.dataset.v===anio)); };
   const run=()=>{
     paint();
     const rows=rec.filter(r=>selA.has(r.ars)&&(anio==="Todo"||r.anio===anio));
-    const p=pivot(rows,"tipo",null,"count");
+    const p=pivot(rows,"ars",null,"count");
     box.querySelector("[data-p]").innerHTML=pivotHtml(p,{order:"desc",vlabel:"Cuenta de ID Servicio"});
     out(`${rows.length} de ${rec.length}`);
   };
@@ -536,11 +537,11 @@ grafico(box){
     "Consulta es el servicio más frecuente (121 servicios, 33.61 %); Hospitalización es el menos frecuente (42), pero suma RD$ 4,889,250, el 73.07 % del monto total.",
     "Distrito Nacional concentra 112 operaciones (31.11 %), muy por encima de Santo Domingo (69) y Santiago (63), las provincias que le siguen.",
     "Centro Médico Las Américas es el PSS con mayor monto: RD$ 3,020,300 (45.14 % del total), por las hospitalizaciones que atiende.",
-    "Los registros crecieron de 150 en 2024 a 210 en 2025 (+40 %); en ambos años el cuarto trimestre es el más alto (47 y 65) y febrero el mes más bajo (9 y 13)."
+    "Los registros crecieron de 150 en 2024 a 210 en 2025 (+40 %); en ambos años diciembre (mes 12) es el mes más alto (17 y 23) y febrero (mes 2) el más bajo (9 y 13)."
   ];
-  box.innerHTML = head("Simulador · gráfico dinámico")+`<div class="sim-b">
+  box.innerHTML = head("Simulador · gráfico de la tabla dinámica")+`<div class="sim-b">
     <div class="ctrls">
-      <label class="ctrl">Eje (Filas)<select data-r>${opts(["Meses","ARS","Tipo de Servicio","Provincia"],"Meses")}</select></label>
+      <label class="ctrl">Eje (Filas)<select data-r>${opts(["Mes","ARS","Tipo de Servicio","Provincia"],"Mes")}</select></label>
       <label class="ctrl">Valores<select data-v>${opts(["Cuenta de ID Servicio","Suma de Monto"],"Cuenta de ID Servicio")}</select></label>
     </div>
     <div class="chart"><div data-svg></div><div class="legend"><span><i style="background:#2f6b52"></i>2024</span><span><i style="background:#c9573f"></i>2025</span></div></div>
