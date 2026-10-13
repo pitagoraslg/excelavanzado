@@ -1,0 +1,123 @@
+<!-- Invitación a la actividad «Kahoot de tablas dinámicas» del Módulo 3 para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes k3-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes k3-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(201,87,63,.5); } 50% { box-shadow: 0 0 0 14px rgba(201,87,63,0); } }
+  @keyframes k3-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-6px) rotate(8deg); } }
+  @keyframes k3-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  @keyframes k3-tick { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+  .k3-in { animation: k3-in .7s ease-out both; }
+  .k3-d1 { animation-delay: .1s; } .k3-d2 { animation-delay: .25s; } .k3-d3 { animation-delay: .4s; } .k3-d4 { animation-delay: .55s; }
+  .k3-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .k3-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(31,61,51,.16); }
+  .k3-float { display: inline-block; animation: k3-float 2.6s ease-in-out infinite; }
+  .k3-tick { display: inline-block; animation: k3-tick 1s ease-in-out infinite; }
+  .k3-btn { animation: k3-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .k3-btn:hover { transform: scale(1.04); background-color: #B04A34 !important; }
+  .k3-bar { background: linear-gradient(90deg, #E4EFE8 0%, #1F3D33 30%, #C9573F 55%, #E4EFE8 80%, #1F3D33 100%); background-size: 200% 100%; animation: k3-shine 7s linear infinite; }
+  .k3-tile { transition: transform .15s ease, filter .15s ease; }
+  .k3-tile:hover { transform: scale(1.03); filter: brightness(1.08); }
+  details.k3-det > summary { cursor: pointer; }
+  @media (prefers-reduced-motion: reduce) { .k3-in, .k3-btn, .k3-float, .k3-bar, .k3-tick { animation: none !important; } }
+</style>
+
+<div style="max-width: 880px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #1F2A26; line-height: 1.55; background-color: #F7F4EE; border-radius: 10px; overflow: hidden; border: 1px solid #E2DDD2;">
+
+  <div class="k3-bar" style="height: 6px; background-color: #1F3D33;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #1F3D33;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="k3-float">🎮</span></td>
+      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
+        <p class="k3-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #F3B9A8;">Actividad especial · Módulo 3 · Valor: 5 puntos</p>
+        <h2 class="k3-in k3-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 27px; font-weight: normal; line-height: 1.2; color: #FFFFFF;">Kahoot de tablas dinámicas: arma, analiza y responde</h2>
+        <p class="k3-in k3-d2" style="margin: 0; font-size: 15px; color: #DCE9E2;">Cada pregunta del Kahoot es un <strong style="color: #FFFFFF;">ejercicio real</strong>: la respuesta no se adivina, se encuentra. Arma una tabla dinámica con la base de reclamaciones, busca el dato y elige la opción correcta. <strong style="color: #FFFFFF;">¡Cuidado!</strong> Varias opciones se parecen mucho.</p>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Datos rápidos -->
+  <table class="k3-in k3-d2" style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 10px; margin: 6px 0 0;" role="presentation">
+    <tr>
+      <td class="k3-card" style="background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #1F3D33; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">❓</span><br>
+        <strong style="color: #1F3D33; font-size: 18px;">20 preguntas</strong><br>
+        <span style="font-size: 13px; color: #5F6B64;">Selección múltiple</span>
+      </td>
+      <td class="k3-card" style="background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #C9573F; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;" class="k3-tick">⏱️</span><br>
+        <strong style="color: #1F3D33; font-size: 18px;">4 minutos</strong><br>
+        <span style="font-size: 13px; color: #5F6B64;">Para resolver cada una</span>
+      </td>
+      <td class="k3-card" style="background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #2F6B52; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">🏥</span><br>
+        <strong style="color: #1F3D33; font-size: 18px;">600 filas</strong><br>
+        <span style="font-size: 13px; color: #5F6B64;">Base nueva 2024 – 2025</span>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 4px 26px 26px;">
+
+    <!-- Cómo se juega -->
+    <h3 class="k3-in k3-d3" style="margin: 14px 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1F3D33;">🕹️ Cómo se juega</h3>
+    <table class="k3-in k3-d3" style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 8px;" role="presentation">
+      <tr>
+        <td class="k3-tile" style="background-color: #E21B3C; color: #FFFFFF; border-radius: 8px; padding: 12px; vertical-align: top; font-size: 14px;"><strong style="font-size: 18px;">▲ 1</strong><br><strong>Antes de la clase</strong>, descarga la base y ábrela en Excel.</td>
+        <td class="k3-tile" style="background-color: #1368CE; color: #FFFFFF; border-radius: 8px; padding: 12px; vertical-align: top; font-size: 14px;"><strong style="font-size: 18px;">◆ 2</strong><br>Entra a <strong>kahoot.it</strong> con el <strong>PIN</strong> que da el profesor.</td>
+      </tr>
+      <tr>
+        <td class="k3-tile" style="background-color: #D89E00; color: #FFFFFF; border-radius: 8px; padding: 12px; vertical-align: top; font-size: 14px;"><strong style="font-size: 18px;">● 3</strong><br>Lee la pregunta y <strong>arma o ajusta tu tabla dinámica</strong> para encontrar el dato.</td>
+        <td class="k3-tile" style="background-color: #26890C; color: #FFFFFF; border-radius: 8px; padding: 12px; vertical-align: top; font-size: 14px;"><strong style="font-size: 18px;">■ 4</strong><br>Elige la respuesta <strong>antes de que acabe el tiempo</strong>. ¡Acertar rápido da más puntos!</td>
+      </tr>
+    </table>
+
+    <!-- La base -->
+    <details class="k3-det k3-in k3-d4" style="margin: 14px 0 0; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-left: 5px solid #1F3D33; border-radius: 6px; padding: 12px 16px;">
+      <summary style="font-weight: bold; color: #1F3D33; font-size: 16px;">📥 Conoce la base antes de jugar <span style="font-weight: normal; font-size: 13px; color: #5F6B64;">(toca para ver)</span></summary>
+      <p style="margin: 10px 0 8px; font-size: 14px;">Archivo <strong>Modulo3-Kahoot-Base-Reclamaciones.xlsx</strong>, hoja <strong>Reclamaciones</strong>, tabla <strong>tblReclamaciones</strong>. Tiene 13 columnas:</p>
+      <p style="margin: 0; font-size: 13.5px; line-height: 2;">
+        <span style="background-color: #E4EFE8; border-radius: 12px; padding: 3px 9px; white-space: nowrap;">ID Reclamación</span>
+        <span style="background-color: #E4EFE8; border-radius: 12px; padding: 3px 9px; white-space: nowrap;">Fecha</span>
+        <span style="background-color: #E4EFE8; border-radius: 12px; padding: 3px 9px; white-space: nowrap;">Año</span>
+        <span style="background-color: #E4EFE8; border-radius: 12px; padding: 3px 9px; white-space: nowrap;">Mes</span>
+        <span style="background-color: #F9E8E2; border-radius: 12px; padding: 3px 9px; white-space: nowrap;">ARS</span>
+        <span style="background-color: #F9E8E2; border-radius: 12px; padding: 3px 9px; white-space: nowrap;">Régimen</span>
+        <span style="background-color: #F9E8E2; border-radius: 12px; padding: 3px 9px; white-space: nowrap;">PSS</span>
+        <span style="background-color: #F9E8E2; border-radius: 12px; padding: 3px 9px; white-space: nowrap;">Tipo de Servicio</span>
+        <span style="background-color: #F9E8E2; border-radius: 12px; padding: 3px 9px; white-space: nowrap;">Provincia</span>
+        <span style="background-color: #F9E8E2; border-radius: 12px; padding: 3px 9px; white-space: nowrap;">Estado</span>
+        <span style="background-color: #FBF1DC; border-radius: 12px; padding: 3px 9px; white-space: nowrap;">Monto Reclamado</span>
+        <span style="background-color: #FBF1DC; border-radius: 12px; padding: 3px 9px; white-space: nowrap;">Monto Aprobado</span>
+        <span style="background-color: #F9E8E2; border-radius: 12px; padding: 3px 9px; white-space: nowrap;">Sexo</span>
+      </p>
+      <p style="margin: 8px 0 0; font-size: 13px; color: #5F6B64;">Las columnas <strong>Año</strong> y <strong>Mes</strong> ya vienen listas para usarlas en Filas, Columnas o Filtros.</p>
+    </details>
+
+    <!-- Trampas -->
+    <details class="k3-det k3-in k3-d4" style="margin: 10px 0 0; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-left: 5px solid #C9573F; border-radius: 6px; padding: 12px 16px;">
+      <summary style="font-weight: bold; color: #1F3D33; font-size: 16px;">⚠️ Lee bien: las opciones tienen trampa <span style="font-weight: normal; font-size: 13px; color: #5F6B64;">(toca para ver)</span></summary>
+      <ul style="margin: 10px 0 4px; padding-left: 22px; font-size: 14px;">
+        <li style="margin: 0 0 6px;"><strong>¿Cuántas? o ¿cuánto dinero?</strong> «Cuántas reclamaciones» es <strong>Cuenta</strong>; «monto» o «suma» es <strong>Suma</strong>.</li>
+        <li style="margin: 0 0 6px;"><strong>Reclamado ≠ Aprobado.</strong> Fíjate en cuál de los dos montos pide la pregunta.</li>
+        <li style="margin: 0 0 6px;"><strong>Filtros.</strong> Si la pregunta dice un año, un estado o una provincia, aplícalo antes de leer el número.</li>
+        <li style="margin: 0 0 6px;"><strong>Promedio, Máx. y %:</strong> clic derecho sobre un número › <strong>Resumir valores por</strong> o <strong>Mostrar valores como</strong>.</li>
+      </ul>
+    </details>
+
+    <!-- Consejo -->
+    <div class="k3-in k3-d4" style="margin: 12px 0 0; background-color: #E4EFE8; border-left: 5px solid #2F6B52; border-radius: 6px; padding: 12px 16px; font-size: 14px;">
+      💡 <strong style="color: #1F3D33;">Consejo:</strong> usa <strong>dos pantallas</strong> (o dos ventanas): Kahoot en el celular y Excel en la computadora. Deja una tabla dinámica armada y, en cada pregunta, solo cambia los campos o los filtros.
+    </div>
+
+    <!-- Llamado a la acción -->
+    <div class="k3-in k3-d4" style="text-align: center; margin: 24px 0 6px;">
+      <a class="k3-btn" href="https://pitagoraslg.github.io/excelavanzado/Modulo3-Kahoot-Base-Reclamaciones.xlsx" style="display: inline-block; background-color: #C9573F; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px; margin: 4px 6px;">⬇ Descargar la base del Kahoot</a>
+      <a href="https://kahoot.it" target="_blank" rel="noopener" style="display: inline-block; background-color: #FFFFFF; color: #1F3D33; border: 2px solid #1F3D33; text-decoration: none; font-weight: bold; font-size: 17px; padding: 13px 28px; border-radius: 30px; margin: 4px 6px;">🎮 Ir a kahoot.it</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #5F6B64;">El PIN del juego lo da el profesor al iniciar la actividad.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #5F6B64;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
