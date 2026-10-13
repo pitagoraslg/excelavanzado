@@ -333,7 +333,7 @@ const TOPICS = [
         ["Conclusión bien escrita","Dato + comparación + significado.","«SeNaSa tiene 107 de 360 registros (29.72 %), la ARS con más volumen.»"],
         ["Conclusión mal escrita","Una opinión sin datos no es una conclusión.","«SeNaSa es la mejor ARS.» ✗"]],
   pit:"Una conclusión no es una opinión. «Hospitalización es lo más caro» es débil; «Hospitalización tiene 42 servicios (11.67 %) pero suma RD$ 4,889,250 (73.07 % del monto)» sí es una conclusión.",
-  steps:["Haz clic dentro de la tabla dinámica de <code>TD_Meses</code>.","<code>Insertar › Gráfico</code> › <code>Columna agrupada</code>: aparece el gráfico con 2024 y 2025.","Cambia el título por una conclusión: «Diciembre es el mes con más servicios en 2024 y 2025».","En la hoja <code>Consigna</code>, escribe 5 conclusiones con dato + comparación + significado."],
+  steps:["Haz clic dentro de la tabla dinámica de <code>TD_Meses</code>.","<code>Insertar › Gráfico</code> › <code>Columna agrupada</code>: aparece el gráfico con 2024 y 2025.","Cambia el título por una conclusión: «Diciembre es el mes con más servicios en 2024 y 2025».","Escribe una conclusión con dato + comparación + significado."],
   conf:"Gráfico: Columna agrupada · Origen: TD_Meses", sim:"grafico" }
 ];
 const QT=["¿Qué es una tabla dinámica?","¿Qué son las 4 áreas?","¿Cómo se resumen los valores?","¿Cómo se ordena y se filtra?","¿Cómo analizo por año y por mes?","¿Qué es una segmentación de datos?","¿Cómo muestro y explico los resultados?"];
@@ -394,8 +394,7 @@ TOPICS.forEach((t,i)=>{
 S.push({topic:-1, html:`<div class="slide">
   <div class="eyebrow">Resumen</div>
   <h2>Lo que aprendimos hoy</h2>
-  <div class="sum">${TOPICS.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${esc(SH[i])}</code></div></div>`).join("")}
-  <div><span class="n">✓</span><div><p>Entrega</p><code>Hojas TD_ + segmentaciones + gráfico + 5 conclusiones</code></div></div></div>
+  <div class="sum">${TOPICS.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${esc(SH[i])}</code></div></div>`).join("")}</div>
 </div>`});
 
 /* ---------- Simuladores ---------- */
