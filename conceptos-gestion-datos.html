@@ -1061,5 +1061,52 @@
   go(isNaN(start) ? 0 : start - 1);
 })();
 </script>
+<!-- BOTÓN PRESENTAR (pantalla completa) · inicio -->
+<style>
+#btnPresentar{position:fixed;top:14px;right:14px;z-index:2147483000;display:inline-flex;align-items:center;gap:10px;
+  font:700 15px/1 "Segoe UI",Arial,sans-serif;color:#fff;background:linear-gradient(135deg,#c9573f,#e07a4f);
+  border:0;border-radius:999px;padding:12px 20px 12px 14px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.22);
+  animation:bpPulso 2.4s ease-in-out infinite;transition:transform .15s ease,opacity .25s ease,padding .2s ease}
+#btnPresentar:hover{transform:scale(1.05)}
+#btnPresentar:focus-visible{outline:3px solid #fff;outline-offset:2px}
+#btnPresentar .bp-ico{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.22);font-size:12px}
+#btnPresentar.bp-full{animation:none;padding:8px 14px;font-size:13px;background:rgba(20,20,20,.55);box-shadow:none;opacity:.35}
+#btnPresentar.bp-full:hover,#btnPresentar.bp-full:focus-visible{opacity:1}
+#btnPresentar.bp-full .bp-ico{width:20px;height:20px}
+#btnPresentar[hidden]{display:none}
+@keyframes bpPulso{0%,100%{box-shadow:0 6px 18px rgba(0,0,0,.22),0 0 0 0 rgba(224,122,79,.55)}50%{box-shadow:0 6px 18px rgba(0,0,0,.22),0 0 0 12px rgba(224,122,79,0)}}
+@media (max-width:600px){#btnPresentar{top:10px;right:10px;padding:9px 14px 9px 10px;font-size:13px}#btnPresentar .bp-txt-largo{display:none}}
+@media (prefers-reduced-motion:reduce){#btnPresentar{animation:none}}
+</style>
+<button id="btnPresentar" type="button" hidden aria-label="Presentar en pantalla completa">
+  <span class="bp-ico">▶</span><span class="bp-txt">Presentar<span class="bp-txt-largo"> en pantalla completa</span></span>
+</button>
+<script>
+(function(){
+  var btn = document.getElementById('btnPresentar'), d = document, raiz = d.documentElement;
+  var puede = d.fullscreenEnabled || d.webkitFullscreenEnabled;
+  if(!puede) return;                       // iPhone y navegadores sin pantalla completa: no se muestra
+  btn.hidden = false;
+  function activo(){ return !!(d.fullscreenElement || d.webkitFullscreenElement); }
+  function pintar(){
+    var full = activo();
+    btn.classList.toggle('bp-full', full);
+    btn.querySelector('.bp-ico').textContent = full ? '✕' : '▶';
+    btn.querySelector('.bp-txt').innerHTML = full ? 'Salir' : 'Presentar<span class="bp-txt-largo"> en pantalla completa</span>';
+    btn.setAttribute('aria-label', full ? 'Salir de pantalla completa' : 'Presentar en pantalla completa');
+    btn.title = full ? 'Salir de pantalla completa (Esc)' : 'Presentar en pantalla completa';
+  }
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    if(activo()) (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+    else { var p = (raiz.requestFullscreen || raiz.webkitRequestFullscreen).call(raiz); if(p && p.catch) p.catch(function(){}); }
+    btn.blur();                            // para que las flechas y la barra espaciadora sigan moviendo las láminas
+  });
+  d.addEventListener('fullscreenchange', pintar);
+  d.addEventListener('webkitfullscreenchange', pintar);
+  pintar();
+})();
+</script>
+<!-- BOTÓN PRESENTAR (pantalla completa) · fin -->
 </body>
 </html>
