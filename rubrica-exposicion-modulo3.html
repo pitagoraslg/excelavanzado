@@ -530,7 +530,7 @@ function recuperar(){
   );
 }
 function chequearReclamo(){
-  if(!jid || reclamando) return;
+  if(!jid || reclamando || oculto) return;
   const c = S.reclamos[jid];
   if(c === DEV) return;
   jid = null; editando = false;
@@ -550,15 +550,32 @@ function elegir(id){
   );
 }
 function salir(){
-  if(!confirm('¿Quieres cambiar de nombre?')) return;
+  if(!confirm('¿Quieres salir? Tu nombre quedará libre. Tus evaluaciones no se borran.')) return;
   const id = jid;
   jid = null; store.del('rubM3-jurado'); presencia();
   db.ref(ROOT + '/reclamos/' + id).transaction(cur => cur === DEV ? null : undefined);
   render();
 }
 
+/* Cuando la página pasa a segundo plano (cambiar de app, bloquear el celular, cerrar la pestaña)
+   el nombre se libera al momento; al volver se recupera solo si nadie lo tomó. */
+let oculto = false;
+function soltar(){
+  if(!jid || oculto) return;
+  oculto = true;
+  if(presRef) presRef.remove();
+  if(S && S.reclamos[jid] === DEV) db.ref(ROOT + '/reclamos/' + jid).remove();
+}
+function volver(){
+  if(!oculto) return;
+  oculto = false;
+  recuperar();
+}
+
 function topline(){
-  return `<div class="topline"><a href="index.html">← Inicio</a><span>Módulo 3 · Rúbrica de exposición</span></div>`;
+  return `<div class="topline"><a href="index.html">← Inicio</a>${jid
+    ? `<a href="#" class="jOut">Salir · ${esc(jur(jid).nombre.split(' ')[0])}</a>`
+    : '<span>Módulo 3 · Rúbrica de exposición</span>'}</div>`;
 }
 function miniScoreHTML(){
   return `<div class="mini-score">${EXPOS.map((x, e) =>
@@ -638,7 +655,7 @@ function buildJurado(){
   app.innerHTML = h;
 
   $$('.name-btn').forEach(b => b.addEventListener('click', () => elegir(b.dataset.j)));
-  const s = $('#jSalir'); if(s) s.addEventListener('click', ev => { ev.preventDefault(); salir(); });
+  $$('#jSalir, .jOut').forEach(s => s.addEventListener('click', ev => { ev.preventDefault(); salir(); }));
   const ed = $('#jEdit'); if(ed) ed.addEventListener('click', () => { editando = true; render(); });
   const ca = $('#jCancel'); if(ca) ca.addEventListener('click', () => { editando = false; render(); });
   const f = $('#jForm');
@@ -958,6 +975,7 @@ function buildProfesor(){
     <div class="ptools">
       <button class="btn" id="bReg"></button>
       <a class="btn" href="?modo=pantalla" target="_blank" rel="noopener">Abrir pantalla para proyectar ↗</a>
+      <button class="btn" id="bLibTodos">Liberar todos los nombres</button>
       <button class="btn danger" id="bReset">Reiniciar todo</button>
     </div>
     <div class="pgrid">
@@ -979,6 +997,11 @@ function buildProfesor(){
   $('#bNext').addEventListener('click', () => avanzar(1));
   $('#bBack').addEventListener('click', () => avanzar(-1));
   $('#bReg').addEventListener('click', () => db.ref(ROOT + '/estado/registro').set(!S.estado.registro));
+  $('#bLibTodos').addEventListener('click', () => {
+    if(confirm('¿Liberar todos los nombres? Los jurados tendrán que volver a elegirlo. Las evaluaciones y notas no se borran.')){
+      db.ref(ROOT).update({ reclamos:null, conectados:null });
+    }
+  });
   $('#bReset').addEventListener('click', () => {
     if(!confirm('¿Borrar TODAS las evaluaciones, notas y registros y empezar de cero?')) return;
     if(!confirm('Esta acción no se puede deshacer. ¿Confirmas?')) return;
@@ -1090,7 +1113,10 @@ function iniciar(){
   db.ref(ROOT).on('value', snap => { S = norm(snap.val()); render(); },
     () => { app.innerHTML = '<div class="wrap"><div class="card"><h2>Sin acceso a los datos</h2><p class="muted">Recarga la página.</p></div></div>'; });
   if(MODO === 'jurado'){
-    db.ref('.info/connected').on('value', s => { if(s.val() === true && jid) recuperar(); });
+    db.ref('.info/connected').on('value', s => { if(s.val() === true && jid && !oculto) recuperar(); });
+    document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'hidden') soltar(); else volver(); });
+    window.addEventListener('pagehide', soltar);
+    window.addEventListener('pageshow', volver);
   }
   if(MODO === 'profesor'){
     document.addEventListener('keydown', ev => {
