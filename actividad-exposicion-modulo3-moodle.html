@@ -1,0 +1,112 @@
+<!-- Descripción de la actividad «Exposición y evaluación en vivo» del Módulo 3 para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la descripción se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes e3-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes e3-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(201,87,63,.5); } 50% { box-shadow: 0 0 0 14px rgba(201,87,63,0); } }
+  @keyframes e3-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-6px) rotate(-6deg); } }
+  @keyframes e3-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  @keyframes e3-grow { from { width: 0; } }
+  .e3-in { animation: e3-in .7s ease-out both; }
+  .e3-d1 { animation-delay: .1s; } .e3-d2 { animation-delay: .25s; } .e3-d3 { animation-delay: .4s; } .e3-d4 { animation-delay: .55s; }
+  .e3-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .e3-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(31,61,51,.16); }
+  .e3-float { display: inline-block; animation: e3-float 3s ease-in-out infinite; }
+  .e3-btn { animation: e3-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .e3-btn:hover { transform: scale(1.04); background-color: #B04A34 !important; }
+  .e3-bar { background: linear-gradient(90deg, #E4EFE8 0%, #1F3D33 30%, #C9573F 55%, #E4EFE8 80%, #1F3D33 100%); background-size: 200% 100%; animation: e3-shine 7s linear infinite; }
+  .e3-g { animation: e3-grow 1.2s cubic-bezier(.2,.8,.2,1) .6s both; }
+  .e3-row { transition: background-color .2s ease; }
+  .e3-row:hover { background-color: #F1F6F2; }
+  .e3-step { transition: background-color .2s ease, color .2s ease; }
+  .e3-step:hover { background-color: #1F3D33 !important; color: #FFFFFF !important; }
+  details.e3-det > summary { cursor: pointer; }
+  @media (prefers-reduced-motion: reduce) { .e3-in, .e3-btn, .e3-float, .e3-bar, .e3-g { animation: none !important; } }
+</style>
+
+<div style="max-width: 880px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #1F2A26; line-height: 1.55; background-color: #F7F4EE; border-radius: 10px; overflow: hidden; border: 1px solid #E2DDD2;">
+
+  <div class="e3-bar" style="height: 6px; background-color: #1F3D33;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #1F3D33;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="e3-float">🎤</span></td>
+      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
+        <p class="e3-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #F3B9A8;">Actividad evaluada · Módulo 3 · Valor: 10 puntos</p>
+        <h2 class="e3-in e3-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 27px; font-weight: normal; line-height: 1.2; color: #FFFFFF;">Exposición y evaluación en vivo: tablas dinámicas</h2>
+        <p class="e3-in e3-d2" style="margin: 0; font-size: 15px; color: #DCE9E2;">Dos compañeras presentan una <strong style="color: #FFFFFF;">exposición teórico-práctica</strong> sobre tablas dinámicas y el resto del grupo actúa como <strong style="color: #FFFFFF;">jurado</strong>. Todos son evaluados: las expositoras por su exposición y los jurados por la calidad de su evaluación.</p>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Quién es evaluado y cómo -->
+  <table class="e3-in e3-d2" style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 10px; margin: 6px 0 0;" role="presentation">
+    <tr>
+      <td class="e3-card" style="background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #C9573F; border-radius: 6px; padding: 14px 16px; vertical-align: top;">
+        <span style="font-size: 26px;">👩‍🏫</span>
+        <p style="margin: 4px 0 2px; font-weight: bold; color: #1F3D33; font-size: 17px;">Expositoras · 10 puntos</p>
+        <p style="margin: 0 0 6px; font-size: 13px; color: #5F6B64;">Alenny Tejeda Montero · Crispatri Albenia Borbón Silva</p>
+        <p style="margin: 0; font-size: 14px;">Las evalúan sus compañeros con una <strong>rúbrica de 8 criterios</strong>. La nota de cada criterio es el <strong>promedio</strong> de los puntos del jurado.</p>
+      </td>
+      <td class="e3-card" style="background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #2F6B52; border-radius: 6px; padding: 14px 16px; vertical-align: top;">
+        <span style="font-size: 26px;">⚖️</span>
+        <p style="margin: 4px 0 2px; font-weight: bold; color: #1F3D33; font-size: 17px;">Jurados · 10 puntos</p>
+        <p style="margin: 0 0 6px; font-size: 13px; color: #5F6B64;">El resto del grupo</p>
+        <p style="margin: 0; font-size: 14px;">Los evalúa el <strong>profesor</strong> según su <strong>participación</strong>, su <strong>interacción</strong> y la <strong>manera en que evalúan</strong>: puntos justos y comentarios bien justificados.</p>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 4px 26px 26px;">
+
+    <!-- Rúbrica -->
+    <h3 class="e3-in e3-d3" style="margin: 14px 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1F3D33;">📋 La rúbrica de la exposición (10 puntos)</h3>
+    <table class="e3-in e3-d3" style="width: 100%; border-collapse: collapse; background-color: #FFFFFF; border: 1px solid #E2DDD2; font-size: 14px;" role="presentation">
+      <tr class="e3-row"><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Dominio del tema<br><span style="font-weight: normal; font-size: 13px; color: #5F6B64;">Entiende lo que explica y responde con seguridad.</span></td><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; width: 60px; text-align: right; font-family: Consolas, monospace; color: #C9573F; font-weight: bold;">1.5</td></tr>
+      <tr class="e3-row"><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Desempeño práctico<br><span style="font-weight: normal; font-size: 13px; color: #5F6B64;">Construye la tabla dinámica en vivo en Excel.</span></td><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F; font-weight: bold;">1.5</td></tr>
+      <tr class="e3-row"><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Expresión oral<br><span style="font-weight: normal; font-size: 13px; color: #5F6B64;">Voz clara, buena dicción y fluidez.</span></td><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F; font-weight: bold;">1.25</td></tr>
+      <tr class="e3-row"><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Capacidad didáctica<br><span style="font-weight: normal; font-size: 13px; color: #5F6B64;">Enseña paso a paso; se puede repetir lo que vio.</span></td><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F; font-weight: bold;">1.25</td></tr>
+      <tr class="e3-row"><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Poder de convencimiento<br><span style="font-weight: normal; font-size: 13px; color: #5F6B64;">Transmite seguridad y motiva a usar tablas dinámicas.</span></td><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F; font-weight: bold;">1.25</td></tr>
+      <tr class="e3-row"><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Interacción con el público<br><span style="font-weight: normal; font-size: 13px; color: #5F6B64;">Hace preguntas e invita a participar.</span></td><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F; font-weight: bold;">1.25</td></tr>
+      <tr class="e3-row"><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Presentación visual<br><span style="font-weight: normal; font-size: 13px; color: #5F6B64;">Pantalla legible y material ordenado.</span></td><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F; font-weight: bold;">1</td></tr>
+      <tr class="e3-row"><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; font-weight: bold; color: #1F3D33;">Calidad del material<br><span style="font-weight: normal; font-size: 13px; color: #5F6B64;">Sin faltas de ortografía y con datos correctos.</span></td><td style="padding: 8px 12px; border-bottom: 1px solid #ECE7DC; text-align: right; font-family: Consolas, monospace; color: #C9573F; font-weight: bold;">1</td></tr>
+      <tr><td style="padding: 9px 12px; font-weight: bold; color: #1F3D33;">Total</td><td style="padding: 9px 12px; text-align: right; font-family: Consolas, monospace; color: #1F3D33; font-weight: bold;">10</td></tr>
+    </table>
+
+    <!-- Cómo funciona -->
+    <h3 class="e3-in e3-d3" style="margin: 20px 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1F3D33;">🧭 Cómo participas como jurado</h3>
+    <div class="e3-in e3-d3" style="display: flex; flex-wrap: wrap; gap: 8px;">
+      <div class="e3-step" style="flex: 1 1 190px; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-radius: 8px; padding: 10px 12px; font-size: 14px; color: #1F3D33;"><strong style="font-family: Georgia, serif; font-size: 20px; color: #C9573F;">1</strong><br>Entra al enlace de la rúbrica y, cuando el profesor active el registro, <strong>elige tu nombre</strong>.</div>
+      <div class="e3-step" style="flex: 1 1 190px; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-radius: 8px; padding: 10px 12px; font-size: 14px; color: #1F3D33;"><strong style="font-family: Georgia, serif; font-size: 20px; color: #C9573F;">2</strong><br>Al terminar la exposición, el profesor abre <strong>un criterio a la vez</strong>, primero para una expositora y luego para la otra.</div>
+      <div class="e3-step" style="flex: 1 1 190px; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-radius: 8px; padding: 10px 12px; font-size: 14px; color: #1F3D33;"><strong style="font-family: Georgia, serif; font-size: 20px; color: #C9573F;">3</strong><br>Da tus <strong>puntos</strong> (puedes usar decimales, como 1.2) y <strong>justifícalos con un comentario</strong>.</div>
+      <div class="e3-step" style="flex: 1 1 190px; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-radius: 8px; padding: 10px 12px; font-size: 14px; color: #1F3D33;"><strong style="font-family: Georgia, serif; font-size: 20px; color: #C9573F;">4</strong><br>Los comentarios <strong>se leen en vivo</strong>. Al final se revelan las notas con <strong>fuegos artificiales</strong>. 🎆</div>
+    </div>
+
+    <!-- Qué evalúa el profesor -->
+    <details class="e3-det e3-in e3-d4" style="margin: 16px 0 0; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-left: 5px solid #2F6B52; border-radius: 6px; padding: 12px 16px;">
+      <summary style="font-weight: bold; color: #1F3D33; font-size: 16px;">⚖️ ¿Cómo te evalúa el profesor como jurado? <span style="font-weight: normal; font-size: 13px; color: #5F6B64;">(toca para ver)</span></summary>
+      <ul style="margin: 10px 0 4px; padding-left: 22px; font-size: 14px;">
+        <li style="margin: 0 0 6px;"><strong>Participación:</strong> evalúas todos los criterios de las dos expositoras.</li>
+        <li style="margin: 0 0 6px;"><strong>Interacción:</strong> estás atento a la exposición, haces preguntas y aportas.</li>
+        <li style="margin: 0 0 6px;"><strong>Manera de evaluar:</strong> tus puntos son justos y coherentes con lo que viste, y tu comentario explica <em>por qué</em> diste esos puntos.</li>
+      </ul>
+      <div style="margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13.5px;">
+        <div style="flex: 1 1 240px; background-color: #E4EFE8; border-radius: 6px; padding: 8px 10px;"><strong style="color: #2F6B52;">✔ Comentario que suma:</strong> «Le doy 1.2: explicó bien las áreas de la tabla dinámica, pero no respondió la pregunta sobre los filtros.»</div>
+        <div style="flex: 1 1 240px; background-color: #F9E8E2; border-radius: 6px; padding: 8px 10px;"><strong style="color: #C9573F;">✘ Comentario que no suma:</strong> «Muy bien.» No dice qué estuvo bien ni por qué.</div>
+      </div>
+    </details>
+
+    <!-- Antes de la clase -->
+    <div class="e3-in e3-d4" style="margin: 12px 0 0; background-color: #E4EFE8; border-left: 5px solid #2F6B52; border-radius: 6px; padding: 12px 16px; font-size: 14px;">
+      💡 <strong style="color: #1F3D33;">Antes de la exposición:</strong> abre el enlace en tu celular, tableta o computadora y déjalo abierto. Si cambias de aplicación, al volver recuperas tu nombre y tus votos.
+    </div>
+
+    <!-- Llamado a la acción -->
+    <div class="e3-in e3-d4" style="text-align: center; margin: 24px 0 6px;">
+      <a class="e3-btn" href="https://pitagoraslg.github.io/excelavanzado/rubrica-exposicion-modulo3.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #C9573F; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px;">🗳️ Entrar a la rúbrica para votar</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #5F6B64;">Se abre en una pestaña nueva. El registro se activa el día de la exposición.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #5F6B64;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
