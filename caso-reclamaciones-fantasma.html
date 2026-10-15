@@ -178,6 +178,8 @@
   .caret::after { content: '▌'; animation: blink .7s steps(2) infinite; color: var(--coral); }
   .slot.glow { animation: slotglow 1.2s ease-out; }
   @keyframes slotglow { 0% { transform: scale(1.6); box-shadow: 0 0 0 0 rgba(242,179,61,.9); } 100% { transform: scale(1); box-shadow: 0 0 0 16px rgba(242,179,61,0); } }
+  .credits { text-align: center; margin: 28px 0 6px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; }
+  .credits strong { color: var(--amber); }
   canvas#fx { position: fixed; inset: 0; pointer-events: none; z-index: 30; }
   .kbd { display: inline-block; border: 1px solid var(--line); border-bottom-width: 3px; border-radius: 6px; padding: 0 6px; font-size: 12px; font-weight: 900; color: var(--ink); }
 
@@ -197,7 +199,7 @@
   <header class="hud">
     <div class="case">EXPEDIENTE SV-2025<small>UNIDAD DE ANÁLISIS</small></div>
     <div class="slots" id="slots"></div>
-    <div class="timer" id="timer" title="Tiempo para resolver (como en el Kahoot)">⏱ <span id="tval">4:00</span></div>
+    <div class="timer" id="timer" title="Tiempo para resolver la pista">⏱ <span id="tval">4:00</span></div>
     <div class="stat"><small>PUNTOS</small><b id="xp">0</b></div>
     <button class="iconbtn" id="mus" title="Música de suspenso (M)">🎵</button>
     <button class="iconbtn" id="snd" title="Efectos de sonido (S)">🔊</button>
@@ -213,9 +215,8 @@
         <h1 class="title">Ejercicios prácticos<br>en <span>tablas dinámicas</span></h1>
         <div class="lens">🔍</div>
         <p class="subtitle">Caso: «Las reclamaciones fantasma»</p>
-        <p class="lead">Una aseguradora pierde millones y nadie sabe por qué. Ustedes tienen la base de datos, 10 pistas y una sola herramienta: <strong style="color: var(--ink);">las tablas dinámicas</strong>. ¿Podrán descubrir al culpable antes del Kahoot?</p>
+        <p class="lead">Una aseguradora pierde millones y nadie sabe por qué. Ustedes tienen la base de datos, 10 pistas y una sola herramienta: <strong style="color: var(--ink);">las tablas dinámicas</strong>. ¿Podrán descubrir al culpable?</p>
         <button class="btn" data-go="1">🗂 Abrir el expediente</button>
-        <p class="byline">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
       </div></div>
     </section>
 
@@ -235,10 +236,10 @@
         <div class="unk"><div class="q">?</div><b>El golpe mayor</b><small>¿Qué mes?</small></div>
       </div>
       <div class="rules">
-        <div class="rule">🔎 <b>10 pistas.</b> Cada una es una pregunta como las del Kahoot.</div>
-        <div class="rule">🧮 <b>Primero la tabla.</b> El facilitador la arma en Excel con ustedes; luego responden.</div>
+        <div class="rule">🔎 <b>10 pistas.</b> Cada una es una pregunta que se responde con los datos.</div>
+        <div class="rule">🧮 <b>Primero la tabla.</b> La armamos juntos en Excel; luego responden.</div>
         <div class="rule">⭐ <b>Puntos:</b> 1000 si aciertan al primer intento, 500 al segundo, 250 al tercero.</div>
-        <div class="rule">⚠️ <b>Cuidado:</b> las opciones se parecen. Igual que en el Kahoot.</div>
+        <div class="rule">⚠️ <b>Cuidado:</b> las opciones se parecen. Lean bien cada pregunta.</div>
       </div>
     </div></section>
 
@@ -261,13 +262,13 @@
         </div>
         <div class="card">
           <strong style="font-size: 18px;">🧾 Inventario de la evidencia · 13 columnas</strong>
-          <p style="color: var(--muted); margin: 6px 0 12px; font-size: 15px;">Son los mismos tipos de campos de la base del Kahoot. En verde, las columnas numéricas que se pueden sumar o promediar.</p>
+          <p style="color: var(--muted); margin: 6px 0 12px; font-size: 15px;">En verde, las columnas numéricas que se pueden sumar o promediar.</p>
           <div class="chips">
             <span class="chip">ID Reclamación</span><span class="chip">Fecha</span><span class="chip">Año</span><span class="chip">Mes</span>
             <span class="chip">Aseguradora</span><span class="chip">Plan</span><span class="chip">Taller</span><span class="chip">Tipo de Daño</span>
             <span class="chip">Provincia</span><span class="chip">Estado</span><span class="chip num">Monto Reclamado</span><span class="chip num">Monto Aprobado</span><span class="chip">Sexo</span>
           </div>
-          <div class="tipbox" style="margin-top: 16px;">💡 <strong>Equivalencias con el Kahoot:</strong> Aseguradora ≈ ARS · Taller ≈ PSS · Tipo de Daño ≈ Tipo de Servicio · Plan ≈ Régimen. Los montos, el Estado, la Provincia, el Año y el Mes funcionan igual.</div>
+          <div class="tipbox" style="margin-top: 16px;">💡 <strong>Antes de empezar:</strong> los campos de texto (Aseguradora, Taller, Provincia…) van en Filas, Columnas o Filtros; los montos van en Valores. Año y Mes ya vienen listos para usarlos.</div>
         </div>
       </div>
     </div></section>
@@ -286,7 +287,7 @@
         <div class="card"><small style="color: var(--muted); font-weight: 900; letter-spacing: 2px;">RANGO</small><b id="frank" style="font-size: 24px;">—</b></div>
       </div>
       <div class="card">
-        <strong style="font-size: 18px;">🧠 Las técnicas que ya dominan para el Kahoot</strong>
+        <strong style="font-size: 18px;">🧠 Las técnicas de tablas dinámicas que ya dominan</strong>
         <div class="techs">
           <div><b>Cuenta</b> · «¿Cuántas…?» o «¿cuál tiene más reclamaciones?»</div>
           <div><b>Suma</b> · «monto», «suma», «dinero»</div>
@@ -297,9 +298,9 @@
         </div>
       </div>
       <div class="actions" style="justify-content: center; margin-top: 20px;">
-        <a class="btn amber" style="text-decoration: none;" href="https://kahoot.it" target="_blank" rel="noopener">🎮 ¡Al Kahoot!</a>
         <button class="btn ghost" id="reset">↺ Reiniciar el caso</button>
       </div>
+      <p class="credits">Sitio web diseñado y desarrollado por <strong>Jarlin Figueroa, MA</strong></p>
     </div></section>
   </main>
 
@@ -754,7 +755,7 @@ const HIST = [
     tech:'<b>Promedio</b>: clic derecho en un número › Resumir valores por › Promedio. No confundan el promedio con la Suma ni con el Máx.' },
   { lvl:'Nivel 4 · Comisario', story:'Momento de buscar sospechosos. ¿Qué taller reclama más dinero en toda la base?',
     disc:'🚨 <b>Garaje Cibao Motors</b>, en Santiago. No es el taller con más reclamaciones, pero sí el que más dinero pide. Tenemos sospechoso.',
-    tech:'<b>Suma por Taller</b> y ordenar de mayor a menor. Igual que «¿qué PSS tiene el mayor monto?» en el Kahoot.', key:'Sospechoso' },
+    tech:'<b>Suma por Taller</b> y ordenar de mayor a menor. Así se encuentra quién tiene el mayor monto.', key:'Sospechoso' },
   { lvl:'Nivel 4 · Comisario', story:'Si Garaje Cibao Motors pide tanto dinero, ¿cuánto le APROBARON de verdad?',
     disc:'Reclamó <b>__P8R__</b>, pero solo le aprobaron <b>__P8A__</b>. La aseguradora frenó casi 4 de cada 5 pesos.',
     tech:'<b>Reclamado ≠ Aprobado</b>: pongan los dos montos en Valores y comparen. Lean cuál pide la pregunta.' },
@@ -839,13 +840,13 @@ function paintClue(i) {
   sec.querySelector('[data-pts]').textContent = c.done ? (c.rev ? 'Revelada · 0 pts' : '+' + c.pts + ' pts') : 'En juego: ' + next + ' pts';
 }
 
-function go(n) { n = Math.max(0, Math.min(LAST, n)); if (n !== S.cur) { stopTimer(); closeEvid(); S.cur = n; render(); sfx('whoosh'); document.querySelector('.scene.active').querySelectorAll('.story, .dossier p').forEach(typeIn); } }
+function go(n) { n = Math.max(0, Math.min(LAST, n)); if (n !== S.cur) { stopTimer(); closeEvid(); const prev = S.cur; S.cur = n; render(); setLevel(); sceneSound(prev, n); document.querySelector('.scene.active').querySelectorAll('.story, .dossier p').forEach(typeIn); } }
 function choose(i, k) {
   const c = S.c[i], p = PISTAS[i];
   if (c.done || c.tries.includes(k)) return;
   if (busy) return; busy = true;
   document.getElementById('suspTxt').textContent = SH[k] + ' ' + p.opts[k];
-  document.getElementById('susp').classList.add('show'); sfx('roll');
+  document.getElementById('susp').classList.add('show'); sfx('select'); setTimeout(() => sfx('roll'), 120); duck(2600);
   setTimeout(() => { document.getElementById('susp').classList.remove('show'); busy = false; settle(i, k); }, 1600);
 }
 let busy = false;
@@ -859,7 +860,7 @@ function settle(i, k) {
 }
 function reveal(i) {
   const c = S.c[i]; if (c.done) return;
-  c.done = true; c.rev = true; c.pts = 0; stopTimer(); sfx('stamp'); render(); glowSlot(i); openEvid(i);
+  c.done = true; c.rev = true; c.pts = 0; stopTimer(); render(); glowSlot(i); openEvid(i);
 }
 
 // Evidencia
@@ -885,13 +886,13 @@ function openEvid(i) {
     </div>
     <div class="found">
       <div class="disc"><b class="h">🗂 Lo que descubrimos</b>${h.disc}</div>
-      <div class="tech"><b class="h">🧠 Técnica para el Kahoot</b>${h.tech}</div>
+      <div class="tech"><b class="h">🧠 Técnica de tabla dinámica</b>${h.tech}</div>
     </div>
     <div class="actions">
       <button class="btn ghost" id="mclose">Volver a la pista</button>
       <button class="btn" id="mnext">${i === NC - 1 ? 'Cerrar el caso ▶' : 'Siguiente pista ▶'}</button>
     </div>`;
-  modal.classList.add('show');
+  modal.classList.add('show'); sfx('paper');
   document.getElementById('mclose').onclick = closeEvid;
   document.getElementById('mnext').onclick = () => go(S.cur + 1);
 }
@@ -914,51 +915,89 @@ function renderFinal() {
   document.getElementById('fxp').textContent = xp.toLocaleString('es-DO');
   document.getElementById('ffirst').textContent = first + '/' + NC;
   document.getElementById('frank').textContent = xp >= 9000 ? '🏆 Comisario estrella' : xp >= 7000 ? '🥇 Inspector jefe' : xp >= 4500 ? '🥈 Detective' : '🥉 Detective novato';
-  if (!renderFinal.done) { renderFinal.done = true; confetti(); setTimeout(confetti, 600); setTimeout(confetti, 1200); sfx('fanfare'); flash('gold'); }
+  if (!renderFinal.done) { renderFinal.done = true; confetti(); setTimeout(confetti, 600); setTimeout(confetti, 1200); sfx('fanfare'); duck(3500); flash('gold'); }
 }
 document.getElementById('reset').onclick = () => { if (!confirm('¿Reiniciar el caso? Se borran los puntos.')) return; S = { cur: 0, c: PISTAS.map(() => ({ tries: [], done: false, pts: 0, rev: false })) }; renderFinal.done = false; render(); };
 
-// Temporizador (240 s, como el Kahoot)
+// Temporizador (240 s)
 let tId = null, tLeft = 240;
 const timerEl = document.getElementById('timer'), tval = document.getElementById('tval');
 function showT() { tval.textContent = Math.floor(tLeft / 60) + ':' + String(tLeft % 60).padStart(2, '0'); timerEl.classList.toggle('low', tLeft <= 30); }
 function startTimer() {
   if (S.cur < FIRST || S.cur >= LAST || S.c[S.cur - FIRST].done) return;
-  stopTimer(); tLeft = 240; timerEl.classList.add('show'); showT();
-  tId = setInterval(() => { tLeft--; showT(); if (tLeft <= 10 && tLeft > 0) sfx('tick'); else if (tLeft <= 30 && tLeft > 0) sfx('beat'); if (tLeft <= 0) { stopTimer(true); sfx('bad'); tval.textContent = '¡Tiempo!'; } }, 1000);
+  stopTimer(); tLeft = 240; timerEl.classList.add('show'); showT(); sfx('riser');
+  tId = setInterval(() => { tLeft--; showT(); if (tLeft <= 10 && tLeft > 0) sfx('tick'); else if (tLeft <= 30 && tLeft > 0) sfx('beat'); if (tLeft <= 30 && musLevel < 2) musLevel = 2; if (tLeft <= 0) { stopTimer(true); sfx('timeup'); tval.textContent = '¡Tiempo!'; } }, 1000);
 }
-function stopTimer(keep) { clearInterval(tId); tId = null; if (!keep) timerEl.classList.remove('show', 'low'); }
+function stopTimer(keep) { clearInterval(tId); tId = null; if (typeof setLevel === 'function') setLevel(); if (!keep) timerEl.classList.remove('show', 'low'); }
 
-// Sonido
-let AC = null, mute = false;
-try { mute = localStorage.getItem('casoSV2025mute') === '1'; } catch (e) {}
+// Sonido: todo se genera en el navegador con Web Audio (no hay archivos de audio)
+let AC = null, OUT = null, musG = null, mute = false, musWant = true;
+try { mute = localStorage.getItem('casoSV2025mute') === '1'; musWant = localStorage.getItem('casoSV2025mus') !== '0'; } catch (e) {}
+function ac() {
+  if (!AC) {
+    try {
+      AC = new (window.AudioContext || window.webkitAudioContext)();
+      const comp = AC.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
+      OUT = AC.createGain(); OUT.gain.value = .9; OUT.connect(comp).connect(AC.destination);
+      musG = AC.createGain(); musG.gain.value = 0; musG.connect(OUT);
+    } catch (e) { AC = null; return null; }
+  }
+  if (AC.state === 'suspended') AC.resume();
+  return AC;
+}
+// El navegador solo deja sonar el audio después de un clic o una tecla
+['pointerdown', 'keydown'].forEach(ev => addEventListener(ev, () => { ac(); if (musWant && !mute && !musOn) setMusic(true); }, true));
+
 const sndBtn = document.getElementById('snd');
 sndBtn.textContent = mute ? '🔇' : '🔊';
-sndBtn.onclick = () => { mute = !mute; sndBtn.textContent = mute ? '🔇' : '🔊'; try { localStorage.setItem('casoSV2025mute', mute ? '1' : '0'); } catch (e) {} };
-function tone(f, t0, d, type, vol) { const o = AC.createOscillator(), g = AC.createGain(); o.type = type; o.frequency.value = f; g.gain.setValueAtTime(vol, AC.currentTime + t0); g.gain.exponentialRampToValueAtTime(.001, AC.currentTime + t0 + d); o.connect(g).connect(AC.destination); o.start(AC.currentTime + t0); o.stop(AC.currentTime + t0 + d + .05); }
-function noise(t0, d, vol, hp) {
-  const b = AC.createBuffer(1, Math.max(1, Math.floor(AC.sampleRate * d)), AC.sampleRate), ch = b.getChannelData(0);
-  for (let k = 0; k < ch.length; k++) ch[k] = Math.random() * 2 - 1;
-  const s = AC.createBufferSource(), g = AC.createGain(), f = AC.createBiquadFilter(); s.buffer = b;
-  f.type = hp ? 'bandpass' : 'lowpass'; f.frequency.value = hp || 900;
-  g.gain.setValueAtTime(vol, AC.currentTime + t0); g.gain.exponentialRampToValueAtTime(.001, AC.currentTime + t0 + d);
-  s.connect(f).connect(g).connect(AC.destination); s.start(AC.currentTime + t0);
+sndBtn.onclick = () => { mute = !mute; sndBtn.textContent = mute ? '🔇' : '🔊'; try { localStorage.setItem('casoSV2025mute', mute ? '1' : '0'); } catch (e) {} if (mute) setMusic(false); else if (musWant) setMusic(true); };
+
+const now = () => AC.currentTime;
+function tone(f, t0, d, type, vol, dest, f2) {
+  const o = AC.createOscillator(), g = AC.createGain(), T = now() + t0; o.type = type; o.frequency.setValueAtTime(f, T);
+  if (f2) o.frequency.exponentialRampToValueAtTime(f2, T + d);
+  g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(vol, T + .008); g.gain.exponentialRampToValueAtTime(.0001, T + d);
+  o.connect(g).connect(dest || OUT); o.start(T); o.stop(T + d + .05);
 }
-function sweep(f1, f2, t0, d) { const o = AC.createOscillator(), g = AC.createGain(); o.type = 'sawtooth'; o.frequency.setValueAtTime(f1, AC.currentTime + t0); o.frequency.linearRampToValueAtTime(f2, AC.currentTime + t0 + d); g.gain.setValueAtTime(.05, AC.currentTime + t0); g.gain.setValueAtTime(.05, AC.currentTime + t0 + d - .02); g.gain.linearRampToValueAtTime(0, AC.currentTime + t0 + d); o.connect(g).connect(AC.destination); o.start(AC.currentTime + t0); o.stop(AC.currentTime + t0 + d); }
+let NOISE = null;
+function noise(t0, d, vol, freq, type, dest) {
+  if (!NOISE) { NOISE = AC.createBuffer(1, AC.sampleRate * 2, AC.sampleRate); const ch = NOISE.getChannelData(0); for (let k = 0; k < ch.length; k++) ch[k] = Math.random() * 2 - 1; }
+  const s = AC.createBufferSource(), g = AC.createGain(), f = AC.createBiquadFilter(), T = now() + t0; s.buffer = NOISE;
+  f.type = type || (freq ? 'bandpass' : 'lowpass'); f.frequency.value = freq || 900;
+  g.gain.setValueAtTime(vol, T); g.gain.exponentialRampToValueAtTime(.0001, T + d);
+  s.connect(f).connect(g).connect(dest || OUT); s.start(T, Math.random() * Math.max(0, 1.9 - d)); s.stop(T + d + .05);
+}
+function sweep(f1, f2, t0, d, vol, type) {
+  const o = AC.createOscillator(), g = AC.createGain(), T = now() + t0; o.type = type || 'sawtooth';
+  o.frequency.setValueAtTime(f1, T); o.frequency.linearRampToValueAtTime(f2, T + d);
+  g.gain.setValueAtTime(.0001, T); g.gain.linearRampToValueAtTime(vol || .05, T + .03); g.gain.setValueAtTime(vol || .05, T + d - .03); g.gain.linearRampToValueAtTime(.0001, T + d);
+  o.connect(g).connect(OUT); o.start(T); o.stop(T + d + .02);
+}
+function duck(ms) { if (!musG || !musOn) return; const T = now(); musG.gain.cancelScheduledValues(T); musG.gain.setTargetAtTime(.05, T, .05); musG.gain.setTargetAtTime(MUSVOL, T + ms / 1000, .4); }
+
 function sfx(kind) {
-  if (mute) return;
-  try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
-  if (kind === 'win') [523, 659, 784, 1047].forEach((f, k) => tone(f, k * .09, .25, 'triangle', .18));
-  if (kind === 'bad') { tone(180, 0, .3, 'sawtooth', .12); tone(140, .12, .35, 'sawtooth', .12); }
-  if (kind === 'tick') tone(880, 0, .06, 'square', .05);
-  if (kind === 'stamp') { tone(90, 0, .25, 'sine', .3); tone(60, .02, .3, 'triangle', .2); }
-  if (kind === 'roll') { for (let k = 0; k < 22; k++) noise(k * .065, .05, .07 + k * .008); noise(1.45, .3, .35); tone(70, 1.45, .35, 'sine', .35); }
-  if (kind === 'key') { [392, 523, 659, 784, 1047].forEach((f, k) => tone(f, k * .1, .3, 'triangle', .18)); tone(1568, .5, .6, 'sine', .1); }
-  if (kind === 'siren') { for (let k = 0; k < 4; k++) { sweep(650, 1150, k * .5, .25); sweep(1150, 650, k * .5 + .25, .25); } }
-  if (kind === 'whoosh') noise(0, .25, .05, 1800);
-  if (kind === 'type') noise(0, .02, .04, 3000);
-  if (kind === 'beat') { tone(60, 0, .12, 'sine', .4); tone(55, .18, .14, 'sine', .3); }
-  if (kind === 'fanfare') { [[523,0],[523,.15],[523,.3],[659,.45],[784,.75],[659,1],[784,1.15],[1047,1.4]].forEach(([f, t0]) => { tone(f, t0, .35, 'square', .07); tone(f / 2, t0, .35, 'triangle', .12); }); }
+  if (mute || !ac()) return;
+  switch (kind) {
+    case 'click': tone(1200, 0, .04, 'square', .03); break;
+    case 'select': tone(440, 0, .08, 'triangle', .2); tone(880, .06, .12, 'triangle', .16); break;
+    case 'roll': for (let k = 0; k < 24; k++) { noise(k * .06, .06, .2 + k * .02, 0, 'lowpass'); tone(95, k * .06, .06, 'sine', .15 + k * .012); } noise(1.45, .4, .5, 0, 'lowpass'); tone(150, 1.45, .45, 'sine', .55, null, 45); break;
+    case 'win': [523, 659, 784, 1047].forEach((f, k) => { tone(f, k * .08, .3, 'triangle', .2); tone(f * 2, k * .08, .15, 'sine', .05); }); noise(.3, .6, .08, 9000, 'highpass'); break;
+    case 'key': [392, 523, 659, 784, 1047].forEach((f, k) => tone(f, k * .09, .35, 'triangle', .2)); [1568, 2093].forEach((f, k) => tone(f, .5 + k * .12, .8, 'sine', .08)); noise(.45, .9, .06, 10000, 'highpass'); break;
+    case 'bad': tone(220, 0, .18, 'sawtooth', .22, null, 180); tone(160, .16, .45, 'sawtooth', .22, null, 110); break;
+    case 'siren': for (let k = 0; k < 4; k++) { sweep(650, 1150, k * .5, .25, .06); sweep(1150, 650, k * .5 + .25, .25, .06); } tone(55, 0, 1.2, 'sawtooth', .2, null, 50); break;
+    case 'stamp': noise(0, .08, .4, 0, 'lowpass'); tone(110, 0, .3, 'sine', .5, null, 50); break;
+    case 'paper': noise(0, .35, .12, 2500); setTimeout(() => sfx('stamp'), 170); break;
+    case 'whoosh': noise(0, .3, .07, 1500); break;
+    case 'type': noise(0, .015, .05, 3500); break;
+    case 'clue': tone(110, 0, .35, 'sawtooth', .14, null, 108); tone(104, .4, .7, 'sawtooth', .14, null, 98); tone(55, 0, 1.1, 'sine', .25); break;   // «tan-tan» de detective
+    case 'impact': tone(80, 0, 1.4, 'sine', .6, null, 30); noise(0, 1.2, .25, 0, 'lowpass'); sweep(200, 1200, 0, .5, .03, 'triangle'); break;
+    case 'boss': [55, 65.4, 77.8].forEach(f => { tone(f, 0, 1.6, 'sawtooth', .12); tone(f * 2, .02, 1.4, 'square', .03); }); noise(0, 1.4, .2, 0, 'lowpass'); break;
+    case 'riser': sweep(200, 900, 0, .7, .04, 'triangle'); break;
+    case 'tick': tone(1000, 0, .05, 'square', .05); break;
+    case 'beat': tone(70, 0, .14, 'sine', .55, null, 45); tone(62, .2, .16, 'sine', .4, null, 40); break;
+    case 'timeup': [110, 220, 330].forEach((f, k) => tone(f, 0, 2.2, 'sine', .25 / (k + 1))); noise(0, 1.5, .1, 400); break;
+    case 'fanfare': [[523,0],[523,.15],[523,.3],[659,.45],[784,.75],[659,1],[784,1.15],[1047,1.4]].forEach(([f, t0]) => { tone(f, t0, .4, 'square', .06); tone(f / 2, t0, .4, 'triangle', .14); tone(f * 1.5, t0, .3, 'sine', .04); }); noise(1.4, 1.2, .1, 9000, 'highpass'); tone(65, 1.4, 1.2, 'sine', .4); break;
+  }
 }
 
 function flash(kind, ms) { const f = document.getElementById('flash'); f.className = 'flash'; void f.offsetWidth; f.className = 'flash ' + kind; if (ms) setTimeout(() => f.className = 'flash', ms); }
@@ -968,6 +1007,13 @@ function celebrate(i) {
   if (i === 6) { sfx('siren'); flash('red'); }          // ¡el sospechoso!
   else if (HIST[i].key) { sfx('key'); flash('gold'); }  // pista que revela parte del caso
   else sfx('win');
+}
+
+function sceneSound(prev, n) {
+  if (n === 1 && prev === 0) sfx('impact');
+  else if (n === FIRST + NC - 1) sfx('boss');
+  else if (n >= FIRST && n < LAST) sfx('clue');
+  else sfx('whoosh');
 }
 
 // Máquina de escribir para el relato
@@ -997,34 +1043,49 @@ function loop() {
   raf = parts.length ? requestAnimationFrame(loop) : (cx.clearRect(0, 0, cv.width, cv.height), null);
 }
 
-let musOn = false, musT = null, musStep = 0, musG = null;
+// Música de suspenso: secuenciador de 16 pasos (La menor: Am · F · Dm · E)
+const MUSVOL = .5, STEP = .15;   // 100 pulsos por minuto, semicorcheas
+const CHORDS = [
+  { bass: 55, pad: [220, 261.6, 329.6] }, { bass: 43.65, pad: [174.6, 220, 261.6] },
+  { bass: 73.4, pad: [146.8, 174.6, 220] }, { bass: 41.2, pad: [164.8, 207.7, 246.9] }];
+const BELL = [880, 1046.5, 1174.7, 1318.5, 1568];
+let musOn = false, musT = null, musStep = 0, musNext = 0, musLevel = 0;
 const musBtn = document.getElementById('mus');
-const BASS = [55, 55, 65.4, 55, 49, 49, 58.3, 49];
-function musTick() {
-  const t = AC.currentTime, f = BASS[musStep % 8];
-  const o = AC.createOscillator(), g = AC.createGain(), lp = AC.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 400;
-  o.type = 'sawtooth'; o.frequency.value = f; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.5, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + .5);
-  o.connect(lp).connect(g).connect(musG); o.start(t); o.stop(t + .55);
-  if (musStep % 2 === 0) { const h = AC.createOscillator(), hg = AC.createGain(); h.type = 'sine'; h.frequency.value = f * 8 * (musStep % 4 ? 1.19 : 1); hg.gain.setValueAtTime(.0001, t); hg.gain.exponentialRampToValueAtTime(.08, t + .05); hg.gain.exponentialRampToValueAtTime(.0001, t + 1.1); h.connect(hg).connect(musG); h.start(t); h.stop(t + 1.2); }
-  musStep++;
+function musNote(step, T) {
+  const bar = Math.floor(step / 16), s = step % 16, ch = CHORDS[bar % 4], lv = musLevel;
+  const at = (fn) => fn(T - now());   // programa en el tiempo exacto del paso
+  // Acorde de fondo al inicio de cada compás
+  if (s === 0) ch.pad.forEach(f => at(t => { const o = AC.createOscillator(), g = AC.createGain(), lp = AC.createBiquadFilter(); o.type = 'triangle'; o.frequency.value = f; lp.type = 'lowpass'; lp.frequency.value = 900; const X = now() + t; g.gain.setValueAtTime(.0001, X); g.gain.linearRampToValueAtTime(.05, X + .6); g.gain.linearRampToValueAtTime(.0001, X + STEP * 16); o.connect(lp).connect(g).connect(musG); o.start(X); o.stop(X + STEP * 16 + .05); }));
+  // Bajo
+  if ([0, 3, 8, 11, 14].includes(s) || (lv >= 2 && s % 2 === 0)) at(t => { const o = AC.createOscillator(), g = AC.createGain(), lp = AC.createBiquadFilter(), X = now() + t; o.type = 'sawtooth'; o.frequency.value = ch.bass * (s === 14 ? 2 : 1); lp.type = 'lowpass'; lp.frequency.setValueAtTime(lv >= 2 ? 900 : 500, X); lp.frequency.exponentialRampToValueAtTime(120, X + .25); g.gain.setValueAtTime(.0001, X); g.gain.exponentialRampToValueAtTime(.4, X + .01); g.gain.exponentialRampToValueAtTime(.0001, X + .3); o.connect(lp).connect(g).connect(musG); o.start(X); o.stop(X + .35); });
+  // Platillo (hi-hat)
+  if (s % 2 === 0 || lv >= 2) at(t => noise(t, s % 4 === 2 ? .06 : .03, s % 4 === 2 ? .09 : .045, 8000, 'highpass', musG));
+  // Bombo y caja desde las pistas
+  if (lv >= 1 && (s === 0 || s === 8 || (lv >= 2 && (s === 6 || s === 10)))) at(t => tone(130, t, .3, 'sine', .7, musG, 40));
+  if (lv >= 1 && (s === 4 || s === 12)) at(t => { noise(t, .12, .16, 1800, 'bandpass', musG); tone(190, t, .08, 'triangle', .12, musG); });
+  // Campana misteriosa
+  if ((s === 6 || s === 14) && bar % 2 === 1) at(t => { const f = BELL[(bar * 3 + s) % BELL.length]; tone(f, t, 1.2, 'sine', .06, musG); tone(f * 2.01, t, .6, 'sine', .015, musG); });
 }
+function musLoop() { while (musNext < now() + .25) { musNote(musStep, musNext); musStep++; musNext += STEP; } }
 function setMusic(on) {
-  musOn = on; musBtn.textContent = on ? '🎵' : '🎶'; musBtn.style.opacity = on ? 1 : .5;
+  musOn = on && !!ac(); musBtn.textContent = musOn ? '🎵' : '🎶'; musBtn.style.opacity = musOn ? 1 : .5;
   clearInterval(musT); musT = null;
-  if (!on) return;
-  try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); AC.resume && AC.resume(); } catch (e) { return; }
-  if (!musG) { musG = AC.createGain(); musG.gain.value = .22; musG.connect(AC.destination); }
-  musT = setInterval(musTick, 520);
+  if (!AC) return;
+  const T = now(); musG.gain.cancelScheduledValues(T); musG.gain.setTargetAtTime(musOn ? MUSVOL : 0, T, .3);
+  if (musOn) { musNext = now() + .1; musT = setInterval(musLoop, 50); }
 }
+function setLevel() { musLevel = S.cur >= FIRST + NC - 1 && S.cur < LAST ? 2 : S.cur >= FIRST && S.cur < LAST ? 1 : 0; }
 musBtn.style.opacity = .5; musBtn.textContent = '🎶';
-musBtn.onclick = () => setMusic(!musOn);
+musBtn.onclick = () => { musWant = !musOn; try { localStorage.setItem('casoSV2025mus', musWant ? '1' : '0'); } catch (e) {} setMusic(musWant && !mute); };
+// Clic suave en todos los botones
+document.addEventListener('click', e => { if (e.target.closest('.btn, .iconbtn, .slot')) sfx('click'); }, true);
 // Foco de linterna en la portada
 document.querySelector('.cover').addEventListener('mousemove', e => { const r = e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty('--mx', (e.clientX - r.left) + 'px'); e.currentTarget.style.setProperty('--my', (e.clientY - r.top) + 'px'); });
 
 // Navegación y teclado
 document.getElementById('prev').onclick = () => go(S.cur - 1);
 document.getElementById('next').onclick = () => go(S.cur + 1);
-document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { if (!musOn && !mute) setMusic(true); go(+b.dataset.go); });
+document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(+b.dataset.go));
 const fsToggle = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen && document.documentElement.requestFullscreen().catch(() => {}); else document.exitFullscreen(); };
 document.getElementById('fs').onclick = fsToggle;
 document.addEventListener('keydown', e => {
@@ -1043,7 +1104,7 @@ document.addEventListener('keydown', e => {
 });
 // Abrir en una escena concreta con #n (ej. #5)
 const hn = parseInt(location.hash.slice(1), 10); if (!isNaN(hn)) S.cur = Math.max(0, Math.min(LAST, hn));
-render();
+render(); setLevel();
 </script>
 </body>
 </html>
