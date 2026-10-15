@@ -32,6 +32,8 @@
   .hud .stat small { display: block; font-size: 11px; color: var(--muted); letter-spacing: 2px; font-weight: 800; }
   .iconbtn { background: var(--panel); border: 1px solid var(--line); color: var(--ink); border-radius: 10px; width: 40px; height: 40px; font-size: 18px; }
   .iconbtn:hover { border-color: var(--amber); }
+  .resetbtn { background: var(--panel); border: 1px solid var(--coral); color: var(--coral); border-radius: 10px; height: 40px; padding: 0 14px; font-weight: 900; font-size: 15px; white-space: nowrap; }
+  .resetbtn:hover { background: var(--coral); color: #fff; }
   .timer { display: none; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 4px 12px; font-family: 'Bungee'; font-size: 22px; color: var(--amber); }
   .timer.show { display: flex; }
   .timer.low { color: var(--t0); animation: blink 1s steps(2) infinite; }
@@ -204,6 +206,7 @@
     <button class="iconbtn" id="mus" title="Música de suspenso (M)">🎵</button>
     <button class="iconbtn" id="snd" title="Efectos de sonido (S)">🔊</button>
     <button class="iconbtn" id="fs" title="Pantalla completa (F)">⛶</button>
+    <button class="resetbtn" id="resetTop" title="Borrar todo y empezar desde cero">↺ Reiniciar</button>
   </header>
 
   <main class="stage" id="stage">
@@ -917,7 +920,17 @@ function renderFinal() {
   document.getElementById('frank').textContent = xp >= 9000 ? '🏆 Comisario estrella' : xp >= 7000 ? '🥇 Inspector jefe' : xp >= 4500 ? '🥈 Detective' : '🥉 Detective novato';
   if (!renderFinal.done) { renderFinal.done = true; confetti(); setTimeout(confetti, 600); setTimeout(confetti, 1200); sfx('fanfare'); duck(3500); flash('gold'); }
 }
-document.getElementById('reset').onclick = () => { if (!confirm('¿Reiniciar el caso? Se borran los puntos.')) return; S = { cur: 0, c: PISTAS.map(() => ({ tries: [], done: false, pts: 0, rev: false })) }; renderFinal.done = false; render(); };
+function resetAll() {
+  if (!confirm('¿Reiniciar el caso desde cero? Se borran las respuestas y los puntos.')) return;
+  stopTimer(); closeEvid();
+  try { localStorage.removeItem('casoSV2025'); } catch (e) {}
+  S = { cur: 0, c: PISTAS.map(() => ({ tries: [], done: false, pts: 0, rev: false })) };
+  renderFinal.done = false;
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  render(); setLevel(); sfx('whoosh');
+}
+document.getElementById('reset').onclick = resetAll;
+document.getElementById('resetTop').onclick = resetAll;
 
 // Temporizador (240 s)
 let tId = null, tLeft = 240;
