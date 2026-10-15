@@ -1043,28 +1043,17 @@ function loop() {
   raf = parts.length ? requestAnimationFrame(loop) : (cx.clearRect(0, 0, cv.width, cv.height), null);
 }
 
-// Música de suspenso: secuenciador de 16 pasos (La menor: Am · F · Dm · E)
-const MUSVOL = .5, STEP = .15;   // 100 pulsos por minuto, semicorcheas
-const CHORDS = [
-  { bass: 55, pad: [220, 261.6, 329.6] }, { bass: 43.65, pad: [174.6, 220, 261.6] },
-  { bass: 73.4, pad: [146.8, 174.6, 220] }, { bass: 41.2, pad: [164.8, 207.7, 246.9] }];
-const BELL = [880, 1046.5, 1174.7, 1318.5, 1568];
+// Música de suspenso: bajo pulsante con campana
+const MUSVOL = .3, STEP = .52;
+const BASS = [55, 55, 65.4, 55, 49, 49, 58.3, 49];
 let musOn = false, musT = null, musStep = 0, musNext = 0, musLevel = 0;
 const musBtn = document.getElementById('mus');
 function musNote(step, T) {
-  const bar = Math.floor(step / 16), s = step % 16, ch = CHORDS[bar % 4], lv = musLevel;
-  const at = (fn) => fn(T - now());   // programa en el tiempo exacto del paso
-  // Acorde de fondo al inicio de cada compás
-  if (s === 0) ch.pad.forEach(f => at(t => { const o = AC.createOscillator(), g = AC.createGain(), lp = AC.createBiquadFilter(); o.type = 'triangle'; o.frequency.value = f; lp.type = 'lowpass'; lp.frequency.value = 900; const X = now() + t; g.gain.setValueAtTime(.0001, X); g.gain.linearRampToValueAtTime(.05, X + .6); g.gain.linearRampToValueAtTime(.0001, X + STEP * 16); o.connect(lp).connect(g).connect(musG); o.start(X); o.stop(X + STEP * 16 + .05); }));
-  // Bajo
-  if ([0, 3, 8, 11, 14].includes(s) || (lv >= 2 && s % 2 === 0)) at(t => { const o = AC.createOscillator(), g = AC.createGain(), lp = AC.createBiquadFilter(), X = now() + t; o.type = 'sawtooth'; o.frequency.value = ch.bass * (s === 14 ? 2 : 1); lp.type = 'lowpass'; lp.frequency.setValueAtTime(lv >= 2 ? 900 : 500, X); lp.frequency.exponentialRampToValueAtTime(120, X + .25); g.gain.setValueAtTime(.0001, X); g.gain.exponentialRampToValueAtTime(.4, X + .01); g.gain.exponentialRampToValueAtTime(.0001, X + .3); o.connect(lp).connect(g).connect(musG); o.start(X); o.stop(X + .35); });
-  // Platillo (hi-hat)
-  if (s % 2 === 0 || lv >= 2) at(t => noise(t, s % 4 === 2 ? .06 : .03, s % 4 === 2 ? .09 : .045, 8000, 'highpass', musG));
-  // Bombo y caja desde las pistas
-  if (lv >= 1 && (s === 0 || s === 8 || (lv >= 2 && (s === 6 || s === 10)))) at(t => tone(130, t, .3, 'sine', .7, musG, 40));
-  if (lv >= 1 && (s === 4 || s === 12)) at(t => { noise(t, .12, .16, 1800, 'bandpass', musG); tone(190, t, .08, 'triangle', .12, musG); });
-  // Campana misteriosa
-  if ((s === 6 || s === 14) && bar % 2 === 1) at(t => { const f = BELL[(bar * 3 + s) % BELL.length]; tone(f, t, 1.2, 'sine', .06, musG); tone(f * 2.01, t, .6, 'sine', .015, musG); });
+  const f = BASS[step % 8];
+  const o = AC.createOscillator(), g = AC.createGain(), lp = AC.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 400;
+  o.type = 'sawtooth'; o.frequency.value = f; g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(.5, T + .02); g.gain.exponentialRampToValueAtTime(.0001, T + .5);
+  o.connect(lp).connect(g).connect(musG); o.start(T); o.stop(T + .55);
+  if (step % 2 === 0) { const h = AC.createOscillator(), hg = AC.createGain(); h.type = 'sine'; h.frequency.value = f * 8 * (step % 4 ? 1.19 : 1); hg.gain.setValueAtTime(.0001, T); hg.gain.exponentialRampToValueAtTime(.08, T + .05); hg.gain.exponentialRampToValueAtTime(.0001, T + 1.1); h.connect(hg).connect(musG); h.start(T); h.stop(T + 1.2); }
 }
 function musLoop() { while (musNext < now() + .25) { musNote(musStep, musNext); musStep++; musNext += STEP; } }
 function setMusic(on) {
