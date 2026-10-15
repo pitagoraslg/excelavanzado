@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caso Reclamaciones Fantasma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;800;900&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0C1612; --bg2: #12211B; --panel: #172A22; --line: #2A4237;
+    --ink: #F4EFE6; --muted: #A9BDB2; --coral: #E8664A; --amber: #F2B33D; --mint: #4FD1A1; --paper: #F1E6CC; --paper-ink: #2B241A;
+    --t0: #E21B3C; --t1: #1368CE; --t2: #D89E00; --t3: #26890C;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: radial-gradient(1200px 700px at 70% -10%, #1C3A2E 0%, var(--bg) 60%); background-color: var(--bg); color: var(--ink); font-family: 'Nunito', 'Segoe UI', Arial, sans-serif; overflow: hidden; }
+  button { font-family: inherit; cursor: pointer; }
+  .app { position: fixed; inset: 0; display: flex; flex-direction: column; }
+
+  /* HUD */
+  .hud { display: flex; align-items: center; gap: 14px; padding: 10px 18px; background: rgba(8,16,13,.7); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .hud .case { font-family: 'Bungee', sans-serif; font-size: 15px; color: var(--amber); letter-spacing: 1px; white-space: nowrap; }
+  .hud .case small { display: block; font-family: 'Nunito'; font-size: 11px; color: var(--muted); letter-spacing: 2px; font-weight: 800; }
+  .slots { display: flex; gap: 6px; flex: 1 1 auto; justify-content: center; flex-wrap: wrap; }
+  .slot { width: 34px; height: 34px; border-radius: 8px; border: 2px dashed var(--line); display: grid; place-items: center; font-size: 15px; color: var(--muted); font-weight: 900; transition: all .3s; }
+  .slot.on { border: 2px solid var(--amber); background: rgba(242,179,61,.12); color: var(--amber); }
+  .slot.done { border: 2px solid var(--mint); background: var(--mint); color: #08251A; }
+  .slot.key.done { background: var(--amber); border-color: var(--amber); }
+  .hud .stat { text-align: right; white-space: nowrap; }
+  .hud .stat b { font-family: 'Bungee'; font-size: 20px; color: var(--mint); }
+  .hud .stat small { display: block; font-size: 11px; color: var(--muted); letter-spacing: 2px; font-weight: 800; }
+  .iconbtn { background: var(--panel); border: 1px solid var(--line); color: var(--ink); border-radius: 10px; width: 40px; height: 40px; font-size: 18px; }
+  .iconbtn:hover { border-color: var(--amber); }
+  .timer { display: none; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 4px 12px; font-family: 'Bungee'; font-size: 22px; color: var(--amber); }
+  .timer.show { display: flex; }
+  .timer.low { color: var(--t0); animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: .45; } }
+
+  /* Escenas */
+  .stage { flex: 1 1 auto; position: relative; overflow: hidden; }
+  .scene { position: absolute; inset: 0; overflow-y: auto; padding: 26px clamp(16px, 4vw, 56px) 28px; display: none; }
+  .scene.active { display: block; animation: enter .5s ease both; }
+  @keyframes enter { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+
+  /* Navegación */
+  .nav { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 18px; border-top: 1px solid var(--line); background: rgba(8,16,13,.7); }
+  .nav .hint { color: var(--muted); font-size: 13px; text-align: center; flex: 1; }
+  .btn { border: 0; border-radius: 14px; padding: 13px 26px; font-weight: 900; font-size: 18px; color: #fff; background: var(--coral); box-shadow: 0 5px 0 #A9442F; transition: transform .1s, box-shadow .1s, filter .15s; }
+  .btn:hover { filter: brightness(1.08); }
+  .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #A9442F; }
+  .btn.ghost { background: var(--panel); box-shadow: 0 5px 0 #0A1511; border: 1px solid var(--line); }
+  .btn.mint { background: var(--mint); color: #08251A; box-shadow: 0 5px 0 #2B9370; }
+  .btn.amber { background: var(--amber); color: #2B1E05; box-shadow: 0 5px 0 #B07E1F; }
+  .btn:disabled { opacity: .35; cursor: default; }
+
+  /* Portada */
+  .cover { min-height: 100%; display: grid; place-items: center; text-align: center; }
+  .tag { display: inline-block; font-weight: 900; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--amber); border: 1px solid rgba(242,179,61,.5); padding: 6px 14px; border-radius: 30px; }
+  .title { font-family: 'Bungee', sans-serif; font-size: clamp(34px, 6.4vw, 84px); line-height: 1.02; margin: 18px 0 8px; text-shadow: 0 6px 0 rgba(0,0,0,.35); }
+  .title span { color: var(--coral); }
+  .subtitle { font-family: 'Special Elite', monospace; font-size: clamp(20px, 2.6vw, 32px); color: var(--paper); margin: 6px 0 22px; }
+  .lens { font-size: clamp(64px, 9vw, 110px); display: inline-block; animation: sweep 4s ease-in-out infinite; }
+  @keyframes sweep { 0%,100% { transform: translateX(-26px) rotate(-12deg); } 50% { transform: translateX(26px) rotate(10deg); } }
+  .cover p.lead { max-width: 760px; margin: 0 auto 26px; font-size: clamp(16px, 1.7vw, 21px); color: var(--muted); }
+  .byline { margin-top: 26px; color: var(--muted); font-size: 14px; }
+
+  /* Dossier */
+  .dossier { background: var(--paper); color: var(--paper-ink); border-radius: 6px; padding: clamp(18px, 3vw, 36px); position: relative; box-shadow: 0 18px 40px rgba(0,0,0,.45); transform: rotate(-.4deg); }
+  .dossier::before { content: 'CONFIDENCIAL'; position: absolute; top: 18px; right: 22px; font-family: 'Bungee'; color: rgba(190,40,40,.75); border: 3px solid rgba(190,40,40,.75); padding: 2px 10px; transform: rotate(8deg); font-size: 16px; }
+  .dossier h2 { font-family: 'Special Elite', monospace; font-size: clamp(22px, 2.6vw, 34px); margin: 0 0 12px; }
+  .dossier p { font-family: 'Special Elite', monospace; font-size: clamp(16px, 1.65vw, 21px); line-height: 1.55; margin: 0 0 12px; }
+  .dossier mark { background: rgba(232,102,74,.25); color: inherit; padding: 0 3px; }
+  .unknowns { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-top: 18px; }
+  .unk { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; text-align: center; }
+  .unk .q { font-family: 'Bungee'; font-size: 30px; color: var(--amber); }
+  .unk b { display: block; font-size: 17px; }
+  .unk small { color: var(--muted); font-size: 13px; }
+  .rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 18px; }
+  .rule { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font-size: 16px; }
+  .rule b { color: var(--amber); }
+  h2.sec { font-family: 'Bungee'; font-size: clamp(24px, 3vw, 38px); margin: 0 0 6px; }
+  p.sub { color: var(--muted); margin: 0 0 18px; font-size: 17px; }
+
+  /* Equipo */
+  .gear { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px; }
+  .dl { text-align: center; }
+  .dl .file { font-size: 64px; }
+  .dl .url { font-family: 'Special Elite', monospace; font-size: clamp(15px, 1.6vw, 20px); color: var(--paper); word-break: break-all; margin: 10px 0 16px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { background: var(--bg2); border: 1px solid var(--line); border-radius: 30px; padding: 6px 12px; font-weight: 800; font-size: 14px; }
+  .chip.num { border-color: rgba(79,209,161,.6); color: var(--mint); }
+  .steps { margin: 12px 0 0; padding-left: 22px; font-size: 16px; line-height: 1.7; }
+
+  /* Pista */
+  .cluehead { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .badge { font-family: 'Bungee'; font-size: 15px; padding: 6px 12px; border-radius: 10px; background: var(--amber); color: #2B1E05; }
+  .badge.lvl { background: var(--panel); color: var(--ink); border: 1px solid var(--line); font-family: 'Nunito'; font-weight: 900; }
+  .badge.boss { background: var(--t0); color: #fff; animation: blink 1.2s steps(2) infinite; }
+  .story { font-family: 'Special Elite', monospace; font-size: clamp(16px, 1.6vw, 21px); color: var(--paper); border-left: 4px solid var(--coral); padding: 6px 0 6px 14px; line-height: 1.5; margin: 0 0 16px; }
+  .question { font-weight: 900; font-size: clamp(26px, 3.6vw, 50px); line-height: 1.15; margin: 0 0 20px; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .tile { position: relative; border: 0; border-radius: 16px; padding: 18px 20px 18px 74px; min-height: 92px; text-align: left; color: #fff; font-weight: 900; font-size: clamp(19px, 2.3vw, 32px); box-shadow: 0 6px 0 rgba(0,0,0,.35); transition: transform .12s, filter .2s, opacity .3s; }
+  .tile:hover:not(:disabled) { transform: translateY(-3px); filter: brightness(1.1); }
+  .tile .sh { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 34px; opacity: .95; }
+  .tile.t0 { background: var(--t0); } .tile.t1 { background: var(--t1); } .tile.t2 { background: var(--t2); } .tile.t3 { background: var(--t3); }
+  .tile.wrong { opacity: .35; filter: grayscale(.6); animation: shake .45s; }
+  .tile.wrong::after { content: '✖'; position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 34px; }
+  .tile.right { outline: 5px solid #fff; animation: pop .5s; }
+  .tile.right::after { content: '✔'; position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 38px; }
+  .tile.dim { opacity: .25; }
+  @keyframes shake { 0%,100% { transform: none; } 20% { transform: translateX(-10px); } 40% { transform: translateX(10px); } 60% { transform: translateX(-6px); } 80% { transform: translateX(6px); } }
+  @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; align-items: center; }
+  .actions .note { color: var(--muted); font-size: 15px; }
+  .pts { font-family: 'Bungee'; color: var(--mint); font-size: 18px; margin-left: auto; }
+
+  /* Evidencia (modal) */
+  .modal { position: fixed; inset: 0; background: rgba(4,9,7,.82); display: none; align-items: center; justify-content: center; padding: 18px; z-index: 20; }
+  .modal.show { display: flex; animation: enter .35s ease both; }
+  .evid { width: min(1100px, 100%); max-height: calc(100vh - 36px); overflow-y: auto; background: var(--bg2); border: 2px solid var(--amber); border-radius: 20px; padding: clamp(16px, 2.6vw, 28px); position: relative; }
+  .stamp { position: absolute; top: 16px; right: 20px; font-family: 'Bungee'; font-size: clamp(16px, 2vw, 24px); color: var(--mint); border: 4px solid var(--mint); border-radius: 8px; padding: 4px 12px; transform: rotate(9deg); animation: stamp .5s cubic-bezier(.2,1.6,.4,1) both .15s; }
+  .stamp.rev { color: var(--amber); border-color: var(--amber); }
+  @keyframes stamp { from { transform: scale(2.4) rotate(9deg); opacity: 0; } to { transform: scale(1) rotate(9deg); opacity: 1; } }
+  .evid h3 { font-family: 'Bungee'; font-size: clamp(20px, 2.4vw, 30px); margin: 0 0 4px; color: var(--amber); padding-right: 150px; }
+  .evid .ans { font-weight: 900; font-size: clamp(22px, 2.8vw, 38px); margin: 0 0 16px; }
+  .evgrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .area { background: #fff; color: #222; border-radius: 10px; padding: 8px 10px; min-height: 70px; }
+  .area .lab { font-size: 12px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; color: #5B6B63; }
+  .area .val { font-weight: 800; font-size: 15px; margin-top: 4px; }
+  .area .val span { display: inline-block; background: #E4EFE8; border: 1px solid #B9D3C4; border-radius: 6px; padding: 2px 8px; margin: 2px 2px 0 0; }
+  .area.empty .val { color: #9AA59F; font-weight: 600; font-style: italic; }
+  .tipbox { margin-top: 10px; background: rgba(242,179,61,.12); border: 1px solid rgba(242,179,61,.45); border-radius: 10px; padding: 8px 12px; font-size: 15px; }
+  table.res { width: 100%; border-collapse: collapse; background: #fff; color: #222; border-radius: 10px; overflow: hidden; font-size: 16px; }
+  table.res th { background: #1F3D33; color: #fff; text-align: left; padding: 8px 12px; font-size: 14px; }
+  table.res td { padding: 7px 12px; border-top: 1px solid #E5E5E5; }
+  table.res td:last-child, table.res th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  table.res tr.hl td { background: #FFE9A8; font-weight: 900; }
+  .found { margin-top: 16px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 12px; }
+  .found > div { border-radius: 14px; padding: 12px 16px; font-size: 16px; }
+  .found .disc { background: var(--paper); color: var(--paper-ink); font-family: 'Special Elite', monospace; font-size: 17px; }
+  .found .tech { background: var(--panel); border: 1px solid var(--mint); }
+  .found b.h { display: block; font-family: 'Nunito'; font-weight: 900; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .found .tech b.h { color: var(--mint); }
+  .evid .actions { justify-content: flex-end; }
+
+  /* Final */
+  .board { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 18px; }
+  .ev { background: var(--paper); color: var(--paper-ink); border-radius: 6px; padding: 14px 16px; box-shadow: 0 10px 22px rgba(0,0,0,.35); position: relative; animation: enter .5s ease both; }
+  .ev::before { content: '📌'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 22px; }
+  .ev small { display: block; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; font-size: 12px; color: #8A5A3A; }
+  .ev b { font-family: 'Special Elite', monospace; font-size: 20px; }
+  .ev p { margin: 4px 0 0; font-size: 14px; }
+  .ev:nth-child(odd) { transform: rotate(-1.2deg); } .ev:nth-child(even) { transform: rotate(1deg); }
+  .solved { font-family: 'Bungee'; color: var(--mint); font-size: clamp(36px, 6vw, 80px); text-align: center; margin: 4px 0 10px; animation: bigstamp .6s cubic-bezier(.2,1.6,.4,1) both; }
+  @keyframes bigstamp { from { transform: scale(2.2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .score { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 14px 0; }
+  .score .card { text-align: center; min-width: 180px; }
+  .score b { font-family: 'Bungee'; font-size: 34px; color: var(--amber); display: block; }
+  .techs { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 12px; }
+  .techs div { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; font-size: 15px; }
+  .techs div b { color: var(--mint); }
+
+  .flash { position: fixed; inset: 0; pointer-events: none; z-index: 25; opacity: 0; }
+  .flash.red { animation: redflash 1.6s ease-out; }
+  .flash.gold { animation: goldflash .9s ease-out; }
+  @keyframes redflash { 0%,30%,60% { opacity: .55; background: #E21B3C; } 15%,45% { opacity: .1; background: #1368CE; } 100% { opacity: 0; } }
+  @keyframes goldflash { 0% { opacity: .45; background: #F2B33D; } 100% { opacity: 0; } }
+  .suspense { position: fixed; inset: 0; z-index: 22; display: none; align-items: center; justify-content: center; background: rgba(4,9,7,.82); }
+  .suspense.show { display: flex; }
+  .suspense div { font-family: 'Bungee'; font-size: clamp(30px, 5vw, 64px); color: var(--amber); animation: pulse .3s ease-in-out infinite alternate; text-align: center; }
+  .suspense small { display: block; font-family: 'Special Elite'; font-size: clamp(18px, 2vw, 26px); color: var(--paper); margin-top: 10px; }
+  @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.08); } }
+  .cover { background: radial-gradient(420px 420px at var(--mx, 50%) var(--my, 40%), rgba(242,179,61,.16), transparent 70%); }
+  .caret::after { content: '▌'; animation: blink .7s steps(2) infinite; color: var(--coral); }
+  .slot.glow { animation: slotglow 1.2s ease-out; }
+  @keyframes slotglow { 0% { transform: scale(1.6); box-shadow: 0 0 0 0 rgba(242,179,61,.9); } 100% { transform: scale(1); box-shadow: 0 0 0 16px rgba(242,179,61,0); } }
+  canvas#fx { position: fixed; inset: 0; pointer-events: none; z-index: 30; }
+  .kbd { display: inline-block; border: 1px solid var(--line); border-bottom-width: 3px; border-radius: 6px; padding: 0 6px; font-size: 12px; font-weight: 900; color: var(--ink); }
+
+  @media (max-width: 760px) {
+    .gear, .evgrid, .found { grid-template-columns: 1fr; }
+    .tiles { grid-template-columns: 1fr; }
+    .tile { min-height: 70px; }
+    .slot { width: 26px; height: 26px; font-size: 12px; }
+    .evid h3 { padding-right: 0; margin-top: 40px; }
+    .nav .hint { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hud">
+    <div class="case">EXPEDIENTE SV-2025<small>UNIDAD DE ANÁLISIS</small></div>
+    <div class="slots" id="slots"></div>
+    <div class="timer" id="timer" title="Tiempo para resolver (como en el Kahoot)">⏱ <span id="tval">4:00</span></div>
+    <div class="stat"><small>PUNTOS</small><b id="xp">0</b></div>
+    <button class="iconbtn" id="mus" title="Música de suspenso (M)">🎵</button>
+    <button class="iconbtn" id="snd" title="Efectos de sonido (S)">🔊</button>
+    <button class="iconbtn" id="fs" title="Pantalla completa (F)">⛶</button>
+  </header>
+
+  <main class="stage" id="stage">
+
+    <!-- 0 · Portada -->
+    <section class="scene" data-s="0">
+      <div class="cover"><div>
+        <span class="tag">Módulo 3 · Tablas dinámicas avanzadas</span>
+        <h1 class="title">Ejercicios prácticos<br>en <span>tablas dinámicas</span></h1>
+        <div class="lens">🔍</div>
+        <p class="subtitle">Caso: «Las reclamaciones fantasma»</p>
+        <p class="lead">Una aseguradora pierde millones y nadie sabe por qué. Ustedes tienen la base de datos, 10 pistas y una sola herramienta: <strong style="color: var(--ink);">las tablas dinámicas</strong>. ¿Podrán descubrir al culpable antes del Kahoot?</p>
+        <button class="btn" data-go="1">🗂 Abrir el expediente</button>
+        <p class="byline">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+      </div></div>
+    </section>
+
+    <!-- 1 · Historia -->
+    <section class="scene" data-s="1"><div class="wrap">
+      <div class="dossier">
+        <h2>Expediente SV-2025 · Informe inicial</h2>
+        <p>Santo Domingo, 2025. El departamento de finanzas de una aseguradora de vehículos dio la alarma: <mark>se están pagando reclamaciones que no cuadran</mark>. Choques, cristales rotos, robos de piezas… pero los montos crecen y crecen.</p>
+        <p>Sobre la mesa hay una base con <mark>426 reclamaciones</mark> de 2024 y 2025, de seis aseguradoras, diez talleres y siete provincias. En algún lugar de esas filas está escondido el patrón.</p>
+        <p>Ustedes son la <strong>Unidad de Análisis de Datos</strong>. No hay testigos: solo números. Cada pista se resuelve con una <strong>tabla dinámica</strong>, y cada respuesta los acerca al culpable.</p>
+      </div>
+      <div class="unknowns">
+        <div class="unk"><div class="q">?</div><b>La víctima</b><small>¿Qué aseguradora?</small></div>
+        <div class="unk"><div class="q">?</div><b>El lugar</b><small>¿Qué provincia?</small></div>
+        <div class="unk"><div class="q">?</div><b>El método</b><small>¿Qué tipo de daño?</small></div>
+        <div class="unk"><div class="q">?</div><b>El sospechoso</b><small>¿Qué taller?</small></div>
+        <div class="unk"><div class="q">?</div><b>El golpe mayor</b><small>¿Qué mes?</small></div>
+      </div>
+      <div class="rules">
+        <div class="rule">🔎 <b>10 pistas.</b> Cada una es una pregunta como las del Kahoot.</div>
+        <div class="rule">🧮 <b>Primero la tabla.</b> El facilitador la arma en Excel con ustedes; luego responden.</div>
+        <div class="rule">⭐ <b>Puntos:</b> 1000 si aciertan al primer intento, 500 al segundo, 250 al tercero.</div>
+        <div class="rule">⚠️ <b>Cuidado:</b> las opciones se parecen. Igual que en el Kahoot.</div>
+      </div>
+    </div></section>
+
+    <!-- 2 · Equipo -->
+    <section class="scene" data-s="2"><div class="wrap">
+      <h2 class="sec">🎒 Equípense, detectives</h2>
+      <p class="sub">Descarguen la evidencia y ábranla en Excel. Sin la base no hay investigación.</p>
+      <div class="gear">
+        <div class="card dl">
+          <div class="file">📊</div>
+          <strong style="font-size: 20px;">Modulo3-Caso-Reclamaciones-Fantasma.xlsx</strong>
+          <div class="url">pitagoraslg.github.io/excelavanzado/Modulo3-Caso-Reclamaciones-Fantasma.xlsx</div>
+          <a class="btn mint" style="display: inline-block; text-decoration: none;" href="https://pitagoraslg.github.io/excelavanzado/Modulo3-Caso-Reclamaciones-Fantasma.xlsx" download>⬇ Descargar la base</a>
+          <ol class="steps" style="text-align: left;">
+            <li>Abran el archivo en Excel (navegador o escritorio).</li>
+            <li>Hoja <strong>Reclamaciones</strong>, tabla <strong>tblReclamaciones</strong>.</li>
+            <li>Clic dentro de la tabla › <strong>Insertar › Tabla dinámica</strong> › hoja nueva.</li>
+            <li>Dejen la tabla dinámica armada: en cada pista solo cambiarán campos y filtros.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <strong style="font-size: 18px;">🧾 Inventario de la evidencia · 13 columnas</strong>
+          <p style="color: var(--muted); margin: 6px 0 12px; font-size: 15px;">Son los mismos tipos de campos de la base del Kahoot. En verde, las columnas numéricas que se pueden sumar o promediar.</p>
+          <div class="chips">
+            <span class="chip">ID Reclamación</span><span class="chip">Fecha</span><span class="chip">Año</span><span class="chip">Mes</span>
+            <span class="chip">Aseguradora</span><span class="chip">Plan</span><span class="chip">Taller</span><span class="chip">Tipo de Daño</span>
+            <span class="chip">Provincia</span><span class="chip">Estado</span><span class="chip num">Monto Reclamado</span><span class="chip num">Monto Aprobado</span><span class="chip">Sexo</span>
+          </div>
+          <div class="tipbox" style="margin-top: 16px;">💡 <strong>Equivalencias con el Kahoot:</strong> Aseguradora ≈ ARS · Taller ≈ PSS · Tipo de Daño ≈ Tipo de Servicio · Plan ≈ Régimen. Los montos, el Estado, la Provincia, el Año y el Mes funcionan igual.</div>
+        </div>
+      </div>
+    </div></section>
+
+    <!-- 3–12 · Pistas (se generan) -->
+    <div id="clues"></div>
+
+    <!-- 13 · Caso resuelto -->
+    <section class="scene" data-s="13"><div class="wrap">
+      <div class="solved">CASO RESUELTO</div>
+      <p class="sub" style="text-align: center;">Todas las pistas apuntan al mismo lugar. Este es el tablero de la investigación:</p>
+      <div class="board" id="board"></div>
+      <div class="score">
+        <div class="card"><small style="color: var(--muted); font-weight: 900; letter-spacing: 2px;">PUNTOS DEL EQUIPO</small><b id="fxp">0</b></div>
+        <div class="card"><small style="color: var(--muted); font-weight: 900; letter-spacing: 2px;">PISTAS AL PRIMER INTENTO</small><b id="ffirst">0/10</b></div>
+        <div class="card"><small style="color: var(--muted); font-weight: 900; letter-spacing: 2px;">RANGO</small><b id="frank" style="font-size: 24px;">—</b></div>
+      </div>
+      <div class="card">
+        <strong style="font-size: 18px;">🧠 Las técnicas que ya dominan para el Kahoot</strong>
+        <div class="techs">
+          <div><b>Cuenta</b> · «¿Cuántas…?» o «¿cuál tiene más reclamaciones?»</div>
+          <div><b>Suma</b> · «monto», «suma», «dinero»</div>
+          <div><b>Reclamado ≠ Aprobado</b> · lean qué monto pide la pregunta</div>
+          <div><b>Filtros</b> · un año, un estado, una provincia o un taller</div>
+          <div><b>Promedio y Máx.</b> · Resumir valores por</div>
+          <div><b>% del total</b> · Mostrar valores como</div>
+        </div>
+      </div>
+      <div class="actions" style="justify-content: center; margin-top: 20px;">
+        <a class="btn amber" style="text-decoration: none;" href="https://kahoot.it" target="_blank" rel="noopener">🎮 ¡Al Kahoot!</a>
+        <button class="btn ghost" id="reset">↺ Reiniciar el caso</button>
+      </div>
+    </div></section>
+  </main>
+
+  <nav class="nav">
+    <button class="btn ghost" id="prev">◀ Atrás</button>
+    <div class="hint"><span class="kbd">←</span> <span class="kbd">→</span> navegar · <span class="kbd">1</span>–<span class="kbd">4</span> elegir · <span class="kbd">T</span> tiempo · <span class="kbd">M</span> música · <span class="kbd">R</span> revelar · <span class="kbd">F</span> pantalla completa</div>
+    <button class="btn" id="next">Siguiente ▶</button>
+  </nav>
+</div>
+
+<div class="modal" id="modal"><div class="evid" id="evid"></div></div>
+<canvas id="fx"></canvas>
+<div class="flash" id="flash"></div>
+<div class="suspense" id="susp"><div>🔍 Analizando evidencia…<small id="suspTxt"></small></div></div>
+
+<script>
+const PISTAS = [
+ {
+  "q": "¿Qué aseguradora recibió la MAYOR cantidad de reclamaciones?",
+  "ok": "Seguros Atlántico",
+  "bad": [
+   "Aseguradora Caribe",
+   "Seguros del Valle",
+   "Seguros Quisqueya"
+  ],
+  "piv": {
+   "filas": "Aseguradora",
+   "valores": "Cuenta de ID Reclamación",
+   "orden": "Ordenar de mayor a menor"
+  },
+  "res": [
+   [
+    "Seguros Atlántico",
+    "105"
+   ],
+   [
+    "Aseguradora Caribe",
+    "77"
+   ],
+   [
+    "Seguros del Valle",
+    "66"
+   ],
+   [
+    "Seguros Quisqueya",
+    "62"
+   ],
+   [
+    "Protege Seguros",
+    "59"
+   ]
+  ],
+  "hl": "Seguros Atlántico",
+  "opts": [
+   "Aseguradora Caribe",
+   "Seguros Atlántico",
+   "Seguros del Valle",
+   "Seguros Quisqueya"
+  ],
+  "ans": 1
+ },
+ {
+  "q": "¿Cuántas reclamaciones recibió Seguros Atlántico en total (2024 y 2025)?",
+  "ok": "105",
+  "bad": [
+   "60",
+   "77",
+   "55"
+  ],
+  "piv": {
+   "filas": "Aseguradora",
+   "valores": "Cuenta de ID Reclamación"
+  },
+  "res": [
+   [
+    "Seguros Atlántico",
+    "105"
+   ],
+   [
+    "Aseguradora Caribe",
+    "77"
+   ],
+   [
+    "Seguros del Valle",
+    "66"
+   ]
+  ],
+  "hl": "Seguros Atlántico",
+  "opts": [
+   "60",
+   "77",
+   "55",
+   "105"
+  ],
+  "ans": 3
+ },
+ {
+  "q": "¿Qué provincia tiene el MAYOR Monto Reclamado (suma)?",
+  "ok": "Santiago",
+  "bad": [
+   "Distrito Nacional",
+   "Santo Domingo",
+   "La Vega"
+  ],
+  "piv": {
+   "filas": "Provincia",
+   "valores": "Suma de Monto Reclamado",
+   "orden": "Ordenar de mayor a menor"
+  },
+  "res": [
+   [
+    "Santiago",
+    "RD$ 9,742,950.00"
+   ],
+   [
+    "Distrito Nacional",
+    "RD$ 6,700,200.00"
+   ],
+   [
+    "Santo Domingo",
+    "RD$ 4,948,500.00"
+   ],
+   [
+    "La Romana",
+    "RD$ 2,406,300.00"
+   ],
+   [
+    "La Vega",
+    "RD$ 1,773,600.00"
+   ]
+  ],
+  "hl": "Santiago",
+  "opts": [
+   "Santiago",
+   "Distrito Nacional",
+   "Santo Domingo",
+   "La Vega"
+  ],
+  "ans": 0
+ },
+ {
+  "q": "¿Cuántas reclamaciones están en Estado «En revisión»?",
+  "ok": "81",
+  "bad": [
+   "70",
+   "48",
+   "345"
+  ],
+  "piv": {
+   "filas": "Estado",
+   "valores": "Cuenta de ID Reclamación"
+  },
+  "res": [
+   [
+    "Aprobada",
+    "275"
+   ],
+   [
+    "En revisión",
+    "81"
+   ],
+   [
+    "Rechazada",
+    "70"
+   ]
+  ],
+  "hl": "En revisión",
+  "opts": [
+   "70",
+   "48",
+   "81",
+   "345"
+  ],
+  "ans": 2
+ },
+ {
+  "q": "En la provincia de Santiago, ¿qué Tipo de Daño tiene MÁS reclamaciones?",
+  "ok": "Robo de piezas",
+  "bad": [
+   "Choque",
+   "Rotura de cristales",
+   "Grúa"
+  ],
+  "piv": {
+   "filas": "Tipo de Daño",
+   "valores": "Cuenta de ID Reclamación",
+   "filtros": "Provincia = Santiago"
+  },
+  "res": [
+   [
+    "Robo de piezas",
+    "42"
+   ],
+   [
+    "Choque",
+    "30"
+   ],
+   [
+    "Rotura de cristales",
+    "15"
+   ],
+   [
+    "Daños por inundación",
+    "7"
+   ],
+   [
+    "Grúa",
+    "5"
+   ]
+  ],
+  "hl": "Robo de piezas",
+  "opts": [
+   "Choque",
+   "Rotura de cristales",
+   "Grúa",
+   "Robo de piezas"
+  ],
+  "ans": 3
+ },
+ {
+  "q": "¿Cuál es el PROMEDIO del Monto Reclamado de «Robo de piezas»?",
+  "ok": "RD$ 81,361.93",
+  "bad": [
+   "RD$ 7,159,850.00",
+   "RD$ 30,886.93",
+   "RD$ 197,100.00"
+  ],
+  "piv": {
+   "filas": "Tipo de Daño",
+   "valores": "Promedio de Monto Reclamado",
+   "tip": "Clic derecho en un número › Resumir valores por › Promedio"
+  },
+  "res": [
+   [
+    "Daños por inundación",
+    "RD$ 122,725.00"
+   ],
+   [
+    "Choque",
+    "RD$ 115,002.57"
+   ],
+   [
+    "Robo de piezas",
+    "RD$ 81,361.93"
+   ],
+   [
+    "Llantas y aros",
+    "RD$ 18,168.75"
+   ],
+   [
+    "Rotura de cristales",
+    "RD$ 17,973.49"
+   ],
+   [
+    "Grúa",
+    "RD$ 5,682.35"
+   ]
+  ],
+  "hl": "Robo de piezas",
+  "opts": [
+   "RD$ 7,159,850.00",
+   "RD$ 81,361.93",
+   "RD$ 30,886.93",
+   "RD$ 197,100.00"
+  ],
+  "ans": 1
+ },
+ {
+  "q": "¿Qué Taller tiene el MAYOR Monto Reclamado (suma)?",
+  "ok": "Garaje Cibao Motors",
+  "bad": [
+   "Taller El Ejido",
+   "AutoExpress Naco",
+   "Clínica del Auto"
+  ],
+  "piv": {
+   "filas": "Taller",
+   "valores": "Suma de Monto Reclamado",
+   "orden": "Ordenar de mayor a menor"
+  },
+  "res": [
+   [
+    "Garaje Cibao Motors",
+    "RD$ 5,460,950.00"
+   ],
+   [
+    "Taller El Ejido",
+    "RD$ 4,282,000.00"
+   ],
+   [
+    "AutoExpress Naco",
+    "RD$ 3,755,000.00"
+   ],
+   [
+    "Clínica del Auto",
+    "RD$ 2,945,200.00"
+   ],
+   [
+    "Taller Los Mina",
+    "RD$ 2,685,300.00"
+   ]
+  ],
+  "hl": "Garaje Cibao Motors",
+  "opts": [
+   "Garaje Cibao Motors",
+   "Taller El Ejido",
+   "AutoExpress Naco",
+   "Clínica del Auto"
+  ],
+  "ans": 0
+ },
+ {
+  "q": "¿Cuál es la SUMA del Monto Aprobado de «Garaje Cibao Motors»?",
+  "ok": "RD$ 1,188,750.00",
+  "bad": [
+   "RD$ 5,460,950.00",
+   "RD$ 4,272,200.00",
+   "RD$ 1,070,400.00"
+  ],
+  "piv": {
+   "filas": "Taller",
+   "valores": "Suma de Monto Aprobado (y, para comparar, Suma de Monto Reclamado)"
+  },
+  "res": [
+   [
+    "Suma de Monto Reclamado",
+    "RD$ 5,460,950.00"
+   ],
+   [
+    "Suma de Monto Aprobado",
+    "RD$ 1,188,750.00"
+   ]
+  ],
+  "hl": "Suma de Monto Aprobado",
+  "opts": [
+   "RD$ 5,460,950.00",
+   "RD$ 4,272,200.00",
+   "RD$ 1,188,750.00",
+   "RD$ 1,070,400.00"
+  ],
+  "ans": 2
+ },
+ {
+  "q": "¿Qué % del total de reclamaciones corresponde a «Garaje Cibao Motors»?",
+  "ok": "10.80 %",
+  "bad": [
+   "19.00 %",
+   "44.66 %",
+   "14.08 %"
+  ],
+  "piv": {
+   "filas": "Taller",
+   "valores": "Cuenta de ID Reclamación",
+   "tip": "Clic derecho en un número › Mostrar valores como › % del total general"
+  },
+  "res": [
+   [
+    "AutoExpress Naco",
+    "14.08 %"
+   ],
+   [
+    "Clínica del Auto",
+    "13.85 %"
+   ],
+   [
+    "Taller El Ejido",
+    "13.38 %"
+   ],
+   [
+    "Garaje Cibao Motors",
+    "10.80 %"
+   ],
+   [
+    "Taller Los Mina",
+    "10.09 %"
+   ]
+  ],
+  "hl": "Garaje Cibao Motors",
+  "opts": [
+   "19.00 %",
+   "10.80 %",
+   "44.66 %",
+   "14.08 %"
+  ],
+  "ans": 1
+ },
+ {
+  "q": "En el Año 2025, ¿en qué Mes (número) tuvo «Garaje Cibao Motors» MÁS reclamaciones?",
+  "ok": "Mes 8",
+  "bad": [
+   "Mes 6",
+   "Mes 7",
+   "Mes 9"
+  ],
+  "piv": {
+   "filas": "Mes",
+   "valores": "Cuenta de ID Reclamación",
+   "filtros": "Taller = Garaje Cibao Motors · Año = 2025"
+  },
+  "res": [
+   [
+    "Mes 8",
+    "11"
+   ],
+   [
+    "Mes 6",
+    "7"
+   ],
+   [
+    "Mes 9",
+    "6"
+   ],
+   [
+    "Mes 10",
+    "4"
+   ],
+   [
+    "Mes 4",
+    "3"
+   ]
+  ],
+  "hl": "Mes 8",
+  "opts": [
+   "Mes 6",
+   "Mes 7",
+   "Mes 9",
+   "Mes 8"
+  ],
+  "ans": 3
+ }
+];
+
+// Historia de cada pista: relato antes de la pregunta, descubrimiento, técnica y nivel
+const HIST = [
+  { lvl:'Nivel 1 · Novato', story:'Toda investigación empieza por la víctima. Si alguien está inflando reclamaciones, una aseguradora debe estar recibiendo más que las demás.',
+    disc:'La víctima es <b>Seguros Atlántico</b>: recibe muchas más reclamaciones que cualquier otra aseguradora. Por ahí empieza el rastro.',
+    tech:'<b>Cuenta</b>: campo de texto en Filas y el ID en Valores. «¿Quién tiene más?» → ordenar de mayor a menor.', key:'Víctima' },
+  { lvl:'Nivel 1 · Novato', story:'Para abrir un caso hay que medir el golpe. El jefe pide el número exacto de reclamaciones de la víctima.',
+    disc:'Seguros Atlántico acumula <b>__P2__ reclamaciones</b>. Ojo: el número de 2025 solo es parte del total; la pregunta pedía los dos años.',
+    tech:'<b>Cuenta sin filtros</b>: si la pregunta dice «en total», no filtren el año.' },
+  { lvl:'Nivel 2 · Detective', story:'Un buen detective no cuenta papeles: sigue el dinero. ¿En qué provincia se reclama más dinero?',
+    disc:'El Distrito Nacional tiene más reclamaciones, pero <b>Santiago</b> pide más dinero. Pocas reclamaciones, montos enormes: eso huele raro.',
+    tech:'<b>Suma ≠ Cuenta</b>: «monto» o «dinero» → Suma de Monto Reclamado. Si usan Cuenta, caen en la trampa del Distrito Nacional.', key:'Lugar' },
+  { lvl:'Nivel 2 · Detective', story:'Muchas reclamaciones sospechosas no se pagan de inmediato: quedan detenidas. ¿Cuántas están «En revisión»?',
+    disc:'Hay <b>__P4__ reclamaciones en revisión</b>: casi tantas como las rechazadas. La aseguradora ya sospechaba de algo.',
+    tech:'<b>Estado en Filas</b> (o en Filtros) y Cuenta en Valores. Lean bien: «En revisión» no es «Rechazada».' },
+  { lvl:'Nivel 3 · Inspector', story:'Nos movemos a Santiago. Si allí está el dinero, ¿qué tipo de daño reclaman más?',
+    disc:'En Santiago domina el <b>Robo de piezas</b>, aunque en todo el país el daño más común es el Choque. El método empieza a verse.',
+    tech:'<b>Filtro + Filas</b>: Provincia en Filtros (= Santiago) y Tipo de Daño en Filas. Primero filtren, después lean.', key:'Método' },
+  { lvl:'Nivel 3 · Inspector', story:'¿Cuánto cuesta, en promedio, un robo de piezas? Si los montos están inflados, el promedio lo delata.',
+    disc:'Un robo de piezas cuesta en promedio <b>__P6__</b>, mucho más de lo que cuestan unas piezas. Los montos están inflados.',
+    tech:'<b>Promedio</b>: clic derecho en un número › Resumir valores por › Promedio. No confundan el promedio con la Suma ni con el Máx.' },
+  { lvl:'Nivel 4 · Comisario', story:'Momento de buscar sospechosos. ¿Qué taller reclama más dinero en toda la base?',
+    disc:'🚨 <b>Garaje Cibao Motors</b>, en Santiago. No es el taller con más reclamaciones, pero sí el que más dinero pide. Tenemos sospechoso.',
+    tech:'<b>Suma por Taller</b> y ordenar de mayor a menor. Igual que «¿qué PSS tiene el mayor monto?» en el Kahoot.', key:'Sospechoso' },
+  { lvl:'Nivel 4 · Comisario', story:'Si Garaje Cibao Motors pide tanto dinero, ¿cuánto le APROBARON de verdad?',
+    disc:'Reclamó <b>__P8R__</b>, pero solo le aprobaron <b>__P8A__</b>. La aseguradora frenó casi 4 de cada 5 pesos.',
+    tech:'<b>Reclamado ≠ Aprobado</b>: pongan los dos montos en Valores y comparen. Lean cuál pide la pregunta.' },
+  { lvl:'Nivel 5 · Jefe de unidad', story:'Para el informe falta una cifra: ¿qué porcentaje de todas las reclamaciones viene de este taller?',
+    disc:'Solo el <b>__P9__</b> de las reclamaciones, pero es el taller que más dinero reclama. Poco volumen, montos gigantes: ese es el patrón.',
+    tech:'<b>% del total</b>: clic derecho › Mostrar valores como › % del total general. Es % de la cantidad, no del dinero.' },
+  { lvl:'👑 Jefe final', story:'Último paso: ¿cuándo dio el golpe más fuerte? Filtren el sospechoso y el año 2025, y miren mes por mes.',
+    disc:'El golpe mayor fue el <b>__P10__ de 2025</b> (agosto). Con esto, el expediente queda completo.',
+    tech:'<b>Dos filtros a la vez</b>: Taller y Año en Filtros, Mes en Filas. Así se resuelven las preguntas que combinan condiciones.', key:'Golpe mayor', boss:true }
+];
+const SH = ['▲','◆','●','■'];
+const PTS = [1000, 500, 250, 0];
+const NC = PISTAS.length, FIRST = 3, LAST = FIRST + NC;
+
+// Rellena los datos de las pistas en los textos
+const fill = s => s.replace('__P2__', PISTAS[1].ok).replace('__P4__', PISTAS[3].ok).replace('__P6__', PISTAS[5].ok)
+  .replace('__P8R__', PISTAS[7].res[0][1]).replace('__P8A__', PISTAS[7].ok).replace('__P9__', PISTAS[8].ok).replace('__P10__', PISTAS[9].ok);
+HIST.forEach(h => h.disc = fill(h.disc));
+
+// Estado
+let S = { cur: 0, c: PISTAS.map(() => ({ tries: [], done: false, pts: 0, rev: false })) };
+try { const s = JSON.parse(localStorage.getItem('casoSV2025')); if (s && s.c && s.c.length === NC) S = s; } catch (e) {}
+const save = () => { try { localStorage.setItem('casoSV2025', JSON.stringify(S)); } catch (e) {} };
+
+// Construye las escenas de las pistas
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const cluesEl = document.getElementById('clues');
+PISTAS.forEach((p, i) => {
+  const h = HIST[i];
+  const sec = document.createElement('section');
+  sec.className = 'scene'; sec.dataset.s = FIRST + i;
+  sec.innerHTML = `<div class="wrap">
+    <div class="cluehead"><span class="badge">PISTA ${i + 1} / ${NC}</span><span class="badge lvl ${h.boss ? 'boss' : ''}">${h.lvl}</span>${h.key ? `<span class="badge lvl">🔑 Revela: ${h.key}</span>` : ''}</div>
+    <p class="story">${h.story}</p>
+    <h2 class="question">${esc(p.q)}</h2>
+    <div class="tiles">${p.opts.map((o, k) => `<button class="tile t${k}" data-k="${k}"><span class="sh">${SH[k]}</span>${esc(o)}</button>`).join('')}</div>
+    <div class="actions">
+      <button class="btn ghost" data-act="timer">⏱ Iniciar tiempo</button>
+      <button class="btn ghost" data-act="reveal">🔎 Revelar respuesta</button>
+      <button class="btn amber" data-act="evid" hidden>🗂 Ver la evidencia</button>
+      <span class="note">Primero la tabla dinámica en Excel; luego el grupo responde.</span>
+      <span class="pts" data-pts></span>
+    </div></div>`;
+  cluesEl.appendChild(sec);
+  sec.querySelectorAll('.tile').forEach(b => b.onclick = () => choose(i, +b.dataset.k));
+  sec.querySelector('[data-act=timer]').onclick = () => startTimer();
+  sec.querySelector('[data-act=reveal]').onclick = () => reveal(i);
+  sec.querySelector('[data-act=evid]').onclick = () => openEvid(i);
+});
+
+// Ranuras del HUD
+const slotsEl = document.getElementById('slots');
+PISTAS.forEach((p, i) => { const d = document.createElement('div'); d.className = 'slot' + (HIST[i].key ? ' key' : ''); d.textContent = i + 1; d.title = 'Pista ' + (i + 1); d.onclick = () => go(FIRST + i); d.style.cursor = 'pointer'; slotsEl.appendChild(d); });
+
+const scenes = () => [...document.querySelectorAll('.scene')];
+function render() {
+  scenes().forEach(s => s.classList.toggle('active', +s.dataset.s === S.cur));
+  const xp = S.c.reduce((a, c) => a + c.pts, 0);
+  document.getElementById('xp').textContent = xp.toLocaleString('es-DO');
+  [...slotsEl.children].forEach((d, i) => { d.classList.toggle('done', S.c[i].done); d.classList.toggle('on', S.cur === FIRST + i); d.textContent = S.c[i].done ? (HIST[i].key ? '🔑' : '✔') : i + 1; });
+  PISTAS.forEach((p, i) => paintClue(i));
+  document.getElementById('prev').disabled = S.cur === 0;
+  const nx = document.getElementById('next');
+  nx.disabled = S.cur === LAST;
+  nx.textContent = S.cur === 0 ? 'Comenzar ▶' : S.cur === LAST - 1 ? 'Cerrar el caso ▶' : 'Siguiente ▶';
+  if (S.cur === LAST) renderFinal();
+  save();
+}
+function paintClue(i) {
+  const sec = document.querySelector(`.scene[data-s="${FIRST + i}"]`), c = S.c[i], p = PISTAS[i];
+  sec.querySelectorAll('.tile').forEach(b => {
+    const k = +b.dataset.k;
+    b.classList.toggle('wrong', c.tries.includes(k) && k !== p.ans);
+    b.classList.toggle('right', c.done && k === p.ans);
+    b.classList.toggle('dim', c.done && k !== p.ans && !c.tries.includes(k));
+    b.disabled = c.done || c.tries.includes(k);
+  });
+  sec.querySelector('[data-act=evid]').hidden = !c.done;
+  sec.querySelector('[data-act=reveal]').hidden = c.done;
+  sec.querySelector('[data-act=timer]').hidden = c.done;
+  const next = PTS[Math.min(c.tries.filter(k => k !== p.ans).length, 3)];
+  sec.querySelector('[data-pts]').textContent = c.done ? (c.rev ? 'Revelada · 0 pts' : '+' + c.pts + ' pts') : 'En juego: ' + next + ' pts';
+}
+
+function go(n) { n = Math.max(0, Math.min(LAST, n)); if (n !== S.cur) { stopTimer(); closeEvid(); S.cur = n; render(); sfx('whoosh'); document.querySelector('.scene.active').querySelectorAll('.story, .dossier p').forEach(typeIn); } }
+function choose(i, k) {
+  const c = S.c[i], p = PISTAS[i];
+  if (c.done || c.tries.includes(k)) return;
+  if (busy) return; busy = true;
+  document.getElementById('suspTxt').textContent = SH[k] + ' ' + p.opts[k];
+  document.getElementById('susp').classList.add('show'); sfx('roll');
+  setTimeout(() => { document.getElementById('susp').classList.remove('show'); busy = false; settle(i, k); }, 1600);
+}
+let busy = false;
+function settle(i, k) {
+  const c = S.c[i], p = PISTAS[i];
+  c.tries.push(k);
+  if (k === p.ans) {
+    c.done = true; c.pts = PTS[Math.min(c.tries.length - 1, 3)];
+    stopTimer(); celebrate(i); render(); setTimeout(() => openEvid(i), i === 6 ? 2000 : 1000);
+  } else { sfx('bad'); flash('red', 500); render(); }
+}
+function reveal(i) {
+  const c = S.c[i]; if (c.done) return;
+  c.done = true; c.rev = true; c.pts = 0; stopTimer(); sfx('stamp'); render(); glowSlot(i); openEvid(i);
+}
+
+// Evidencia
+const modal = document.getElementById('modal'), evid = document.getElementById('evid');
+function openEvid(i) {
+  const p = PISTAS[i], h = HIST[i], c = S.c[i], v = p.piv;
+  const area = (lab, val) => `<div class="area ${val ? '' : 'empty'}"><div class="lab">${lab}</div><div class="val">${val ? val.split(' · ').map(x => `<span>${esc(x)}</span>`).join('') : 'vacío'}</div></div>`;
+  const hdr = v.filas;
+  evid.innerHTML = `<div class="stamp ${c.rev ? 'rev' : ''}">${c.rev ? 'REVELADA' : 'EVIDENCIA ✔'}</div>
+    <h3>Pista ${i + 1} · ${h.lvl}</h3>
+    <p class="ans">✔ ${esc(p.ok)}</p>
+    <div class="evgrid">
+      <div><strong style="display: block; margin-bottom: 8px;">🧮 Así se arma la tabla dinámica</strong>
+        <div class="fields">${area('Filtros', v.filtros)}${area('Columnas', '')}${area('Filas', v.filas)}${area('Valores', v.valores)}</div>
+        ${v.orden ? `<div class="tipbox">↕ ${v.orden}: clic derecho sobre un número › Ordenar.</div>` : ''}
+        ${v.tip ? `<div class="tipbox">🖱 ${v.tip}.</div>` : ''}
+      </div>
+      <div><strong style="display: block; margin-bottom: 8px;">📋 Lo que muestra Excel</strong>
+        <table class="res"><thead><tr><th>${esc(hdr)}</th><th>Valor</th></tr></thead><tbody>
+        ${p.res.map(r => `<tr class="${r[0] === p.hl ? 'hl' : ''}"><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join('')}
+        </tbody></table>
+      </div>
+    </div>
+    <div class="found">
+      <div class="disc"><b class="h">🗂 Lo que descubrimos</b>${h.disc}</div>
+      <div class="tech"><b class="h">🧠 Técnica para el Kahoot</b>${h.tech}</div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" id="mclose">Volver a la pista</button>
+      <button class="btn" id="mnext">${i === NC - 1 ? 'Cerrar el caso ▶' : 'Siguiente pista ▶'}</button>
+    </div>`;
+  modal.classList.add('show');
+  document.getElementById('mclose').onclick = closeEvid;
+  document.getElementById('mnext').onclick = () => go(S.cur + 1);
+}
+function closeEvid() { modal.classList.remove('show'); }
+modal.addEventListener('click', e => { if (e.target === modal) closeEvid(); });
+
+// Final
+function renderFinal() {
+  const board = [
+    ['La víctima', PISTAS[0].ok, 'La aseguradora con más reclamaciones.'],
+    ['El lugar', PISTAS[2].ok, 'La provincia que más dinero reclama.'],
+    ['El método', PISTAS[4].ok, 'Promedio de ' + PISTAS[5].ok + ' por reclamación.'],
+    ['El sospechoso', PISTAS[6].ok, 'Reclamó ' + PISTAS[7].res[0][1] + '.'],
+    ['Lo aprobado', PISTAS[7].ok, 'La aseguradora frenó el resto.'],
+    ['El patrón', PISTAS[8].ok + ' de las reclamaciones', 'Poco volumen, montos gigantes.'],
+    ['El golpe mayor', PISTAS[9].ok + ' de 2025', 'El mes con más reclamaciones del taller.']
+  ];
+  document.getElementById('board').innerHTML = board.map((b, k) => `<div class="ev" style="animation-delay:${k * .12}s"><small>${b[0]}</small><b>${esc(b[1])}</b><p>${esc(b[2])}</p></div>`).join('');
+  const xp = S.c.reduce((a, c) => a + c.pts, 0), first = S.c.filter(c => c.done && !c.rev && c.tries.length === 1).length;
+  document.getElementById('fxp').textContent = xp.toLocaleString('es-DO');
+  document.getElementById('ffirst').textContent = first + '/' + NC;
+  document.getElementById('frank').textContent = xp >= 9000 ? '🏆 Comisario estrella' : xp >= 7000 ? '🥇 Inspector jefe' : xp >= 4500 ? '🥈 Detective' : '🥉 Detective novato';
+  if (!renderFinal.done) { renderFinal.done = true; confetti(); setTimeout(confetti, 600); setTimeout(confetti, 1200); sfx('fanfare'); flash('gold'); }
+}
+document.getElementById('reset').onclick = () => { if (!confirm('¿Reiniciar el caso? Se borran los puntos.')) return; S = { cur: 0, c: PISTAS.map(() => ({ tries: [], done: false, pts: 0, rev: false })) }; renderFinal.done = false; render(); };
+
+// Temporizador (240 s, como el Kahoot)
+let tId = null, tLeft = 240;
+const timerEl = document.getElementById('timer'), tval = document.getElementById('tval');
+function showT() { tval.textContent = Math.floor(tLeft / 60) + ':' + String(tLeft % 60).padStart(2, '0'); timerEl.classList.toggle('low', tLeft <= 30); }
+function startTimer() {
+  if (S.cur < FIRST || S.cur >= LAST || S.c[S.cur - FIRST].done) return;
+  stopTimer(); tLeft = 240; timerEl.classList.add('show'); showT();
+  tId = setInterval(() => { tLeft--; showT(); if (tLeft <= 10 && tLeft > 0) sfx('tick'); else if (tLeft <= 30 && tLeft > 0) sfx('beat'); if (tLeft <= 0) { stopTimer(true); sfx('bad'); tval.textContent = '¡Tiempo!'; } }, 1000);
+}
+function stopTimer(keep) { clearInterval(tId); tId = null; if (!keep) timerEl.classList.remove('show', 'low'); }
+
+// Sonido
+let AC = null, mute = false;
+try { mute = localStorage.getItem('casoSV2025mute') === '1'; } catch (e) {}
+const sndBtn = document.getElementById('snd');
+sndBtn.textContent = mute ? '🔇' : '🔊';
+sndBtn.onclick = () => { mute = !mute; sndBtn.textContent = mute ? '🔇' : '🔊'; try { localStorage.setItem('casoSV2025mute', mute ? '1' : '0'); } catch (e) {} };
+function tone(f, t0, d, type, vol) { const o = AC.createOscillator(), g = AC.createGain(); o.type = type; o.frequency.value = f; g.gain.setValueAtTime(vol, AC.currentTime + t0); g.gain.exponentialRampToValueAtTime(.001, AC.currentTime + t0 + d); o.connect(g).connect(AC.destination); o.start(AC.currentTime + t0); o.stop(AC.currentTime + t0 + d + .05); }
+function noise(t0, d, vol, hp) {
+  const b = AC.createBuffer(1, Math.max(1, Math.floor(AC.sampleRate * d)), AC.sampleRate), ch = b.getChannelData(0);
+  for (let k = 0; k < ch.length; k++) ch[k] = Math.random() * 2 - 1;
+  const s = AC.createBufferSource(), g = AC.createGain(), f = AC.createBiquadFilter(); s.buffer = b;
+  f.type = hp ? 'bandpass' : 'lowpass'; f.frequency.value = hp || 900;
+  g.gain.setValueAtTime(vol, AC.currentTime + t0); g.gain.exponentialRampToValueAtTime(.001, AC.currentTime + t0 + d);
+  s.connect(f).connect(g).connect(AC.destination); s.start(AC.currentTime + t0);
+}
+function sweep(f1, f2, t0, d) { const o = AC.createOscillator(), g = AC.createGain(); o.type = 'sawtooth'; o.frequency.setValueAtTime(f1, AC.currentTime + t0); o.frequency.linearRampToValueAtTime(f2, AC.currentTime + t0 + d); g.gain.setValueAtTime(.05, AC.currentTime + t0); g.gain.setValueAtTime(.05, AC.currentTime + t0 + d - .02); g.gain.linearRampToValueAtTime(0, AC.currentTime + t0 + d); o.connect(g).connect(AC.destination); o.start(AC.currentTime + t0); o.stop(AC.currentTime + t0 + d); }
+function sfx(kind) {
+  if (mute) return;
+  try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
+  if (kind === 'win') [523, 659, 784, 1047].forEach((f, k) => tone(f, k * .09, .25, 'triangle', .18));
+  if (kind === 'bad') { tone(180, 0, .3, 'sawtooth', .12); tone(140, .12, .35, 'sawtooth', .12); }
+  if (kind === 'tick') tone(880, 0, .06, 'square', .05);
+  if (kind === 'stamp') { tone(90, 0, .25, 'sine', .3); tone(60, .02, .3, 'triangle', .2); }
+  if (kind === 'roll') { for (let k = 0; k < 22; k++) noise(k * .065, .05, .07 + k * .008); noise(1.45, .3, .35); tone(70, 1.45, .35, 'sine', .35); }
+  if (kind === 'key') { [392, 523, 659, 784, 1047].forEach((f, k) => tone(f, k * .1, .3, 'triangle', .18)); tone(1568, .5, .6, 'sine', .1); }
+  if (kind === 'siren') { for (let k = 0; k < 4; k++) { sweep(650, 1150, k * .5, .25); sweep(1150, 650, k * .5 + .25, .25); } }
+  if (kind === 'whoosh') noise(0, .25, .05, 1800);
+  if (kind === 'type') noise(0, .02, .04, 3000);
+  if (kind === 'beat') { tone(60, 0, .12, 'sine', .4); tone(55, .18, .14, 'sine', .3); }
+  if (kind === 'fanfare') { [[523,0],[523,.15],[523,.3],[659,.45],[784,.75],[659,1],[784,1.15],[1047,1.4]].forEach(([f, t0]) => { tone(f, t0, .35, 'square', .07); tone(f / 2, t0, .35, 'triangle', .12); }); }
+}
+
+function flash(kind, ms) { const f = document.getElementById('flash'); f.className = 'flash'; void f.offsetWidth; f.className = 'flash ' + kind; if (ms) setTimeout(() => f.className = 'flash', ms); }
+function glowSlot(i) { const d = slotsEl.children[i]; d.classList.remove('glow'); void d.offsetWidth; d.classList.add('glow'); }
+function celebrate(i) {
+  confetti(); glowSlot(i);
+  if (i === 6) { sfx('siren'); flash('red'); }          // ¡el sospechoso!
+  else if (HIST[i].key) { sfx('key'); flash('gold'); }  // pista que revela parte del caso
+  else sfx('win');
+}
+
+// Máquina de escribir para el relato
+function typeIn(el) {
+  if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!el.dataset.full) el.dataset.full = el.innerHTML;
+  const full = el.dataset.full, txt = full.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<');
+  let n = 0; el.classList.add('caret'); el.textContent = '';
+  clearInterval(el._t);
+  el._t = setInterval(() => { n += 2; if (n % 6 === 0) sfx('type'); el.textContent = txt.slice(0, n); if (n >= txt.length) { clearInterval(el._t); el.innerHTML = full; el.classList.remove('caret'); } }, 28);
+  el.onclick = () => { clearInterval(el._t); el.innerHTML = full; el.classList.remove('caret'); };
+}
+
+// Confeti
+const cv = document.getElementById('fx'), cx = cv.getContext('2d'); let parts = [], raf = null;
+function confetti() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  cv.width = innerWidth; cv.height = innerHeight;
+  const cols = ['#E21B3C', '#1368CE', '#D89E00', '#26890C', '#F2B33D', '#4FD1A1', '#E8664A'];
+  for (let k = 0; k < 160; k++) parts.push({ x: innerWidth / 2 + (Math.random() - .5) * 200, y: innerHeight * .45, vx: (Math.random() - .5) * 16, vy: -Math.random() * 16 - 4, r: Math.random() * 6 + 4, c: cols[k % cols.length], a: Math.random() * 6, life: 0 });
+  if (!raf) loop();
+}
+function loop() {
+  cx.clearRect(0, 0, cv.width, cv.height);
+  parts.forEach(p => { p.vy += .45; p.x += p.vx; p.y += p.vy; p.a += .2; p.life++; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.a); cx.fillStyle = p.c; cx.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2); cx.restore(); });
+  parts = parts.filter(p => p.y < cv.height + 20 && p.life < 240);
+  raf = parts.length ? requestAnimationFrame(loop) : (cx.clearRect(0, 0, cv.width, cv.height), null);
+}
+
+let musOn = false, musT = null, musStep = 0, musG = null;
+const musBtn = document.getElementById('mus');
+const BASS = [55, 55, 65.4, 55, 49, 49, 58.3, 49];
+function musTick() {
+  const t = AC.currentTime, f = BASS[musStep % 8];
+  const o = AC.createOscillator(), g = AC.createGain(), lp = AC.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 400;
+  o.type = 'sawtooth'; o.frequency.value = f; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.5, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + .5);
+  o.connect(lp).connect(g).connect(musG); o.start(t); o.stop(t + .55);
+  if (musStep % 2 === 0) { const h = AC.createOscillator(), hg = AC.createGain(); h.type = 'sine'; h.frequency.value = f * 8 * (musStep % 4 ? 1.19 : 1); hg.gain.setValueAtTime(.0001, t); hg.gain.exponentialRampToValueAtTime(.08, t + .05); hg.gain.exponentialRampToValueAtTime(.0001, t + 1.1); h.connect(hg).connect(musG); h.start(t); h.stop(t + 1.2); }
+  musStep++;
+}
+function setMusic(on) {
+  musOn = on; musBtn.textContent = on ? '🎵' : '🎶'; musBtn.style.opacity = on ? 1 : .5;
+  clearInterval(musT); musT = null;
+  if (!on) return;
+  try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); AC.resume && AC.resume(); } catch (e) { return; }
+  if (!musG) { musG = AC.createGain(); musG.gain.value = .22; musG.connect(AC.destination); }
+  musT = setInterval(musTick, 520);
+}
+musBtn.style.opacity = .5; musBtn.textContent = '🎶';
+musBtn.onclick = () => setMusic(!musOn);
+// Foco de linterna en la portada
+document.querySelector('.cover').addEventListener('mousemove', e => { const r = e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty('--mx', (e.clientX - r.left) + 'px'); e.currentTarget.style.setProperty('--my', (e.clientY - r.top) + 'px'); });
+
+// Navegación y teclado
+document.getElementById('prev').onclick = () => go(S.cur - 1);
+document.getElementById('next').onclick = () => go(S.cur + 1);
+document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { if (!musOn && !mute) setMusic(true); go(+b.dataset.go); });
+const fsToggle = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen && document.documentElement.requestFullscreen().catch(() => {}); else document.exitFullscreen(); };
+document.getElementById('fs').onclick = fsToggle;
+document.addEventListener('keydown', e => {
+  if (e.altKey || e.ctrlKey || e.metaKey) return;
+  const k = e.key.toLowerCase(), i = S.cur - FIRST, inClue = i >= 0 && i < NC;
+  if (k === 'escape') { closeEvid(); return; }
+  if (k === 'arrowright' || k === 'pagedown') { e.preventDefault(); go(S.cur + 1); }
+  else if (k === 'arrowleft' || k === 'pageup') { e.preventDefault(); go(S.cur - 1); }
+  else if (k === 'f') fsToggle();
+  else if (k === 's') sndBtn.click();
+  else if (k === 'm') musBtn.click();
+  else if (inClue && ['1', '2', '3', '4'].includes(k)) choose(i, +k - 1);
+  else if (inClue && k === 't') startTimer();
+  else if (inClue && k === 'r') reveal(i);
+  else if (inClue && k === 'e' && S.c[i].done) openEvid(i);
+});
+// Abrir en una escena concreta con #n (ej. #5)
+const hn = parseInt(location.hash.slice(1), 10); if (!isNaN(hn)) S.cur = Math.max(0, Math.min(LAST, hn));
+render();
+</script>
+</body>
+</html>
