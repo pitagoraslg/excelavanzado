@@ -126,30 +126,13 @@
   .rbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--mint), var(--amber)); transition: width .8s; }
   .rank.up { animation: pop .6s 2; border-color: var(--amber); }
 
-  /* Paso 1 · laboratorio de la tabla */
-  .stepcard { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; margin-top: 4px; position: relative; transition: border-color .3s, opacity .3s; }
-  .stepcard + .stepcard { margin-top: 14px; }
+  .stepcard { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; margin-top: 4px; transition: border-color .3s; }
   .stepcard.ok { border-color: var(--mint); }
   .stephead { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-  .stephead .n { font-family: 'Bungee'; background: var(--amber); color: #2B1E05; border-radius: 10px; padding: 4px 10px; font-size: 14px; }
-  .stepcard.ok .stephead .n { background: var(--mint); color: #08251A; }
   .stephead b { font-size: clamp(17px, 1.7vw, 22px); }
   .stephead .st { margin-left: auto; font-weight: 900; color: var(--mint); font-size: 15px; }
-  .lab3 { display: grid; grid-template-columns: 1.3fr 1fr 1.2fr; gap: 10px; }
-  .zone { background: #fff; color: #222; border-radius: 12px; padding: 10px 12px; border: 3px solid transparent; transition: border-color .25s; }
-  .zone .lab { font-size: 12px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; color: #5B6B63; margin-bottom: 6px; }
-  .zone.bad { border-color: var(--t0); animation: shake .45s; }
-  .zone.good { border-color: var(--mint); }
-  .zone select { width: 100%; font: inherit; font-weight: 800; font-size: 16px; padding: 8px; border-radius: 8px; border: 1px solid #C9D3CE; background: #F6F8F7; color: #1C2A24; }
-  .fchips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .fchip { border: 1px solid #C9D3CE; background: #F6F8F7; color: #1C2A24; border-radius: 20px; padding: 5px 10px; font-weight: 800; font-size: 14px; }
-  .fchip.on { background: #1F3D33; color: #fff; border-color: #1F3D33; }
-  .fchip:disabled, .zone select:disabled { cursor: default; opacity: .85; }
-  .zone .none { font-size: 12px; color: #7A8781; margin-top: 6px; }
 
-  /* Paso 2 · caja fuerte */
-  .vault.lockd { opacity: .45; }
-  .vault.lockd .lockrow { pointer-events: none; filter: blur(1.5px); }
+  /* Caja fuerte */
   .lockrow { display: flex; gap: 12px; align-items: center; }
   .lockrow .dial { font-size: 44px; line-height: 1; }
   .lockrow input { flex: 1; min-width: 0; font-family: 'Special Elite', monospace; font-size: clamp(20px, 2.4vw, 32px); padding: 12px 16px; border-radius: 12px; border: 3px solid var(--line); background: #0A1511; color: var(--paper); letter-spacing: 1px; outline: none; }
@@ -243,7 +226,6 @@
 
   @media (max-width: 760px) {
     .gear, .evgrid, .found { grid-template-columns: 1fr; }
-    .lab3 { grid-template-columns: 1fr; }
     .vault .lockrow { flex-direction: column; align-items: stretch; }
     .slot { width: 26px; height: 26px; font-size: 12px; }
     .evid h3 { padding-right: 0; margin-top: 40px; }
@@ -273,7 +255,7 @@
         <h1 class="title">Investigador<br>de <span>Casos</span></h1>
         <div class="lens">🔍</div>
         <p class="subtitle">Caso: «Las reclamaciones fantasma»</p>
-        <p class="lead">Una aseguradora pierde millones y nadie sabe por qué. Ustedes tienen la base de datos, 10 cajas fuertes de evidencia y una sola herramienta: <strong style="color: var(--ink);">las tablas dinámicas</strong>. Cada caja solo se abre con la tabla bien armada y el dato exacto. ¿Podrán descubrir al culpable?</p>
+        <p class="lead">Una aseguradora pierde millones y nadie sabe por qué. Ustedes tienen la base de datos, 10 cajas fuertes de evidencia y una sola herramienta: <strong style="color: var(--ink);">las tablas dinámicas</strong>. Cada caja solo se abre con el dato exacto que ustedes encuentren en la base. ¿Podrán descubrir al culpable?</p>
         <button class="btn" data-go="1">🗂 Abrir el expediente</button>
         <p class="byline">Juego creado por: <strong style="color: var(--amber);">Jarlin Figueroa, M.A.</strong></p>
       </div></div>
@@ -295,8 +277,8 @@
         <div class="unk"><div class="q">?</div><b>El golpe mayor</b><small>¿Qué mes?</small></div>
       </div>
       <div class="rules">
-        <div class="rule">🧮 <b>Paso 1 · Armen la tabla.</b> Digan qué campo va en Filtros, Filas y Valores. Si no está bien armada, la caja no se activa.</div>
-        <div class="rule">🔐 <b>Paso 2 · Abran la caja.</b> Escriban el dato exacto que muestra Excel: un nombre o un número. Sin opciones para adivinar.</div>
+        <div class="rule">📊 <b>Investiguen en la base.</b> Cada pista se resuelve armando su propia tabla dinámica en Excel con el archivo del caso.</div>
+        <div class="rule">🔐 <b>Abran la caja.</b> Escriban el dato exacto que encontraron: un nombre o un número. Sin opciones para adivinar.</div>
         <div class="rule">🎖 <b>Suban de rango.</b> Cada dos cajas abiertas ascienden: de Novato a Investigador maestro. Sin prisa: se intenta las veces que haga falta.</div>
         <div class="rule">💡 <b>¿Atascados?</b> Pidan la pista: explica cómo armar la tabla, pero el dato lo encuentran ustedes.</div>
       </div>
@@ -834,27 +816,24 @@ const GUIA = [
   { pasos: ['Dejen <b>Taller</b> en Filas y pongan <b>ID Reclamación</b> en Valores (Cuenta).', 'Clic derecho sobre un número › <b>Mostrar valores como › % del total general</b>.'], mira: 'Busquen «Garaje Cibao Motors». Es el % de la cantidad de reclamaciones, no del dinero.' },
   { pasos: ['Arrastren <b>Taller</b> a Filtros y elijan <b>Garaje Cibao Motors</b>.', 'Arrastren <b>Año</b> a Filtros y elijan <b>2025</b>.', 'Pongan <b>Mes</b> en Filas y <b>Cuenta de ID Reclamación</b> en Valores.'], mira: 'Busquen el mes con el número más alto.' }
 ];
-// Paso 1 (armar la tabla) y paso 2 (dato exacto) de cada pista
+// Respuesta esperada de cada caja y listas para autocompletar
 const LISTAS = {
   'Aseguradora': ['Seguros Atlántico','Protege Seguros','Aseguradora Caribe','Seguros del Valle','Unión Seguros','Seguros Quisqueya'],
   'Provincia': ['Distrito Nacional','La Romana','La Vega','Santiago','Santo Domingo','San Cristóbal','Puerto Plata'],
   'Tipo de Daño': ['Rotura de cristales','Grúa','Robo de piezas','Choque','Daños por inundación','Llantas y aros'],
   'Taller': ['AutoExpress Naco','Taller La Romana','Auto Servicio La Vega','Taller El Ejido','Centro Automotriz Herrera','Clínica del Auto','Taller San Cristóbal Car','Puerto Plata Autos','Taller Los Mina','Garaje Cibao Motors']
 };
-const OPT_FILAS = ['Aseguradora','Plan','Taller','Tipo de Daño','Provincia','Estado','Año','Mes'];
-const OPT_VAL = ['Cuenta de ID Reclamación','Suma de Monto Reclamado','Suma de Monto Aprobado','Promedio de Monto Reclamado','Máx. de Monto Reclamado','% del total general (Cuenta de ID Reclamación)'];
-const OPT_FIL = ['Año','Mes','Aseguradora','Taller','Provincia','Estado','Tipo de Daño'];
 const CFG = [
-  { filas:'Aseguradora',  val:0, fil:[],                txt:['seguros atlantico','atlantico'], lista:'Aseguradora' },
-  { filas:'Aseguradora',  val:0, fil:[],                num:105 },
-  { filas:'Provincia',    val:1, fil:[],                txt:['santiago'], lista:'Provincia' },
-  { filas:'Estado',       val:0, fil:[],                num:81 },
-  { filas:'Tipo de Daño', val:0, fil:['Provincia'],     txt:['robo de piezas','robo'], lista:'Tipo de Daño' },
-  { filas:'Tipo de Daño', val:3, fil:[],                num:81361.93, tol:1 },
-  { filas:'Taller',       val:1, fil:[],                txt:['garaje cibao motors','cibao motors','garaje cibao'], lista:'Taller' },
-  { filas:'Taller',       val:2, fil:[],                num:1188750, tol:1 },
-  { filas:'Taller',       val:5, fil:[],                pct:10.8 },
-  { filas:'Mes',          val:0, fil:['Año','Taller'],  mes:8 }
+  { txt:['seguros atlantico','atlantico'], lista:'Aseguradora' },
+  { num:105 },
+  { txt:['santiago'], lista:'Provincia' },
+  { num:81 },
+  { txt:['robo de piezas','robo'], lista:'Tipo de Daño' },
+  { num:81361.93, tol:1 },
+  { txt:['garaje cibao motors','cibao motors','garaje cibao'], lista:'Taller' },
+  { num:1188750, tol:1 },
+  { pct:10.8 },
+  { mes:8 }
 ];
 const RANKS = ['Novato','Detective','Inspector','Comisario','Jefe de unidad','Investigador maestro'];
 const rankOf = n => n >= 10 ? 5 : Math.floor(n / 2);
@@ -885,9 +864,9 @@ function check(i, raw) {
 }
 
 // Estado
-const blank = () => ({ cur: 0, c: PISTAS.map(() => ({ arm: false, sel: { filas: '', val: '', fil: [] }, tries: 0, done: false })) });
+const blank = () => ({ cur: 0, c: PISTAS.map(() => ({ tries: 0, done: false })) });
 let S = blank();
-try { const s = JSON.parse(localStorage.getItem('investigadorCasos')); if (s && s.c && s.c.length === NC && s.c.every(c => c.sel)) S = s; } catch (e) {}
+try { const s = JSON.parse(localStorage.getItem('investigadorCasos')); if (s && s.c && s.c.length === NC && s.c.every(c => typeof c.tries === 'number')) S = s; } catch (e) {}
 const save = () => { try { localStorage.setItem('investigadorCasos', JSON.stringify(S)); } catch (e) {} };
 
 // Construye las escenas de las pistas
@@ -902,32 +881,17 @@ PISTAS.forEach((p, i) => {
     <div class="cluehead"><span class="badge">CAJA ${i + 1} / ${NC}</span><span class="badge lvl ${h.boss ? 'boss' : ''}">${h.lvl}</span>${h.key ? `<span class="badge lvl">🔑 Revela: ${h.key}</span>` : ''}</div>
     <p class="story">${h.story}</p>
     <h2 class="question">${esc(p.q)}</h2>
-    <div class="stepcard" data-step1>
-      <div class="stephead"><span class="n">PASO 1</span><b>🧮 ¿Cómo se arma la tabla dinámica?</b><span class="st" data-st1></span></div>
-      <div class="lab3">
-        <div class="zone" data-z="fil"><div class="lab">Filtros</div><div class="fchips">${OPT_FIL.map(f => `<button class="fchip" data-f="${esc(f)}">${esc(f)}</button>`).join('')}</div><div class="none">Ninguno marcado = sin filtros</div></div>
-        <div class="zone" data-z="filas"><div class="lab">Filas</div><select data-k="filas"><option value="">— Elegir campo —</option>${OPT_FILAS.map(f => `<option>${esc(f)}</option>`).join('')}</select></div>
-        <div class="zone" data-z="val"><div class="lab">Valores</div><select data-k="val"><option value="">— Elegir cálculo —</option>${OPT_VAL.map((f, k) => `<option value="${k}">${esc(f)}</option>`).join('')}</select></div>
-      </div>
-      <div class="actions" style="margin-top: 12px;">
-        <button class="btn mint" data-act="arm">✔ Comprobar la tabla</button>
-        <button class="btn amber" data-act="hint">💡 Pista</button>
-      </div>
-    </div>
     <div class="stepcard vault" data-step2>
-      <div class="stephead"><span class="n">PASO 2</span><b>🔐 Abran la caja con el dato exacto</b><span class="st" data-st2></span></div>
+      <div class="stephead"><b>🔐 Abran la caja con el dato que encontraron en la base</b><span class="st" data-st2></span></div>
       <div class="lockrow"><span class="dial">🔒</span><input type="text" autocomplete="off" spellcheck="false" placeholder="${ph}" ${c.lista ? `list="dl${i}"` : 'inputmode="decimal"'}><button class="btn" data-act="open">🔓 Abrir</button></div>
       ${c.lista ? `<datalist id="dl${i}">${LISTAS[c.lista].map(v => `<option value="${esc(v)}">`).join('')}</datalist>` : ''}
       <p class="vnote">${c.txt ? 'Pueden escribir sin tildes ni mayúsculas.' : 'Pueden escribirlo con o sin RD$, comas o el signo %.'}</p>
-      <div class="actions" data-after hidden><button class="btn amber" data-act="evid">🗂 Ver la evidencia</button></div>
+      <div class="actions"><button class="btn amber" data-act="hint">💡 Pista</button><button class="btn amber" data-act="evid">🗂 Ver la evidencia</button></div>
     </div>
     <div class="feedback" data-fb></div>
     <div class="hintbox" data-hint><b class="h">💡 Pista · cómo encontrar el dato</b><ol>${GUIA[i].pasos.map(x => '<li>' + x + '</li>').join('')}</ol><div class="look">🔎 ${GUIA[i].mira}</div></div>
     </div>`;
   cluesEl.appendChild(sec);
-  sec.querySelectorAll('.fchip').forEach(b => b.onclick = () => { const sel = S.c[i].sel, f = b.dataset.f; sel.fil = sel.fil.includes(f) ? sel.fil.filter(x => x !== f) : [...sel.fil, f]; b.closest('.zone').classList.remove('bad'); paintClue(i); save(); });
-  sec.querySelectorAll('select').forEach(s => s.onchange = () => { S.c[i].sel[s.dataset.k] = s.value; s.closest('.zone').classList.remove('bad'); save(); });
-  sec.querySelector('[data-act=arm]').onclick = () => arm(i);
   sec.querySelector('[data-act=hint]').onclick = () => toggleHint(i);
   sec.querySelector('[data-act=open]').onclick = () => tryOpen(i);
   sec.querySelector('input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); tryOpen(i); } });
@@ -963,21 +927,14 @@ function render() {
 }
 function paintClue(i) {
   const sec = document.querySelector(`.scene[data-s="${FIRST + i}"]`), c = S.c[i];
-  const s1 = sec.querySelector('[data-step1]'), s2 = sec.querySelector('[data-step2]'), inp = s2.querySelector('input');
-  sec.querySelectorAll('.fchip').forEach(b => { b.classList.toggle('on', c.sel.fil.includes(b.dataset.f)); b.disabled = c.arm; });
-  sec.querySelectorAll('select').forEach(s => { s.value = c.sel[s.dataset.k]; s.disabled = c.arm; });
-  s1.classList.toggle('ok', c.arm);
-  sec.querySelectorAll('.zone').forEach(z => { z.classList.toggle('good', c.arm); if (c.arm) z.classList.remove('bad'); });
-  sec.querySelector('[data-act=arm]').hidden = c.arm;
-  sec.querySelector('[data-st1]').textContent = c.arm ? '✔ Tabla bien armada' : '';
-  s2.classList.toggle('lockd', !c.arm);
+  const s2 = sec.querySelector('[data-step2]'), inp = s2.querySelector('input');
   s2.classList.toggle('ok', c.done);
-  sec.querySelector('[data-st2]').textContent = c.done ? '✔ Caja abierta' : c.arm ? '' : '🔒 Primero armen la tabla';
+  sec.querySelector('[data-st2]').textContent = c.done ? '✔ Caja abierta' : '';
   s2.querySelector('.dial').textContent = c.done ? '🔓' : '🔒';
-  inp.disabled = c.done || !c.arm; inp.classList.toggle('good', c.done);
-  if (c.done) inp.value = PISTAS[i].ok; else if (!c.arm) inp.value = '';
+  inp.disabled = c.done; inp.classList.toggle('good', c.done);
+  if (c.done) inp.value = PISTAS[i].ok;
   sec.querySelector('[data-act=open]').hidden = c.done;
-  sec.querySelector('[data-after]').hidden = !c.done;
+  sec.querySelector('[data-act=evid]').hidden = !c.done;
   sec.querySelector('[data-act=hint]').hidden = c.done;
   if (c.done) { sec.querySelector('[data-hint]').classList.remove('show'); sec.querySelector('[data-fb]').classList.remove('show'); }
 }
@@ -989,32 +946,16 @@ function blocked() {
   const nx = document.getElementById('next'); nx.classList.remove('nope'); void nx.offsetWidth; nx.classList.add('nope');
   sfx('bad');
   const i = S.cur - FIRST;
-  if (i >= 0 && i < NC) say(i, S.c[i].arm ? '🔒 La caja sigue cerrada: escriban el dato exacto en el paso 2.' : '🔒 Primero armen bien la tabla dinámica (paso 1). Si se atascan, toquen <b>💡 Pista</b>.');
+  if (i >= 0 && i < NC) say(i, '🔒 La caja sigue cerrada: investiguen en la base y escriban el dato exacto. Si se atascan, toquen <b>💡 Pista</b>.');
 }
 function toggleHint(i) { const h = document.querySelector(`.scene[data-s="${FIRST + i}"] [data-hint]`); h.classList.toggle('show'); if (h.classList.contains('show')) { sfx('paper'); h.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } }
 function go(n) { n = Math.max(0, Math.min(LAST, n)); if (n > S.cur && n > maxReach()) { blocked(); return; } if (n !== S.cur) { closeEvid(); closeUnlock(true); const prev = S.cur; S.cur = n; render(); setLevel(); sceneSound(prev, n); document.querySelector('.scene.active').querySelectorAll('.story, .dossier p').forEach(typeIn); } }
 
-// Paso 1: revisar zona por zona
-function arm(i) {
-  const c = S.c[i], cf = CFG[i], sec = document.querySelector(`.scene[data-s="${FIRST + i}"]`);
-  const okF = c.sel.fil.length === cf.fil.length && cf.fil.every(f => c.sel.fil.includes(f));
-  const okR = c.sel.filas === cf.filas, okV = c.sel.val === String(cf.val);
-  [['fil', okF], ['filas', okR], ['val', okV]].forEach(([k, ok]) => { const e = sec.querySelector(`[data-z="${k}"]`); e.classList.remove('bad'); void e.offsetWidth; if (!ok) e.classList.add('bad'); });
-  if (okF && okR && okV) {
-    c.arm = true; sfx('win'); confetti(60); say(i, ''); render();
-    setTimeout(() => { const inp = sec.querySelector('[data-step2] input'); inp.focus(); inp.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300);
-    return;
-  }
-  sfx('bad');
-  const bad = [!okF && 'Filtros', !okR && 'Filas', !okV && 'Valores'].filter(Boolean);
-  say(i, `✖ La tabla no está bien armada. Revisen: <b>${bad.join(', ')}</b> (en rojo). ¿Dudas? Toquen <b>💡 Pista</b>.`);
-}
-
-// Paso 2: probar el dato escrito
+// Probar el dato escrito
 let busy = false;
 function tryOpen(i) {
   const c = S.c[i], inp = document.querySelector(`.scene[data-s="${FIRST + i}"] [data-step2] input`);
-  if (c.done || !c.arm || busy) return;
+  if (c.done || busy) return;
   if (!inp.value.trim()) { inp.classList.remove('bad'); void inp.offsetWidth; inp.classList.add('bad'); inp.focus(); return; }
   busy = true; inp.blur();
   document.getElementById('suspTxt').textContent = '«' + inp.value.trim() + '»';
