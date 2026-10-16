@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Caso Reclamaciones Fantasma</title>
+<title>Investigador de Casos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;800;900&family=Special+Elite&display=swap" rel="stylesheet">
 <style>
@@ -16,6 +16,7 @@
   html, body { margin: 0; height: 100%; }
   body { background: radial-gradient(1200px 700px at 70% -10%, #1C3A2E 0%, var(--bg) 60%); background-color: var(--bg); color: var(--ink); font-family: 'Nunito', 'Segoe UI', Arial, sans-serif; overflow: hidden; }
   button { font-family: inherit; cursor: pointer; }
+  [hidden] { display: none !important; }
   .app { position: fixed; inset: 0; display: flex; flex-direction: column; }
 
   /* HUD */
@@ -34,9 +35,6 @@
   .iconbtn:hover { border-color: var(--amber); }
   .resetbtn { background: var(--panel); border: 1px solid var(--coral); color: var(--coral); border-radius: 10px; height: 40px; padding: 0 14px; font-weight: 900; font-size: 15px; white-space: nowrap; }
   .resetbtn:hover { background: var(--coral); color: #fff; }
-  .timer { display: none; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 4px 12px; font-family: 'Bungee'; font-size: 22px; color: var(--amber); }
-  .timer.show { display: flex; }
-  .timer.low { color: var(--t0); animation: blink 1s steps(2) infinite; }
   @keyframes blink { 50% { opacity: .45; } }
 
   /* Escenas */
@@ -103,16 +101,6 @@
   .badge.boss { background: var(--t0); color: #fff; animation: blink 1.2s steps(2) infinite; }
   .story { font-family: 'Special Elite', monospace; font-size: clamp(16px, 1.6vw, 21px); color: var(--paper); border-left: 4px solid var(--coral); padding: 6px 0 6px 14px; line-height: 1.5; margin: 0 0 16px; }
   .question { font-weight: 900; font-size: clamp(26px, 3.6vw, 50px); line-height: 1.15; margin: 0 0 20px; }
-  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .tile { position: relative; border: 0; border-radius: 16px; padding: 18px 20px 18px 74px; min-height: 92px; text-align: left; color: #fff; font-weight: 900; font-size: clamp(19px, 2.3vw, 32px); box-shadow: 0 6px 0 rgba(0,0,0,.35); transition: transform .12s, filter .2s, opacity .3s; }
-  .tile:hover:not(:disabled) { transform: translateY(-3px); filter: brightness(1.1); }
-  .tile .sh { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 34px; opacity: .95; }
-  .tile.t0 { background: var(--t0); } .tile.t1 { background: var(--t1); } .tile.t2 { background: var(--t2); } .tile.t3 { background: var(--t3); }
-  .tile.wrong { opacity: .35; filter: grayscale(.6); animation: shake .45s; }
-  .tile.wrong::after { content: '✖'; position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 34px; }
-  .tile.right { outline: 5px solid #fff; animation: pop .5s; }
-  .tile.right::after { content: '✔'; position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 38px; }
-  .tile.dim { opacity: .25; }
   @keyframes shake { 0%,100% { transform: none; } 20% { transform: translateX(-10px); } 40% { transform: translateX(10px); } 60% { transform: translateX(-6px); } 80% { transform: translateX(6px); } }
   @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
   .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; align-items: center; }
@@ -128,6 +116,64 @@
   .slot.locked { opacity: .35; cursor: not-allowed !important; }
   .btn.locked { background: var(--panel); box-shadow: 0 5px 0 #0A1511; border: 1px solid var(--line); color: var(--muted); }
   .btn.nope { animation: shake .45s; }
+
+  /* Rango */
+  .rank { display: flex; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 4px 12px 4px 8px; white-space: nowrap; }
+  .rank .ri { font-size: 24px; }
+  .rank small { display: block; font-size: 10px; letter-spacing: 2px; font-weight: 900; color: var(--muted); }
+  .rank b { font-family: 'Bungee'; font-size: 15px; color: var(--mint); }
+  .rbar { width: 110px; height: 6px; background: var(--bg2); border-radius: 6px; margin-top: 3px; overflow: hidden; }
+  .rbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--mint), var(--amber)); transition: width .8s; }
+  .rank.up { animation: pop .6s 2; border-color: var(--amber); }
+
+  /* Paso 1 · laboratorio de la tabla */
+  .stepcard { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; margin-top: 4px; position: relative; transition: border-color .3s, opacity .3s; }
+  .stepcard + .stepcard { margin-top: 14px; }
+  .stepcard.ok { border-color: var(--mint); }
+  .stephead { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .stephead .n { font-family: 'Bungee'; background: var(--amber); color: #2B1E05; border-radius: 10px; padding: 4px 10px; font-size: 14px; }
+  .stepcard.ok .stephead .n { background: var(--mint); color: #08251A; }
+  .stephead b { font-size: clamp(17px, 1.7vw, 22px); }
+  .stephead .st { margin-left: auto; font-weight: 900; color: var(--mint); font-size: 15px; }
+  .lab3 { display: grid; grid-template-columns: 1.3fr 1fr 1.2fr; gap: 10px; }
+  .zone { background: #fff; color: #222; border-radius: 12px; padding: 10px 12px; border: 3px solid transparent; transition: border-color .25s; }
+  .zone .lab { font-size: 12px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; color: #5B6B63; margin-bottom: 6px; }
+  .zone.bad { border-color: var(--t0); animation: shake .45s; }
+  .zone.good { border-color: var(--mint); }
+  .zone select { width: 100%; font: inherit; font-weight: 800; font-size: 16px; padding: 8px; border-radius: 8px; border: 1px solid #C9D3CE; background: #F6F8F7; color: #1C2A24; }
+  .fchips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .fchip { border: 1px solid #C9D3CE; background: #F6F8F7; color: #1C2A24; border-radius: 20px; padding: 5px 10px; font-weight: 800; font-size: 14px; }
+  .fchip.on { background: #1F3D33; color: #fff; border-color: #1F3D33; }
+  .fchip:disabled, .zone select:disabled { cursor: default; opacity: .85; }
+  .zone .none { font-size: 12px; color: #7A8781; margin-top: 6px; }
+
+  /* Paso 2 · caja fuerte */
+  .vault.lockd { opacity: .45; }
+  .vault.lockd .lockrow { pointer-events: none; filter: blur(1.5px); }
+  .lockrow { display: flex; gap: 12px; align-items: center; }
+  .lockrow .dial { font-size: 44px; line-height: 1; }
+  .lockrow input { flex: 1; min-width: 0; font-family: 'Special Elite', monospace; font-size: clamp(20px, 2.4vw, 32px); padding: 12px 16px; border-radius: 12px; border: 3px solid var(--line); background: #0A1511; color: var(--paper); letter-spacing: 1px; outline: none; }
+  .lockrow input:focus { border-color: var(--amber); }
+  .lockrow input.bad { border-color: var(--t0); animation: shake .45s; }
+  .lockrow input.good { border-color: var(--mint); color: var(--mint); }
+  .vnote { color: var(--muted); font-size: 14px; margin: 8px 0 0; }
+
+  /* Efecto de caja abierta */
+  .unlock { position: fixed; inset: 0; z-index: 24; display: none; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(31,61,51,.92) 0%, rgba(4,9,7,.95) 70%); overflow: hidden; }
+  .unlock.show { display: flex; }
+  .unlock .rays { position: absolute; width: 160vmax; height: 160vmax; background: repeating-conic-gradient(rgba(242,179,61,.16) 0 8deg, transparent 8deg 20deg); animation: spin 8s linear infinite; }
+  .unlock.red .rays { background: repeating-conic-gradient(rgba(226,27,60,.22) 0 8deg, transparent 8deg 20deg); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .unlock .box { position: relative; text-align: center; }
+  .unlock .pad { font-size: clamp(90px, 14vw, 170px); display: inline-block; animation: padshake .6s ease-in-out both; }
+  .unlock .pad.open { animation: padopen .55s cubic-bezier(.2,1.6,.4,1) both; }
+  @keyframes padshake { 0%,100% { transform: rotate(0); } 20% { transform: rotate(-14deg); } 40% { transform: rotate(12deg); } 60% { transform: rotate(-8deg); } 80% { transform: rotate(6deg); } }
+  @keyframes padopen { from { transform: scale(.6); } to { transform: scale(1.12); } }
+  .unlock h2 { font-family: 'Bungee'; font-size: clamp(30px, 5vw, 68px); color: var(--amber); margin: 6px 0 4px; text-shadow: 0 6px 0 rgba(0,0,0,.4); animation: bigstamp .55s cubic-bezier(.2,1.6,.4,1) both .5s; }
+  .unlock.red h2 { color: #FF5A6E; }
+  .unlock .val { font-family: 'Special Elite', monospace; font-size: clamp(22px, 3vw, 38px); color: var(--paper); animation: enter .4s ease both .8s; }
+  .unlock .promo { display: inline-block; margin-top: 16px; font-weight: 900; font-size: clamp(18px, 2.2vw, 28px); background: var(--mint); color: #08251A; border-radius: 40px; padding: 8px 22px; animation: bigstamp .6s cubic-bezier(.2,1.6,.4,1) both 1.2s; }
+  .unlock .tap { display: block; margin-top: 18px; color: var(--muted); font-size: 14px; animation: enter .4s ease both 1.6s; }
 
   /* Evidencia (modal) */
   .modal { position: fixed; inset: 0; background: rgba(4,9,7,.82); display: none; align-items: center; justify-content: center; padding: 18px; z-index: 20; }
@@ -197,8 +243,8 @@
 
   @media (max-width: 760px) {
     .gear, .evgrid, .found { grid-template-columns: 1fr; }
-    .tiles { grid-template-columns: 1fr; }
-    .tile { min-height: 70px; }
+    .lab3 { grid-template-columns: 1fr; }
+    .vault .lockrow { flex-direction: column; align-items: stretch; }
     .slot { width: 26px; height: 26px; font-size: 12px; }
     .evid h3 { padding-right: 0; margin-top: 40px; }
     .nav .hint { display: none; }
@@ -209,9 +255,9 @@
 <body>
 <div class="app">
   <header class="hud">
-    <div class="case">EXPEDIENTE SV-2025<small>UNIDAD DE ANÁLISIS</small></div>
+    <div class="case">INVESTIGADOR DE CASOS<small>EXPEDIENTE SV-2025</small></div>
+    <div class="rank" id="rank" title="Tu rango sube cada dos pistas resueltas"><span class="ri">🕵</span><div><small>RANGO</small><b id="rankName">Novato</b><div class="rbar"><i id="rankBar"></i></div></div></div>
     <div class="slots" id="slots"></div>
-    <div class="timer" id="timer" title="Tiempo para resolver la pista">⏱ <span id="tval">4:00</span></div>
     <button class="iconbtn" id="mus" title="Música de suspenso (M)">🎵</button>
     <button class="iconbtn" id="snd" title="Efectos de sonido (S)">🔊</button>
     <button class="iconbtn" id="fs" title="Pantalla completa (F)">⛶</button>
@@ -224,10 +270,10 @@
     <section class="scene" data-s="0">
       <div class="cover"><div>
         <span class="tag">Módulo 3 · Tablas dinámicas avanzadas</span>
-        <h1 class="title">Ejercicios prácticos<br>en <span>tablas dinámicas</span></h1>
+        <h1 class="title">Investigador<br>de <span>Casos</span></h1>
         <div class="lens">🔍</div>
         <p class="subtitle">Caso: «Las reclamaciones fantasma»</p>
-        <p class="lead">Una aseguradora pierde millones y nadie sabe por qué. Ustedes tienen la base de datos, 10 pistas y una sola herramienta: <strong style="color: var(--ink);">las tablas dinámicas</strong>. ¿Podrán descubrir al culpable?</p>
+        <p class="lead">Una aseguradora pierde millones y nadie sabe por qué. Ustedes tienen la base de datos, 10 cajas fuertes de evidencia y una sola herramienta: <strong style="color: var(--ink);">las tablas dinámicas</strong>. Cada caja solo se abre con la tabla bien armada y el dato exacto. ¿Podrán descubrir al culpable?</p>
         <button class="btn" data-go="1">🗂 Abrir el expediente</button>
         <p class="byline">Juego creado por: <strong style="color: var(--amber);">Jarlin Figueroa, M.A.</strong></p>
       </div></div>
@@ -249,9 +295,9 @@
         <div class="unk"><div class="q">?</div><b>El golpe mayor</b><small>¿Qué mes?</small></div>
       </div>
       <div class="rules">
-        <div class="rule">🔎 <b>10 pistas.</b> Cada una es una pregunta que se responde con los datos.</div>
-        <div class="rule">🧮 <b>Primero la tabla.</b> La armamos juntos en Excel; luego responden.</div>
-        <div class="rule">🔁 <b>Sin prisa:</b> si se equivocan, lo intentan de nuevo. No se avanza hasta encontrar la respuesta correcta.</div>
+        <div class="rule">🧮 <b>Paso 1 · Armen la tabla.</b> Digan qué campo va en Filtros, Filas y Valores. Si no está bien armada, la caja no se activa.</div>
+        <div class="rule">🔐 <b>Paso 2 · Abran la caja.</b> Escriban el dato exacto que muestra Excel: un nombre o un número. Sin opciones para adivinar.</div>
+        <div class="rule">🎖 <b>Suban de rango.</b> Cada dos cajas abiertas ascienden: de Novato a Investigador maestro. Sin prisa: se intenta las veces que haga falta.</div>
         <div class="rule">💡 <b>¿Atascados?</b> Pidan la pista: explica cómo armar la tabla, pero el dato lo encuentran ustedes.</div>
       </div>
     </div></section>
@@ -292,6 +338,7 @@
     <!-- 13 · Caso resuelto -->
     <section class="scene" data-s="13"><div class="wrap">
       <div class="solved">CASO RESUELTO</div>
+      <p style="text-align: center; margin: 0 0 8px;"><span class="badge" style="font-size: 18px;">🎖 Rango alcanzado: Investigador maestro</span></p>
       <p class="sub" style="text-align: center;">Todas las pistas apuntan al mismo lugar. Este es el tablero de la investigación:</p>
       <div class="board" id="board"></div>
       <div class="card">
@@ -314,7 +361,7 @@
 
   <nav class="nav">
     <button class="btn ghost" id="prev">◀ Atrás</button>
-    <div class="hint"><span class="kbd">←</span> <span class="kbd">→</span> navegar · <span class="kbd">1</span>–<span class="kbd">4</span> elegir · <span class="kbd">T</span> tiempo · <span class="kbd">M</span> música · <span class="kbd">P</span> pista · <span class="kbd">F</span> pantalla completa</div>
+    <div class="hint"><span class="kbd">←</span> <span class="kbd">→</span> navegar · <span class="kbd">Enter</span> abrir la caja · <span class="kbd">M</span> música · <span class="kbd">P</span> pista · <span class="kbd">F</span> pantalla completa</div>
     <button class="btn" id="next">Siguiente ▶</button>
   </nav>
 </div>
@@ -322,7 +369,8 @@
 <div class="modal" id="modal"><div class="evid" id="evid"></div></div>
 <canvas id="fx"></canvas>
 <div class="flash" id="flash"></div>
-<div class="suspense" id="susp"><div>🔍 Analizando evidencia…<small id="suspTxt"></small></div></div>
+<div class="suspense" id="susp"><div>🔐 Probando la combinación…<small id="suspTxt"></small></div></div>
+<div class="unlock" id="unlock"><div class="rays"></div><div class="box"><div class="pad" id="upad">🔒</div><h2 id="uh">¡CAJA ABIERTA!</h2><div class="val" id="uval"></div><div id="upromo"></div><span class="tap">Toquen para ver la evidencia</span></div></div>
 
 <script>
 const PISTAS = [
@@ -786,7 +834,30 @@ const GUIA = [
   { pasos: ['Dejen <b>Taller</b> en Filas y pongan <b>ID Reclamación</b> en Valores (Cuenta).', 'Clic derecho sobre un número › <b>Mostrar valores como › % del total general</b>.'], mira: 'Busquen «Garaje Cibao Motors». Es el % de la cantidad de reclamaciones, no del dinero.' },
   { pasos: ['Arrastren <b>Taller</b> a Filtros y elijan <b>Garaje Cibao Motors</b>.', 'Arrastren <b>Año</b> a Filtros y elijan <b>2025</b>.', 'Pongan <b>Mes</b> en Filas y <b>Cuenta de ID Reclamación</b> en Valores.'], mira: 'Busquen el mes con el número más alto.' }
 ];
-const SH = ['▲','◆','●','■'];
+// Paso 1 (armar la tabla) y paso 2 (dato exacto) de cada pista
+const LISTAS = {
+  'Aseguradora': ['Seguros Atlántico','Protege Seguros','Aseguradora Caribe','Seguros del Valle','Unión Seguros','Seguros Quisqueya'],
+  'Provincia': ['Distrito Nacional','La Romana','La Vega','Santiago','Santo Domingo','San Cristóbal','Puerto Plata'],
+  'Tipo de Daño': ['Rotura de cristales','Grúa','Robo de piezas','Choque','Daños por inundación','Llantas y aros'],
+  'Taller': ['AutoExpress Naco','Taller La Romana','Auto Servicio La Vega','Taller El Ejido','Centro Automotriz Herrera','Clínica del Auto','Taller San Cristóbal Car','Puerto Plata Autos','Taller Los Mina','Garaje Cibao Motors']
+};
+const OPT_FILAS = ['Aseguradora','Plan','Taller','Tipo de Daño','Provincia','Estado','Año','Mes'];
+const OPT_VAL = ['Cuenta de ID Reclamación','Suma de Monto Reclamado','Suma de Monto Aprobado','Promedio de Monto Reclamado','Máx. de Monto Reclamado','% del total general (Cuenta de ID Reclamación)'];
+const OPT_FIL = ['Año','Mes','Aseguradora','Taller','Provincia','Estado','Tipo de Daño'];
+const CFG = [
+  { filas:'Aseguradora',  val:0, fil:[],                txt:['seguros atlantico','atlantico'], lista:'Aseguradora' },
+  { filas:'Aseguradora',  val:0, fil:[],                num:105 },
+  { filas:'Provincia',    val:1, fil:[],                txt:['santiago'], lista:'Provincia' },
+  { filas:'Estado',       val:0, fil:[],                num:81 },
+  { filas:'Tipo de Daño', val:0, fil:['Provincia'],     txt:['robo de piezas','robo'], lista:'Tipo de Daño' },
+  { filas:'Tipo de Daño', val:3, fil:[],                num:81361.93, tol:1 },
+  { filas:'Taller',       val:1, fil:[],                txt:['garaje cibao motors','cibao motors','garaje cibao'], lista:'Taller' },
+  { filas:'Taller',       val:2, fil:[],                num:1188750, tol:1 },
+  { filas:'Taller',       val:5, fil:[],                pct:10.8 },
+  { filas:'Mes',          val:0, fil:['Año','Taller'],  mes:8 }
+];
+const RANKS = ['Novato','Detective','Inspector','Comisario','Jefe de unidad','Investigador maestro'];
+const rankOf = n => n >= 10 ? 5 : Math.floor(n / 2);
 const NC = PISTAS.length, FIRST = 3, LAST = FIRST + NC;
 
 // Rellena los datos de las pistas en los textos
@@ -794,102 +865,201 @@ const fill = s => s.replace('__P2__', PISTAS[1].ok).replace('__P4__', PISTAS[3].
   .replace('__P8R__', PISTAS[7].res[0][1]).replace('__P8A__', PISTAS[7].ok).replace('__P9__', PISTAS[8].ok).replace('__P10__', PISTAS[9].ok);
 HIST.forEach(h => h.disc = fill(h.disc));
 
+// Comprobación del dato escrito: sin tildes ni mayúsculas; números con o sin RD$, comas o %
+const norm = t => String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[«»"']/g, ' ').replace(/\s+/g, ' ').trim();
+function toNum(t) {
+  let x = String(t).replace(/rd\$|\$|%|\s/gi, '');
+  if (/,\d{1,2}$/.test(x) && !/\.\d/.test(x)) x = x.replace(/\./g, '').replace(',', '.');   // 81361,93
+  else x = x.replace(/,/g, '');
+  return /^-?\d+(\.\d+)?$/.test(x) ? parseFloat(x) : NaN;
+}
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function check(i, raw) {
+  const c = CFG[i], t = norm(raw).replace(/\.$/, '');
+  if (!t) return false;
+  if (c.txt) return c.txt.includes(t);
+  if (c.mes) return MESES[c.mes - 1] === t || toNum(t.replace(/^mes /, '')) === c.mes;
+  const n = toNum(raw);
+  if (c.pct) return Math.abs(n - c.pct) < .06 || Math.abs(n - c.pct / 100) < .0006;
+  return Math.abs(n - c.num) <= (c.tol || 0);
+}
+
 // Estado
-let S = { cur: 0, c: PISTAS.map(() => ({ tries: [], done: false })) };
-try { const s = JSON.parse(localStorage.getItem('casoSV2025')); if (s && s.c && s.c.length === NC && !s.c.some(c => c.rev)) S = s; } catch (e) {}
-const save = () => { try { localStorage.setItem('casoSV2025', JSON.stringify(S)); } catch (e) {} };
+const blank = () => ({ cur: 0, c: PISTAS.map(() => ({ arm: false, sel: { filas: '', val: '', fil: [] }, tries: 0, done: false })) });
+let S = blank();
+try { const s = JSON.parse(localStorage.getItem('investigadorCasos')); if (s && s.c && s.c.length === NC && s.c.every(c => c.sel)) S = s; } catch (e) {}
+const save = () => { try { localStorage.setItem('investigadorCasos', JSON.stringify(S)); } catch (e) {} };
 
 // Construye las escenas de las pistas
-const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 const cluesEl = document.getElementById('clues');
 PISTAS.forEach((p, i) => {
-  const h = HIST[i];
+  const h = HIST[i], c = CFG[i];
   const sec = document.createElement('section');
   sec.className = 'scene'; sec.dataset.s = FIRST + i;
+  const ph = c.txt ? 'Escriban el nombre exacto…' : c.mes ? 'Escriban el mes (número o nombre)…' : c.pct ? 'Escriban el porcentaje (ej. 12.34 %)…' : 'Escriban el número tal como sale en Excel…';
   sec.innerHTML = `<div class="wrap">
-    <div class="cluehead"><span class="badge">PISTA ${i + 1} / ${NC}</span><span class="badge lvl ${h.boss ? 'boss' : ''}">${h.lvl}</span>${h.key ? `<span class="badge lvl">🔑 Revela: ${h.key}</span>` : ''}</div>
+    <div class="cluehead"><span class="badge">CAJA ${i + 1} / ${NC}</span><span class="badge lvl ${h.boss ? 'boss' : ''}">${h.lvl}</span>${h.key ? `<span class="badge lvl">🔑 Revela: ${h.key}</span>` : ''}</div>
     <p class="story">${h.story}</p>
     <h2 class="question">${esc(p.q)}</h2>
-    <div class="tiles">${p.opts.map((o, k) => `<button class="tile t${k}" data-k="${k}"><span class="sh">${SH[k]}</span>${esc(o)}</button>`).join('')}</div>
-    <div class="actions">
-      <button class="btn ghost" data-act="timer">⏱ Iniciar tiempo</button>
-      <button class="btn amber" data-act="hint">💡 Pista</button>
-      <button class="btn amber" data-act="evid" hidden>🗂 Ver la evidencia</button>
-      <span class="note">Primero la tabla dinámica en Excel; luego el grupo responde.</span>
+    <div class="stepcard" data-step1>
+      <div class="stephead"><span class="n">PASO 1</span><b>🧮 ¿Cómo se arma la tabla dinámica?</b><span class="st" data-st1></span></div>
+      <div class="lab3">
+        <div class="zone" data-z="fil"><div class="lab">Filtros</div><div class="fchips">${OPT_FIL.map(f => `<button class="fchip" data-f="${esc(f)}">${esc(f)}</button>`).join('')}</div><div class="none">Ninguno marcado = sin filtros</div></div>
+        <div class="zone" data-z="filas"><div class="lab">Filas</div><select data-k="filas"><option value="">— Elegir campo —</option>${OPT_FILAS.map(f => `<option>${esc(f)}</option>`).join('')}</select></div>
+        <div class="zone" data-z="val"><div class="lab">Valores</div><select data-k="val"><option value="">— Elegir cálculo —</option>${OPT_VAL.map((f, k) => `<option value="${k}">${esc(f)}</option>`).join('')}</select></div>
+      </div>
+      <div class="actions" style="margin-top: 12px;">
+        <button class="btn mint" data-act="arm">✔ Comprobar la tabla</button>
+        <button class="btn amber" data-act="hint">💡 Pista</button>
+      </div>
+    </div>
+    <div class="stepcard vault" data-step2>
+      <div class="stephead"><span class="n">PASO 2</span><b>🔐 Abran la caja con el dato exacto</b><span class="st" data-st2></span></div>
+      <div class="lockrow"><span class="dial">🔒</span><input type="text" autocomplete="off" spellcheck="false" placeholder="${ph}" ${c.lista ? `list="dl${i}"` : 'inputmode="decimal"'}><button class="btn" data-act="open">🔓 Abrir</button></div>
+      ${c.lista ? `<datalist id="dl${i}">${LISTAS[c.lista].map(v => `<option value="${esc(v)}">`).join('')}</datalist>` : ''}
+      <p class="vnote">${c.txt ? 'Pueden escribir sin tildes ni mayúsculas.' : 'Pueden escribirlo con o sin RD$, comas o el signo %.'}</p>
+      <div class="actions" data-after hidden><button class="btn amber" data-act="evid">🗂 Ver la evidencia</button></div>
     </div>
     <div class="feedback" data-fb></div>
     <div class="hintbox" data-hint><b class="h">💡 Pista · cómo encontrar el dato</b><ol>${GUIA[i].pasos.map(x => '<li>' + x + '</li>').join('')}</ol><div class="look">🔎 ${GUIA[i].mira}</div></div>
     </div>`;
   cluesEl.appendChild(sec);
-  sec.querySelectorAll('.tile').forEach(b => b.onclick = () => choose(i, +b.dataset.k));
-  sec.querySelector('[data-act=timer]').onclick = () => startTimer();
+  sec.querySelectorAll('.fchip').forEach(b => b.onclick = () => { const sel = S.c[i].sel, f = b.dataset.f; sel.fil = sel.fil.includes(f) ? sel.fil.filter(x => x !== f) : [...sel.fil, f]; b.closest('.zone').classList.remove('bad'); paintClue(i); save(); });
+  sec.querySelectorAll('select').forEach(s => s.onchange = () => { S.c[i].sel[s.dataset.k] = s.value; s.closest('.zone').classList.remove('bad'); save(); });
+  sec.querySelector('[data-act=arm]').onclick = () => arm(i);
   sec.querySelector('[data-act=hint]').onclick = () => toggleHint(i);
+  sec.querySelector('[data-act=open]').onclick = () => tryOpen(i);
+  sec.querySelector('input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); tryOpen(i); } });
+  sec.querySelector('input').addEventListener('input', e => e.target.classList.remove('bad'));
   sec.querySelector('[data-act=evid]').onclick = () => openEvid(i);
 });
 
 // Ranuras del HUD
 const slotsEl = document.getElementById('slots');
-PISTAS.forEach((p, i) => { const d = document.createElement('div'); d.className = 'slot' + (HIST[i].key ? ' key' : ''); d.textContent = i + 1; d.title = 'Pista ' + (i + 1); d.onclick = () => go(FIRST + i); d.style.cursor = 'pointer'; slotsEl.appendChild(d); });
+PISTAS.forEach((p, i) => { const d = document.createElement('div'); d.className = 'slot' + (HIST[i].key ? ' key' : ''); d.textContent = i + 1; d.title = 'Caja ' + (i + 1); d.onclick = () => go(FIRST + i); d.style.cursor = 'pointer'; slotsEl.appendChild(d); });
+
+const solved = () => S.c.filter(c => c.done).length;
+function paintRank() {
+  const n = solved();
+  document.getElementById('rankName').textContent = RANKS[rankOf(n)];
+  document.getElementById('rankBar').style.width = (n / NC * 100) + '%';
+}
 
 const scenes = () => [...document.querySelectorAll('.scene')];
 function render() {
   scenes().forEach(s => s.classList.toggle('active', +s.dataset.s === S.cur));
   [...slotsEl.children].forEach((d, i) => { d.classList.toggle('locked', FIRST + i > maxReach()); d.classList.toggle('done', S.c[i].done); d.classList.toggle('on', S.cur === FIRST + i); d.textContent = S.c[i].done ? (HIST[i].key ? '🔑' : '✔') : i + 1; });
   PISTAS.forEach((p, i) => paintClue(i));
+  paintRank();
   document.getElementById('prev').disabled = S.cur === 0;
   const nx = document.getElementById('next');
   const lock = S.cur < LAST && S.cur + 1 > maxReach();
   nx.disabled = S.cur === LAST;
   nx.classList.toggle('locked', lock);
-  nx.textContent = lock ? '🔒 Resuelvan la pista' : S.cur === 0 ? 'Comenzar ▶' : S.cur === LAST - 1 ? 'Cerrar el caso ▶' : 'Siguiente ▶';
+  nx.textContent = lock ? '🔒 Abran la caja' : S.cur === 0 ? 'Comenzar ▶' : S.cur === LAST - 1 ? 'Cerrar el caso ▶' : 'Siguiente ▶';
   if (S.cur === LAST) renderFinal();
   save();
 }
 function paintClue(i) {
-  const sec = document.querySelector(`.scene[data-s="${FIRST + i}"]`), c = S.c[i], p = PISTAS[i];
-  sec.querySelectorAll('.tile').forEach(b => {
-    const k = +b.dataset.k;
-    b.classList.toggle('wrong', c.tries.includes(k) && k !== p.ans);
-    b.classList.toggle('right', c.done && k === p.ans);
-    b.classList.toggle('dim', c.done && k !== p.ans && !c.tries.includes(k));
-    b.disabled = c.done || c.tries.includes(k);
-  });
-  sec.querySelector('[data-act=evid]').hidden = !c.done;
+  const sec = document.querySelector(`.scene[data-s="${FIRST + i}"]`), c = S.c[i];
+  const s1 = sec.querySelector('[data-step1]'), s2 = sec.querySelector('[data-step2]'), inp = s2.querySelector('input');
+  sec.querySelectorAll('.fchip').forEach(b => { b.classList.toggle('on', c.sel.fil.includes(b.dataset.f)); b.disabled = c.arm; });
+  sec.querySelectorAll('select').forEach(s => { s.value = c.sel[s.dataset.k]; s.disabled = c.arm; });
+  s1.classList.toggle('ok', c.arm);
+  sec.querySelectorAll('.zone').forEach(z => { z.classList.toggle('good', c.arm); if (c.arm) z.classList.remove('bad'); });
+  sec.querySelector('[data-act=arm]').hidden = c.arm;
+  sec.querySelector('[data-st1]').textContent = c.arm ? '✔ Tabla bien armada' : '';
+  s2.classList.toggle('lockd', !c.arm);
+  s2.classList.toggle('ok', c.done);
+  sec.querySelector('[data-st2]').textContent = c.done ? '✔ Caja abierta' : c.arm ? '' : '🔒 Primero armen la tabla';
+  s2.querySelector('.dial').textContent = c.done ? '🔓' : '🔒';
+  inp.disabled = c.done || !c.arm; inp.classList.toggle('good', c.done);
+  if (c.done) inp.value = PISTAS[i].ok; else if (!c.arm) inp.value = '';
+  sec.querySelector('[data-act=open]').hidden = c.done;
+  sec.querySelector('[data-after]').hidden = !c.done;
   sec.querySelector('[data-act=hint]').hidden = c.done;
-  sec.querySelector('[data-act=timer]').hidden = c.done;
-  const fb = sec.querySelector('[data-fb]'), wrongs = c.tries.filter(k => k !== p.ans).length;
-  fb.classList.toggle('show', !c.done && wrongs > 0);
-  if (!c.done && wrongs > 0) fb.innerHTML = '✖ Esa no es. Revisen la tabla dinámica y vuelvan a intentarlo.' + (wrongs >= 1 ? ' ¿Necesitan ayuda? Toquen <b>💡 Pista</b>.' : '');
-  if (c.done) sec.querySelector('[data-hint]').classList.remove('show');
+  if (c.done) { sec.querySelector('[data-hint]').classList.remove('show'); sec.querySelector('[data-fb]').classList.remove('show'); }
 }
 
 // Hasta dónde se puede llegar: la primera pista sin resolver
 function maxReach() { const k = S.c.findIndex(c => !c.done); return k < 0 ? LAST : FIRST + k; }
+function say(i, html) { const fb = document.querySelector(`.scene[data-s="${FIRST + i}"] [data-fb]`); fb.innerHTML = html; fb.classList.remove('show'); if (!html) return; void fb.offsetWidth; fb.classList.add('show'); }
 function blocked() {
   const nx = document.getElementById('next'); nx.classList.remove('nope'); void nx.offsetWidth; nx.classList.add('nope');
   sfx('bad');
   const i = S.cur - FIRST;
-  if (i >= 0 && i < NC) { const fb = document.querySelector(`.scene[data-s="${S.cur}"] [data-fb]`); fb.innerHTML = '🔒 Primero encuentren la respuesta correcta. Si se atascan, toquen <b>💡 Pista</b>.'; fb.classList.remove('show'); void fb.offsetWidth; fb.classList.add('show'); }
+  if (i >= 0 && i < NC) say(i, S.c[i].arm ? '🔒 La caja sigue cerrada: escriban el dato exacto en el paso 2.' : '🔒 Primero armen bien la tabla dinámica (paso 1). Si se atascan, toquen <b>💡 Pista</b>.');
 }
 function toggleHint(i) { const h = document.querySelector(`.scene[data-s="${FIRST + i}"] [data-hint]`); h.classList.toggle('show'); if (h.classList.contains('show')) { sfx('paper'); h.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } }
-function go(n) { n = Math.max(0, Math.min(LAST, n)); if (n > S.cur && n > maxReach()) { blocked(); return; } if (n !== S.cur) { stopTimer(); closeEvid(); const prev = S.cur; S.cur = n; render(); setLevel(); sceneSound(prev, n); document.querySelector('.scene.active').querySelectorAll('.story, .dossier p').forEach(typeIn); } }
-function choose(i, k) {
-  const c = S.c[i], p = PISTAS[i];
-  if (c.done || c.tries.includes(k)) return;
-  if (busy) return; busy = true;
-  document.getElementById('suspTxt').textContent = SH[k] + ' ' + p.opts[k];
-  document.getElementById('susp').classList.add('show'); sfx('select'); setTimeout(() => sfx('roll'), 120); duck(2600);
-  setTimeout(() => { document.getElementById('susp').classList.remove('show'); busy = false; settle(i, k); }, 1600);
+function go(n) { n = Math.max(0, Math.min(LAST, n)); if (n > S.cur && n > maxReach()) { blocked(); return; } if (n !== S.cur) { closeEvid(); closeUnlock(true); const prev = S.cur; S.cur = n; render(); setLevel(); sceneSound(prev, n); document.querySelector('.scene.active').querySelectorAll('.story, .dossier p').forEach(typeIn); } }
+
+// Paso 1: revisar zona por zona
+function arm(i) {
+  const c = S.c[i], cf = CFG[i], sec = document.querySelector(`.scene[data-s="${FIRST + i}"]`);
+  const okF = c.sel.fil.length === cf.fil.length && cf.fil.every(f => c.sel.fil.includes(f));
+  const okR = c.sel.filas === cf.filas, okV = c.sel.val === String(cf.val);
+  [['fil', okF], ['filas', okR], ['val', okV]].forEach(([k, ok]) => { const e = sec.querySelector(`[data-z="${k}"]`); e.classList.remove('bad'); void e.offsetWidth; if (!ok) e.classList.add('bad'); });
+  if (okF && okR && okV) {
+    c.arm = true; sfx('win'); confetti(60); say(i, ''); render();
+    setTimeout(() => { const inp = sec.querySelector('[data-step2] input'); inp.focus(); inp.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300);
+    return;
+  }
+  sfx('bad');
+  const bad = [!okF && 'Filtros', !okR && 'Filas', !okV && 'Valores'].filter(Boolean);
+  say(i, `✖ La tabla no está bien armada. Revisen: <b>${bad.join(', ')}</b> (en rojo). ¿Dudas? Toquen <b>💡 Pista</b>.`);
 }
+
+// Paso 2: probar el dato escrito
 let busy = false;
-function settle(i, k) {
-  const c = S.c[i], p = PISTAS[i];
-  c.tries.push(k);
-  if (k === p.ans) {
-    c.done = true;
-    stopTimer(); celebrate(i); render(); setTimeout(() => openEvid(i), i === 6 ? 2000 : 1000);
-  } else { sfx('bad'); flash('red', 500); render(); }
+function tryOpen(i) {
+  const c = S.c[i], inp = document.querySelector(`.scene[data-s="${FIRST + i}"] [data-step2] input`);
+  if (c.done || !c.arm || busy) return;
+  if (!inp.value.trim()) { inp.classList.remove('bad'); void inp.offsetWidth; inp.classList.add('bad'); inp.focus(); return; }
+  busy = true; inp.blur();
+  document.getElementById('suspTxt').textContent = '«' + inp.value.trim() + '»';
+  document.getElementById('susp').classList.add('show'); sfx('select'); setTimeout(() => sfx('roll'), 120); duck(2600);
+  setTimeout(() => { document.getElementById('susp').classList.remove('show'); busy = false; settle(i, inp); }, 1600);
 }
+function settle(i, inp) {
+  const c = S.c[i];
+  if (check(i, inp.value)) {
+    const before = rankOf(solved());
+    c.done = true;
+    const after = rankOf(solved());
+    render(); celebrate(i, after > before ? RANKS[after] : '');
+  } else {
+    c.tries++; sfx('bad'); flash('red', 500); save();
+    inp.classList.remove('bad'); void inp.offsetWidth; inp.classList.add('bad');
+    const cf = CFG[i];
+    const why = cf.txt ? 'Revisen la tabla y escriban el nombre completo.' : cf.pct ? 'Revisen que el valor esté como % del total general.' : 'Copien el número exacto de la celda, con sus decimales si los tiene.';
+    say(i, `✖ La caja no abre con ese dato. ${why}${c.tries >= 2 ? ' Toquen <b>💡 Pista</b> si lo necesitan.' : ''}`);
+    setTimeout(() => inp.focus(), 100);
+  }
+}
+
+// Efecto de caja abierta: candado que se abre, rayos y ascenso de rango
+const unlockEl = document.getElementById('unlock');
+let unlockT = null, unlockI = -1;
+function showUnlock(i, promo) {
+  const red = i === 6;
+  unlockI = i;
+  unlockEl.classList.toggle('red', red);
+  const pad = document.getElementById('upad'); pad.textContent = red ? '🚨' : '🔒'; pad.className = 'pad';
+  document.getElementById('uh').textContent = red ? '¡SOSPECHOSO IDENTIFICADO!' : HIST[i].key ? '¡CAJA ABIERTA! · ' + HIST[i].key.toUpperCase() : '¡CAJA ABIERTA!';
+  document.getElementById('uval').textContent = '✔ ' + PISTAS[i].ok;
+  document.getElementById('upromo').innerHTML = promo ? `<span class="promo">🎖 ¡Ascenso! Ahora son: ${esc(promo)}</span>` : '';
+  unlockEl.classList.add('show');
+  if (!red) setTimeout(() => { pad.textContent = '🔓'; pad.className = 'pad open'; }, 600);
+  clearTimeout(unlockT); unlockT = setTimeout(() => closeUnlock(), promo ? 3800 : 3000);
+}
+function closeUnlock(silent) {
+  clearTimeout(unlockT);
+  if (!unlockEl.classList.contains('show')) return;
+  unlockEl.classList.remove('show');
+  if (!silent && unlockI >= 0 && S.cur === FIRST + unlockI) openEvid(unlockI);
+}
+unlockEl.addEventListener('click', () => closeUnlock());
 
 // Evidencia
 const modal = document.getElementById('modal'), evid = document.getElementById('evid');
@@ -898,7 +1068,7 @@ function openEvid(i) {
   const area = (lab, val) => `<div class="area ${val ? '' : 'empty'}"><div class="lab">${lab}</div><div class="val">${val ? val.split(' · ').map(x => `<span>${esc(x)}</span>`).join('') : 'vacío'}</div></div>`;
   const hdr = v.filas;
   evid.innerHTML = `<div class="stamp">EVIDENCIA ✔</div>
-    <h3>Pista ${i + 1} · ${h.lvl}</h3>
+    <h3>Caja ${i + 1} · ${h.lvl}</h3>
     <p class="ans">✔ ${esc(p.ok)}</p>
     <div class="evgrid">
       <div><strong style="display: block; margin-bottom: 8px;">🧮 Así se arma la tabla dinámica</strong>
@@ -917,8 +1087,8 @@ function openEvid(i) {
       <div class="tech"><b class="h">🧠 Técnica de tabla dinámica</b>${h.tech}</div>
     </div>
     <div class="actions">
-      <button class="btn ghost" id="mclose">Volver a la pista</button>
-      <button class="btn" id="mnext">${i === NC - 1 ? 'Cerrar el caso ▶' : 'Siguiente pista ▶'}</button>
+      <button class="btn ghost" id="mclose">Volver a la caja</button>
+      <button class="btn" id="mnext">${i === NC - 1 ? 'Cerrar el caso ▶' : 'Siguiente caja ▶'}</button>
     </div>`;
   modal.classList.add('show'); sfx('paper');
   document.getElementById('mclose').onclick = closeEvid;
@@ -942,27 +1112,16 @@ function renderFinal() {
   if (!renderFinal.done) { renderFinal.done = true; confetti(); setTimeout(confetti, 600); setTimeout(confetti, 1200); sfx('fanfare'); duck(3500); flash('gold'); }
 }
 function resetAll() {
-  if (!confirm('¿Reiniciar el caso desde cero? Se borran las respuestas y los puntos.')) return;
-  stopTimer(); closeEvid();
-  try { localStorage.removeItem('casoSV2025'); } catch (e) {}
-  S = { cur: 0, c: PISTAS.map(() => ({ tries: [], done: false })) };
+  if (!confirm('¿Reiniciar el caso desde cero? Se cierran todas las cajas y el rango vuelve a Novato.')) return;
+  closeEvid(); closeUnlock(true);
+  try { localStorage.removeItem('investigadorCasos'); } catch (e) {}
+  S = blank();
   renderFinal.done = false;
   if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   render(); setLevel(); sfx('whoosh');
 }
 document.getElementById('reset').onclick = resetAll;
 document.getElementById('resetTop').onclick = resetAll;
-
-// Temporizador (240 s)
-let tId = null, tLeft = 240;
-const timerEl = document.getElementById('timer'), tval = document.getElementById('tval');
-function showT() { tval.textContent = Math.floor(tLeft / 60) + ':' + String(tLeft % 60).padStart(2, '0'); timerEl.classList.toggle('low', tLeft <= 30); }
-function startTimer() {
-  if (S.cur < FIRST || S.cur >= LAST || S.c[S.cur - FIRST].done) return;
-  stopTimer(); tLeft = 240; timerEl.classList.add('show'); showT(); sfx('riser');
-  tId = setInterval(() => { tLeft--; showT(); if (tLeft <= 10 && tLeft > 0) sfx('tick'); else if (tLeft <= 30 && tLeft > 0) sfx('beat'); if (tLeft <= 30 && musLevel < 2) musLevel = 2; if (tLeft <= 0) { stopTimer(true); sfx('timeup'); tval.textContent = '¡Tiempo!'; } }, 1000);
-}
-function stopTimer(keep) { clearInterval(tId); tId = null; if (typeof setLevel === 'function') setLevel(); if (!keep) timerEl.classList.remove('show', 'low'); }
 
 // Sonido: todo se genera en el navegador con Web Audio (no hay archivos de audio)
 let AC = null, OUT = null, musG = null, mute = false, musWant = true;
@@ -1017,6 +1176,7 @@ function sfx(kind) {
     case 'roll': for (let k = 0; k < 24; k++) { noise(k * .06, .06, .2 + k * .02, 0, 'lowpass'); tone(95, k * .06, .06, 'sine', .15 + k * .012); } noise(1.45, .4, .5, 0, 'lowpass'); tone(150, 1.45, .45, 'sine', .55, null, 45); break;
     case 'win': [523, 659, 784, 1047].forEach((f, k) => { tone(f, k * .08, .3, 'triangle', .2); tone(f * 2, k * .08, .15, 'sine', .05); }); noise(.3, .6, .08, 9000, 'highpass'); break;
     case 'key': [392, 523, 659, 784, 1047].forEach((f, k) => tone(f, k * .09, .35, 'triangle', .2)); [1568, 2093].forEach((f, k) => tone(f, .5 + k * .12, .8, 'sine', .08)); noise(.45, .9, .06, 10000, 'highpass'); break;
+    case 'unlock': tone(1800, 0, .03, 'square', .08); tone(1500, .1, .03, 'square', .08); tone(2100, .22, .03, 'square', .08); noise(.5, .12, .35, 2500); tone(140, .5, .25, 'sine', .4, null, 70); break;
     case 'bad': tone(220, 0, .18, 'sawtooth', .22, null, 180); tone(160, .16, .45, 'sawtooth', .22, null, 110); break;
     case 'siren': for (let k = 0; k < 4; k++) { sweep(650, 1150, k * .5, .25, .06); sweep(1150, 650, k * .5 + .25, .25, .06); } tone(55, 0, 1.2, 'sawtooth', .2, null, 50); break;
     case 'stamp': noise(0, .08, .4, 0, 'lowpass'); tone(110, 0, .3, 'sine', .5, null, 50); break;
@@ -1036,11 +1196,11 @@ function sfx(kind) {
 
 function flash(kind, ms) { const f = document.getElementById('flash'); f.className = 'flash'; void f.offsetWidth; f.className = 'flash ' + kind; if (ms) setTimeout(() => f.className = 'flash', ms); }
 function glowSlot(i) { const d = slotsEl.children[i]; d.classList.remove('glow'); void d.offsetWidth; d.classList.add('glow'); }
-function celebrate(i) {
-  confetti(); glowSlot(i);
-  if (i === 6) { sfx('siren'); flash('red'); }          // ¡el sospechoso!
-  else if (HIST[i].key) { sfx('key'); flash('gold'); }  // pista que revela parte del caso
-  else sfx('win');
+function celebrate(i, promo) {
+  confetti(); glowSlot(i); flash(i === 6 ? 'red' : 'gold'); showUnlock(i, promo); duck(3500);
+  if (i === 6) sfx('siren');                  // ¡el sospechoso!
+  else { sfx('unlock'); setTimeout(() => sfx(HIST[i].key ? 'key' : 'win'), 600); }
+  if (promo) { setTimeout(() => { sfx('fanfare'); confetti(); }, 1200); const r = document.getElementById('rank'); r.classList.remove('up'); void r.offsetWidth; r.classList.add('up'); }
 }
 
 function sceneSound(prev, n) {
@@ -1063,11 +1223,11 @@ function typeIn(el) {
 
 // Confeti
 const cv = document.getElementById('fx'), cx = cv.getContext('2d'); let parts = [], raf = null;
-function confetti() {
+function confetti(n) {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   cv.width = innerWidth; cv.height = innerHeight;
   const cols = ['#E21B3C', '#1368CE', '#D89E00', '#26890C', '#F2B33D', '#4FD1A1', '#E8664A'];
-  for (let k = 0; k < 160; k++) parts.push({ x: innerWidth / 2 + (Math.random() - .5) * 200, y: innerHeight * .45, vx: (Math.random() - .5) * 16, vy: -Math.random() * 16 - 4, r: Math.random() * 6 + 4, c: cols[k % cols.length], a: Math.random() * 6, life: 0 });
+  for (let k = 0; k < (n || 160); k++) parts.push({ x: innerWidth / 2 + (Math.random() - .5) * 200, y: innerHeight * .45, vx: (Math.random() - .5) * 16, vy: -Math.random() * 16 - 4, r: Math.random() * 6 + 4, c: cols[k % cols.length], a: Math.random() * 6, life: 0 });
   if (!raf) loop();
 }
 function loop() {
@@ -1114,14 +1274,13 @@ document.getElementById('fs').onclick = fsToggle;
 document.addEventListener('keydown', e => {
   if (e.altKey || e.ctrlKey || e.metaKey) return;
   const k = e.key.toLowerCase(), i = S.cur - FIRST, inClue = i >= 0 && i < NC;
-  if (k === 'escape') { closeEvid(); return; }
+  if (k === 'escape') { closeEvid(); closeUnlock(true); return; }
+  if (e.target.closest('input, select, textarea')) return;   // escribiendo en la caja: sin atajos
   if (k === 'arrowright' || k === 'pagedown') { e.preventDefault(); go(S.cur + 1); }
   else if (k === 'arrowleft' || k === 'pageup') { e.preventDefault(); go(S.cur - 1); }
   else if (k === 'f') fsToggle();
   else if (k === 's') sndBtn.click();
   else if (k === 'm') musBtn.click();
-  else if (inClue && ['1', '2', '3', '4'].includes(k)) choose(i, +k - 1);
-  else if (inClue && k === 't') startTimer();
   else if (inClue && k === 'p' && !S.c[i].done) toggleHint(i);
   else if (inClue && k === 'e' && S.c[i].done) openEvid(i);
 });
