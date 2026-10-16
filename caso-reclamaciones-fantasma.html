@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Investigador de Casos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;800;900&family=Special+Elite&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Press+Start+2P&family=Nunito:wght@400;600;800;900&family=Special+Elite&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0C1612; --bg2: #12211B; --panel: #172A22; --line: #2A4237;
@@ -132,16 +132,54 @@
   .stephead b { font-size: clamp(17px, 1.7vw, 22px); }
   .stephead .st { margin-left: auto; font-weight: 900; color: var(--mint); font-size: 15px; }
 
-  /* Caja fuerte */
-  .lockrow { display: flex; gap: 12px; align-items: center; }
-  .lockrow .dial { font-size: 44px; line-height: 1; }
-  .lockrow input { flex: 1; min-width: 0; font-family: 'Special Elite', monospace; font-size: clamp(20px, 2.4vw, 32px); padding: 12px 16px; border-radius: 12px; border: 3px solid var(--line); background: #0A1511; color: var(--paper); letter-spacing: 1px; outline: none; }
-  .lockrow input:focus { border-color: var(--amber); }
-  .lockrow input.bad { border-color: var(--t0); animation: shake .45s; }
-  .lockrow input.good { border-color: var(--mint); color: var(--mint); }
-  .vnote { color: var(--muted); font-size: 14px; margin: 8px 0 0; }
+  /* Arena: los agentes contra El Fantasma */
+  .arena { position: relative; display: flex; align-items: center; gap: 14px; background: linear-gradient(90deg, rgba(79,209,161,.10), rgba(226,27,60,.10)); border: 2px solid var(--line); border-radius: 14px; padding: 10px 16px; margin: 0 0 14px; }
+  .fighter { font-size: clamp(34px, 4vw, 48px); line-height: 1; display: inline-block; }
+  .fighter.hit { animation: hit .5s; }
+  @keyframes hit { 0%,100% { transform: none; filter: none; } 30% { transform: translateX(10px) rotate(10deg); filter: brightness(2.2); } 60% { transform: translateX(-6px); } }
+  .fighter.laugh { animation: laugh .3s ease-in-out 4; }
+  @keyframes laugh { 50% { transform: translateY(-10px) scale(1.12); } }
+  .hp { flex: 1; min-width: 0; }
+  .hp small { display: flex; justify-content: space-between; gap: 8px; font-family: 'Press Start 2P', monospace; font-size: 10px; color: var(--muted); }
+  .hpbar { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; margin-top: 7px; }
+  .hpbar i { height: 14px; background: #E21B3C; border-radius: 2px; box-shadow: inset 0 -4px 0 rgba(0,0,0,.3); transition: background .3s; }
+  .hpbar i.gone { background: #22332C; box-shadow: none; }
+  .hpbar i.break { animation: brk .6s; }
+  @keyframes brk { 0% { transform: scale(1.8); background: #fff; } 100% { transform: scale(1); } }
+  .shot { position: absolute; left: 60px; top: 50%; margin-top: -16px; font-size: 26px; opacity: 0; pointer-events: none; }
+  .shot.go { animation: shot .45s ease-in both; }
+  @keyframes shot { 0% { opacity: 1; left: 60px; transform: rotate(0); } 100% { opacity: 1; left: calc(100% - 64px); transform: rotate(540deg); } }
+  .bubble { position: absolute; right: 64px; top: -18px; background: #fff; color: #2B241A; font-family: 'Press Start 2P', monospace; font-size: 11px; padding: 8px 10px; border-radius: 10px; opacity: 0; pointer-events: none; white-space: nowrap; }
+  .bubble.show { animation: bub 1.6s ease both; }
+  @keyframes bub { 0% { opacity: 0; transform: translateY(8px); } 12%, 80% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+  .dmg { position: absolute; right: 18px; top: -6px; font-family: 'Press Start 2P', monospace; color: var(--amber); font-size: 16px; opacity: 0; pointer-events: none; text-shadow: 0 3px 0 #000; }
+  .dmg.show { animation: dmg 1s ease-out both; }
+  @keyframes dmg { 0% { opacity: 1; transform: translateY(0) scale(1.5); } 100% { opacity: 0; transform: translateY(-40px); } }
 
-  /* Efecto de caja abierta */
+  /* Opciones estilo arcade */
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .opt { position: relative; display: flex; align-items: center; gap: 14px; text-align: left; background: linear-gradient(180deg, #16291F, #0D1914); border: 3px solid #2F5A49; color: var(--ink); padding: 14px 18px 14px 14px; min-height: 80px; font-weight: 900; font-size: clamp(18px, 2.1vw, 28px); clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px); transition: transform .1s, border-color .15s, background .15s; }
+  .opt .key { font-family: 'Press Start 2P', monospace; font-size: 16px; background: var(--amber); color: #2B1E05; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 4px; flex: none; box-shadow: inset 0 -4px 0 rgba(0,0,0,.25); }
+  .opt:hover:not(:disabled) { border-color: var(--amber); transform: translateY(-2px); background: linear-gradient(180deg, #1F3A2C, #13251C); }
+  .opt:disabled { cursor: default; }
+  .opt.pick { animation: pick .16s steps(2) 4; border-color: #fff; }
+  @keyframes pick { 50% { background: #3B6352; } }
+  .opt.wrong { border-color: var(--t0); background: linear-gradient(180deg, #3A1018, #220A0F); color: #FFB3BD; animation: shake .45s; }
+  .opt.wrong .key { background: var(--t0); color: #fff; }
+  .opt.wrong::after { content: '✖'; margin-left: auto; font-size: 28px; }
+  .opt.right { border-color: var(--mint); background: linear-gradient(180deg, #1D6049, #103D2D); animation: pop .5s; }
+  .opt.right .key { background: var(--mint); color: #08251A; }
+  .opt.right::after { content: '✔'; margin-left: auto; font-size: 30px; }
+  .opt.dim { opacity: .3; }
+
+  /* Error: pantalla que tiembla y gran «INCORRECTO» */
+  body.quake .app { animation: quake .4s; }
+  @keyframes quake { 0%,100% { transform: none; } 20% { transform: translate(-9px, 4px); } 40% { transform: translate(9px, -4px); } 60% { transform: translate(-5px, 2px); } 80% { transform: translate(5px, -2px); } }
+  .bigx { position: fixed; left: 50%; top: 42%; z-index: 26; transform: translate(-50%, -50%); font-family: 'Press Start 2P', monospace; font-size: clamp(22px, 4vw, 48px); color: #FF4D63; text-shadow: 0 5px 0 #000, 0 0 24px rgba(255,77,99,.6); pointer-events: none; opacity: 0; white-space: nowrap; }
+  .bigx.show { animation: bigx .9s ease-out both; }
+  @keyframes bigx { 0% { opacity: 0; transform: translate(-50%, -50%) scale(2.4); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -50%) scale(.9); } }
+
+  /* Efecto de misión cumplida */
   .unlock { position: fixed; inset: 0; z-index: 24; display: none; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(31,61,51,.92) 0%, rgba(4,9,7,.95) 70%); overflow: hidden; }
   .unlock.show { display: flex; }
   .unlock .rays { position: absolute; width: 160vmax; height: 160vmax; background: repeating-conic-gradient(rgba(242,179,61,.16) 0 8deg, transparent 8deg 20deg); animation: spin 8s linear infinite; }
@@ -210,10 +248,6 @@
   .flash.gold { animation: goldflash .9s ease-out; }
   @keyframes redflash { 0%,30%,60% { opacity: .55; background: #E21B3C; } 15%,45% { opacity: .1; background: #1368CE; } 100% { opacity: 0; } }
   @keyframes goldflash { 0% { opacity: .45; background: #F2B33D; } 100% { opacity: 0; } }
-  .suspense { position: fixed; inset: 0; z-index: 22; display: none; align-items: center; justify-content: center; background: rgba(4,9,7,.82); }
-  .suspense.show { display: flex; }
-  .suspense div { font-family: 'Bungee'; font-size: clamp(30px, 5vw, 64px); color: var(--amber); animation: pulse .3s ease-in-out infinite alternate; text-align: center; }
-  .suspense small { display: block; font-family: 'Special Elite'; font-size: clamp(18px, 2vw, 26px); color: var(--paper); margin-top: 10px; }
   @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.08); } }
   .cover { background: radial-gradient(420px 420px at var(--mx, 50%) var(--my, 40%), rgba(242,179,61,.16), transparent 70%); }
   .caret::after { content: '▌'; animation: blink .7s steps(2) infinite; color: var(--coral); }
@@ -226,7 +260,9 @@
 
   @media (max-width: 760px) {
     .gear, .evgrid, .found { grid-template-columns: 1fr; }
-    .vault .lockrow { flex-direction: column; align-items: stretch; }
+    .opts { grid-template-columns: 1fr; }
+    .opt { min-height: 64px; }
+    .bubble { right: 50px; font-size: 9px; }
     .slot { width: 26px; height: 26px; font-size: 12px; }
     .evid h3 { padding-right: 0; margin-top: 40px; }
     .nav .hint { display: none; }
@@ -255,7 +291,7 @@
         <h1 class="title">Investigador<br>de <span>Casos</span></h1>
         <div class="lens">🔍</div>
         <p class="subtitle">Caso: «Las reclamaciones fantasma»</p>
-        <p class="lead">Una aseguradora pierde millones y nadie sabe por qué. Ustedes tienen la base de datos, 10 cajas fuertes de evidencia y una sola herramienta: <strong style="color: var(--ink);">las tablas dinámicas</strong>. Cada caja solo se abre con el dato exacto que ustedes encuentren en la base. ¿Podrán descubrir al culpable?</p>
+        <p class="lead">Una aseguradora pierde millones y nadie sabe por qué. Ustedes tienen la base de datos, 10 misiones y una sola herramienta: <strong style="color: var(--ink);">las tablas dinámicas</strong>. El Fantasma se esconde detrás de los datos: cada respuesta correcta le quita vida. ¿Podrán descubrir al culpable?</p>
         <button class="btn" data-go="1">🗂 Abrir el expediente</button>
         <p class="byline">Juego creado por: <strong style="color: var(--amber);">Jarlin Figueroa, M.A.</strong></p>
       </div></div>
@@ -278,8 +314,8 @@
       </div>
       <div class="rules">
         <div class="rule">📊 <b>Investiguen en la base.</b> Cada pista se resuelve armando su propia tabla dinámica en Excel con el archivo del caso.</div>
-        <div class="rule">🔐 <b>Abran la caja.</b> Escriban el dato exacto que encontraron: un nombre o un número. Sin opciones para adivinar.</div>
-        <div class="rule">🎖 <b>Suban de rango.</b> Cada dos cajas abiertas ascienden: de Novato a Investigador maestro. Sin prisa: se intenta las veces que haga falta.</div>
+        <div class="rule">🎮 <b>Elijan la respuesta.</b> Cuatro opciones (A, B, C, D). Cada acierto le quita 1 HP a El Fantasma; un error suena y hay que intentarlo de nuevo.</div>
+        <div class="rule">🎖 <b>Suban de rango.</b> Cada dos misiones cumplidas ascienden: de Novato a Investigador maestro. Sin prisa: se intenta las veces que haga falta.</div>
         <div class="rule">💡 <b>¿Atascados?</b> Pidan la pista: explica cómo armar la tabla, pero el dato lo encuentran ustedes.</div>
       </div>
     </div></section>
@@ -320,6 +356,7 @@
     <!-- 13 · Caso resuelto -->
     <section class="scene" data-s="13"><div class="wrap">
       <div class="solved">CASO RESUELTO</div>
+      <p style="text-align: center; font-family: 'Press Start 2P', monospace; font-size: clamp(12px, 1.4vw, 16px); color: var(--amber); margin: 0 0 10px;">💨 EL FANTASMA HA SIDO DERROTADO</p>
       <p style="text-align: center; margin: 0 0 8px;"><span class="badge" style="font-size: 18px;">🎖 Rango alcanzado: Investigador maestro</span></p>
       <p class="sub" style="text-align: center;">Todas las pistas apuntan al mismo lugar. Este es el tablero de la investigación:</p>
       <div class="board" id="board"></div>
@@ -343,7 +380,7 @@
 
   <nav class="nav">
     <button class="btn ghost" id="prev">◀ Atrás</button>
-    <div class="hint"><span class="kbd">←</span> <span class="kbd">→</span> navegar · <span class="kbd">Enter</span> abrir la caja · <span class="kbd">M</span> música · <span class="kbd">P</span> pista · <span class="kbd">F</span> pantalla completa</div>
+    <div class="hint"><span class="kbd">←</span> <span class="kbd">→</span> navegar · <span class="kbd">A</span>–<span class="kbd">D</span> responder · <span class="kbd">M</span> música · <span class="kbd">P</span> pista · <span class="kbd">F</span> pantalla completa</div>
     <button class="btn" id="next">Siguiente ▶</button>
   </nav>
 </div>
@@ -351,8 +388,8 @@
 <div class="modal" id="modal"><div class="evid" id="evid"></div></div>
 <canvas id="fx"></canvas>
 <div class="flash" id="flash"></div>
-<div class="suspense" id="susp"><div>🔐 Probando la combinación…<small id="suspTxt"></small></div></div>
-<div class="unlock" id="unlock"><div class="rays"></div><div class="box"><div class="pad" id="upad">🔒</div><h2 id="uh">¡CAJA ABIERTA!</h2><div class="val" id="uval"></div><div id="upromo"></div><span class="tap">Toquen para ver la evidencia</span></div></div>
+<div class="bigx" id="bigx">✖ INCORRECTO</div>
+<div class="unlock" id="unlock"><div class="rays"></div><div class="box"><div class="pad" id="upad">🔒</div><h2 id="uh">¡MISIÓN CUMPLIDA!</h2><div class="val" id="uval"></div><div id="upromo"></div><span class="tap">Toquen para ver la evidencia</span></div></div>
 
 <script>
 const PISTAS = [
@@ -816,92 +853,59 @@ const GUIA = [
   { pasos: ['Dejen <b>Taller</b> en Filas y pongan <b>ID Reclamación</b> en Valores (Cuenta).', 'Clic derecho sobre un número › <b>Mostrar valores como › % del total general</b>.'], mira: 'Busquen «Garaje Cibao Motors». Es el % de la cantidad de reclamaciones, no del dinero.' },
   { pasos: ['Arrastren <b>Taller</b> a Filtros y elijan <b>Garaje Cibao Motors</b>.', 'Arrastren <b>Año</b> a Filtros y elijan <b>2025</b>.', 'Pongan <b>Mes</b> en Filas y <b>Cuenta de ID Reclamación</b> en Valores.'], mira: 'Busquen el mes con el número más alto.' }
 ];
-// Respuesta esperada de cada caja y listas para autocompletar
-const LISTAS = {
-  'Aseguradora': ['Seguros Atlántico','Protege Seguros','Aseguradora Caribe','Seguros del Valle','Unión Seguros','Seguros Quisqueya'],
-  'Provincia': ['Distrito Nacional','La Romana','La Vega','Santiago','Santo Domingo','San Cristóbal','Puerto Plata'],
-  'Tipo de Daño': ['Rotura de cristales','Grúa','Robo de piezas','Choque','Daños por inundación','Llantas y aros'],
-  'Taller': ['AutoExpress Naco','Taller La Romana','Auto Servicio La Vega','Taller El Ejido','Centro Automotriz Herrera','Clínica del Auto','Taller San Cristóbal Car','Puerto Plata Autos','Taller Los Mina','Garaje Cibao Motors']
-};
-const CFG = [
-  { txt:['seguros atlantico','atlantico'], lista:'Aseguradora' },
-  { num:105 },
-  { txt:['santiago'], lista:'Provincia' },
-  { num:81 },
-  { txt:['robo de piezas','robo'], lista:'Tipo de Daño' },
-  { num:81361.93, tol:1 },
-  { txt:['garaje cibao motors','cibao motors','garaje cibao'], lista:'Taller' },
-  { num:1188750, tol:1 },
-  { pct:10.8 },
-  { mes:8 }
-];
+const KEYS = ['A','B','C','D'];
 const RANKS = ['Novato','Detective','Inspector','Comisario','Jefe de unidad','Investigador maestro'];
 const rankOf = n => n >= 10 ? 5 : Math.floor(n / 2);
 const NC = PISTAS.length, FIRST = 3, LAST = FIRST + NC;
+const TAUNTS = ['¡JA, JA! ¡Fallaste!', '¡Frío, frío!', '¡Esa no es!', '¡Jo, jo! Revisen su tabla', '¡Nunca me atraparán!'];
 
 // Rellena los datos de las pistas en los textos
 const fill = s => s.replace('__P2__', PISTAS[1].ok).replace('__P4__', PISTAS[3].ok).replace('__P6__', PISTAS[5].ok)
   .replace('__P8R__', PISTAS[7].res[0][1]).replace('__P8A__', PISTAS[7].ok).replace('__P9__', PISTAS[8].ok).replace('__P10__', PISTAS[9].ok);
 HIST.forEach(h => h.disc = fill(h.disc));
 
-// Comprobación del dato escrito: sin tildes ni mayúsculas; números con o sin RD$, comas o %
-const norm = t => String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[«»"']/g, ' ').replace(/\s+/g, ' ').trim();
-function toNum(t) {
-  let x = String(t).replace(/rd\$|\$|%|\s/gi, '');
-  if (/,\d{1,2}$/.test(x) && !/\.\d/.test(x)) x = x.replace(/\./g, '').replace(',', '.');   // 81361,93
-  else x = x.replace(/,/g, '');
-  return /^-?\d+(\.\d+)?$/.test(x) ? parseFloat(x) : NaN;
-}
-const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-function check(i, raw) {
-  const c = CFG[i], t = norm(raw).replace(/\.$/, '');
-  if (!t) return false;
-  if (c.txt) return c.txt.includes(t);
-  if (c.mes) return MESES[c.mes - 1] === t || toNum(t.replace(/^mes /, '')) === c.mes;
-  const n = toNum(raw);
-  if (c.pct) return Math.abs(n - c.pct) < .06 || Math.abs(n - c.pct / 100) < .0006;
-  return Math.abs(n - c.num) <= (c.tol || 0);
-}
-
 // Estado
-const blank = () => ({ cur: 0, c: PISTAS.map(() => ({ tries: 0, done: false })) });
+const blank = () => ({ cur: 0, c: PISTAS.map(() => ({ tries: [], done: false })) });
 let S = blank();
-try { const s = JSON.parse(localStorage.getItem('investigadorCasos')); if (s && s.c && s.c.length === NC && s.c.every(c => typeof c.tries === 'number')) S = s; } catch (e) {}
-const save = () => { try { localStorage.setItem('investigadorCasos', JSON.stringify(S)); } catch (e) {} };
+try { const s = JSON.parse(localStorage.getItem('investigadorCasosMC')); if (s && s.c && s.c.length === NC && s.c.every(c => Array.isArray(c.tries))) S = s; } catch (e) {}
+const save = () => { try { localStorage.setItem('investigadorCasosMC', JSON.stringify(S)); } catch (e) {} };
 
-// Construye las escenas de las pistas
+// Construye las escenas de las misiones
 const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 const cluesEl = document.getElementById('clues');
 PISTAS.forEach((p, i) => {
-  const h = HIST[i], c = CFG[i];
+  const h = HIST[i];
   const sec = document.createElement('section');
   sec.className = 'scene'; sec.dataset.s = FIRST + i;
-  const ph = c.txt ? 'Escriban el nombre exacto…' : c.mes ? 'Escriban el mes (número o nombre)…' : c.pct ? 'Escriban el porcentaje (ej. 12.34 %)…' : 'Escriban el número tal como sale en Excel…';
   sec.innerHTML = `<div class="wrap">
-    <div class="cluehead"><span class="badge">CAJA ${i + 1} / ${NC}</span><span class="badge lvl ${h.boss ? 'boss' : ''}">${h.lvl}</span>${h.key ? `<span class="badge lvl">🔑 Revela: ${h.key}</span>` : ''}</div>
+    <div class="cluehead"><span class="badge">MISIÓN ${i + 1} / ${NC}</span><span class="badge lvl ${h.boss ? 'boss' : ''}">${h.lvl}</span>${h.key ? `<span class="badge lvl">🔑 Revela: ${h.key}</span>` : ''}</div>
+    <div class="arena">
+      <span class="fighter" data-me>🕵️</span>
+      <span class="shot" data-shot>🔍</span>
+      <div class="hp"><small><span>👻 EL FANTASMA</span><span data-hpt></span></small><div class="hpbar" data-hp>${PISTAS.map(() => '<i></i>').join('')}</div></div>
+      <span class="fighter" data-ghost>👻</span>
+      <span class="bubble" data-bub></span><span class="dmg" data-dmg>-1 HP</span>
+    </div>
     <p class="story">${h.story}</p>
     <h2 class="question">${esc(p.q)}</h2>
-    <div class="stepcard vault" data-step2>
-      <div class="stephead"><b>🔐 Abran la caja con el dato que encontraron en la base</b><span class="st" data-st2></span></div>
-      <div class="lockrow"><span class="dial">🔒</span><input type="text" autocomplete="off" spellcheck="false" placeholder="${ph}" ${c.lista ? `list="dl${i}"` : 'inputmode="decimal"'}><button class="btn" data-act="open">🔓 Abrir</button></div>
-      ${c.lista ? `<datalist id="dl${i}">${LISTAS[c.lista].map(v => `<option value="${esc(v)}">`).join('')}</datalist>` : ''}
-      <p class="vnote">${c.txt ? 'Pueden escribir sin tildes ni mayúsculas.' : 'Pueden escribirlo con o sin RD$, comas o el signo %.'}</p>
-      <div class="actions"><button class="btn amber" data-act="hint">💡 Pista</button><button class="btn amber" data-act="evid">🗂 Ver la evidencia</button></div>
+    <div class="opts">${p.opts.map((o, k) => `<button class="opt" data-k="${k}"><span class="key">${KEYS[k]}</span><span>${esc(o)}</span></button>`).join('')}</div>
+    <div class="actions">
+      <button class="btn amber" data-act="hint">💡 Pista</button>
+      <button class="btn amber" data-act="evid">🗂 Ver la evidencia</button>
+      <span class="note">Investiguen en su tabla dinámica y elijan la respuesta.</span>
     </div>
     <div class="feedback" data-fb></div>
     <div class="hintbox" data-hint><b class="h">💡 Pista · cómo encontrar el dato</b><ol>${GUIA[i].pasos.map(x => '<li>' + x + '</li>').join('')}</ol><div class="look">🔎 ${GUIA[i].mira}</div></div>
     </div>`;
   cluesEl.appendChild(sec);
+  sec.querySelectorAll('.opt').forEach(b => b.onclick = () => choose(i, +b.dataset.k));
   sec.querySelector('[data-act=hint]').onclick = () => toggleHint(i);
-  sec.querySelector('[data-act=open]').onclick = () => tryOpen(i);
-  sec.querySelector('input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); tryOpen(i); } });
-  sec.querySelector('input').addEventListener('input', e => e.target.classList.remove('bad'));
   sec.querySelector('[data-act=evid]').onclick = () => openEvid(i);
 });
 
 // Ranuras del HUD
 const slotsEl = document.getElementById('slots');
-PISTAS.forEach((p, i) => { const d = document.createElement('div'); d.className = 'slot' + (HIST[i].key ? ' key' : ''); d.textContent = i + 1; d.title = 'Caja ' + (i + 1); d.onclick = () => go(FIRST + i); d.style.cursor = 'pointer'; slotsEl.appendChild(d); });
+PISTAS.forEach((p, i) => { const d = document.createElement('div'); d.className = 'slot' + (HIST[i].key ? ' key' : ''); d.textContent = i + 1; d.title = 'Misión ' + (i + 1); d.onclick = () => go(FIRST + i); d.style.cursor = 'pointer'; slotsEl.appendChild(d); });
 
 const solved = () => S.c.filter(c => c.done).length;
 function paintRank() {
@@ -921,77 +925,89 @@ function render() {
   const lock = S.cur < LAST && S.cur + 1 > maxReach();
   nx.disabled = S.cur === LAST;
   nx.classList.toggle('locked', lock);
-  nx.textContent = lock ? '🔒 Abran la caja' : S.cur === 0 ? 'Comenzar ▶' : S.cur === LAST - 1 ? 'Cerrar el caso ▶' : 'Siguiente ▶';
+  nx.textContent = lock ? '🔒 Completen la misión' : S.cur === 0 ? 'Comenzar ▶' : S.cur === LAST - 1 ? 'Cerrar el caso ▶' : 'Siguiente ▶';
   if (S.cur === LAST) renderFinal();
   save();
 }
 function paintClue(i) {
-  const sec = document.querySelector(`.scene[data-s="${FIRST + i}"]`), c = S.c[i];
-  const s2 = sec.querySelector('[data-step2]'), inp = s2.querySelector('input');
-  s2.classList.toggle('ok', c.done);
-  sec.querySelector('[data-st2]').textContent = c.done ? '✔ Caja abierta' : '';
-  s2.querySelector('.dial').textContent = c.done ? '🔓' : '🔒';
-  inp.disabled = c.done; inp.classList.toggle('good', c.done);
-  if (c.done) inp.value = PISTAS[i].ok;
-  sec.querySelector('[data-act=open]').hidden = c.done;
+  const sec = document.querySelector(`.scene[data-s="${FIRST + i}"]`), c = S.c[i], p = PISTAS[i];
+  sec.querySelectorAll('.opt').forEach(b => {
+    const k = +b.dataset.k;
+    b.classList.toggle('wrong', c.tries.includes(k) && k !== p.ans);
+    b.classList.toggle('right', c.done && k === p.ans);
+    b.classList.toggle('dim', c.done && k !== p.ans);
+    b.disabled = c.done || c.tries.includes(k);
+  });
+  const left = NC - solved();
+  sec.querySelectorAll('[data-hp] i').forEach((e, k) => e.classList.toggle('gone', k >= left));
+  sec.querySelector('[data-hpt]').textContent = 'HP ' + left + '/' + NC;
+  sec.querySelector('[data-ghost]').textContent = left ? '👻' : '💨';
   sec.querySelector('[data-act=evid]').hidden = !c.done;
   sec.querySelector('[data-act=hint]').hidden = c.done;
   if (c.done) { sec.querySelector('[data-hint]').classList.remove('show'); sec.querySelector('[data-fb]').classList.remove('show'); }
 }
 
-// Hasta dónde se puede llegar: la primera pista sin resolver
+// Hasta dónde se puede llegar: la primera misión sin resolver
 function maxReach() { const k = S.c.findIndex(c => !c.done); return k < 0 ? LAST : FIRST + k; }
 function say(i, html) { const fb = document.querySelector(`.scene[data-s="${FIRST + i}"] [data-fb]`); fb.innerHTML = html; fb.classList.remove('show'); if (!html) return; void fb.offsetWidth; fb.classList.add('show'); }
 function blocked() {
   const nx = document.getElementById('next'); nx.classList.remove('nope'); void nx.offsetWidth; nx.classList.add('nope');
   sfx('bad');
   const i = S.cur - FIRST;
-  if (i >= 0 && i < NC) say(i, '🔒 La caja sigue cerrada: investiguen en la base y escriban el dato exacto. Si se atascan, toquen <b>💡 Pista</b>.');
+  if (i >= 0 && i < NC) say(i, '🔒 Primero elijan la respuesta correcta. Investiguen en la base y, si se atascan, toquen <b>💡 Pista</b>.');
 }
 function toggleHint(i) { const h = document.querySelector(`.scene[data-s="${FIRST + i}"] [data-hint]`); h.classList.toggle('show'); if (h.classList.contains('show')) { sfx('paper'); h.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } }
 function go(n) { n = Math.max(0, Math.min(LAST, n)); if (n > S.cur && n > maxReach()) { blocked(); return; } if (n !== S.cur) { closeEvid(); closeUnlock(true); const prev = S.cur; S.cur = n; render(); setLevel(); sceneSound(prev, n); document.querySelector('.scene.active').querySelectorAll('.story, .dossier p').forEach(typeIn); } }
+const replay = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
 
-// Probar el dato escrito
+// Elegir una opción: parpadeo de selección y luego acierto o error
 let busy = false;
-function tryOpen(i) {
-  const c = S.c[i], inp = document.querySelector(`.scene[data-s="${FIRST + i}"] [data-step2] input`);
-  if (c.done || busy) return;
-  if (!inp.value.trim()) { inp.classList.remove('bad'); void inp.offsetWidth; inp.classList.add('bad'); inp.focus(); return; }
-  busy = true; inp.blur();
-  document.getElementById('suspTxt').textContent = '«' + inp.value.trim() + '»';
-  document.getElementById('susp').classList.add('show'); sfx('select'); setTimeout(() => sfx('roll'), 120); duck(2600);
-  setTimeout(() => { document.getElementById('susp').classList.remove('show'); busy = false; settle(i, inp); }, 1600);
+function choose(i, k) {
+  const c = S.c[i], sec = document.querySelector(`.scene[data-s="${FIRST + i}"]`);
+  if (c.done || c.tries.includes(k) || busy) return;
+  busy = true;
+  const b = sec.querySelector(`.opt[data-k="${k}"]`);
+  replay(b, 'pick'); sfx('select');
+  setTimeout(() => { b.classList.remove('pick'); busy = false; settle(i, k); }, 650);
 }
-function settle(i, inp) {
-  const c = S.c[i];
-  if (check(i, inp.value)) {
+function settle(i, k) {
+  const c = S.c[i], p = PISTAS[i], sec = document.querySelector(`.scene[data-s="${FIRST + i}"]`);
+  c.tries.push(k);
+  if (k === p.ans) {
     const before = rankOf(solved());
     c.done = true;
     const after = rankOf(solved());
-    render(); celebrate(i, after > before ? RANKS[after] : '');
+    // ataque: la lupa vuela hacia el fantasma y le quita un punto de vida
+    replay(sec.querySelector('[data-shot]'), 'go'); sfx('zap');
+    setTimeout(() => {
+      replay(sec.querySelector('[data-ghost]'), 'hit'); replay(sec.querySelector('[data-dmg]'), 'show'); sfx('hit');
+      render();
+      const seg = sec.querySelectorAll('[data-hp] i')[NC - solved()]; if (seg) replay(seg, 'break');
+    }, 430);
+    setTimeout(() => celebrate(i, after > before ? RANKS[after] : ''), 1150);
   } else {
-    c.tries++; sfx('bad'); flash('red', 500); save();
-    inp.classList.remove('bad'); void inp.offsetWidth; inp.classList.add('bad');
-    const cf = CFG[i];
-    const why = cf.txt ? 'Revisen la tabla y escriban el nombre completo.' : cf.pct ? 'Revisen que el valor esté como % del total general.' : 'Copien el número exacto de la celda, con sus decimales si los tiene.';
-    say(i, `✖ La caja no abre con ese dato. ${why}${c.tries >= 2 ? ' Toquen <b>💡 Pista</b> si lo necesitan.' : ''}`);
-    setTimeout(() => inp.focus(), 100);
+    sfx('wrong'); flash('red', 500); replay(document.body, 'quake'); replay(document.getElementById('bigx'), 'show');
+    const bub = sec.querySelector('[data-bub]'); bub.textContent = TAUNTS[(c.tries.length - 1) % TAUNTS.length]; replay(bub, 'show');
+    replay(sec.querySelector('[data-ghost]'), 'laugh'); replay(sec.querySelector('[data-me]'), 'hit');
+    render();
+    const wrongs = c.tries.filter(x => x !== p.ans).length;
+    say(i, `✖ ¡Incorrecto! Revisen su tabla dinámica y vuelvan a intentarlo.${wrongs >= 2 ? ' ¿Atascados? Toquen <b>💡 Pista</b>.' : ''}`);
   }
 }
 
-// Efecto de caja abierta: candado que se abre, rayos y ascenso de rango
+// Efecto de misión cumplida: estallido, estrella, rayos y ascenso de rango
 const unlockEl = document.getElementById('unlock');
 let unlockT = null, unlockI = -1;
 function showUnlock(i, promo) {
   const red = i === 6;
   unlockI = i;
   unlockEl.classList.toggle('red', red);
-  const pad = document.getElementById('upad'); pad.textContent = red ? '🚨' : '🔒'; pad.className = 'pad';
-  document.getElementById('uh').textContent = red ? '¡SOSPECHOSO IDENTIFICADO!' : HIST[i].key ? '¡CAJA ABIERTA! · ' + HIST[i].key.toUpperCase() : '¡CAJA ABIERTA!';
+  const pad = document.getElementById('upad'); pad.textContent = red ? '🚨' : '💥'; pad.className = 'pad';
+  document.getElementById('uh').textContent = red ? '¡SOSPECHOSO IDENTIFICADO!' : HIST[i].key ? '¡MISIÓN CUMPLIDA! · ' + HIST[i].key.toUpperCase() : '¡MISIÓN CUMPLIDA!';
   document.getElementById('uval').textContent = '✔ ' + PISTAS[i].ok;
   document.getElementById('upromo').innerHTML = promo ? `<span class="promo">🎖 ¡Ascenso! Ahora son: ${esc(promo)}</span>` : '';
   unlockEl.classList.add('show');
-  if (!red) setTimeout(() => { pad.textContent = '🔓'; pad.className = 'pad open'; }, 600);
+  if (!red) setTimeout(() => { pad.textContent = '⭐'; pad.className = 'pad open'; }, 600);
   clearTimeout(unlockT); unlockT = setTimeout(() => closeUnlock(), promo ? 3800 : 3000);
 }
 function closeUnlock(silent) {
@@ -1009,7 +1025,7 @@ function openEvid(i) {
   const area = (lab, val) => `<div class="area ${val ? '' : 'empty'}"><div class="lab">${lab}</div><div class="val">${val ? val.split(' · ').map(x => `<span>${esc(x)}</span>`).join('') : 'vacío'}</div></div>`;
   const hdr = v.filas;
   evid.innerHTML = `<div class="stamp">EVIDENCIA ✔</div>
-    <h3>Caja ${i + 1} · ${h.lvl}</h3>
+    <h3>Misión ${i + 1} · ${h.lvl}</h3>
     <p class="ans">✔ ${esc(p.ok)}</p>
     <div class="evgrid">
       <div><strong style="display: block; margin-bottom: 8px;">🧮 Así se arma la tabla dinámica</strong>
@@ -1028,8 +1044,8 @@ function openEvid(i) {
       <div class="tech"><b class="h">🧠 Técnica de tabla dinámica</b>${h.tech}</div>
     </div>
     <div class="actions">
-      <button class="btn ghost" id="mclose">Volver a la caja</button>
-      <button class="btn" id="mnext">${i === NC - 1 ? 'Cerrar el caso ▶' : 'Siguiente caja ▶'}</button>
+      <button class="btn ghost" id="mclose">Volver a la misión</button>
+      <button class="btn" id="mnext">${i === NC - 1 ? 'Cerrar el caso ▶' : 'Siguiente misión ▶'}</button>
     </div>`;
   modal.classList.add('show'); sfx('paper');
   document.getElementById('mclose').onclick = closeEvid;
@@ -1053,9 +1069,9 @@ function renderFinal() {
   if (!renderFinal.done) { renderFinal.done = true; confetti(); setTimeout(confetti, 600); setTimeout(confetti, 1200); sfx('fanfare'); duck(3500); flash('gold'); }
 }
 function resetAll() {
-  if (!confirm('¿Reiniciar el caso desde cero? Se cierran todas las cajas y el rango vuelve a Novato.')) return;
+  if (!confirm('¿Reiniciar el caso desde cero? Se borran las misiones, El Fantasma recupera su vida y el rango vuelve a Novato.')) return;
   closeEvid(); closeUnlock(true);
-  try { localStorage.removeItem('investigadorCasos'); } catch (e) {}
+  try { localStorage.removeItem('investigadorCasosMC'); } catch (e) {}
   S = blank();
   renderFinal.done = false;
   if (location.hash) history.replaceState(null, '', location.pathname + location.search);
@@ -1118,6 +1134,9 @@ function sfx(kind) {
     case 'win': [523, 659, 784, 1047].forEach((f, k) => { tone(f, k * .08, .3, 'triangle', .2); tone(f * 2, k * .08, .15, 'sine', .05); }); noise(.3, .6, .08, 9000, 'highpass'); break;
     case 'key': [392, 523, 659, 784, 1047].forEach((f, k) => tone(f, k * .09, .35, 'triangle', .2)); [1568, 2093].forEach((f, k) => tone(f, .5 + k * .12, .8, 'sine', .08)); noise(.45, .9, .06, 10000, 'highpass'); break;
     case 'unlock': tone(1800, 0, .03, 'square', .08); tone(1500, .1, .03, 'square', .08); tone(2100, .22, .03, 'square', .08); noise(.5, .12, .35, 2500); tone(140, .5, .25, 'sine', .4, null, 70); break;
+    case 'wrong': tone(392, 0, .14, 'square', .12); tone(311, .15, .14, 'square', .12); tone(196, .3, .5, 'square', .14, null, 150); tone(98, .3, .5, 'sawtooth', .2, null, 80); break;   // «error» de videojuego
+    case 'zap': sweep(300, 1400, 0, .4, .05, 'square'); break;
+    case 'hit': noise(0, .2, .5, 0, 'lowpass'); tone(180, 0, .25, 'square', .2, null, 60); tone(900, 0, .08, 'square', .08, null, 300); break;
     case 'bad': tone(220, 0, .18, 'sawtooth', .22, null, 180); tone(160, .16, .45, 'sawtooth', .22, null, 110); break;
     case 'siren': for (let k = 0; k < 4; k++) { sweep(650, 1150, k * .5, .25, .06); sweep(1150, 650, k * .5 + .25, .25, .06); } tone(55, 0, 1.2, 'sawtooth', .2, null, 50); break;
     case 'stamp': noise(0, .08, .4, 0, 'lowpass'); tone(110, 0, .3, 'sine', .5, null, 50); break;
@@ -1222,6 +1241,8 @@ document.addEventListener('keydown', e => {
   else if (k === 'f') fsToggle();
   else if (k === 's') sndBtn.click();
   else if (k === 'm') musBtn.click();
+  else if (inClue && ['a', 'b', 'c', 'd'].includes(k)) choose(i, 'abcd'.indexOf(k));
+  else if (inClue && ['1', '2', '3', '4'].includes(k)) choose(i, +k - 1);
   else if (inClue && k === 'p' && !S.c[i].done) toggleHint(i);
   else if (inClue && k === 'e' && S.c[i].done) openEvid(i);
 });
