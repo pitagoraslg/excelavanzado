@@ -1,0 +1,86 @@
+<!-- Invitación al juego «Investigador de Casos» (Módulo 3) para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes ic-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  @keyframes ic-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  @keyframes ic-sweep { 0%, 100% { transform: translateX(-8px) rotate(-12deg); } 50% { transform: translateX(8px) rotate(10deg); } }
+  @keyframes ic-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(242,179,61,.55); } 50% { box-shadow: 0 0 0 14px rgba(242,179,61,0); } }
+  @keyframes ic-blink { 50% { opacity: .35; } }
+  @keyframes ic-hp { 0%, 20% { width: 100%; } 60%, 100% { width: 30%; } }
+  .ic-in { animation: ic-in .7s ease-out both; }
+  .ic-d1 { animation-delay: .1s; } .ic-d2 { animation-delay: .25s; } .ic-d3 { animation-delay: .4s; } .ic-d4 { animation-delay: .55s; }
+  .ic-ghost { display: inline-block; animation: ic-float 2.6s ease-in-out infinite; }
+  .ic-lens { display: inline-block; animation: ic-sweep 3s ease-in-out infinite; }
+  .ic-blink { animation: ic-blink 1s steps(2) infinite; }
+  .ic-hpfill { animation: ic-hp 4s ease-in-out infinite alternate; }
+  .ic-btn { animation: ic-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, filter .15s ease; }
+  .ic-btn:hover { transform: scale(1.05); filter: brightness(1.08); }
+  .ic-card { transition: transform .2s ease, border-color .2s ease; }
+  .ic-card:hover { transform: translateY(-4px); border-color: #F2B33D !important; }
+  @media (prefers-reduced-motion: reduce) { .ic-in, .ic-ghost, .ic-lens, .ic-blink, .ic-hpfill, .ic-btn { animation: none !important; } }
+</style>
+
+<div style="max-width: 900px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #F4EFE6; line-height: 1.55; background-color: #0C1612; border-radius: 12px; overflow: hidden; border: 2px solid #2A4237;">
+
+  <div style="height: 6px; background-color: #F2B33D;"></div>
+
+  <!-- Encabezado -->
+  <div style="padding: 26px 24px 18px; text-align: center; background-color: #12211B;">
+    <p class="ic-in" style="margin: 0 0 8px; font-family: 'Courier New', monospace; font-size: 13px; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; color: #F2B33D;">▶ Módulo 3 · Juego de práctica <span class="ic-blink">_</span></p>
+    <h2 class="ic-in ic-d1" style="margin: 0 0 6px; font-family: 'Courier New', monospace; font-size: 34px; font-weight: bold; letter-spacing: 1px; line-height: 1.15; color: #FFFFFF;">🕵️ INVESTIGADOR <span style="color: #E8664A;">DE CASOS</span></h2>
+    <p class="ic-in ic-d2" style="margin: 0; font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 19px; color: #F1E6CC;">Caso: «Las reclamaciones fantasma»</p>
+  </div>
+
+  <div style="padding: 6px 24px 26px;">
+
+    <!-- Arena: agente contra El Fantasma -->
+    <table class="ic-in ic-d2" role="presentation" style="width: 100%; border-collapse: collapse; margin: 16px 0 6px; background-color: #172A22; border: 1px solid #2A4237; border-radius: 10px;">
+      <tr>
+        <td style="width: 54px; padding: 10px 0 10px 14px; font-size: 34px; line-height: 1;"><span class="ic-lens">🔍</span></td>
+        <td style="padding: 10px 12px;">
+          <div style="font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; color: #A9BDB2; letter-spacing: 1px;">👻 EL FANTASMA · HP</div>
+          <div style="margin-top: 6px; height: 12px; background-color: #22332C; border-radius: 3px; overflow: hidden;"><div class="ic-hpfill" style="width: 100%; height: 12px; background-color: #E21B3C;"></div></div>
+        </td>
+        <td style="width: 54px; padding: 10px 14px 10px 0; font-size: 36px; line-height: 1; text-align: right;"><span class="ic-ghost">👻</span></td>
+      </tr>
+    </table>
+
+    <!-- Resumen -->
+    <p class="ic-in ic-d2" style="margin: 14px 0 0; font-size: 16px; color: #DCE9E2;">Una aseguradora de vehículos está pagando reclamaciones que no cuadran y nadie sabe por qué. Un culpable se esconde entre <strong style="color: #FFFFFF;">426 reclamaciones</strong>, y la única forma de encontrarlo es con <strong style="color: #F2B33D;">tablas dinámicas</strong>.</p>
+    <p class="ic-in ic-d2" style="margin: 10px 0 0; font-size: 16px; color: #DCE9E2;">Descarga la base, arma tus tablas en Excel y supera <strong style="color: #FFFFFF;">10 misiones</strong>. Cada respuesta correcta le quita vida a <strong style="color: #FFFFFF;">El Fantasma</strong> y te hace subir de rango, de <em>Novato</em> a <em>Investigador maestro</em>. ¿Podrás resolver el caso?</p>
+
+    <!-- Cómo se juega -->
+    <p class="ic-in ic-d3" style="margin: 20px 0 10px; font-family: 'Courier New', monospace; font-weight: bold; font-size: 15px; letter-spacing: 1px; color: #F2B33D;">🎮 CÓMO SE JUEGA</p>
+    <div class="ic-in ic-d3" style="display: flex; flex-wrap: wrap; gap: 10px;">
+      <div class="ic-card" style="flex: 1 1 170px; box-sizing: border-box; background-color: #172A22; border: 2px solid #2A4237; border-radius: 10px; padding: 12px 14px;">
+        <div style="font-size: 26px;">📊</div>
+        <strong style="color: #FFFFFF;">1 · Descarga la base</strong>
+        <div style="font-size: 14px; color: #A9BDB2;">Ábrela en Excel, en el navegador o en tu computadora.</div>
+      </div>
+      <div class="ic-card" style="flex: 1 1 170px; box-sizing: border-box; background-color: #172A22; border: 2px solid #2A4237; border-radius: 10px; padding: 12px 14px;">
+        <div style="font-size: 26px;">🧮</div>
+        <strong style="color: #FFFFFF;">2 · Investiga</strong>
+        <div style="font-size: 14px; color: #A9BDB2;">Cada misión es una pregunta: respóndela con una tabla dinámica.</div>
+      </div>
+      <div class="ic-card" style="flex: 1 1 170px; box-sizing: border-box; background-color: #172A22; border: 2px solid #2A4237; border-radius: 10px; padding: 12px 14px;">
+        <div style="font-size: 26px;">🅰️</div>
+        <strong style="color: #FFFFFF;">3 · Elige A, B, C o D</strong>
+        <div style="font-size: 14px; color: #A9BDB2;">Si fallas, suena el error y vuelves a intentarlo. Si aciertas, ¡golpe al Fantasma!</div>
+      </div>
+      <div class="ic-card" style="flex: 1 1 170px; box-sizing: border-box; background-color: #172A22; border: 2px solid #2A4237; border-radius: 10px; padding: 12px 14px;">
+        <div style="font-size: 26px;">💡</div>
+        <strong style="color: #FFFFFF;">¿Atascado?</strong>
+        <div style="font-size: 14px; color: #A9BDB2;">Toca «Pista»: te explica cómo armar la tabla, pero el dato lo encuentras tú.</div>
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="ic-in ic-d4" style="text-align: center; margin: 26px 0 6px;">
+      <a class="ic-btn" href="https://pitagoraslg.github.io/excelavanzado/caso-reclamaciones-fantasma.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #F2B33D; color: #2B1E05; font-family: 'Courier New', monospace; font-weight: bold; font-size: 20px; letter-spacing: 1px; text-decoration: none; padding: 14px 32px; border-radius: 10px; margin: 6px;">▶ JUGAR AHORA</a>
+      <a href="https://pitagoraslg.github.io/excelavanzado/Modulo3-Caso-Reclamaciones-Fantasma.xlsx" style="display: inline-block; background-color: #172A22; color: #4FD1A1; border: 2px solid #4FD1A1; font-weight: bold; font-size: 16px; text-decoration: none; padding: 12px 22px; border-radius: 10px; margin: 6px;">⬇ Descargar la base del caso</a>
+    </div>
+    <p style="margin: 8px 0 0; text-align: center; font-size: 13.5px; color: #A9BDB2;">Funciona en computadora y tablet. Sube el volumen: el juego tiene música y efectos de sonido 🔊</p>
+
+    <p style="margin: 22px 0 0; padding-top: 14px; border-top: 1px solid #2A4237; text-align: center; font-size: 13px; color: #A9BDB2;">Juego creado por: <strong style="color: #F2B33D;">Jarlin Figueroa, M.A.</strong></p>
+  </div>
+</div>
