@@ -283,7 +283,7 @@ svg text{font-family:var(--sans)}
 </style>
 
 <div id="viewport"><div id="stage">
-  <div class="top"><span id="topL">MÓDULO 4 · VISUALIZACIÓN DE DATOS Y DASHBOARDS</span><div class="dots" id="dots"></div></div>
+  <div class="top"><span id="topL">MÓDULO 4 · VISUALIZACIÓN DE DATOS Y DASHBOARDS.</span><div class="dots" id="dots"></div></div>
   <div id="slides"></div>
   <div class="bottom">
     <span>Jarlin Figueroa, MA</span>
@@ -373,13 +373,13 @@ function pieSVG(cats,vals,o={}){
   return s+"</svg>";
 }
 const dot = s => /[.?!:…]$/.test(s)?s:s+".";
-const chartBox = (title,sub,svg,legend) => `<div class="chart"><div class="ct">${esc(dot(title))}</div>${sub?`<div class="cs">${esc(sub)}</div>`:""}${svg}${legend?`<div class="legend">${legend}</div>`:""}</div>`;
+const chartBox = (title,sub,svg,legend) => `<div class="chart"><div class="ct">${esc(dot(title))}</div>${sub?`<div class="cs">${esc(dot(sub))}</div>`:""}${svg}${legend?`<div class="legend">${legend}</div>`:""}</div>`;
 const yearLegend = `<span><i style="background:${C24}"></i>2024</span><span><i style="background:${C25}"></i>2025</span>`;
 
 /* ---------- Datos por ARS (calculados de la base) ---------- */
 const TT = tot(rec);
 const GA = ARS.map(a=>{ const f=rec.filter(r=>r.ars===a); return {k:a, n:f.length, s:f.reduce((x,r)=>x+r.monto,0), n24:f.filter(r=>r.anio==="2024").length, n25:f.filter(r=>r.anio==="2025").length}; }).sort((a,b)=>b.s-a.s);
-const exBox = (title,body,cap) => `<div class="ex"><div class="ex-h"><span>Ejemplo · ARS</span><span>${esc(title)}</span></div><div class="ex-b">${body}</div>${cap?`<p class="ex-c">${cap}</p>`:""}</div>`;
+const exBox = (title,body,cap) => `<div class="ex"><div class="ex-h"><span>Ejemplo · ARS.</span><span>${esc(dot(title))}</span></div><div class="ex-b">${body}</div>${cap?`<p class="ex-c">${cap}</p>`:""}</div>`;
 const kc = (lbl,val,sub) => `<div class="kcard"><small>${lbl}</small><b>${val}</b>${sub?`<em>${sub}</em>`:""}</div>`;
 const colARS = (o={}) => colSVG(GA.map(g=>g.k),[{name:"Suma de Monto",color:C1,vals:GA.map(g=>g.s)}],Object.assign({W:560,H:230,short:true,fmt:rd0,fmtLabel:rdk,fmtAxis:rdk,pl:66},o));
 
@@ -469,7 +469,7 @@ const TOPICS = [
 const S = [], INICIO = [];
 const T_EJ = TOPICS.length;
 S.push({topic:-1, html:`<div class="slide cover">
-  <div class="mod">Módulo 4</div>
+  <div class="mod">Módulo 4.</div>
   <h1>Visualización de datos y dashboards.</h1>
   <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
   <div class="kpis"><div><small>Servicios</small><b>360</b></div><div><small>Monto total</small><b>RD$ 6.69 M</b></div><div><small>ARS</small><b>5</b></div></div>
@@ -478,7 +478,7 @@ S.push({topic:-1, html:`<div class="slide cover">
 
 const RAWN=12;
 S.push({topic:-1, html:`<div class="slide" style="gap:16px">
-  <div class="eyebrow">Punto de partida</div>
+  <div class="eyebrow">Punto de partida.</div>
   <h2 style="font-size:40px">Así llegan los datos.</h2>
   <div class="raw"><table><thead><tr><th>ID Servicio</th><th>Fecha</th><th>ARS</th><th>PSS</th><th>Tipo de Servicio</th><th>Provincia</th><th>Monto</th></tr></thead>
     <tbody>${rec.slice(0,RAWN).map(r=>`<tr><td>${r.id}</td><td>${r.fecha.slice(8,10)}/${r.fecha.slice(5,7)}/${r.anio}</td><td>${esc(r.ars)}</td><td>${esc(r.pss)}</td><td>${esc(r.tipo)}</td><td>${esc(r.prov)}</td><td>${rd2(r.monto)}</td></tr>`).join("")}
@@ -490,17 +490,17 @@ S.push({topic:-1, html:`<div class="slide" style="gap:16px">
 </div>`});
 
 S.push({topic:-1, html:`<div class="slide">
-  <div class="eyebrow">Contenido</div>
+  <div class="eyebrow">Contenido.</div>
   <h2>Siete conceptos y un ejemplo.</h2>
   <p class="lead" style="font-size:20px">Cada concepto se define y se ilustra con un ejemplo sobre las <b>ARS</b> de la base.</p>
   <div class="idx" data-idx></div>
   <p class="note"><b>Objetivo:</b> diseñar dashboards en Excel que faciliten la interpretación de los datos y apoyen la toma de decisiones.</p>
-</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = TOPICS.map((t,i)=>`<button data-go="${INICIO[i]}"><span class="n">0${i+1}</span><span class="k">${t.k}</span><span class="d">${t.d}</span></button>`).join("")+`<button class="res" data-go="${INICIO[T_EJ]}"><span class="n">★</span><span class="k">Tablero de ARS</span><span class="d">Todos los conceptos juntos.</span></button>`; }});
+</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = TOPICS.map((t,i)=>`<button data-go="${INICIO[i]}"><span class="n">0${i+1}</span><span class="k">${dot(t.k)}</span><span class="d">${t.d}</span></button>`).join("")+`<button class="res" data-go="${INICIO[T_EJ]}"><span class="n">★</span><span class="k">Tablero de ARS.</span><span class="d">Todos los conceptos juntos.</span></button>`; }});
 
 TOPICS.forEach((t,i)=>{
   INICIO[i]=S.length;
   S.push({topic:i, html:`<div class="slide">
-    <div class="eyebrow"><span class="n">0${i+1}</span><span>${t.k}</span><span class="tag">Concepto</span></div>
+    <div class="eyebrow"><span class="n">0${i+1}</span><span>${dot(t.k)}</span><span class="tag">Concepto.</span></div>
     <div class="cols2">
       <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
         <h2 style="font-size:42px">${t.q}</h2>
@@ -514,7 +514,7 @@ TOPICS.forEach((t,i)=>{
 
 INICIO[T_EJ]=S.length;
 S.push({topic:T_EJ, html:`<div class="slide" style="padding:58px 56px 62px;gap:10px">
-  <div class="eyebrow"><span class="n">★</span><span>Ejemplo integrador</span><span class="tag">Todos los conceptos juntos</span></div>
+  <div class="eyebrow"><span class="n">★</span><span>Ejemplo integrador.</span><span class="tag">Todos los conceptos juntos.</span></div>
   <div class="dash" style="grid-template-columns:1fr 150px">
     <div class="dash-main">
       <div class="dtitle"><b>Tablero de ARS · servicios de salud 2024–2025.</b><span>Fuente: tblServicios</span></div>
@@ -539,9 +539,9 @@ S.push({topic:T_EJ, html:`<div class="slide" style="padding:58px 56px 62px;gap:1
 </div>`});
 
 S.push({topic:-1, html:`<div class="slide">
-  <div class="eyebrow">Resumen</div>
+  <div class="eyebrow">Resumen.</div>
   <h2>Lo que aprendimos hoy.</h2>
-  <div class="sum">${TOPICS.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${esc(t.k)}</code></div></div>`).join("")}<div><span class="n">★</span><div><p>Un dashboard responde preguntas.</p><code>Si un elemento no responde ninguna, sobra.</code></div></div></div>
+  <div class="sum">${TOPICS.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${esc(dot(t.k))}</code></div></div>`).join("")}<div><span class="n">★</span><div><p>Un dashboard responde preguntas.</p><code>Si un elemento no responde ninguna, sobra.</code></div></div></div>
 </div>`});
 
 /* ---------- Motor ---------- */
@@ -560,7 +560,7 @@ function go(i){
   const tp=S[cur].topic;
   dots.querySelectorAll("button").forEach((b,j)=>{b.classList.toggle("cur",j===tp);b.classList.toggle("done",tp>j||(tp<0&&cur>2));});
   document.getElementById("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
-  document.getElementById("topL").textContent = tp<0?"MÓDULO 4 · VISUALIZACIÓN DE DATOS Y DASHBOARDS": tp===T_EJ?"MÓDULO 4 · EJEMPLO INTEGRADOR · TABLERO DE ARS":`MÓDULO 4 · CONCEPTO 0${tp+1} DE 0${TOPICS.length} · ${TOPICS[tp].k.toUpperCase()}`;
+  document.getElementById("topL").textContent = tp<0?"MÓDULO 4 · VISUALIZACIÓN DE DATOS Y DASHBOARDS.": tp===T_EJ?"MÓDULO 4 · EJEMPLO INTEGRADOR · TABLERO DE ARS.":`MÓDULO 4 · CONCEPTO 0${tp+1} DE 0${TOPICS.length} · ${dot(TOPICS[tp].k).toUpperCase()}`;
   document.getElementById("prev").disabled=cur===0; document.getElementById("next").disabled=cur===els.length-1;
 }
 document.getElementById("prev").onclick=()=>go(cur-1);
