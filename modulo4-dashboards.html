@@ -204,13 +204,14 @@ svg text{font-family:var(--sans)}
 .qlist div{display:grid;grid-template-columns:36px 1fr auto;gap:10px;padding:10px 6px;border-bottom:1px solid var(--line);font-size:16.5px;line-height:1.35;align-items:baseline}
 .qlist .n{font-family:var(--serif);font-size:22px;color:var(--xl)}
 .qlist code{font-size:12.5px;background:var(--xl-soft);color:var(--xl);padding:2px 6px;white-space:nowrap}
-.plano{display:grid;grid-template-columns:repeat(3,1fr) 120px;grid-template-rows:38px 70px 1fr 1fr 46px;gap:6px;background:var(--card);border:1px solid var(--grid);padding:10px;font-family:var(--mono);font-size:12px;color:var(--muted);min-height:0}
+.plano{display:grid;grid-template-columns:repeat(3,1fr) 104px 84px;grid-template-rows:38px 70px 1fr 1fr 46px;gap:6px;background:var(--card);border:1px solid var(--grid);padding:10px;font-family:var(--mono);font-size:12px;color:var(--muted);min-height:0}
 .plano div{border:1.5px dashed var(--grid);display:flex;align-items:center;justify-content:center;text-align:center;padding:4px;line-height:1.3}
-.plano .t{grid-column:1/5;background:var(--ink);color:#fff;border:0;font-weight:600}
+.plano .t{grid-column:1/6;background:var(--ink);color:#fff;border:0;font-weight:600}
 .plano .k{background:var(--mark);color:var(--ink);font-weight:600}
 .plano .g{background:var(--xl-soft);color:var(--xl);font-weight:600}
 .plano .s{grid-column:4;grid-row:2/5;background:var(--mark)}
 .plano .c{grid-column:1/5}
+.plano .m{grid-column:5;grid-row:2/6;background:repeating-linear-gradient(135deg,#fff 0 6px,var(--line) 6px 7px);font-size:11px}
 .ptab{border-collapse:collapse;width:100%;font-size:15px}
 .ptab th{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:7px 10px;border-bottom:2px solid var(--ink)}
 .ptab td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.35}
@@ -365,40 +366,40 @@ const TOPICS = [
   def:"Una tarjeta es una celda grande que muestra un indicador clave (KPI): total de servicios, monto total o monto promedio. Para que cambie con las segmentaciones, el número tiene que venir de una tabla dinámica.",
   ana:"Es el marcador de un partido: antes de ver las jugadas, miras el resultado.",
   partsT:"Las piezas · toca cada una",
-  parts:[["TD_KPI","Una tabla dinámica con campos solo en Valores, sin Filas: da los totales del tablero."],["Cuenta de ID Servicio","Cuántos servicios hay: 360."],["Suma de Monto","Cuánto dinero: RD$ 6,691,250."],["Promedio de Monto","Cuánto cuesta un servicio típico: RD$ 18,586.81."],["= y clic","En la tarjeta escribes = y haces clic en el número de TD_KPI. Si Excel escribe IMPORTARDATOSDINAMICOS, es normal: déjalo así."]],
+  parts:[["TD_KPI","Una tabla dinámica con campos solo en Valores, sin Filas. Vive en la hoja Dashboard, celda T5, y da los totales del tablero."],["Cuenta de ID Servicio","Cuántos servicios hay: 360."],["Suma de Monto","Cuánto dinero: RD$ 6,691,250."],["Promedio de Monto","Cuánto cuesta un servicio típico: RD$ 18,586.81."],["= y clic","En la tarjeta escribes = y haces clic en el número de TD_KPI. Si Excel escribe IMPORTARDATOSDINAMICOS, es normal: déjalo así."]],
   uses:[["Servicios atendidos","El volumen total del período.","Cuenta de ID Servicio → 360"],
         ["Monto total","El gasto total del período.","Suma de Monto → RD$ 6,691,250"],
         ["Costo promedio","Cuánto cuesta un servicio típico.","Promedio de Monto → RD$ 18,586.81"],
         ["Tarjeta que se filtra","Con la segmentación en 2025, la tarjeta muestra 210.","Tarjeta = número de TD_KPI (no =SUMA de la base)"]],
   pit:"Si la tarjeta usa =SUMA(tblServicios[Monto]), siempre dirá 6,691,250 aunque filtres por año: las segmentaciones solo filtran tablas dinámicas. Conecta la tarjeta a TD_KPI.",
-  steps:["Abre <code>Modulo4-Base-Dashboard.xlsx</code>, haz clic en <code>A2</code> de la hoja <code>Servicios</code> › <code>Insertar › Tabla dinámica</code> › <code>Nueva hoja</code>. Llámala <code>TD_KPI</code>.","Arrastra a <b>Valores</b>: <code>ID Servicio</code> (Cuenta), <code>Monto</code> (Suma) y otra vez <code>Monto</code>. Sobre este último: clic derecho › <code>Resumir valores por › Promedio</code>.","En la hoja <code>Dashboard</code>, celda <code>B6</code>: escribe <code>=</code>, ve a <code>TD_KPI</code>, haz clic en el número de la cuenta y pulsa Enter. Repite en <code>F6</code> (suma) y <code>J6</code> (promedio).","Resultado: <b>360</b> · <b>RD$ 6,691,250</b> · <b>RD$ 18,586.81</b>. La plantilla ya trae el formato grande."],
+  steps:["Abre <code>Modulo4-Base-Dashboard.xlsx</code> en Excel (Microsoft 365). Clic en <code>A2</code> de la hoja <code>Servicios</code> › <code>Insertar › Tabla dinámica</code>. Destino: <code>Hoja de cálculo existente</code> › <code>Dashboard!T5</code>.","Arrastra a <b>Valores</b>: <code>ID Servicio</code> (Cuenta), <code>Monto</code> (Suma) y otra vez <code>Monto</code>. Sobre este último: clic derecho › <code>Resumir valores por › Promedio</code>.","En <code>B6</code> escribe <code>=</code>, haz clic en el número de la cuenta (<code>T6</code>) y pulsa Enter. Repite en <code>F6</code> (suma, <code>U6</code>) y <code>J6</code> (promedio, <code>V6</code>).","Resultado: <b>360</b> · <b>RD$ 6,691,250</b> · <b>RD$ 18,586.81</b>. La plantilla ya trae el formato grande."],
   conf:"TD_KPI · Valores: Cuenta de ID Servicio · Suma de Monto · Promedio de Monto", sim:"tarjetas", dl:true },
 
 { k:"Gráficos de la tabla dinámica", d:"Tendencia, comparación y distribución.",
-  def:"En Excel para la web, el gráfico de una tabla dinámica se crea con un clic dentro de ella › Insertar › Gráfico. Queda conectado: si la tabla dinámica cambia o se filtra, el gráfico cambia también.",
+  def:"En Excel para la web, el gráfico de una tabla dinámica se crea con un clic dentro de ella › pestaña Insertar › Columna, Línea o Circular. Queda conectado: si la tabla dinámica cambia o se filtra, el gráfico cambia también.",
   ana:"La tabla dinámica es la cocina y el gráfico es el plato servido: si cambias la receta, el plato cambia solo.",
   partsT:"Las tres tablas del tablero · toca cada una",
-  parts:[["TD_Mes","Filas: Mes · Columnas: Año · Valores: Cuenta de ID Servicio → gráfico de Líneas."],["TD_ARS","Filas: ARS · Valores: Suma de Monto, ordenado de mayor a menor → Columnas."],["TD_Prov","Filas: Provincia · Valores: Cuenta de ID Servicio, ordenado de mayor a menor → Columnas."],["Título","Cambia «Total» por lo que el gráfico demuestra."],["Mover","Corta el gráfico (Ctrl + X) y pégalo (Ctrl + V) en su espacio de la hoja Dashboard."]],
-  uses:[["Evolución por período","Cómo se mueve la demanda mes a mes, 2024 frente a 2025.","TD_Mes › Insertar › Gráfico › Línea"],
-        ["Comparación entre ARS","Qué ARS concentra más monto.","TD_ARS › Insertar › Gráfico › Columna agrupada"],
-        ["Distribución por provincia","Dónde se concentran los servicios.","TD_Prov › Insertar › Gráfico › Columna agrupada"],
-        ["Un tablero ordenado","Todos los gráficos juntos, en la hoja Dashboard.","Ctrl + X › hoja Dashboard › Ctrl + V"]],
+  parts:[["TD_Mes · T10","Filas: Mes · Columnas: Año · Valores: Cuenta de ID Servicio → gráfico de Líneas."],["TD_ARS · T29","Filas: ARS · Valores: Suma de Monto, ordenado de mayor a menor → Columnas."],["TD_Prov · T38","Filas: Provincia · Valores: Cuenta de ID Servicio, ordenado de mayor a menor → Columnas."],["Título","Cambia «Total» por lo que el gráfico demuestra."],["Ubicar","Arrastra el gráfico por su borde hasta su recuadro y ajusta el tamaño desde las esquinas."]],
+  uses:[["Evolución por período","Cómo se mueve la demanda mes a mes, 2024 frente a 2025.","Clic en TD_Mes › Insertar › Línea"],
+        ["Comparación entre ARS","Qué ARS concentra más monto.","Clic en TD_ARS › Insertar › Columna"],
+        ["Distribución por provincia","Dónde se concentran los servicios.","Clic en TD_Prov › Insertar › Columna"],
+        ["Un tablero ordenado","Cada gráfico en su recuadro de la hoja Dashboard.","Arrastra el gráfico · ajusta las esquinas"]],
   pit:"Haz clic dentro de la tabla dinámica antes de insertar el gráfico. Si seleccionas celdas normales, Excel crea un gráfico común que no responde a las segmentaciones.",
-  steps:["Crea <code>TD_Mes</code>: Filas <code>Mes</code>, Columnas <code>Año</code>, Valores <code>ID Servicio</code> (Cuenta).","Clic dentro de la tabla dinámica › <code>Insertar › Gráfico › Línea</code>. Título: «La demanda sube al cierre del año».","Crea <code>TD_ARS</code> (Filas <code>ARS</code>, Valores <code>Monto</code>) y <code>TD_Prov</code> (Filas <code>Provincia</code>, Valores <code>ID Servicio</code>). Ordénalas de mayor a menor y a cada una inserta un gráfico <b>Columna agrupada</b>.","Pega los 3 gráficos en la hoja <code>Dashboard</code>. Resultado: <b>diciembre</b> es el mes más alto (17 y 23), <b>SeNaSa</b> lidera en monto y <b>Distrito Nacional</b> en servicios (112)."],
-  conf:"TD_Mes → Línea · TD_ARS → Columna agrupada · TD_Prov → Columna agrupada", sim:"graficos" },
+  steps:["En <code>Dashboard!T10</code> crea <code>TD_Mes</code>: Filas <code>Mes</code>, Columnas <code>Año</code>, Valores <code>ID Servicio</code> (Cuenta).","Clic dentro de la tabla dinámica › <code>Insertar › Línea</code>. Arrastra el gráfico al recuadro «Gráfico 1» y cambia el título: «La demanda sube al cierre del año».","Crea <code>TD_ARS</code> en <code>T29</code> (Filas <code>ARS</code>, Valores <code>Monto</code>) y <code>TD_Prov</code> en <code>T38</code> (Filas <code>Provincia</code>, Valores <code>ID Servicio</code>). Ordénalas de mayor a menor e inserta a cada una un gráfico de <b>Columna</b>.","Arrastra cada gráfico a su recuadro. Resultado: <b>diciembre</b> es el mes más alto (17 y 23), <b>SeNaSa</b> lidera en monto y <b>Distrito Nacional</b> en servicios (112)."],
+  conf:"TD_Mes → Línea · TD_ARS → Columna · TD_Prov → Columna · todo en la hoja Dashboard", sim:"graficos" },
 
 { k:"Segmentaciones del tablero", d:"Un clic filtra todo el tablero.",
-  def:"Una segmentación filtra la tabla dinámica en la que se creó. Con Conexiones de informe se conecta a las demás, y así un solo clic cambia todo el tablero: tarjetas y gráficos.",
+  def:"Una segmentación filtra la tabla dinámica en la que se creó. Desde Configuración de segmentación se conecta a las demás, y así un solo clic cambia todo el tablero: tarjetas y gráficos.",
   ana:"Es el interruptor general de la casa: en lugar de apagar bombillo por bombillo, bajas uno y se apaga todo.",
   partsT:"Herramientas · toca cada una",
-  parts:[["Insertar","Clic dentro de una tabla dinámica › pestaña Tabla dinámica › Insertar segmentación de datos."],["Conexiones de informe","Clic derecho en la segmentación › Conexiones de informe › marca TD_KPI, TD_Mes, TD_ARS y TD_Prov."],["Misma base","Solo se conectan tablas dinámicas creadas desde la misma tabla: tblServicios."],["Mover","Corta la segmentación y pégala en la columna de la derecha del Dashboard."],["Borrar filtro","El embudo con la X vuelve a mostrar todo."]],
+  parts:[["Insertar","Clic dentro de una tabla dinámica › pestaña Analizar tabla dinámica › Segmentación › marca los campos › Aceptar."],["Conexiones","Selecciona la segmentación › pestaña Segmentación › Configuración de segmentación › Conexiones de tabla dinámica › marca las 4. (En Excel de escritorio se llama Conexiones de informe.)"],["Misma base","Solo se conectan tablas dinámicas creadas desde la misma tabla: tblServicios."],["Ubicar","Arrastra la segmentación hasta la columna de la derecha del Dashboard."],["Borrar filtro","El botón Borrar filtro (embudo con la X) vuelve a mostrar todo. Ctrl + clic elige varios."]],
   uses:[["Ver un solo año","El tablero completo, solo con 2025.","Año = 2025 → 210 servicios"],
         ["Un tipo de servicio","Solo hospitalizaciones: 42 servicios y RD$ 4,889,250.","Tipo de Servicio = Hospitalización"],
         ["Responder en la reunión","«¿Y solo consultas en 2025?»: dos clics.","Año + Tipo de Servicio"],
-        ["Comprobar la conexión","Si una tarjeta no cambia, falta conectarla.","Clic derecho › Conexiones de informe"]],
-  pit:"Si al filtrar una tarjeta o un gráfico no cambia, esa tabla dinámica no está marcada en Conexiones de informe. Si ni siquiera aparece en la lista, se creó desde otra base: vuelve a crearla desde tblServicios.",
-  steps:["Clic dentro de <code>TD_KPI</code> › pestaña <code>Tabla dinámica</code> › <code>Insertar segmentación de datos</code> › marca <code>Año</code> y <code>Tipo de Servicio</code>.","Clic derecho en la segmentación <code>Año</code> › <code>Conexiones de informe</code> › marca las 4 tablas dinámicas. Repite con <code>Tipo de Servicio</code>.","Corta las dos segmentaciones y pégalas en la columna de la derecha del <code>Dashboard</code>.","Prueba con <b>2025</b>: <b>210</b> · <b>RD$ 3,512,850</b> · <b>RD$ 16,727.86</b>, y todos los gráficos cambian."],
-  conf:"Segmentaciones: Año · Tipo de Servicio → TD_KPI, TD_Mes, TD_ARS, TD_Prov", lbl:"SEG", sim:"segmentar" },
+        ["Comprobar la conexión","Si una tarjeta no cambia, falta conectarla.","Segmentación › Configuración de segmentación"]],
+  pit:"Si al filtrar una tarjeta o un gráfico no cambia, esa tabla dinámica no está marcada en Conexiones de tabla dinámica. Si ni siquiera aparece en la lista, se creó desde otra base: vuelve a crearla desde tblServicios.",
+  steps:["Clic dentro de <code>TD_KPI</code> › pestaña <code>Analizar tabla dinámica</code> › <code>Segmentación</code> › marca <code>Año</code> y <code>Tipo de Servicio</code> › <code>Aceptar</code>.","Selecciona la segmentación <code>Año</code> › pestaña <code>Segmentación</code> › <code>Configuración de segmentación</code> › en <b>Conexiones de tabla dinámica</b> marca las 4. Repite con <code>Tipo de Servicio</code>.","Arrastra las dos segmentaciones a la columna de la derecha del <code>Dashboard</code> (<code>O5:Q43</code>).","Prueba con <b>2025</b>: <b>210</b> · <b>RD$ 3,512,850</b> · <b>RD$ 16,727.86</b>, y todos los gráficos cambian."],
+  conf:"Segmentaciones: Año · Tipo de Servicio → conectadas a las 4 tablas dinámicas", lbl:"SEG", sim:"segmentar" },
 
 { k:"Diseño y conclusiones", d:"Ordenado, claro y con un mensaje.",
   def:"Un buen tablero se lee de arriba abajo y de izquierda a derecha: primero las tarjetas, luego los gráficos. Lleva pocos colores, títulos que dicen el hallazgo y, al final, conclusiones con dato y recomendación.",
@@ -413,7 +414,7 @@ const TOPICS = [
   extra:"antesDespues" }
 ];
 const QT=["¿Qué es un dashboard?","¿Qué gráfico uso para cada pregunta?","¿Qué es una tarjeta de indicador?","¿Cómo se crea un gráfico de una tabla dinámica?","¿Cómo filtro todo el tablero a la vez?","¿Cómo se ve un tablero profesional?"];
-const SH=["Tarjetas + gráficos + segmentaciones en una pantalla","Tiempo → Línea · Comparar → Columna · Parte → Circular · Número → Tarjeta","TD_KPI (solo Valores) › en la tarjeta: = y clic","Clic en la TD › Insertar › Gráfico › Línea o Columna","Clic derecho en la segmentación › Conexiones de informe","Orden · pocos colores · títulos que concluyen · dato + recomendación"];
+const SH=["Tarjetas + gráficos + segmentaciones en una pantalla","Tiempo → Línea · Comparar → Columna · Parte → Circular · Número → Tarjeta","TD_KPI (solo Valores) › en la tarjeta: = y clic","Clic en la TD › Insertar › Línea o Columna › arrastrar al recuadro","Segmentación › Configuración de segmentación › Conexiones de tabla dinámica","Orden · pocos colores · títulos que concluyen · dato + recomendación"];
 
 /* ---------- Construcción de diapositivas ---------- */
 const S = [], INICIO = [];
@@ -489,7 +490,7 @@ S.push({topic:T_RES, html:`<div class="slide">${ebR("1 · El encargo")}
       <div class="plano" style="flex:1">
         <div class="t">Tablero de servicios de salud · 2024–2025</div>
         <div class="k">Tarjeta 1<br>Servicios · B6</div><div class="k">Tarjeta 2<br>Monto total · F6</div><div class="k">Tarjeta 3<br>Promedio · J6</div>
-        <div class="s">Segmen&shy;taciones<br><br>Año<br><br>Tipo de Servicio</div>
+        <div class="s">Segmen&shy;taciones<br><br>Año<br><br>Tipo de Servicio</div><div class="m">Motor<br>col. T<br><br>TD_KPI<br>TD_Mes<br>TD_ARS<br>TD_Prov</div>
         <div class="g" style="grid-column:1/4">Gráfico 1 · Servicios por mes (Líneas)</div>
         <div class="g">Gráfico 2<br>Monto por ARS</div><div class="g" style="grid-column:2/4">Gráfico 3 · Servicios por provincia</div>
         <div class="c">Conclusiones para la dirección</div>
@@ -500,16 +501,16 @@ S.push({topic:T_RES, html:`<div class="slide">${ebR("1 · El encargo")}
 S.push({topic:T_RES, html:`<div class="slide">${ebR("2 · Cómo se construyó")}
   <h2 style="font-size:36px">Cuatro tablas dinámicas, dos segmentaciones</h2>
   <table class="ptab">
-    <thead><tr><th></th><th>Hoja</th><th>Filas</th><th>Columnas</th><th>Valores</th><th>Se muestra como</th><th>Resultado (todo)</th></tr></thead>
+    <thead><tr><th></th><th>Tabla</th><th>Dónde</th><th>Filas</th><th>Columnas</th><th>Valores</th><th>Se muestra como</th><th>Resultado (todo)</th></tr></thead>
     <tbody>
-      <tr><td class="n">1</td><td>TD_KPI</td><td>—</td><td>—</td><td>Cuenta de ID Servicio · Suma de Monto · Promedio de Monto</td><td>3 tarjetas (B6, F6, J6)</td><td>360 · RD$ 6,691,250 · RD$ 18,586.81</td></tr>
-      <tr><td class="n">2</td><td>TD_Mes</td><td>Mes</td><td>Año</td><td>Cuenta de ID Servicio</td><td>Líneas</td><td>Diciembre, el más alto: 17 y 23</td></tr>
-      <tr><td class="n">3</td><td>TD_ARS</td><td>ARS</td><td>—</td><td>Suma de Monto · orden ↓</td><td>Columna agrupada</td><td>SeNaSa: RD$ 1,801,250</td></tr>
-      <tr><td class="n">4</td><td>TD_Prov</td><td>Provincia</td><td>—</td><td>Cuenta de ID Servicio · orden ↓</td><td>Columna agrupada</td><td>Distrito Nacional: 112</td></tr>
-      <tr><td class="n">5</td><td>Dashboard</td><td colspan="3">Segmentaciones <code>Año</code> y <code>Tipo de Servicio</code> › clic derecho › <code>Conexiones de informe</code> › marcar las 4 tablas dinámicas</td><td>Botones a la derecha</td><td>2025: 210 · RD$ 3,512,850</td></tr>
+      <tr><td class="n">1</td><td>TD_KPI</td><td>T5</td><td>—</td><td>—</td><td>Cuenta de ID Servicio · Suma de Monto · Promedio de Monto</td><td>3 tarjetas (B6, F6, J6)</td><td>360 · RD$ 6,691,250 · RD$ 18,586.81</td></tr>
+      <tr><td class="n">2</td><td>TD_Mes</td><td>T10</td><td>Mes</td><td>Año</td><td>Cuenta de ID Servicio</td><td>Líneas</td><td>Diciembre, el más alto: 17 y 23</td></tr>
+      <tr><td class="n">3</td><td>TD_ARS</td><td>T29</td><td>ARS</td><td>—</td><td>Suma de Monto · orden ↓</td><td>Columna agrupada</td><td>SeNaSa: RD$ 1,801,250</td></tr>
+      <tr><td class="n">4</td><td>TD_Prov</td><td>T38</td><td>Provincia</td><td>—</td><td>Cuenta de ID Servicio · orden ↓</td><td>Columna agrupada</td><td>Distrito Nacional: 112</td></tr>
+      <tr><td class="n">5</td><td>Segmentaciones</td><td>O5</td><td colspan="3"><code>Año</code> y <code>Tipo de Servicio</code> › <code>Configuración de segmentación</code> › <code>Conexiones de tabla dinámica</code> › marcar las 4</td><td>Botones a la derecha</td><td>2025: 210 · RD$ 3,512,850</td></tr>
     </tbody>
   </table>
-  <div style="display:grid;grid-template-columns:1fr 360px;gap:16px;align-items:stretch"><div class="pit" style="background:var(--xl-soft)"><b style="color:var(--xl)">Por qué así</b><span>Todo sale de <strong>tblServicios</strong>, por eso las segmentaciones pueden controlar las 4 tablas dinámicas. Las tarjetas toman su número de <strong>TD_KPI</strong> y no de la base: así también se filtran.</span></div>
+  <div style="display:grid;grid-template-columns:1fr 360px;gap:16px;align-items:stretch"><div class="pit" style="background:var(--xl-soft)"><b style="color:var(--xl)">Por qué así</b><span>Todo sale de <strong>tblServicios</strong> y vive en la hoja <strong>Dashboard</strong> (las tablas dinámicas, en la columna T), por eso las segmentaciones pueden controlar las 4. Las tarjetas toman su número de <strong>TD_KPI</strong> y no de la base: así también se filtran.</span></div>
   <a class="dlbtn" href="Modulo4-Base-Dashboard.xlsx" download><span class="ic">⬇</span><span><b>Base y plantilla del tablero</b><small>Modulo4-Base-Dashboard.xlsx · hojas Servicios (con Año y Mes) y Dashboard</small></span></a></div>
 </div>`});
 
@@ -580,7 +581,7 @@ tarjetas(box){
       <label class="ctrl">Segmentación · Año<select data-y>${opts(["(Todos)","2024","2025"],"(Todos)")}</select></label>
       <label class="ctrl">Segmentación · Tipo de Servicio<select data-t>${opts(["(Todos)"].concat(TIPOS),"(Todos)")}</select></label>
     </div>
-    <div class="ctrl">Hoja TD_KPI · tabla dinámica solo con Valores</div>
+    <div class="ctrl">Dashboard!T5 · TD_KPI, tabla dinámica solo con Valores</div>
     <div class="pv" data-p></div>
     <div class="ctrl">Hoja Dashboard · las tarjetas toman el número de TD_KPI</div>
     <div class="kcards" data-k></div>
@@ -591,7 +592,7 @@ tarjetas(box){
     const y=q("[data-y]").value, t=q("[data-t]").value;
     const rows=rec.filter(r=>(y==="(Todos)"||r.anio===y)&&(t==="(Todos)"||r.tipo===t)), T=tot(rows);
     q("[data-p]").innerHTML=`<table><thead><tr><th>Cuenta de ID Servicio</th><th>Suma de Monto</th><th>Promedio de Monto</th></tr></thead><tbody><tr class="tot"><td style="text-align:right">${num0(T.n)}</td><td>${num2(T.s)}</td><td>${num2(T.s/T.n)}</td></tr></tbody></table>`;
-    q("[data-k]").innerHTML=`<div class="kcard"><small>Servicios atendidos</small><b>${num0(T.n)}</b><em>B6 = TD_KPI · Cuenta</em></div><div class="kcard"><small>Monto total</small><b>${rd0(T.s)}</b><em>F6 = TD_KPI · Suma</em></div><div class="kcard"><small>Monto promedio</small><b>${rd2(T.s/T.n)}</b><em>J6 = TD_KPI · Promedio</em></div>`;
+    q("[data-k]").innerHTML=`<div class="kcard"><small>Servicios atendidos</small><b>${num0(T.n)}</b><em>B6 = T6 · Cuenta</em></div><div class="kcard"><small>Monto total</small><b>${rd0(T.s)}</b><em>F6 = U6 · Suma</em></div><div class="kcard"><small>Monto promedio</small><b>${rd2(T.s/T.n)}</b><em>J6 = V6 · Promedio</em></div>`;
     const filt = y!=="(Todos)"||t!=="(Todos)";
     q("[data-bad]").innerHTML=`<div class="kcard${filt?" bad":""}"><small>Monto total · =SUMA(tblServicios[Monto])</small><b>${rd0(6691250)}</b><em>${filt?`<span class="flag">✗ No cambió: la fórmula lee toda la base y no ve la segmentación.</span>`:"Sin filtros, coincide. Ahora elige un año en la segmentación."}</em></div>`;
   };
@@ -605,7 +606,7 @@ graficos(box){
     "TD_ARS · Suma de Monto":()=>{ const g=group(rec,"ars").sort((a,b)=>b.s-a.s); return {cats:g.map(x=>x.k),series:[{name:"Suma de Monto",color:C1,vals:g.map(x=>x.s)}],fmt:rd0,best:"Columna agrupada",rows:g.map(x=>[x.k,x.s]),cols:["Suma de Monto"]}; },
     "TD_Prov · Cuenta de ID Servicio":()=>{ const g=group(rec,"prov").sort((a,b)=>b.n-a.n); return {cats:g.map(x=>x.k),series:[{name:"Cuenta de ID Servicio",color:C1,vals:g.map(x=>x.n)}],fmt:num0,best:"Columna agrupada",rows:g.map(x=>[x.k,x.n]),cols:["Cuenta de ID Servicio"]}; }
   };
-  box.innerHTML = head("Simulador · Insertar › Gráfico desde la tabla dinámica")+`<div class="sim-b">
+  box.innerHTML = head("Simulador · Insertar › gráfico de la tabla dinámica")+`<div class="sim-b">
     <div class="ctrls">
       <label class="ctrl">Tabla dinámica<select data-d>${opts(Object.keys(TD),"TD_Mes · Mes × Año")}</select></label>
       <label class="ctrl">Tipo de gráfico<select data-g>${opts(["Línea","Columna agrupada","Circular"],"Línea")}</select></label>
@@ -629,12 +630,12 @@ graficos(box){
 /* 5 · Segmentaciones */
 segmentar(box){
   let anio="Todo"; const selT=new Set(TIPOS); const con={kpi:true,ars:true};
-  box.innerHTML = head("Simulador · segmentaciones y conexiones de informe")+`<div class="sim-b">
+  box.innerHTML = head("Simulador · segmentaciones y sus conexiones")+`<div class="sim-b">
     <div style="display:grid;grid-template-columns:200px 1fr;gap:10px">
       <div class="slicer"><div class="sh">Año</div><div class="sb" data-y>${["Todo","2024","2025"].map(y=>`<button data-v="${y}">${y}</button>`).join("")}</div></div>
       <div class="slicer"><div class="sh">Tipo de Servicio <button data-clr title="Borrar filtro">✕ Borrar filtro</button></div><div class="sb" data-t>${TIPOS.map(t=>`<button data-v="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>
     </div>
-    <div class="conn"><b style="font-family:var(--mono);font-size:12px;color:var(--muted)">CONEXIONES DE INFORME:</b><label><input type="checkbox" data-c="kpi" checked>TD_KPI</label><label><input type="checkbox" data-c="ars" checked>TD_ARS</label></div>
+    <div class="conn"><b style="font-family:var(--mono);font-size:12px;color:var(--muted)">CONEXIONES DE TABLA DINÁMICA:</b><label><input type="checkbox" data-c="kpi" checked>TD_KPI</label><label><input type="checkbox" data-c="ars" checked>TD_ARS</label></div>
     <div class="kcards" data-k></div><div data-g></div></div>`;
   const run=()=>{
     box.querySelectorAll("[data-y] button").forEach(b=>b.classList.toggle("on",b.dataset.v===anio));
