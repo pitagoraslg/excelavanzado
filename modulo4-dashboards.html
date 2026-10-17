@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>Módulo 4 · Visualización de datos y dashboards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Layout: escenario fijo 1280×720 escalado a la pantalla (proyector). Mismo motor de los Módulos 2 y 3; paleta ciruela + azul cielo. */
+:root{
+  --bg:#ebe6ef;        /* fondo fuera del escenario */
+  --paper:#f7f5fa;     /* lámina (lila muy claro) */
+  --card:#ffffff;
+  --ink:#4a2448;       /* ciruela */
+  --muted:#6b6070;
+  --line:#e6e0ec;
+  --grid:#cfc6d6;
+  --xl:#2a78c2;        /* azul cielo (texto) */
+  --sky:#2f86d6;       /* azul cielo (gráficos) */
+  --plum:#8a3f8f;      /* ciruela (gráficos) */
+  --xl-soft:#e8f1fb;
+  --green:#2a78c2;
+  --green-soft:#e8f1fb;
+  --mark:#efe6f1;      /* resaltado */
+  --warn:#a3364f;
+  --warn-soft:#f8e6eb;
+  --ok:#1f7a55;
+  --ok-soft:#e3f3ec;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --mono:"IBM Plex Mono", Consolas, "Courier New", monospace;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);overflow:hidden}
+#viewport{position:fixed;inset:0;overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;background:var(--paper);transform-origin:center center;transform:translate(-50%,-50%);box-shadow:0 10px 40px rgba(74,36,72,.16);border-top:3px solid var(--ink);flex:none}
+.slide{position:absolute;inset:0;padding:64px 72px 70px;display:none;flex-direction:column;gap:22px}
+.slide.on{display:flex;animation:in .35s ease}
+@keyframes in{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.slide.on{animation:none}}
+
+/* chrome */
+.top{position:absolute;top:20px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;z-index:3}
+.dots{display:flex;gap:6px}
+.dots button{width:30px;height:6px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dots button.done{background:var(--grid)}
+.dots button.cur{background:var(--sky)}
+.bottom{position:absolute;bottom:18px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);z-index:3}
+.navb{display:flex;gap:8px;align-items:center}
+.btn{font-family:var(--mono);font-size:13px;border:1px solid var(--grid);background:var(--card);color:var(--ink);padding:7px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink)}
+.btn:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* type */
+.eyebrow{font-family:var(--mono);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--xl);display:flex;gap:14px;align-items:center}
+.eyebrow .n{font-family:var(--serif);font-size:30px;letter-spacing:0;text-transform:none}
+.eyebrow .tag{border:1px solid var(--xl);padding:2px 8px;font-size:12px}
+h1{font-family:var(--serif);font-weight:600;font-size:76px;line-height:1.02;margin:0;text-wrap:balance}
+h2{font-family:var(--serif);font-weight:600;font-size:46px;line-height:1.08;margin:0;text-wrap:balance}
+h3{font-size:20px;margin:0;font-weight:600}
+p{margin:0}
+.lead{font-size:24px;line-height:1.45;max-width:30em;color:var(--ink)}
+.muted{color:var(--muted)}
+code,.code{font-family:var(--mono)}
+
+/* cover */
+.cover{justify-content:center;gap:28px}
+.cover .mod{font-family:var(--mono);font-size:18px;letter-spacing:.14em;text-transform:uppercase;color:var(--xl)}
+.cover h1{font-size:92px;max-width:12em}
+.cover .by{font-size:24px;color:var(--muted)}
+.cover .by b{color:var(--ink);font-weight:600}
+.cover .kpis{display:flex;gap:12px}
+.cover .kpis div{background:var(--card);border:1px solid var(--grid);border-top:3px solid var(--sky);padding:10px 18px;min-width:150px}
+.cover .kpis small{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cover .kpis b{font-family:var(--serif);font-size:30px;font-weight:600;font-variant-numeric:tabular-nums}
+.cover .hint{font-family:var(--mono);font-size:14px;color:var(--muted)}
+
+/* index */
+.idx{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink)}
+.idx button{all:unset;cursor:pointer;padding:16px 22px 16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.idx button:nth-child(4n){border-right:0}
+.idx button:hover{background:var(--card)}
+.idx .n{font-family:var(--serif);font-size:40px;color:var(--xl);line-height:1}
+.idx .k{font-family:var(--mono);font-size:16px;color:var(--ink);font-weight:500}
+.idx .d{font-size:16px;color:var(--ink)}
+.idx button.res{background:var(--ink);color:#fff}
+.idx button.res .n,.idx button.res .k,.idx button.res .d{color:#fff}
+.note{font-size:15px;color:var(--muted);display:flex;gap:10px;align-items:center}
+.note b{color:var(--ink)}
+
+/* concept */
+.cols{display:grid;grid-template-columns:1.05fr 1fr;gap:44px;flex:1;min-height:0}
+.analogy{border-left:3px solid var(--sky);padding:6px 0 6px 18px;font-family:var(--serif);font-size:22px;font-style:italic;line-height:1.4;color:var(--ink)}
+.args{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);margin:0;padding:0}
+.args li{list-style:none;display:grid;grid-template-columns:200px 1fr;gap:16px;padding:11px 8px;border-bottom:1px solid var(--line);cursor:pointer;font-size:17px;line-height:1.4}
+.args li code{font-size:15px;color:var(--ink);font-weight:500}
+.args li.on{background:var(--mark)}
+
+/* uses */
+.uses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.use{min-width:0;background:var(--card);border:1px solid var(--line);padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.use h3{font-size:19px}
+.use p{font-size:16.5px;line-height:1.45;color:var(--muted)}
+.use code{font-size:14px;color:var(--xl);background:var(--xl-soft);padding:3px 6px;display:inline-block;margin-top:2px;white-space:normal;word-break:break-word;max-width:100%}
+.pit{display:flex;gap:16px;align-items:flex-start;background:var(--warn-soft);padding:14px 18px;font-size:17px;line-height:1.45}
+.pit b{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--warn);padding-top:3px;white-space:nowrap}
+
+/* practice */
+.prac{display:grid;grid-template-columns:430px 1fr;gap:36px;flex:1;min-height:0}
+.steps{margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:s}
+.steps li{list-style:none;display:grid;grid-template-columns:30px 1fr;gap:10px;font-size:16px;line-height:1.4;counter-increment:s}
+.steps li::before{content:counter(s);font-family:var(--serif);font-size:22px;color:var(--xl);line-height:1}
+.steps code{font-size:13.5px;background:var(--card);border:1px solid var(--line);padding:1px 5px}
+.fbar{display:flex;border:1px solid var(--grid);background:var(--card);font-family:var(--mono);font-size:13.5px;align-items:stretch}
+.fbar .lbl{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--xl);padding:9px 10px;border-right:1px solid var(--grid);display:flex;align-items:center}
+.fbar .f{padding:9px 12px;flex:1;min-width:0;word-break:break-word;line-height:1.45}
+.sim{background:var(--card);border:1px solid var(--grid);display:flex;flex-direction:column;min-height:0;min-width:0}
+.sim-h{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--grid);font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--paper)}
+.sim-h .live{color:var(--xl)}
+.sim-b{padding:14px 18px;display:flex;flex-direction:column;gap:12px;min-height:0;flex:1}
+.ctrls{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.ctrl{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--muted);font-family:var(--mono)}
+select{font-family:var(--sans);font-size:15px;padding:6px 9px;border:1px solid var(--grid);background:var(--card);color:var(--ink);min-width:150px}
+.dlbtn{display:flex;align-items:center;gap:14px;text-decoration:none;background:var(--ink);color:#fff;padding:12px 16px;border:1px solid var(--ink)}
+.dlbtn:hover{background:#3a1c38}
+.dlbtn .ic{font-size:22px;line-height:1}
+.dlbtn b{display:block;font-size:16px;font-weight:600}
+.dlbtn small{display:block;font-family:var(--mono);font-size:11.5px;opacity:.9;margin-top:2px}
+
+/* botones tipo píldora (preguntas, tipos de gráfico) */
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pills button{all:unset;cursor:pointer;font-size:14px;padding:6px 12px;border:1px solid var(--grid);background:var(--paper);color:var(--ink)}
+.pills button:hover{border-color:var(--ink)}
+.pills button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.qbtns{display:flex;flex-direction:column;gap:6px}
+.qbtns button{all:unset;cursor:pointer;font-size:14.5px;padding:7px 12px;border:1px solid var(--line);background:var(--paper);line-height:1.35}
+.qbtns button.on{border-color:var(--sky);background:var(--xl-soft);font-weight:600}
+.verdict{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;padding:10px 14px;font-size:15px;line-height:1.4;border-left:4px solid var(--grid);background:var(--paper)}
+.verdict b{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding-top:2px;white-space:nowrap}
+.verdict.ok{border-color:var(--ok);background:var(--ok-soft)} .verdict.ok b{color:var(--ok)}
+.verdict.mid{border-color:#b7791f;background:#fbf3e4} .verdict.mid b{color:#8a5a12}
+.verdict.no{border-color:var(--warn);background:var(--warn-soft)} .verdict.no b{color:var(--warn)}
+
+/* gráficos */
+.chart{border:1px solid var(--grid);background:var(--card);padding:8px 10px 6px;display:flex;flex-direction:column;gap:4px;min-height:0;min-width:0}
+.chart .ct{font-size:14px;font-weight:600;line-height:1.3}
+.chart .cs{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.chart svg{display:block;width:100%;height:auto}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px;border-radius:2px}
+svg text{font-family:var(--sans)}
+
+/* tarjetas de indicadores */
+.kcards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kcard{background:var(--card);border:1px solid var(--grid);border-top:4px solid var(--sky);padding:10px 14px;position:relative;min-width:0}
+.kcard small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.kcard b{display:block;font-family:var(--serif);font-size:30px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.15;white-space:nowrap}
+.kcard em{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:2px}
+.sim .kcard b{font-size:25px}
+.kcard.bad{border-top-color:var(--warn)}
+.flag{font-family:var(--mono);font-size:11px;color:var(--warn);font-weight:600}
+
+/* segmentaciones */
+.slicer{border:1px solid var(--grid);background:var(--card)}
+.slicer .sh{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;font-size:12.5px;font-weight:600;border-bottom:1px solid var(--grid)}
+.slicer .sh button{all:unset;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--xl)}
+.slicer .sb{display:flex;flex-wrap:wrap;gap:5px;padding:7px}
+.slicer .sb button{all:unset;cursor:pointer;font-size:13px;padding:4px 9px;border:1px solid var(--grid);background:var(--card);color:var(--muted)}
+.slicer .sb button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.slicer.col .sb{flex-direction:column}
+.conn{display:flex;gap:14px;flex-wrap:wrap;font-size:13.5px;border:1px dashed var(--grid);padding:7px 10px;align-items:center}
+.conn label{display:flex;gap:6px;align-items:center;cursor:pointer;font-family:var(--mono);font-size:13px}
+
+/* tabla dinámica estilo Excel */
+.pv{overflow:auto;border:1px solid var(--grid);min-height:0}
+.pv table{border-collapse:collapse;font-size:13px;width:100%;font-variant-numeric:tabular-nums}
+.pv th,.pv td{padding:3px 10px;white-space:nowrap;border-bottom:1px solid var(--line)}
+.pv thead th{background:var(--xl-soft);color:var(--ink);font-weight:600;text-align:right;border-bottom:1px solid var(--sky)}
+.pv thead th:first-child{text-align:left}
+.pv td{text-align:right}
+.pv td:first-child{text-align:left}
+.pv tr.tot td{font-weight:700;border-top:1px solid var(--sky);border-bottom:0;background:var(--xl-soft)}
+
+/* antes y después */
+.ad{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;min-height:0}
+.ad>div{display:flex;flex-direction:column;gap:8px;min-height:0;min-width:0}
+.ad .lab{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.ad .lab.no{color:var(--warn)} .ad .lab.ok{color:var(--ok)}
+.ugly{background:#fffbe0;border:3px double #e0421b;padding:8px;display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;overflow:hidden;font-family:"Comic Sans MS","Segoe UI",sans-serif}
+.ugly table{border-collapse:collapse;font-size:11px;width:100%}
+.ugly td,.ugly th{border:1px solid #888;padding:2px 4px;text-align:center}
+.why{display:flex;flex-direction:column;gap:4px;font-size:14px;line-height:1.35}
+.why span::before{content:"✗ ";color:var(--warn);font-weight:700}
+.why.ok span::before{content:"✓ ";color:var(--ok)}
+
+/* ejemplo resuelto */
+.brief{display:grid;grid-template-columns:1fr 1.05fr;gap:36px;flex:1;min-height:0}
+.qlist{display:flex;flex-direction:column;gap:0;border-top:2px solid var(--ink)}
+.qlist div{display:grid;grid-template-columns:36px 1fr auto;gap:10px;padding:10px 6px;border-bottom:1px solid var(--line);font-size:16.5px;line-height:1.35;align-items:baseline}
+.qlist .n{font-family:var(--serif);font-size:22px;color:var(--xl)}
+.qlist code{font-size:12.5px;background:var(--xl-soft);color:var(--xl);padding:2px 6px;white-space:nowrap}
+.plano{display:grid;grid-template-columns:repeat(3,1fr) 120px;grid-template-rows:38px 70px 1fr 1fr 46px;gap:6px;background:var(--card);border:1px solid var(--grid);padding:10px;font-family:var(--mono);font-size:12px;color:var(--muted);min-height:0}
+.plano div{border:1.5px dashed var(--grid);display:flex;align-items:center;justify-content:center;text-align:center;padding:4px;line-height:1.3}
+.plano .t{grid-column:1/5;background:var(--ink);color:#fff;border:0;font-weight:600}
+.plano .k{background:var(--mark);color:var(--ink);font-weight:600}
+.plano .g{background:var(--xl-soft);color:var(--xl);font-weight:600}
+.plano .s{grid-column:4;grid-row:2/5;background:var(--mark)}
+.plano .c{grid-column:1/5}
+.ptab{border-collapse:collapse;width:100%;font-size:15px}
+.ptab th{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:7px 10px;border-bottom:2px solid var(--ink)}
+.ptab td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.35}
+.ptab td:first-child{font-family:var(--mono);font-weight:600;white-space:nowrap}
+.ptab code{font-size:13px}
+.ptab .n{font-family:var(--serif);font-size:20px;color:var(--xl);width:30px}
+.dash{display:grid;grid-template-columns:1fr 176px;gap:12px;flex:1;min-height:0}
+.dash-main{display:flex;flex-direction:column;gap:10px;min-height:0;min-width:0}
+.dash-charts{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:10px;flex:1;min-height:0}
+.dash-side{display:flex;flex-direction:column;gap:10px}
+.dtitle{background:var(--ink);color:#fff;padding:8px 14px;display:flex;justify-content:space-between;align-items:baseline}
+.dtitle b{font-family:var(--serif);font-size:22px;font-weight:600}
+.dtitle span{font-family:var(--mono);font-size:12px;opacity:.85}
+.concl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;flex:1;min-height:0}
+.cc{background:var(--card);border:1px solid var(--line);padding:12px 16px;display:flex;flex-direction:column;gap:6px;cursor:pointer;min-width:0}
+.cc h3{font-size:16px;line-height:1.25;display:flex;gap:10px;align-items:baseline}
+.cc h3 i{font-style:normal;font-family:var(--serif);font-size:22px;color:var(--xl)}
+.cc p{font-size:14px;line-height:1.38;color:var(--ink)}
+.cc .dec{font-size:13.5px;color:var(--ok);background:var(--ok-soft);padding:6px 9px;line-height:1.35}
+.cc .dec b{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.cc.hid p,.cc.hid .dec{filter:blur(6px);user-select:none}
+.cc.wide{grid-column:auto}
+
+/* summary */
+.sum{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:2px solid var(--ink)}
+.sum>div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;padding:10px 10px;border-bottom:1px solid var(--line);align-items:baseline}
+.sum .n{font-family:var(--serif);font-size:26px;color:var(--xl)}
+.sum code{font-size:14px;display:block;color:var(--ink);margin-top:3px;font-weight:500}
+.sum p{font-size:16px;color:var(--muted)}
+.sum>div>div{min-width:0}
+</style>
+
+<div id="viewport"><div id="stage">
+  <div class="top"><span id="topL">MÓDULO 4 · VISUALIZACIÓN DE DATOS Y DASHBOARDS</span><div class="dots" id="dots"></div></div>
+  <div id="slides"></div>
+  <div class="bottom">
+    <span>Jarlin Figueroa, MA</span>
+    <div class="navb">
+      <button class="btn" id="fs" title="Pantalla completa (F)">Pantalla completa</button>
+      <button class="btn" id="prev" aria-label="Anterior">← Anterior</button>
+      <span id="count" style="min-width:70px;text-align:center"></span>
+      <button class="btn primary" id="next" aria-label="Siguiente">Siguiente →</button>
+    </div>
+  </div>
+</div></div>
+
+<script>
+/* ---------- Datos: tblServicios (360 servicios, ene 2024 – dic 2025) · misma base del Módulo 3 ---------- */
+const DATA = [["SRV-1001","2024-01-06","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",4300],["SRV-1002","2024-01-06","SeNaSa","Hospital Regional Norte","Hospitalización","Distrito Nacional",103100],["SRV-1003","2024-01-08","ARS Universal","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",14600],["SRV-1004","2024-01-09","MAPFRE Salud ARS","Centro Médico Las Américas","Hospitalización","Santiago",151600],["SRV-1005","2024-01-10","ARS Humano","Policlínica Central","Consulta","San Cristóbal",2600],["SRV-1006","2024-01-19","SeNaSa","Policlínica Central","Consulta","Santo Domingo",3000],["SRV-1007","2024-01-22","ARS Universal","Clínica San Rafael","Imágenes","Santo Domingo",6200],["SRV-1008","2024-01-23","ARS Universal","Centro Médico Las Américas","Emergencia","Santo Domingo",10350],["SRV-1009","2024-01-23","SeNaSa","Clínica San Rafael","Consulta","Santiago",2700],["SRV-1010","2024-01-25","SeNaSa","Clínica San Rafael","Imágenes","Distrito Nacional",13200],["SRV-1011","2024-01-29","ARS Humano","Clínica Vista Mar","Emergencia","Santo Domingo",11850],["SRV-1012","2024-02-02","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","San Cristóbal",10250],["SRV-1013","2024-02-05","MAPFRE Salud ARS","Clínica San Rafael","Consulta","San Cristóbal",2800],["SRV-1014","2024-02-06","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santiago",3900],["SRV-1015","2024-02-09","ARS Universal","Hospital Regional Norte","Hospitalización","Distrito Nacional",155850],["SRV-1016","2024-02-10","ARS Universal","Centro Diagnóstico del Cibao","Laboratorio","Puerto Plata",2350],["SRV-1017","2024-02-14","Primera ARS","Policlínica Central","Consulta","La Vega",3450],["SRV-1018","2024-02-18","ARS Humano","Clínica Vista Mar","Consulta","Distrito Nacional",3300],["SRV-1019","2024-02-18","ARS Humano","Hospital Regional Norte","Hospitalización","Distrito Nacional",114850],["SRV-1020","2024-02-21","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","Santiago",14250],["SRV-1021","2024-03-04","ARS Universal","Centro Médico Las Américas","Hospitalización","Distrito Nacional",105100],["SRV-1022","2024-03-06","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",5300],["SRV-1023","2024-03-08","MAPFRE Salud ARS","Centro Médico Las Américas","Hospitalización","Puerto Plata",95600],["SRV-1024","2024-03-08","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","La Vega",10050],["SRV-1025","2024-03-10","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santiago",4050],["SRV-1026","2024-03-23","SeNaSa","Hospital Regional Norte","Hospitalización","San Cristóbal",96400],["SRV-1027","2024-03-25","ARS Universal","Policlínica Central","Consulta","San Cristóbal",2050],["SRV-1028","2024-03-25","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santiago",1950],["SRV-1029","2024-03-27","SeNaSa","Centro Médico Las Américas","Emergencia","Santo Domingo",5450],["SRV-1030","2024-03-29","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",2050],["SRV-1031","2024-03-30","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",9250],["SRV-1032","2024-03-30","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",5100],["SRV-1033","2024-04-01","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","Santiago",14150],["SRV-1034","2024-04-04","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santiago",2100],["SRV-1035","2024-04-05","ARS Humano","Clínica San Rafael","Imágenes","Distrito Nacional",14900],["SRV-1036","2024-04-05","SeNaSa","Clínica San Rafael","Consulta","La Vega",3300],["SRV-1037","2024-04-05","SeNaSa","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",1650],["SRV-1038","2024-04-07","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",6150],["SRV-1039","2024-04-11","SeNaSa","Centro Médico Las Américas","Hospitalización","La Vega",54050],["SRV-1040","2024-04-16","MAPFRE Salud ARS","Policlínica Central","Consulta","Santo Domingo",3100],["SRV-1041","2024-04-19","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","La Vega",4150],["SRV-1042","2024-04-19","SeNaSa","Clínica Vista Mar","Emergencia","Distrito Nacional",17150],["SRV-1043","2024-04-23","SeNaSa","Clínica Vista Mar","Consulta","Distrito Nacional",1850],["SRV-1044","2024-04-28","SeNaSa","Clínica Vista Mar","Consulta","Distrito Nacional",1100],["SRV-1045","2024-05-04","ARS Humano","Hospital Regional Norte","Hospitalización","Distrito Nacional",128850],["SRV-1046","2024-05-05","SeNaSa","Policlínica Central","Consulta","Santo Domingo",1550],["SRV-1047","2024-05-06","MAPFRE Salud ARS","Centro Médico Las Américas","Emergencia","Distrito Nacional",8200],["SRV-1048","2024-05-08","MAPFRE Salud ARS","Centro Médico Las Américas","Hospitalización","Distrito Nacional",92550],["SRV-1049","2024-05-09","MAPFRE Salud ARS","Clínica Vista Mar","Emergencia","Distrito Nacional",12350],["SRV-1050","2024-05-09","SeNaSa","Policlínica Central","Consulta","Distrito Nacional",1350],["SRV-1051","2024-05-18","ARS Universal","Centro Médico Las Américas","Emergencia","La Vega",14700],["SRV-1052","2024-05-19","SeNaSa","Clínica San Rafael","Consulta","Distrito Nacional",1200],["SRV-1053","2024-05-26","ARS Universal","Hospital Regional Norte","Imágenes","Santiago",6900],["SRV-1054","2024-05-27","ARS Humano","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",2450],["SRV-1055","2024-05-28","Primera ARS","Centro Médico Las Américas","Emergencia","Santiago",16200],["SRV-1056","2024-05-31","SeNaSa","Centro Médico Nuestra Señora","Hospitalización","Santo Domingo",137650],["SRV-1057","2024-06-01","SeNaSa","Clínica Vista Mar","Emergencia","San Cristóbal",10100],["SRV-1058","2024-06-03","Primera ARS","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",3550],["SRV-1059","2024-06-05","ARS Humano","Clínica Vista Mar","Consulta","Distrito Nacional",2600],["SRV-1060","2024-06-08","MAPFRE Salud ARS","Policlínica Central","Consulta","Distrito Nacional",1200],["SRV-1061","2024-06-12","SeNaSa","Clínica Vista Mar","Consulta","Santiago",3200],["SRV-1062","2024-06-13","ARS Universal","Centro Médico Las Américas","Emergencia","Distrito Nacional",14000],["SRV-1063","2024-06-16","SeNaSa","Hospital Regional Norte","Imágenes","Distrito Nacional",13950],["SRV-1064","2024-06-16","Primera ARS","Hospital Regional Norte","Emergencia","Santiago",12500],["SRV-1065","2024-06-18","MAPFRE Salud ARS","Clínica Vista Mar","Emergencia","Puerto Plata",11150],["SRV-1066","2024-06-26","MAPFRE Salud ARS","Clínica Vista Mar","Emergencia","Distrito Nacional",10500],["SRV-1067","2024-06-28","ARS Humano","Centro Médico Nuestra Señora","Consulta","Santo Domingo",3000],["SRV-1068","2024-07-02","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",14050],["SRV-1069","2024-07-06","ARS Humano","Hospital Regional Norte","Emergencia","Puerto Plata",6950],["SRV-1070","2024-07-07","ARS Humano","Clínica Vista Mar","Emergencia","Distrito Nacional",9650],["SRV-1071","2024-07-11","SeNaSa","Centro Médico Las Américas","Emergencia","Distrito Nacional",6700],["SRV-1072","2024-07-13","ARS Humano","Centro Diagnóstico del Cibao","Laboratorio","Santo Domingo",3600],["SRV-1073","2024-07-14","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","Santo Domingo",10050],["SRV-1074","2024-07-16","Primera ARS","Centro Médico Las Américas","Hospitalización","Santo Domingo",177650],["SRV-1075","2024-07-27","SeNaSa","Clínica San Rafael","Consulta","Distrito Nacional",2850],["SRV-1076","2024-07-29","SeNaSa","Clínica Vista Mar","Emergencia","Santo Domingo",6050],["SRV-1077","2024-07-30","ARS Humano","Centro Médico Las Américas","Hospitalización","Puerto Plata",121650],["SRV-1078","2024-07-31","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","San Cristóbal",5800],["SRV-1079","2024-07-31","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",3550],["SRV-1080","2024-08-04","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","Santiago",2800],["SRV-1081","2024-08-04","MAPFRE Salud ARS","Clínica San Rafael","Consulta","La Vega",2200],["SRV-1082","2024-08-04","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",5850],["SRV-1083","2024-08-07","ARS Humano","Clínica San Rafael","Consulta","Puerto Plata",1150],["SRV-1084","2024-08-10","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","La Vega",4900],["SRV-1085","2024-08-10","ARS Universal","Policlínica Central","Laboratorio","Distrito Nacional",4750],["SRV-1086","2024-08-12","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",3100],["SRV-1087","2024-08-18","ARS Humano","Centro Médico Nuestra Señora","Consulta","La Vega",3100],["SRV-1088","2024-08-22","ARS Humano","Centro Diagnóstico del Cibao","Laboratorio","San Cristóbal",1750],["SRV-1089","2024-08-22","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","La Vega",5750],["SRV-1090","2024-08-29","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","La Vega",4800],["SRV-1091","2024-08-30","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",3100],["SRV-1092","2024-09-03","ARS Humano","Policlínica Central","Consulta","Santo Domingo",2400],["SRV-1093","2024-09-04","ARS Humano","Centro Médico Nuestra Señora","Consulta","La Vega",1300],["SRV-1094","2024-09-05","ARS Humano","Centro Médico Las Américas","Hospitalización","Santo Domingo",107850],["SRV-1095","2024-09-06","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",2300],["SRV-1096","2024-09-09","Primera ARS","Centro Médico Las Américas","Hospitalización","Santo Domingo",136800],["SRV-1097","2024-09-12","ARS Universal","Clínica San Rafael","Consulta","Distrito Nacional",3450],["SRV-1098","2024-09-14","ARS Universal","Clínica Vista Mar","Consulta","Distrito Nacional",1350],["SRV-1099","2024-09-14","SeNaSa","Centro Médico Las Américas","Hospitalización","Puerto Plata",97800],["SRV-1100","2024-09-16","SeNaSa","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",1350],["SRV-1101","2024-09-17","SeNaSa","Policlínica Central","Consulta","Puerto Plata",3300],["SRV-1102","2024-09-18","SeNaSa","Clínica San Rafael","Consulta","Santiago",2650],["SRV-1103","2024-09-21","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","Santiago",13400],["SRV-1104","2024-10-05","ARS Humano","Hospital Regional Norte","Hospitalización","Distrito Nacional",153050],["SRV-1105","2024-10-06","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","San Cristóbal",2200],["SRV-1106","2024-10-10","SeNaSa","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",3200],["SRV-1107","2024-10-12","SeNaSa","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",1750],["SRV-1108","2024-10-18","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",5250],["SRV-1109","2024-10-20","ARS Humano","Centro Médico Nuestra Señora","Consulta","Santiago",1300],["SRV-1110","2024-10-20","SeNaSa","Centro Médico Las Américas","Hospitalización","Distrito Nacional",65100],["SRV-1111","2024-10-21","ARS Humano","Clínica San Rafael","Consulta","Distrito Nacional",2800],["SRV-1112","2024-10-21","SeNaSa","Clínica San Rafael","Consulta","La Vega",3050],["SRV-1113","2024-10-21","SeNaSa","Hospital Regional Norte","Emergencia","San Cristóbal",6550],["SRV-1114","2024-10-25","ARS Humano","Centro Médico Las Américas","Hospitalización","Distrito Nacional",132500],["SRV-1115","2024-10-25","Primera ARS","Policlínica Central","Consulta","Puerto Plata",1550],["SRV-1116","2024-10-27","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santiago",4350],["SRV-1117","2024-10-30","Primera ARS","Centro Diagnóstico del Cibao","Laboratorio","La Vega",4400],["SRV-1118","2024-11-01","SeNaSa","Centro Médico Las Américas","Emergencia","Santo Domingo",12000],["SRV-1119","2024-11-02","SeNaSa","Policlínica Central","Consulta","Santiago",1000],["SRV-1120","2024-11-03","ARS Humano","Policlínica Central","Laboratorio","Santo Domingo",3150],["SRV-1121","2024-11-05","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",3100],["SRV-1122","2024-11-06","MAPFRE Salud ARS","Clínica San Rafael","Consulta","La Vega",1050],["SRV-1123","2024-11-07","MAPFRE Salud ARS","Policlínica Central","Consulta","Puerto Plata",1950],["SRV-1124","2024-11-13","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","La Vega",3250],["SRV-1125","2024-11-14","Primera ARS","Centro Médico Nuestra Señora","Consulta","Santiago",1250],["SRV-1126","2024-11-17","ARS Universal","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",2650],["SRV-1127","2024-11-17","SeNaSa","Centro Médico Las Américas","Emergencia","Puerto Plata",6150],["SRV-1128","2024-11-18","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",2600],["SRV-1129","2024-11-19","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",4000],["SRV-1130","2024-11-25","MAPFRE Salud ARS","Centro Médico Las Américas","Emergencia","Distrito Nacional",18400],["SRV-1131","2024-11-28","ARS Humano","Centro Médico Las Américas","Hospitalización","Santo Domingo",163450],["SRV-1132","2024-11-28","SeNaSa","Centro Médico Las Américas","Hospitalización","Distrito Nacional",56300],["SRV-1133","2024-11-29","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",3050],["SRV-1134","2024-12-01","Primera ARS","Policlínica Central","Laboratorio","La Vega",5950],["SRV-1135","2024-12-02","SeNaSa","Clínica Vista Mar","Emergencia","Santiago",15350],["SRV-1136","2024-12-03","ARS Humano","Clínica Vista Mar","Emergencia","Santo Domingo",6550],["SRV-1137","2024-12-03","ARS Humano","Centro Médico Las Américas","Emergencia","La Vega",10950],["SRV-1138","2024-12-03","ARS Universal","Clínica San Rafael","Consulta","Santo Domingo",2500],["SRV-1139","2024-12-04","ARS Universal","Centro Diagnóstico del Cibao","Laboratorio","Puerto Plata",5150],["SRV-1140","2024-12-10","SeNaSa","Policlínica Central","Consulta","Distrito Nacional",1350],["SRV-1141","2024-12-13","ARS Universal","Centro Médico Las Américas","Emergencia","San Cristóbal",12800],["SRV-1142","2024-12-14","SeNaSa","Clínica Vista Mar","Consulta","Distrito Nacional",2350],["SRV-1143","2024-12-16","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","San Cristóbal",5050],["SRV-1144","2024-12-21","MAPFRE Salud ARS","Centro Médico Las Américas","Emergencia","Puerto Plata",14350],["SRV-1145","2024-12-23","SeNaSa","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",1100],["SRV-1146","2024-12-25","ARS Universal","Centro Médico Las Américas","Emergencia","Distrito Nacional",8250],["SRV-1147","2024-12-26","Primera ARS","Laboratorio Clínico Amigo","Laboratorio","La Vega",5100],["SRV-1148","2024-12-29","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","Santiago",4000],["SRV-1149","2024-12-29","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",4350],["SRV-1150","2024-12-30","SeNaSa","Hospital Regional Norte","Emergencia","Distrito Nacional",6900],["SRV-1151","2025-01-03","MAPFRE Salud ARS","Clínica San Rafael","Consulta","Santo Domingo",1850],["SRV-1152","2025-01-04","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","San Cristóbal",2850],["SRV-1153","2025-01-09","Primera ARS","Centro Diagnóstico del Cibao","Imágenes","Santo Domingo",14250],["SRV-1154","2025-01-11","SeNaSa","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",1950],["SRV-1155","2025-01-12","SeNaSa","Hospital Regional Norte","Emergencia","San Cristóbal",13000],["SRV-1156","2025-01-16","ARS Universal","Hospital Regional Norte","Imágenes","Distrito Nacional",9650],["SRV-1157","2025-01-16","SeNaSa","Hospital Regional Norte","Imágenes","La Vega",9700],["SRV-1158","2025-01-18","ARS Universal","Clínica Vista Mar","Consulta","Santo Domingo",3500],["SRV-1159","2025-01-18","ARS Humano","Clínica San Rafael","Imágenes","San Cristóbal",9500],["SRV-1160","2025-01-19","ARS Humano","Clínica Vista Mar","Consulta","San Cristóbal",3000],["SRV-1161","2025-01-20","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",3350],["SRV-1162","2025-01-26","SeNaSa","Centro Médico Las Américas","Emergencia","Distrito Nacional",18900],["SRV-1163","2025-01-27","ARS Universal","Hospital Regional Norte","Hospitalización","Santiago",137400],["SRV-1164","2025-01-28","Primera ARS","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",5800],["SRV-1165","2025-01-31","SeNaSa","Centro Médico Las Américas","Emergencia","Distrito Nacional",16900],["SRV-1166","2025-02-02","ARS Humano","Clínica San Rafael","Consulta","Santiago",1050],["SRV-1167","2025-02-03","SeNaSa","Centro Médico Las Américas","Hospitalización","Santiago",147250],["SRV-1168","2025-02-09","MAPFRE Salud ARS","Clínica San Rafael","Consulta","Santo Domingo",1200],["SRV-1169","2025-02-11","MAPFRE Salud ARS","Clínica San Rafael","Consulta","Santiago",3400],["SRV-1170","2025-02-11","SeNaSa","Centro Médico Nuestra Señora","Consulta","San Cristóbal",1250],["SRV-1171","2025-02-13","ARS Universal","Hospital Regional Norte","Imágenes","Santo Domingo",7150],["SRV-1172","2025-02-15","ARS Humano","Clínica San Rafael","Consulta","Santo Domingo",2700],["SRV-1173","2025-02-16","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","Puerto Plata",1950],["SRV-1174","2025-02-16","ARS Universal","Clínica Vista Mar","Consulta","Santiago",2650],["SRV-1175","2025-02-19","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santiago",5850],["SRV-1176","2025-02-20","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","San Cristóbal",4600],["SRV-1177","2025-02-23","ARS Humano","Centro Médico Nuestra Señora","Consulta","Santiago",2050],["SRV-1178","2025-02-24","SeNaSa","Centro Diagnóstico del Cibao","Imágenes","San Cristóbal",7800],["SRV-1179","2025-03-02","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",4700],["SRV-1180","2025-03-03","SeNaSa","Clínica San Rafael","Consulta","Santiago",2050],["SRV-1181","2025-03-03","ARS Universal","Policlínica Central","Consulta","Santo Domingo",3100],["SRV-1182","2025-03-07","SeNaSa","Clínica Vista Mar","Emergencia","Distrito Nacional",18350],["SRV-1183","2025-03-07","ARS Universal","Centro Médico Nuestra Señora","Hospitalización","La Vega",73000],["SRV-1184","2025-03-09","Primera ARS","Policlínica Central","Laboratorio","Distrito Nacional",2800],["SRV-1185","2025-03-10","Primera ARS","Centro Médico Las Américas","Hospitalización","Distrito Nacional",86800],["SRV-1186","2025-03-11","ARS Universal","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",5650],["SRV-1187","2025-03-11","SeNaSa","Centro Médico Nuestra Señora","Hospitalización","Puerto Plata",129100],["SRV-1188","2025-03-11","MAPFRE Salud ARS","Policlínica Central","Laboratorio","Puerto Plata",5450],["SRV-1189","2025-03-11","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Puerto Plata",9250],["SRV-1190","2025-03-17","MAPFRE Salud ARS","Centro Médico Las Américas","Hospitalización","Santiago",164950],["SRV-1191","2025-03-22","Primera ARS","Hospital Regional Norte","Emergencia","Distrito Nacional",14950],["SRV-1192","2025-03-22","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","Santo Domingo",2000],["SRV-1193","2025-03-29","SeNaSa","Clínica San Rafael","Consulta","Distrito Nacional",3050],["SRV-1194","2025-03-30","Primera ARS","Clínica San Rafael","Consulta","Distrito Nacional",2350],["SRV-1195","2025-04-01","SeNaSa","Clínica Vista Mar","Consulta","Santo Domingo",2000],["SRV-1196","2025-04-03","ARS Universal","Centro Médico Nuestra Señora","Consulta","Santo Domingo",1700],["SRV-1197","2025-04-04","Primera ARS","Hospital Regional Norte","Imágenes","Santiago",10300],["SRV-1198","2025-04-05","MAPFRE Salud ARS","Policlínica Central","Consulta","Santiago",1450],["SRV-1199","2025-04-06","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",4000],["SRV-1200","2025-04-11","SeNaSa","Clínica San Rafael","Imágenes","Santo Domingo",14200],["SRV-1201","2025-04-13","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",1550],["SRV-1202","2025-04-15","ARS Universal","Centro Diagnóstico del Cibao","Laboratorio","La Vega",1500],["SRV-1203","2025-04-18","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",2400],["SRV-1204","2025-04-20","MAPFRE Salud ARS","Centro Médico Las Américas","Hospitalización","La Vega",83700],["SRV-1205","2025-04-21","MAPFRE Salud ARS","Policlínica Central","Consulta","San Cristóbal",1150],["SRV-1206","2025-04-21","ARS Humano","Clínica Vista Mar","Emergencia","Santiago",14450],["SRV-1207","2025-04-22","ARS Universal","Centro Médico Nuestra Señora","Consulta","Puerto Plata",2700],["SRV-1208","2025-04-22","ARS Humano","Policlínica Central","Laboratorio","Puerto Plata",2850],["SRV-1209","2025-04-25","ARS Humano","Policlínica Central","Consulta","Santo Domingo",3000],["SRV-1210","2025-04-28","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",8950],["SRV-1211","2025-04-30","SeNaSa","Clínica Vista Mar","Emergencia","La Vega",16600],["SRV-1212","2025-05-01","Primera ARS","Hospital Regional Norte","Emergencia","Santo Domingo",18750],["SRV-1213","2025-05-04","SeNaSa","Clínica San Rafael","Consulta","San Cristóbal",2400],["SRV-1214","2025-05-04","ARS Humano","Policlínica Central","Laboratorio","Santo Domingo",5600],["SRV-1215","2025-05-05","ARS Humano","Hospital Regional Norte","Imágenes","Santo Domingo",14700],["SRV-1216","2025-05-13","ARS Humano","Policlínica Central","Consulta","Santiago",1550],["SRV-1217","2025-05-14","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","La Vega",8950],["SRV-1218","2025-05-15","ARS Universal","Policlínica Central","Laboratorio","Santiago",2650],["SRV-1219","2025-05-17","ARS Universal","Hospital Regional Norte","Emergencia","La Vega",13000],["SRV-1220","2025-05-20","ARS Humano","Centro Médico Nuestra Señora","Consulta","San Cristóbal",3100],["SRV-1221","2025-05-21","MAPFRE Salud ARS","Centro Médico Nuestra Señora","Consulta","Puerto Plata",2900],["SRV-1222","2025-05-23","ARS Humano","Policlínica Central","Laboratorio","La Vega",4750],["SRV-1223","2025-05-25","Primera ARS","Centro Médico Las Américas","Hospitalización","Distrito Nacional",67150],["SRV-1224","2025-05-26","SeNaSa","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",3950],["SRV-1225","2025-05-27","ARS Humano","Centro Diagnóstico del Cibao","Laboratorio","Distrito Nacional",3600],["SRV-1226","2025-05-28","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",9800],["SRV-1227","2025-05-29","SeNaSa","Clínica San Rafael","Consulta","Distrito Nacional",1700],["SRV-1228","2025-05-31","ARS Universal","Clínica San Rafael","Consulta","Distrito Nacional",1600],["SRV-1229","2025-06-01","ARS Humano","Clínica San Rafael","Consulta","Distrito Nacional",2950],["SRV-1230","2025-06-04","MAPFRE Salud ARS","Centro Médico Las Américas","Emergencia","San Cristóbal",17300],["SRV-1231","2025-06-05","SeNaSa","Clínica Vista Mar","Consulta","Puerto Plata",1850],["SRV-1232","2025-06-05","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",4800],["SRV-1233","2025-06-06","ARS Humano","Clínica San Rafael","Consulta","Distrito Nacional",2950],["SRV-1234","2025-06-10","ARS Humano","Clínica Vista Mar","Consulta","Distrito Nacional",1500],["SRV-1235","2025-06-13","MAPFRE Salud ARS","Policlínica Central","Consulta","Distrito Nacional",3450],["SRV-1236","2025-06-18","SeNaSa","Centro Médico Nuestra Señora","Consulta","Santo Domingo",2600],["SRV-1237","2025-06-18","SeNaSa","Hospital Regional Norte","Emergencia","Santo Domingo",5600],["SRV-1238","2025-06-18","MAPFRE Salud ARS","Policlínica Central","Consulta","Santiago",2050],["SRV-1239","2025-06-20","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santiago",5800],["SRV-1240","2025-06-22","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",1700],["SRV-1241","2025-06-23","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",3800],["SRV-1242","2025-06-23","Primera ARS","Clínica San Rafael","Imágenes","Distrito Nacional",12700],["SRV-1243","2025-06-24","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santiago",3100],["SRV-1244","2025-06-29","Primera ARS","Clínica San Rafael","Consulta","Santiago",1250],["SRV-1245","2025-07-03","SeNaSa","Clínica San Rafael","Imágenes","Santo Domingo",6650],["SRV-1246","2025-07-05","MAPFRE Salud ARS","Policlínica Central","Consulta","La Vega",1550],["SRV-1247","2025-07-09","Primera ARS","Centro Diagnóstico del Cibao","Laboratorio","Santo Domingo",3650],["SRV-1248","2025-07-09","Primera ARS","Centro Médico Las Américas","Emergencia","Distrito Nacional",14250],["SRV-1249","2025-07-11","ARS Humano","Hospital Regional Norte","Hospitalización","San Cristóbal",123100],["SRV-1250","2025-07-13","Primera ARS","Centro Diagnóstico del Cibao","Laboratorio","La Vega",5850],["SRV-1251","2025-07-15","Primera ARS","Centro Médico Las Américas","Hospitalización","Distrito Nacional",151950],["SRV-1252","2025-07-15","ARS Humano","Centro Médico Las Américas","Emergencia","Distrito Nacional",6100],["SRV-1253","2025-07-16","SeNaSa","Centro Diagnóstico del Cibao","Imágenes","Santo Domingo",4650],["SRV-1254","2025-07-17","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",4100],["SRV-1255","2025-07-19","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","San Cristóbal",11550],["SRV-1256","2025-07-19","SeNaSa","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",2250],["SRV-1257","2025-07-22","Primera ARS","Clínica San Rafael","Consulta","La Vega",2750],["SRV-1258","2025-07-27","ARS Humano","Policlínica Central","Consulta","Santo Domingo",1350],["SRV-1259","2025-07-27","SeNaSa","Centro Médico Nuestra Señora","Consulta","San Cristóbal",2850],["SRV-1260","2025-07-30","SeNaSa","Clínica San Rafael","Consulta","Santo Domingo",1600],["SRV-1261","2025-07-30","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santiago",5500],["SRV-1262","2025-08-01","ARS Universal","Centro Diagnóstico del Cibao","Imágenes","Santo Domingo",14650],["SRV-1263","2025-08-02","SeNaSa","Centro Diagnóstico del Cibao","Laboratorio","Santo Domingo",2100],["SRV-1264","2025-08-02","SeNaSa","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",3150],["SRV-1265","2025-08-06","MAPFRE Salud ARS","Laboratorio Clínico Amigo","Laboratorio","La Vega",4050],["SRV-1266","2025-08-07","ARS Universal","Policlínica Central","Laboratorio","La Vega",5700],["SRV-1267","2025-08-09","SeNaSa","Centro Médico Las Américas","Hospitalización","Santo Domingo",85300],["SRV-1268","2025-08-15","ARS Humano","Policlínica Central","Consulta","Santiago",3000],["SRV-1269","2025-08-15","MAPFRE Salud ARS","Policlínica Central","Consulta","Distrito Nacional",1400],["SRV-1270","2025-08-15","Primera ARS","Clínica Vista Mar","Consulta","San Cristóbal",3250],["SRV-1271","2025-08-16","SeNaSa","Centro Diagnóstico del Cibao","Laboratorio","Santiago",3300],["SRV-1272","2025-08-17","ARS Humano","Clínica Vista Mar","Consulta","Puerto Plata",3050],["SRV-1273","2025-08-21","SeNaSa","Clínica Vista Mar","Consulta","Puerto Plata",2300],["SRV-1274","2025-08-21","SeNaSa","Clínica Vista Mar","Consulta","Distrito Nacional",1150],["SRV-1275","2025-08-22","SeNaSa","Centro Diagnóstico del Cibao","Imágenes","Santiago",15000],["SRV-1276","2025-08-25","ARS Humano","Centro Médico Nuestra Señora","Hospitalización","Santo Domingo",125850],["SRV-1277","2025-08-29","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","San Cristóbal",5150],["SRV-1278","2025-08-30","ARS Universal","Clínica Vista Mar","Consulta","Distrito Nacional",2000],["SRV-1279","2025-09-01","Primera ARS","Laboratorio Clínico Amigo","Laboratorio","Distrito Nacional",3100],["SRV-1280","2025-09-01","ARS Humano","Policlínica Central","Consulta","Santo Domingo",2150],["SRV-1281","2025-09-02","Primera ARS","Policlínica Central","Consulta","La Vega",3350],["SRV-1282","2025-09-11","ARS Universal","Centro Médico Las Américas","Hospitalización","Santiago",78500],["SRV-1283","2025-09-11","ARS Humano","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",5900],["SRV-1284","2025-09-15","SeNaSa","Centro Médico Las Américas","Emergencia","Distrito Nacional",10600],["SRV-1285","2025-09-15","ARS Universal","Clínica San Rafael","Consulta","Distrito Nacional",2900],["SRV-1286","2025-09-18","ARS Universal","Laboratorio Clínico Amigo","Laboratorio","Puerto Plata",5650],["SRV-1287","2025-09-19","ARS Universal","Clínica Vista Mar","Consulta","Puerto Plata",2950],["SRV-1288","2025-09-20","ARS Universal","Centro Diagnóstico del Cibao","Laboratorio","Puerto Plata",5400],["SRV-1289","2025-09-20","ARS Humano","Hospital Regional Norte","Emergencia","Distrito Nacional",13450],["SRV-1290","2025-09-21","MAPFRE Salud ARS","Clínica San Rafael","Consulta","Puerto Plata",1550],["SRV-1291","2025-09-24","ARS Humano","Policlínica Central","Consulta","Santo Domingo",2150],["SRV-1292","2025-09-24","Primera ARS","Laboratorio Clínico Amigo","Laboratorio","Santiago",1600],["SRV-1293","2025-09-25","Primera ARS","Clínica Vista Mar","Consulta","Distrito Nacional",1650],["SRV-1294","2025-09-29","ARS Universal","Centro Médico Las Américas","Hospitalización","San Cristóbal",125500],["SRV-1295","2025-09-30","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",14100],["SRV-1296","2025-10-01","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","La Vega",5350],["SRV-1297","2025-10-08","SeNaSa","Hospital Regional Norte","Hospitalización","Santo Domingo",47900],["SRV-1298","2025-10-10","MAPFRE Salud ARS","Clínica San Rafael","Imágenes","Santiago",13400],["SRV-1299","2025-10-11","ARS Humano","Centro Médico Las Américas","Emergencia","Puerto Plata",5450],["SRV-1300","2025-10-11","SeNaSa","Centro Médico Nuestra Señora","Consulta","Santo Domingo",2300],["SRV-1301","2025-10-14","MAPFRE Salud ARS","Clínica San Rafael","Imágenes","San Cristóbal",13600],["SRV-1302","2025-10-15","SeNaSa","Policlínica Central","Consulta","Distrito Nacional",2950],["SRV-1303","2025-10-15","ARS Universal","Centro Diagnóstico del Cibao","Imágenes","La Vega",10650],["SRV-1304","2025-10-16","MAPFRE Salud ARS","Centro Médico Nuestra Señora","Consulta","Distrito Nacional",3250],["SRV-1305","2025-10-17","SeNaSa","Centro Diagnóstico del Cibao","Imágenes","Puerto Plata",6050],["SRV-1306","2025-10-19","MAPFRE Salud ARS","Hospital Regional Norte","Emergencia","San Cristóbal",16600],["SRV-1307","2025-10-20","ARS Humano","Hospital Regional Norte","Imágenes","Santiago",11450],["SRV-1308","2025-10-21","SeNaSa","Centro Diagnóstico del Cibao","Imágenes","Distrito Nacional",11800],["SRV-1309","2025-10-23","ARS Humano","Centro Médico Nuestra Señora","Consulta","San Cristóbal",2050],["SRV-1310","2025-10-26","SeNaSa","Clínica San Rafael","Imágenes","Distrito Nacional",8300],["SRV-1311","2025-10-27","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Imágenes","Santiago",10750],["SRV-1312","2025-10-29","Primera ARS","Hospital Regional Norte","Hospitalización","Santiago",155100],["SRV-1313","2025-10-30","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Santiago",4050],["SRV-1314","2025-10-30","ARS Humano","Hospital Regional Norte","Hospitalización","Puerto Plata",153850],["SRV-1315","2025-10-30","SeNaSa","Centro Médico Las Américas","Emergencia","Distrito Nacional",10500],["SRV-1316","2025-11-02","SeNaSa","Centro Médico Nuestra Señora","Consulta","Santo Domingo",2600],["SRV-1317","2025-11-05","ARS Universal","Hospital Regional Norte","Imágenes","Distrito Nacional",4750],["SRV-1318","2025-11-06","SeNaSa","Centro Médico Las Américas","Emergencia","Santo Domingo",14850],["SRV-1319","2025-11-06","MAPFRE Salud ARS","Centro Médico Las Américas","Hospitalización","Distrito Nacional",176200],["SRV-1320","2025-11-07","SeNaSa","Hospital Regional Norte","Emergencia","Distrito Nacional",11250],["SRV-1321","2025-11-08","MAPFRE Salud ARS","Clínica Vista Mar","Consulta","La Vega",2100],["SRV-1322","2025-11-09","ARS Humano","Centro Médico Las Américas","Emergencia","Puerto Plata",13150],["SRV-1323","2025-11-11","MAPFRE Salud ARS","Hospital Regional Norte","Emergencia","Santiago",11500],["SRV-1324","2025-11-12","Primera ARS","Clínica Vista Mar","Emergencia","Puerto Plata",6100],["SRV-1325","2025-11-12","MAPFRE Salud ARS","Centro Médico Nuestra Señora","Consulta","San Cristóbal",2150],["SRV-1326","2025-11-13","SeNaSa","Centro Médico Nuestra Señora","Consulta","Santo Domingo",2300],["SRV-1327","2025-11-16","Primera ARS","Centro Diagnóstico del Cibao","Laboratorio","Santiago",3400],["SRV-1328","2025-11-17","SeNaSa","Centro Médico Nuestra Señora","Hospitalización","La Vega",156450],["SRV-1329","2025-11-18","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santo Domingo",3300],["SRV-1330","2025-11-21","SeNaSa","Clínica Vista Mar","Emergencia","Puerto Plata",16250],["SRV-1331","2025-11-23","ARS Universal","Policlínica Central","Consulta","Distrito Nacional",2000],["SRV-1332","2025-11-23","MAPFRE Salud ARS","Centro Diagnóstico del Cibao","Laboratorio","San Cristóbal",2200],["SRV-1333","2025-11-24","MAPFRE Salud ARS","Policlínica Central","Consulta","La Vega",3300],["SRV-1334","2025-11-25","SeNaSa","Policlínica Central","Consulta","Santiago",3350],["SRV-1335","2025-11-29","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","Santiago",5700],["SRV-1336","2025-11-29","SeNaSa","Hospital Regional Norte","Hospitalización","Santo Domingo",102300],["SRV-1337","2025-11-30","ARS Humano","Clínica San Rafael","Consulta","Distrito Nacional",3150],["SRV-1338","2025-12-01","ARS Humano","Policlínica Central","Consulta","Santiago",2800],["SRV-1339","2025-12-02","ARS Universal","Hospital Regional Norte","Hospitalización","Santiago",70150],["SRV-1340","2025-12-02","ARS Humano","Policlínica Central","Consulta","Santiago",2850],["SRV-1341","2025-12-04","SeNaSa","Clínica Vista Mar","Consulta","Santo Domingo",3400],["SRV-1342","2025-12-04","ARS Universal","Clínica Vista Mar","Emergencia","Distrito Nacional",7300],["SRV-1343","2025-12-04","ARS Universal","Clínica San Rafael","Consulta","Santo Domingo",1200],["SRV-1344","2025-12-05","MAPFRE Salud ARS","Hospital Regional Norte","Emergencia","Distrito Nacional",19850],["SRV-1345","2025-12-07","ARS Humano","Clínica San Rafael","Consulta","Distrito Nacional",3050],["SRV-1346","2025-12-07","ARS Universal","Centro Diagnóstico del Cibao","Imágenes","Santo Domingo",6550],["SRV-1347","2025-12-09","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santiago",3950],["SRV-1348","2025-12-10","SeNaSa","Clínica Vista Mar","Consulta","Santo Domingo",2400],["SRV-1349","2025-12-12","ARS Humano","Centro Médico Las Américas","Emergencia","Puerto Plata",8500],["SRV-1350","2025-12-13","ARS Universal","Hospital Regional Norte","Emergencia","San Cristóbal",11000],["SRV-1351","2025-12-13","Primera ARS","Policlínica Central","Consulta","Distrito Nacional",1300],["SRV-1352","2025-12-13","MAPFRE Salud ARS","Clínica Vista Mar","Consulta","Distrito Nacional",1400],["SRV-1353","2025-12-14","ARS Universal","Clínica San Rafael","Imágenes","Distrito Nacional",9400],["SRV-1354","2025-12-19","ARS Humano","Hospital Regional Norte","Imágenes","Santiago",7500],["SRV-1355","2025-12-23","ARS Humano","Hospital Regional Norte","Imágenes","Santiago",4900],["SRV-1356","2025-12-23","ARS Humano","Centro Diagnóstico del Cibao","Imágenes","San Cristóbal",4050],["SRV-1357","2025-12-25","ARS Universal","Policlínica Central","Laboratorio","Santiago",2600],["SRV-1358","2025-12-27","SeNaSa","Policlínica Central","Consulta","Santo Domingo",1350],["SRV-1359","2025-12-28","SeNaSa","Centro Médico Nuestra Señora","Consulta","Santiago",1250],["SRV-1360","2025-12-28","SeNaSa","Laboratorio Clínico Amigo","Laboratorio","Santiago",1700]];
+const rec = DATA.map(r=>({id:r[0],fecha:r[1],ars:r[2],pss:r[3],tipo:r[4],prov:r[5],monto:r[6],anio:r[1].slice(0,4),mes:+r[1].slice(5,7)}));
+const MESC=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const num0 = n => n.toLocaleString("en-US",{maximumFractionDigits:0});
+const num2 = n => n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const rd0 = n => "RD$ "+num0(n), rd2 = n => "RD$ "+num2(n);
+const pct = n => (n*100).toFixed(2)+" %";
+const opts = (arr,sel) => arr.map(v=>`<option${v===sel?" selected":""}>${esc(v)}</option>`).join("");
+const uniq = k => [...new Set(rec.map(r=>r[k]))].sort((a,b)=>String(a).localeCompare(String(b),"es"));
+const ARS=uniq("ars"), PROVS=uniq("prov"), TIPOS=uniq("tipo");
+const SHORT={"MAPFRE Salud ARS":"MAPFRE","ARS Humano":"Humano","ARS Universal":"Universal","Primera ARS":"Primera","SeNaSa":"SeNaSa",
+  "Distrito Nacional":"D. Nacional","Santo Domingo":"Sto. Domingo","San Cristóbal":"S. Cristóbal","Puerto Plata":"P. Plata","Santiago":"Santiago","La Vega":"La Vega",
+  "Hospitalización":"Hospitaliz.","Emergencia":"Emergencia","Imágenes":"Imágenes","Laboratorio":"Laboratorio","Consulta":"Consulta"};
+const sh = s => SHORT[s]||s;
+
+/* Agrupa: devuelve [{k, n, s}] */
+function group(rows,k){ const o={}; rows.forEach(r=>{ const g=o[r[k]]||(o[r[k]]={k:r[k],n:0,s:0}); g.n++; g.s+=r.monto; }); return Object.values(o); }
+const tot = rows => ({n:rows.length, s:rows.reduce((a,r)=>a+r.monto,0)});
+const byMes = (rows,anio) => MESC.map((_,i)=>rows.filter(r=>r.mes===i+1&&(!anio||r.anio===anio)).length);
+
+/* ---------- Gráficos (SVG). Colores validados: 2024 = ciruela, 2025 = azul cielo ---------- */
+const C24="#8a3f8f", C25="#2f86d6", C1="#2a9d8f", CAT=["#2f86d6","#c7741f","#2a9d8f","#8a3f8f","#7f8a1f"];
+const INK="#4a2448", MUT="#6b6070", GRD="#e6e0ec";
+function ticks(mx){ if(mx<=0) return {step:1,n:1,top:1}; const mag=Math.pow(10,Math.floor(Math.log10(mx))); const step=Math.max(1,[1,2,4,10].map(f=>f*mag/2).find(s=>mx/s<=5)||mag); const n=Math.ceil(mx/step); return {step,n,top:n*step}; }
+function bar(x,y,w,h,r){ if(h<=0.5) return ""; r=Math.min(r,w/2,h); return `M${x},${y+h}V${y+r}Q${x},${y} ${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h}Z`; }
+const kfmt = v => v>=1e6? (v/1e6).toFixed(v%1e6?1:0)+" M" : v>=1000? num0(v/1000)+"k" : num0(v);
+/* Columnas: series=[{name,color,vals}] */
+function colSVG(cats,series,o={}){
+  const W=o.W||600,H=o.H||260,pl=o.pl||48,pb=o.pb||(o.twoLine?36:24),pt=18,pr=8;
+  let mx=0; series.forEach(s=>s.vals.forEach(v=>mx=Math.max(mx,v)));
+  const t=ticks(mx), y=v=>pt+(H-pt-pb)*(1-v/t.top), n=cats.length, gw=(W-pl-pr)/n, ns=series.length;
+  const bw=Math.min(o.bmax||46,(gw*0.7-(ns-1)*2)/ns);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria||"Gráfico de columnas")}">`;
+  for(let k=0;k<=t.n;k++){ const v=t.step*k; s+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="${k?GRD:"#cfc6d6"}"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="${MUT}">${(o.fmtAxis||kfmt)(v)}</text>`; }
+  let best=null; series.forEach((se,j)=>se.vals.forEach((v,i)=>{ if(!best||v>best.v) best={v,i,j}; }));
+  cats.forEach((c,i)=>{ const x0=pl+i*gw+gw/2-(ns*bw+(ns-1)*2)/2;
+    series.forEach((se,j)=>{ const v=se.vals[i], x=x0+j*(bw+2);
+      s+=`<path d="${bar(x,y(v),bw,y(0)-y(v),4)}" fill="${se.color}"><title>${esc(c)}${ns>1?" · "+esc(se.name):""}: ${(o.fmt||num0)(v)}</title></path>`;
+      if(o.labelAll || (best&&best.i===i&&best.j===j)) s+=`<text x="${x+bw/2}" y="${y(v)-5}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${INK}">${(o.fmtLabel||o.fmt||num0)(v)}</text>`; });
+    const lab=o.short?sh(c):String(c);
+    if(o.twoLine && lab.includes(" ")){ const p=lab.split(" "); s+=`<text x="${pl+i*gw+gw/2}" y="${H-20}" text-anchor="middle" font-size="11" fill="${INK}">${esc(p[0])}</text><text x="${pl+i*gw+gw/2}" y="${H-7}" text-anchor="middle" font-size="11" fill="${INK}">${esc(p.slice(1).join(" "))}</text>`; }
+    else s+=`<text x="${pl+i*gw+gw/2}" y="${H-8}" text-anchor="middle" font-size="11" fill="${INK}">${esc(lab)}</text>`; });
+  return s+"</svg>";
+}
+/* Líneas: cats en el eje X, series=[{name,color,vals}] */
+function lineSVG(cats,series,o={}){
+  const W=o.W||600,H=o.H||260,pl=o.pl||40,pb=24,pt=16,pr=o.pr||44;
+  let mx=0; series.forEach(s=>s.vals.forEach(v=>mx=Math.max(mx,v)));
+  const t=ticks(mx), y=v=>pt+(H-pt-pb)*(1-v/t.top), n=cats.length, x=i=>pl+(n===1?(W-pl-pr)/2:i*(W-pl-pr)/(n-1));
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria||"Gráfico de líneas")}">`;
+  for(let k=0;k<=t.n;k++){ const v=t.step*k; s+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="${k?GRD:"#cfc6d6"}"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="${MUT}">${(o.fmtAxis||kfmt)(v)}</text>`; }
+  cats.forEach((c,i)=>{ if(n<=12||i%2===0) s+=`<text x="${x(i)}" y="${H-7}" text-anchor="middle" font-size="11" fill="${INK}">${esc(o.short?sh(c):c)}</text>`; });
+  series.forEach(se=>{
+    s+=`<polyline points="${se.vals.map((v,i)=>x(i)+","+y(v)).join(" ")}" fill="none" stroke="${se.color}" stroke-width="2" stroke-linejoin="round"/>`;
+    se.vals.forEach((v,i)=>{ s+=`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="${se.color}" stroke="#fff" stroke-width="2"><title>${esc(cats[i])}${se.name?" · "+esc(se.name):""}: ${(o.fmt||num0)(v)}</title></circle>`; });
+    const L=se.vals.length-1; s+=`<text x="${x(L)+8}" y="${y(se.vals[L])+4}" font-size="11.5" font-weight="600" fill="${INK}">${esc(se.name||"")} ${(o.fmt||num0)(se.vals[L])}</text>`;
+  });
+  return s+"</svg>";
+}
+/* Circular: una sola serie */
+function pieSVG(cats,vals,o={}){
+  const W=o.W||600,H=o.H||260, cx=H/2+10, cy=H/2, R=H/2-12, total=vals.reduce((a,b)=>a+b,0);
+  let a0=-Math.PI/2, s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gráfico circular">`;
+  const colors=o.colors||cats.map((_,i)=>CAT[i%CAT.length]);
+  vals.forEach((v,i)=>{ const a1=a0+v/total*2*Math.PI, big=a1-a0>Math.PI?1:0;
+    const p= vals.length===1||v===total ? `<circle cx="${cx}" cy="${cy}" r="${R}" fill="${colors[i]}"` :
+      `<path d="M${cx},${cy}L${cx+R*Math.cos(a0)},${cy+R*Math.sin(a0)}A${R},${R} 0 ${big} 1 ${cx+R*Math.cos(a1)},${cy+R*Math.sin(a1)}Z" fill="${colors[i]}" stroke="#fff" stroke-width="2"`;
+    s+=`${p}><title>${esc(cats[i])}: ${(o.fmt||num0)(v)} (${pct(v/total)})</title>${p.startsWith("<circle")?"</circle>":"</path>"}`; a0=a1; });
+  const ly0=Math.max(14,cy-cats.length*11), lh=Math.min(22,(H-20)/cats.length);
+  cats.forEach((c,i)=>{ const ly=ly0+i*lh; s+=`<rect x="${cx+R+24}" y="${ly-9}" width="11" height="11" rx="2" fill="${colors[i]}"/><text x="${cx+R+41}" y="${ly}" font-size="${cats.length>8?10.5:12}" fill="${INK}">${esc(c)} · ${pct(vals[i]/total)}</text>`; });
+  return s+"</svg>";
+}
+const chartBox = (title,sub,svg,legend) => `<div class="chart"><div class="ct">${esc(title)}</div>${sub?`<div class="cs">${esc(sub)}</div>`:""}${svg}${legend?`<div class="legend">${legend}</div>`:""}</div>`;
+const yearLegend = `<span><i style="background:${C24}"></i>2024</span><span><i style="background:${C25}"></i>2025</span>`;
+
+/* ---------- Contenido de los 6 temas ---------- */
+const TOPICS = [
+{ k:"Del dato a la decisión", d:"Qué es un dashboard y para qué sirve.",
+  def:"Un dashboard (tablero) reúne en una sola pantalla los indicadores clave, con gráficos y filtros, para entender en segundos cómo va algo y decidir.",
+  ana:"Es como el tablero de un carro: no te muestra cada pieza del motor, solo la velocidad, la gasolina y las alertas que necesitas para manejar.",
+  partsT:"Las piezas de un dashboard · toca cada una",
+  parts:[["Tarjetas","Números grandes: total de servicios, monto total, monto promedio."],["Gráficos","Muestran la tendencia y la comparación: por mes, por ARS, por provincia."],["Segmentaciones","Botones que filtran todo el tablero a la vez."],["Tablas dinámicas","El motor escondido: cada tarjeta y cada gráfico sale de una."],["Conclusiones","Frases cortas que dicen qué significa y qué hacer."]],
+  uses:[["Reunión de dirección","Responder en 5 minutos cómo van los servicios.","Una pantalla · 3 tarjetas · 3 gráficos"],
+        ["Detectar alertas","Ver de inmediato qué mes, ARS o provincia se sale de lo normal.","Gráfico de líneas por mes"],
+        ["Comparar","Poner lado a lado ARS, provincias o años.","Gráfico de columnas por ARS"],
+        ["Explorar sin rehacer","Un clic en la segmentación y todo el tablero cambia.","Segmentaciones: Año · Tipo de Servicio"]],
+  pit:"Un dashboard no es «poner muchos gráficos». Si un gráfico no responde una pregunta de la dirección, sobra. Menos elementos, mejor lectura." },
+
+{ k:"Elegir el gráfico", d:"Cada pregunta tiene su gráfico.",
+  def:"El gráfico se elige según la pregunta: líneas para ver cambios en el tiempo, columnas para comparar categorías, circular para ver partes de un total y una tarjeta para un solo número.",
+  ana:"Es como elegir la herramienta en una caja: no usas un martillo para apretar un tornillo. Cada gráfico hace bien un solo trabajo.",
+  partsT:"Pregunta → gráfico · toca cada uno",
+  parts:[["Líneas","¿Cómo cambia en el tiempo? Meses, trimestres, años."],["Columnas","¿Quién tiene más? Comparar ARS, provincias o servicios, ordenados de mayor a menor."],["Circular","¿Qué parte del total? Solo con pocas categorías (5 o menos)."],["Tarjeta","Un solo número importante: el total o el promedio."],["Tabla","Cuando se necesita el valor exacto de varias filas."]],
+  uses:[["Servicios por mes","Ver si la demanda sube o baja.","Línea · Filas: Mes · Columnas: Año"],
+        ["Monto por ARS","Quién pesa más en el gasto.","Columna agrupada · ordenada de mayor a menor"],
+        ["Peso de cada tipo de servicio","Qué parte del monto es hospitalización.","Circular · 5 tipos de servicio"],
+        ["Total de servicios","Un número que se lee de un vistazo.","Tarjeta: 360"]],
+  pit:"Evita el gráfico circular con muchas porciones (12 meses u 8 PSS): nadie distingue porciones parecidas, usa columnas. Evita también el 3D: deforma los tamaños.",
+  steps:["Lee en voz alta la pregunta de la dirección.","Pregúntate: ¿es <b>tiempo</b>, <b>comparación</b>, <b>parte de un total</b> o <b>un solo número</b>?","Elige un gráfico en el simulador y mira si responde la pregunta.","En Excel para la web, el gráfico de una tabla dinámica puede ser de <b>columnas</b>, <b>líneas</b>, <b>circular</b> o <b>radial</b>."],
+  conf:"Tiempo → Línea · Comparar → Columna · Parte del total → Circular · Un número → Tarjeta", lbl:"REGLA", sim:"elegir", ph:"Decidámoslo juntos" },
+
+{ k:"Tarjetas de indicadores", d:"Los números clave, grandes y a la vista.",
+  def:"Una tarjeta es una celda grande que muestra un indicador clave (KPI): total de servicios, monto total o monto promedio. Para que cambie con las segmentaciones, el número tiene que venir de una tabla dinámica.",
+  ana:"Es el marcador de un partido: antes de ver las jugadas, miras el resultado.",
+  partsT:"Las piezas · toca cada una",
+  parts:[["TD_KPI","Una tabla dinámica con campos solo en Valores, sin Filas: da los totales del tablero."],["Cuenta de ID Servicio","Cuántos servicios hay: 360."],["Suma de Monto","Cuánto dinero: RD$ 6,691,250."],["Promedio de Monto","Cuánto cuesta un servicio típico: RD$ 18,586.81."],["= y clic","En la tarjeta escribes = y haces clic en el número de TD_KPI. Si Excel escribe IMPORTARDATOSDINAMICOS, es normal: déjalo así."]],
+  uses:[["Servicios atendidos","El volumen total del período.","Cuenta de ID Servicio → 360"],
+        ["Monto total","El gasto total del período.","Suma de Monto → RD$ 6,691,250"],
+        ["Costo promedio","Cuánto cuesta un servicio típico.","Promedio de Monto → RD$ 18,586.81"],
+        ["Tarjeta que se filtra","Con la segmentación en 2025, la tarjeta muestra 210.","Tarjeta = número de TD_KPI (no =SUMA de la base)"]],
+  pit:"Si la tarjeta usa =SUMA(tblServicios[Monto]), siempre dirá 6,691,250 aunque filtres por año: las segmentaciones solo filtran tablas dinámicas. Conecta la tarjeta a TD_KPI.",
+  steps:["Abre <code>Modulo4-Base-Dashboard.xlsx</code>, haz clic en <code>A2</code> de la hoja <code>Servicios</code> › <code>Insertar › Tabla dinámica</code> › <code>Nueva hoja</code>. Llámala <code>TD_KPI</code>.","Arrastra a <b>Valores</b>: <code>ID Servicio</code> (Cuenta), <code>Monto</code> (Suma) y otra vez <code>Monto</code>. Sobre este último: clic derecho › <code>Resumir valores por › Promedio</code>.","En la hoja <code>Dashboard</code>, celda <code>B6</code>: escribe <code>=</code>, ve a <code>TD_KPI</code>, haz clic en el número de la cuenta y pulsa Enter. Repite en <code>F6</code> (suma) y <code>J6</code> (promedio).","Resultado: <b>360</b> · <b>RD$ 6,691,250</b> · <b>RD$ 18,586.81</b>. La plantilla ya trae el formato grande."],
+  conf:"TD_KPI · Valores: Cuenta de ID Servicio · Suma de Monto · Promedio de Monto", sim:"tarjetas", dl:true },
+
+{ k:"Gráficos de la tabla dinámica", d:"Tendencia, comparación y distribución.",
+  def:"En Excel para la web, el gráfico de una tabla dinámica se crea con un clic dentro de ella › Insertar › Gráfico. Queda conectado: si la tabla dinámica cambia o se filtra, el gráfico cambia también.",
+  ana:"La tabla dinámica es la cocina y el gráfico es el plato servido: si cambias la receta, el plato cambia solo.",
+  partsT:"Las tres tablas del tablero · toca cada una",
+  parts:[["TD_Mes","Filas: Mes · Columnas: Año · Valores: Cuenta de ID Servicio → gráfico de Líneas."],["TD_ARS","Filas: ARS · Valores: Suma de Monto, ordenado de mayor a menor → Columnas."],["TD_Prov","Filas: Provincia · Valores: Cuenta de ID Servicio, ordenado de mayor a menor → Columnas."],["Título","Cambia «Total» por lo que el gráfico demuestra."],["Mover","Corta el gráfico (Ctrl + X) y pégalo (Ctrl + V) en su espacio de la hoja Dashboard."]],
+  uses:[["Evolución por período","Cómo se mueve la demanda mes a mes, 2024 frente a 2025.","TD_Mes › Insertar › Gráfico › Línea"],
+        ["Comparación entre ARS","Qué ARS concentra más monto.","TD_ARS › Insertar › Gráfico › Columna agrupada"],
+        ["Distribución por provincia","Dónde se concentran los servicios.","TD_Prov › Insertar › Gráfico › Columna agrupada"],
+        ["Un tablero ordenado","Todos los gráficos juntos, en la hoja Dashboard.","Ctrl + X › hoja Dashboard › Ctrl + V"]],
+  pit:"Haz clic dentro de la tabla dinámica antes de insertar el gráfico. Si seleccionas celdas normales, Excel crea un gráfico común que no responde a las segmentaciones.",
+  steps:["Crea <code>TD_Mes</code>: Filas <code>Mes</code>, Columnas <code>Año</code>, Valores <code>ID Servicio</code> (Cuenta).","Clic dentro de la tabla dinámica › <code>Insertar › Gráfico › Línea</code>. Título: «La demanda sube al cierre del año».","Crea <code>TD_ARS</code> (Filas <code>ARS</code>, Valores <code>Monto</code>) y <code>TD_Prov</code> (Filas <code>Provincia</code>, Valores <code>ID Servicio</code>). Ordénalas de mayor a menor y a cada una inserta un gráfico <b>Columna agrupada</b>.","Pega los 3 gráficos en la hoja <code>Dashboard</code>. Resultado: <b>diciembre</b> es el mes más alto (17 y 23), <b>SeNaSa</b> lidera en monto y <b>Distrito Nacional</b> en servicios (112)."],
+  conf:"TD_Mes → Línea · TD_ARS → Columna agrupada · TD_Prov → Columna agrupada", sim:"graficos" },
+
+{ k:"Segmentaciones del tablero", d:"Un clic filtra todo el tablero.",
+  def:"Una segmentación filtra la tabla dinámica en la que se creó. Con Conexiones de informe se conecta a las demás, y así un solo clic cambia todo el tablero: tarjetas y gráficos.",
+  ana:"Es el interruptor general de la casa: en lugar de apagar bombillo por bombillo, bajas uno y se apaga todo.",
+  partsT:"Herramientas · toca cada una",
+  parts:[["Insertar","Clic dentro de una tabla dinámica › pestaña Tabla dinámica › Insertar segmentación de datos."],["Conexiones de informe","Clic derecho en la segmentación › Conexiones de informe › marca TD_KPI, TD_Mes, TD_ARS y TD_Prov."],["Misma base","Solo se conectan tablas dinámicas creadas desde la misma tabla: tblServicios."],["Mover","Corta la segmentación y pégala en la columna de la derecha del Dashboard."],["Borrar filtro","El embudo con la X vuelve a mostrar todo."]],
+  uses:[["Ver un solo año","El tablero completo, solo con 2025.","Año = 2025 → 210 servicios"],
+        ["Un tipo de servicio","Solo hospitalizaciones: 42 servicios y RD$ 4,889,250.","Tipo de Servicio = Hospitalización"],
+        ["Responder en la reunión","«¿Y solo consultas en 2025?»: dos clics.","Año + Tipo de Servicio"],
+        ["Comprobar la conexión","Si una tarjeta no cambia, falta conectarla.","Clic derecho › Conexiones de informe"]],
+  pit:"Si al filtrar una tarjeta o un gráfico no cambia, esa tabla dinámica no está marcada en Conexiones de informe. Si ni siquiera aparece en la lista, se creó desde otra base: vuelve a crearla desde tblServicios.",
+  steps:["Clic dentro de <code>TD_KPI</code> › pestaña <code>Tabla dinámica</code> › <code>Insertar segmentación de datos</code> › marca <code>Año</code> y <code>Tipo de Servicio</code>.","Clic derecho en la segmentación <code>Año</code> › <code>Conexiones de informe</code> › marca las 4 tablas dinámicas. Repite con <code>Tipo de Servicio</code>.","Corta las dos segmentaciones y pégalas en la columna de la derecha del <code>Dashboard</code>.","Prueba con <b>2025</b>: <b>210</b> · <b>RD$ 3,512,850</b> · <b>RD$ 16,727.86</b>, y todos los gráficos cambian."],
+  conf:"Segmentaciones: Año · Tipo de Servicio → TD_KPI, TD_Mes, TD_ARS, TD_Prov", lbl:"SEG", sim:"segmentar" },
+
+{ k:"Diseño y conclusiones", d:"Ordenado, claro y con un mensaje.",
+  def:"Un buen tablero se lee de arriba abajo y de izquierda a derecha: primero las tarjetas, luego los gráficos. Lleva pocos colores, títulos que dicen el hallazgo y, al final, conclusiones con dato y recomendación.",
+  ana:"Es como una vitrina bien arreglada: lo importante al frente, sin amontonar, para que quien pasa entienda en segundos.",
+  partsT:"Reglas de diseño · toca cada una",
+  parts:[["Orden","Arriba: tarjetas. Al centro: gráficos. A un lado: segmentaciones."],["Pocos colores","Un color principal y uno de contraste para resaltar. Nada de arcoíris."],["Títulos que concluyen","No «Gráfico 1»: mejor «Diciembre es el mes con más servicios»."],["Quitar lo que sobra","Sin 3D, sin sombras, sin cuadrícula de la hoja, sin adornos."],["Conclusión","Dato + comparación + recomendación para decidir."]],
+  uses:[["Ocultar la cuadrícula","El tablero se ve limpio, como una página.","Vista › desmarca Líneas de cuadrícula"],
+        ["Mismo tamaño, bien alineados","Gráficos del mismo alto, alineados a las columnas.","Arrastra los bordes hasta los recuadros de la plantilla"],
+        ["Escribir para la dirección","Conclusiones de 1 o 2 líneas, siempre con un número.","Dato + comparación + recomendación"],
+        ["Todo en un vistazo","Que todo quepa en la pantalla, sin desplazarse.","Zoom 90 % · todo visible"]],
+  pit:"Más no es mejor. Un tablero con 10 gráficos, colores distintos y efectos 3D cansa y confunde. Si un elemento no responde una pregunta, quítalo.",
+  extra:"antesDespues" }
+];
+const QT=["¿Qué es un dashboard?","¿Qué gráfico uso para cada pregunta?","¿Qué es una tarjeta de indicador?","¿Cómo se crea un gráfico de una tabla dinámica?","¿Cómo filtro todo el tablero a la vez?","¿Cómo se ve un tablero profesional?"];
+const SH=["Tarjetas + gráficos + segmentaciones en una pantalla","Tiempo → Línea · Comparar → Columna · Parte → Circular · Número → Tarjeta","TD_KPI (solo Valores) › en la tarjeta: = y clic","Clic en la TD › Insertar › Gráfico › Línea o Columna","Clic derecho en la segmentación › Conexiones de informe","Orden · pocos colores · títulos que concluyen · dato + recomendación"];
+
+/* ---------- Construcción de diapositivas ---------- */
+const S = [], INICIO = [];
+const T_RES = TOPICS.length;   // índice del bloque «Ejemplo resuelto»
+S.push({topic:-1, html:`<div class="slide cover">
+  <div class="mod">Módulo 4</div>
+  <h1>Visualización de datos y dashboards</h1>
+  <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
+  <div class="kpis"><div><small>Servicios</small><b>360</b></div><div><small>Monto total</small><b>RD$ 6.69 M</b></div><div><small>Promedio</small><b>RD$ 18,587</b></div></div>
+  <div class="hint">Base de práctica: tblServicios · ${rec.length} servicios de salud · ene 2024 – dic 2025 · use ← → para avanzar</div>
+</div>`});
+
+S.push({topic:-1, html:`<div class="slide">
+  <div class="eyebrow">Contenido</div>
+  <h2>Seis herramientas y un tablero resuelto</h2>
+  <p class="lead" style="font-size:20px">Cada tema tiene <b>concepto</b> y <b>utilidad</b>. En las <b>prácticas en vivo</b> construimos, paso a paso, el mismo dashboard que al final se presenta <b>resuelto y explicado</b>.</p>
+  <div class="idx" data-idx></div>
+  <p class="note"><b>Objetivo:</b> diseñar dashboards en Excel que faciliten la interpretación de los datos y apoyen la toma de decisiones.</p>
+</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = TOPICS.map((t,i)=>`<button data-go="${INICIO[i]}"><span class="n">0${i+1}</span><span class="k">${t.k}</span><span class="d">${t.d}</span></button>`).join("")+`<button class="res" data-go="${INICIO[T_RES]}"><span class="n">★</span><span class="k">Ejemplo resuelto</span><span class="d">El tablero de la directora, explicado.</span></button>`; }});
+
+TOPICS.forEach((t,i)=>{
+  const n = "0"+(i+1);
+  const eb = tag => `<div class="eyebrow"><span class="n">${n}</span><span>${t.k}</span><span class="tag">${tag}</span></div>`;
+  INICIO[i]=S.length;
+  S.push({topic:i, html:`<div class="slide">${eb("Concepto")}
+    <div class="cols">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <h2>${QT[i]}</h2>
+        <p class="lead">${t.def}</p>
+        <p class="analogy">${t.ana}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <h3 class="muted" style="font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase">${t.partsT}</h3>
+        <ul class="args">${t.parts.map((a,j)=>`<li data-a="${j}"><div><code>${esc(a[0])}</code></div><div>${esc(a[1])}</div></li>`).join("")}</ul>
+      </div>
+    </div></div>`, init:el=>{
+      el.querySelectorAll("[data-a]").forEach(x=>x.addEventListener("click",()=>el.querySelectorAll("[data-a]").forEach(y=>y.classList.toggle("on",y===x))));
+    }});
+  S.push({topic:i, html:`<div class="slide">${eb("Utilidad")}
+    <h2>¿Para qué nos sirve en el trabajo?</h2>
+    <div class="uses">${t.uses.map(u=>`<div class="use"><h3>${u[0]}</h3><p>${u[1]}</p><code>${esc(u[2])}</code></div>`).join("")}</div>
+    <div class="pit"><b>Error común</b><span>${t.pit}</span></div></div>`});
+  if(t.sim) S.push({topic:i, html:`<div class="slide">${eb("Práctica en vivo")}
+    <div class="prac">
+      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+        <h2 style="font-size:38px">${t.ph||"Hagámoslo juntos"}</h2>
+        <ol class="steps">${t.steps.map(s=>`<li><span>${s}</span></li>`).join("")}</ol>
+        <div class="fbar"><span class="lbl">${t.lbl||"TD"}</span><span class="f">${esc(t.conf)}</span></div>${t.dl?`<a class="dlbtn" href="Modulo4-Base-Dashboard.xlsx" download><span class="ic">⬇</span><span><b>Descarga la base y la plantilla</b><small>Modulo4-Base-Dashboard.xlsx · hojas Servicios y Dashboard</small></span></a>`:""}
+      </div>
+      <div class="sim"></div>
+    </div></div>`, init:el=>SIMS[t.sim](el.querySelector(".sim"))});
+  if(t.extra) S.push({topic:i, html:`<div class="slide">${eb("Antes y después")}<div data-x style="display:flex;flex-direction:column;gap:14px;flex:1;min-height:0"></div></div>`, init:el=>SIMS[t.extra](el.querySelector("[data-x]"))});
+});
+
+/* ---------- Ejemplo resuelto ---------- */
+const ebR = tag => `<div class="eyebrow"><span class="n">★</span><span>Ejemplo resuelto</span><span class="tag">${tag}</span></div>`;
+INICIO[T_RES]=S.length;
+S.push({topic:T_RES, html:`<div class="slide">${ebR("1 · El encargo")}
+  <div class="brief">
+    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+      <h2 style="font-size:40px">El tablero de la directora</h2>
+      <p style="font-size:18px;line-height:1.5">La directora de una institución de salud tiene <b>5 minutos</b> antes de una reunión. Los informes en tablas no le sirven: necesita ver en <b>una sola pantalla</b> cómo van los servicios de 2024 y 2025. Estas son sus preguntas, y la pieza del tablero que responde cada una:</p>
+      <div class="qlist">
+        <div><span class="n">1</span><span>¿Cuántos servicios y cuánto dinero?</span><code>3 tarjetas</code></div>
+        <div><span class="n">2</span><span>¿Cómo se mueve la demanda en el año?</span><code>Líneas por mes</code></div>
+        <div><span class="n">3</span><span>¿Qué ARS pesa más en el gasto?</span><code>Columnas por ARS</code></div>
+        <div><span class="n">4</span><span>¿Dónde se concentran los servicios?</span><code>Columnas por provincia</code></div>
+        <div><span class="n">5</span><span>¿Y si solo miro un año o un tipo de servicio?</span><code>2 segmentaciones</code></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0;min-height:0">
+      <h3 class="muted" style="font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase">El plano · hoja Dashboard de la plantilla</h3>
+      <div class="plano" style="flex:1">
+        <div class="t">Tablero de servicios de salud · 2024–2025</div>
+        <div class="k">Tarjeta 1<br>Servicios · B6</div><div class="k">Tarjeta 2<br>Monto total · F6</div><div class="k">Tarjeta 3<br>Promedio · J6</div>
+        <div class="s">Segmen&shy;taciones<br><br>Año<br><br>Tipo de Servicio</div>
+        <div class="g" style="grid-column:1/4">Gráfico 1 · Servicios por mes (Líneas)</div>
+        <div class="g">Gráfico 2<br>Monto por ARS</div><div class="g" style="grid-column:2/4">Gráfico 3 · Servicios por provincia</div>
+        <div class="c">Conclusiones para la dirección</div>
+      </div>
+    </div>
+  </div></div>`});
+
+S.push({topic:T_RES, html:`<div class="slide">${ebR("2 · Cómo se construyó")}
+  <h2 style="font-size:36px">Cuatro tablas dinámicas, dos segmentaciones</h2>
+  <table class="ptab">
+    <thead><tr><th></th><th>Hoja</th><th>Filas</th><th>Columnas</th><th>Valores</th><th>Se muestra como</th><th>Resultado (todo)</th></tr></thead>
+    <tbody>
+      <tr><td class="n">1</td><td>TD_KPI</td><td>—</td><td>—</td><td>Cuenta de ID Servicio · Suma de Monto · Promedio de Monto</td><td>3 tarjetas (B6, F6, J6)</td><td>360 · RD$ 6,691,250 · RD$ 18,586.81</td></tr>
+      <tr><td class="n">2</td><td>TD_Mes</td><td>Mes</td><td>Año</td><td>Cuenta de ID Servicio</td><td>Líneas</td><td>Diciembre, el más alto: 17 y 23</td></tr>
+      <tr><td class="n">3</td><td>TD_ARS</td><td>ARS</td><td>—</td><td>Suma de Monto · orden ↓</td><td>Columna agrupada</td><td>SeNaSa: RD$ 1,801,250</td></tr>
+      <tr><td class="n">4</td><td>TD_Prov</td><td>Provincia</td><td>—</td><td>Cuenta de ID Servicio · orden ↓</td><td>Columna agrupada</td><td>Distrito Nacional: 112</td></tr>
+      <tr><td class="n">5</td><td>Dashboard</td><td colspan="3">Segmentaciones <code>Año</code> y <code>Tipo de Servicio</code> › clic derecho › <code>Conexiones de informe</code> › marcar las 4 tablas dinámicas</td><td>Botones a la derecha</td><td>2025: 210 · RD$ 3,512,850</td></tr>
+    </tbody>
+  </table>
+  <div style="display:grid;grid-template-columns:1fr 360px;gap:16px;align-items:stretch"><div class="pit" style="background:var(--xl-soft)"><b style="color:var(--xl)">Por qué así</b><span>Todo sale de <strong>tblServicios</strong>, por eso las segmentaciones pueden controlar las 4 tablas dinámicas. Las tarjetas toman su número de <strong>TD_KPI</strong> y no de la base: así también se filtran.</span></div>
+  <a class="dlbtn" href="Modulo4-Base-Dashboard.xlsx" download><span class="ic">⬇</span><span><b>Base y plantilla del tablero</b><small>Modulo4-Base-Dashboard.xlsx · hojas Servicios (con Año y Mes) y Dashboard</small></span></a></div>
+</div>`});
+
+S.push({topic:T_RES, html:`<div class="slide" style="padding:58px 56px 62px;gap:12px">${ebR("3 · El tablero terminado")}<div class="dash" data-dash></div></div>`, init:el=>SIMS.tablero(el.querySelector("[data-dash]"))});
+
+const CONCL=[
+ ["Más servicios, menos costo por servicio","Los servicios crecieron de 150 (2024) a 210 (2025), un +40 %, pero el monto total solo subió +10.52 % (de RD$ 3,178,400 a RD$ 3,512,850). El promedio por servicio bajó de RD$ 21,189.33 a RD$ 16,727.86.","El crecimiento viene de servicios de bajo costo: las consultas pasaron de 43 a 78. Conviene sostener la atención ambulatoria, que amplía la cobertura sin disparar el gasto."],
+ ["La hospitalización manda en el gasto","Hospitalización tiene solo 42 de 360 servicios (11.67 %), pero suma RD$ 4,889,250: el 73.07 % del monto total.","Cualquier ahorro real pasa por revisar las autorizaciones y los días de estancia en hospitalización."],
+ ["Dos ARS concentran más de la mitad del monto","SeNaSa lidera con RD$ 1,801,250 (26.92 %) y ARS Humano la sigue de cerca con RD$ 1,722,400 (25.74 %), aunque con 18 servicios menos (89 frente a 107).","Cada servicio de ARS Humano cuesta más en promedio (RD$ 19,352.81 frente a RD$ 16,834.11). Vale la pena revisar qué servicios se le facturan."],
+ ["La demanda sube al cierre del año","Octubre, noviembre y diciembre suman 112 de los 360 servicios (31.11 %). Diciembre es el mes más alto en los dos años (17 y 23).","Reforzar personal, turnos y presupuesto en el último trimestre."],
+ ["Distrito Nacional pierde peso","Distrito Nacional concentra 112 servicios (31.11 %), pero su parte bajó del 36 % en 2024 (54 de 150) al 27.62 % en 2025 (58 de 210). Santiago pasó de 21 a 42 servicios y Santo Domingo, de 26 a 43.","La demanda crece fuera de la capital: hay que revisar la red de prestadores en Santiago y Santo Domingo."]
+];
+S.push({topic:T_RES, html:`<div class="slide" style="gap:14px">${ebR("4 · Conclusiones")}
+  <h2 style="font-size:34px">Lo que la directora se lleva a la reunión</h2>
+  <div class="concl">${CONCL.map((c,i)=>`<div class="cc hid"><h3><i>${i+1}</i>${esc(c[0])}</h3><p>${esc(c[1])}</p><div class="dec"><b>Decisión sugerida · </b>${esc(c[2])}</div></div>`).join("")}<div class="cc" style="cursor:default;background:var(--mark);justify-content:center"><h3><i>✎</i>Cómo se escribe</h3><p>Cada hallazgo lleva un <b>dato</b> (número exacto), una <b>comparación</b> (frente a quién o a cuándo) y una <b>decisión sugerida</b>.</p><p class="muted" style="font-size:13px">Toca cada tarjeta para revelarla.</p></div></div>
+</div>`, init:el=>el.querySelectorAll(".cc.hid").forEach(d=>d.onclick=()=>d.classList.toggle("hid"))});
+
+S.push({topic:-1, html:`<div class="slide">
+  <div class="eyebrow">Resumen</div>
+  <h2>Lo que aprendimos hoy</h2>
+  <div class="sum">${TOPICS.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${esc(SH[i])}</code></div></div>`).join("")}</div>
+  <p class="note"><b>Recuerda:</b> un dashboard responde preguntas. Si un elemento no responde ninguna, sobra.</p>
+</div>`});
+
+/* ---------- Simuladores ---------- */
+function head(title){ return `<div class="sim-h"><span>${title}</span><span class="live">● en vivo</span></div>`; }
+
+const SIMS = {
+/* 2 · Elegir el gráfico */
+elegir(box){
+  const tipoMonto = group(rec,"tipo").sort((a,b)=>b.s-a.s), arsMonto = group(rec,"ars").sort((a,b)=>b.s-a.s), meses = byMes(rec);
+  const Q=[
+    {q:"¿Cómo cambió la cantidad de servicios mes a mes?", cats:MESC, vals:meses, fmt:num0, best:"Línea",
+     v:{"Línea":["ok","La línea muestra la tendencia: la demanda sube hacia diciembre (40 servicios)."],"Columnas":["mid","Se puede, pero la línea deja ver mejor la subida y la bajada."],"Circular":["no","12 porciones casi iguales: no se ve ninguna tendencia."],"Tarjeta":["no","Un solo número (360) esconde cómo cambió cada mes."]}},
+    {q:"¿Qué ARS tiene más monto?", cats:arsMonto.map(g=>g.k), vals:arsMonto.map(g=>g.s), fmt:rd0, best:"Columnas",
+     v:{"Columnas":["ok","Columnas ordenadas: se ve de inmediato que SeNaSa lidera, muy de cerca de ARS Humano."],"Línea":["no","Las ARS no son una secuencia en el tiempo: la línea inventa una tendencia que no existe."],"Circular":["mid","Con 5 ARS se puede, pero SeNaSa (26.92 %) y ARS Humano (25.74 %) se ven iguales. Las columnas comparan mejor."],"Tarjeta":["no","Un total no compara ARS."]}},
+    {q:"¿Qué parte del monto es de cada tipo de servicio?", cats:tipoMonto.map(g=>g.k), vals:tipoMonto.map(g=>g.s), fmt:rd0, best:"Circular",
+     v:{"Circular":["ok","Pocas categorías y partes de un total: Hospitalización es el 73.07 % del monto."],"Columnas":["mid","También funciona; el circular deja más claro que son partes de un todo."],"Línea":["no","Los tipos de servicio no van en el tiempo: la línea confunde."],"Tarjeta":["no","Un total no muestra cómo se reparte."]}},
+    {q:"¿Cuántos servicios se atendieron en total?", cats:["Total"], vals:[360], fmt:num0, best:"Tarjeta",
+     v:{"Tarjeta":["ok","Un solo número importante: tarjeta grande. 360 servicios."],"Columnas":["no","Una sola columna es un gráfico que no compara nada."],"Línea":["no","Una línea necesita varios momentos en el tiempo."],"Circular":["no","Un círculo entero no dice nada."]}}
+  ];
+  let qi=0, ty="Línea";
+  box.innerHTML = head("Simulador · ¿qué gráfico responde la pregunta?")+`<div class="sim-b">
+    <div class="qbtns">${Q.map((q,i)=>`<button data-q="${i}">${i+1}. ${esc(q.q)}</button>`).join("")}</div>
+    <div class="pills">${["Línea","Columnas","Circular","Tarjeta"].map(t=>`<button data-t="${t}">${t}</button>`).join("")}</div>
+    <div data-c style="min-height:0"></div><div data-v></div></div>`;
+  const run=()=>{
+    const q=Q[qi];
+    box.querySelectorAll("[data-q]").forEach(b=>b.classList.toggle("on",+b.dataset.q===qi));
+    box.querySelectorAll("[data-t]").forEach(b=>b.classList.toggle("on",b.dataset.t===ty));
+    let svg;
+    if(ty==="Tarjeta") svg=`<div class="kcards" style="grid-template-columns:1fr"><div class="kcard"><small>${q.cats.length>1?"Total":"Servicios atendidos"}</small><b>${q.fmt(q.vals.reduce((a,b)=>a+b,0))}</b></div></div>`;
+    else if(ty==="Línea") svg=lineSVG(q.cats,[{name:"",color:C1,vals:q.vals}],{W:640,H:170,short:true,fmt:q.fmt,pr:40,pl:52});
+    else if(ty==="Columnas") svg=colSVG(q.cats,[{name:"",color:C1,vals:q.vals}],{W:640,H:170,short:true,fmt:q.fmt,fmtLabel:q.fmt===rd0?kfmt:num0,pl:52});
+    else svg=pieSVG(q.cats,q.vals,{W:640,H:170,fmt:q.fmt});
+    box.querySelector("[data-c]").innerHTML = ty==="Tarjeta"? svg : `<div class="chart">${svg}</div>`;
+    const [c,txt]=q.v[ty]; const L={ok:"✓ Correcto",mid:"◐ Se puede, pero…",no:"✗ No conviene"};
+    box.querySelector("[data-v]").innerHTML=`<div class="verdict ${c}"><b>${L[c]}</b><span>${esc(txt)}</span></div>`;
+  };
+  box.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{ qi=+b.dataset.q; run(); });
+  box.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{ ty=b.dataset.t; run(); });
+  run();
+},
+/* 3 · Tarjetas */
+tarjetas(box){
+  box.innerHTML = head("Simulador · tarjetas conectadas a TD_KPI")+`<div class="sim-b">
+    <div class="ctrls">
+      <label class="ctrl">Segmentación · Año<select data-y>${opts(["(Todos)","2024","2025"],"(Todos)")}</select></label>
+      <label class="ctrl">Segmentación · Tipo de Servicio<select data-t>${opts(["(Todos)"].concat(TIPOS),"(Todos)")}</select></label>
+    </div>
+    <div class="ctrl">Hoja TD_KPI · tabla dinámica solo con Valores</div>
+    <div class="pv" data-p></div>
+    <div class="ctrl">Hoja Dashboard · las tarjetas toman el número de TD_KPI</div>
+    <div class="kcards" data-k></div>
+    <div class="ctrl">Comparación · tarjeta hecha con una fórmula sobre la base</div>
+    <div class="kcards" style="grid-template-columns:1fr" data-bad></div></div>`;
+  const q=s=>box.querySelector(s);
+  const run=()=>{
+    const y=q("[data-y]").value, t=q("[data-t]").value;
+    const rows=rec.filter(r=>(y==="(Todos)"||r.anio===y)&&(t==="(Todos)"||r.tipo===t)), T=tot(rows);
+    q("[data-p]").innerHTML=`<table><thead><tr><th>Cuenta de ID Servicio</th><th>Suma de Monto</th><th>Promedio de Monto</th></tr></thead><tbody><tr class="tot"><td style="text-align:right">${num0(T.n)}</td><td>${num2(T.s)}</td><td>${num2(T.s/T.n)}</td></tr></tbody></table>`;
+    q("[data-k]").innerHTML=`<div class="kcard"><small>Servicios atendidos</small><b>${num0(T.n)}</b><em>B6 = TD_KPI · Cuenta</em></div><div class="kcard"><small>Monto total</small><b>${rd0(T.s)}</b><em>F6 = TD_KPI · Suma</em></div><div class="kcard"><small>Monto promedio</small><b>${rd2(T.s/T.n)}</b><em>J6 = TD_KPI · Promedio</em></div>`;
+    const filt = y!=="(Todos)"||t!=="(Todos)";
+    q("[data-bad]").innerHTML=`<div class="kcard${filt?" bad":""}"><small>Monto total · =SUMA(tblServicios[Monto])</small><b>${rd0(6691250)}</b><em>${filt?`<span class="flag">✗ No cambió: la fórmula lee toda la base y no ve la segmentación.</span>`:"Sin filtros, coincide. Ahora elige un año en la segmentación."}</em></div>`;
+  };
+  box.querySelectorAll("select").forEach(s=>s.onchange=run); run();
+},
+/* 4 · Gráficos */
+graficos(box){
+  const TD={
+    "TD_Mes · Mes × Año":()=>({cats:MESC,series:[{name:"2024",color:C24,vals:byMes(rec,"2024")},{name:"2025",color:C25,vals:byMes(rec,"2025")}],fmt:num0,best:"Línea",
+      rows:MESC.map((m,i)=>[m+" ("+(i+1)+")",byMes(rec,"2024")[i],byMes(rec,"2025")[i]]),cols:["2024","2025"]}),
+    "TD_ARS · Suma de Monto":()=>{ const g=group(rec,"ars").sort((a,b)=>b.s-a.s); return {cats:g.map(x=>x.k),series:[{name:"Suma de Monto",color:C1,vals:g.map(x=>x.s)}],fmt:rd0,best:"Columna agrupada",rows:g.map(x=>[x.k,x.s]),cols:["Suma de Monto"]}; },
+    "TD_Prov · Cuenta de ID Servicio":()=>{ const g=group(rec,"prov").sort((a,b)=>b.n-a.n); return {cats:g.map(x=>x.k),series:[{name:"Cuenta de ID Servicio",color:C1,vals:g.map(x=>x.n)}],fmt:num0,best:"Columna agrupada",rows:g.map(x=>[x.k,x.n]),cols:["Cuenta de ID Servicio"]}; }
+  };
+  box.innerHTML = head("Simulador · Insertar › Gráfico desde la tabla dinámica")+`<div class="sim-b">
+    <div class="ctrls">
+      <label class="ctrl">Tabla dinámica<select data-d>${opts(Object.keys(TD),"TD_Mes · Mes × Año")}</select></label>
+      <label class="ctrl">Tipo de gráfico<select data-g>${opts(["Línea","Columna agrupada","Circular"],"Línea")}</select></label>
+    </div>
+    <div data-c></div><div data-v></div></div>`;
+  const q=s=>box.querySelector(s);
+  const run=()=>{
+    const d=TD[q("[data-d]").value](), g=q("[data-g]").value; let svg, verdict;
+    if(g==="Línea") svg=lineSVG(d.cats,d.series,{W:640,H:220,short:true,fmt:d.fmt,pl:50,pr:d.series.length>1?62:20});
+    else if(g==="Columna agrupada") svg=colSVG(d.cats,d.series,{W:640,H:220,short:true,fmt:d.fmt,fmtLabel:d.fmt===rd0?kfmt:num0,pl:50,bmax:40});
+    else svg= d.series.length>1 ? `<div class="empty" style="padding:30px 10px;font-size:14px;color:var(--muted)">Un gráfico circular muestra una sola serie: aquí hay dos (2024 y 2025). Excel solo dibujaría 2024.</div>` : pieSVG(d.cats,d.series[0].vals,{W:640,H:220,fmt:d.fmt,colors:d.cats.map((_,i)=>CAT[i%5])});
+    const title = d.best===g ? (q("[data-d]").value.startsWith("TD_Mes")?"La demanda sube al cierre del año":q("[data-d]").value.startsWith("TD_ARS")?"SeNaSa y ARS Humano concentran el monto":"Distrito Nacional concentra los servicios") : "Total";
+    q("[data-c]").innerHTML=chartBox(title,"",svg,d.series.length>1&&g!=="Circular"?yearLegend:"");
+    verdict = d.best===g ? ["ok","✓ Buena elección","Este gráfico responde la pregunta de esta tabla dinámica. Cambia el título «Total» por el hallazgo."]
+      : g==="Circular" ? ["no","✗ No conviene", d.series.length>1?"Dos series no caben en un circular.":"Con 6 provincias o 5 ARS de tamaño parecido, las porciones no se distinguen."]
+      : ["mid","◐ Se puede, pero…", g==="Línea"?"Las categorías no son tiempo: la línea sugiere una tendencia que no existe.":"Funciona, pero para ver la evolución en el tiempo la línea se lee mejor."];
+    q("[data-v]").innerHTML=`<div class="verdict ${verdict[0]}"><b>${verdict[1]}</b><span>${esc(verdict[2])}</span></div>`;
+  };
+  box.querySelectorAll("select").forEach(s=>s.onchange=run); run();
+},
+/* 5 · Segmentaciones */
+segmentar(box){
+  let anio="Todo"; const selT=new Set(TIPOS); const con={kpi:true,ars:true};
+  box.innerHTML = head("Simulador · segmentaciones y conexiones de informe")+`<div class="sim-b">
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:10px">
+      <div class="slicer"><div class="sh">Año</div><div class="sb" data-y>${["Todo","2024","2025"].map(y=>`<button data-v="${y}">${y}</button>`).join("")}</div></div>
+      <div class="slicer"><div class="sh">Tipo de Servicio <button data-clr title="Borrar filtro">✕ Borrar filtro</button></div><div class="sb" data-t>${TIPOS.map(t=>`<button data-v="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>
+    </div>
+    <div class="conn"><b style="font-family:var(--mono);font-size:12px;color:var(--muted)">CONEXIONES DE INFORME:</b><label><input type="checkbox" data-c="kpi" checked>TD_KPI</label><label><input type="checkbox" data-c="ars" checked>TD_ARS</label></div>
+    <div class="kcards" data-k></div><div data-g></div></div>`;
+  const run=()=>{
+    box.querySelectorAll("[data-y] button").forEach(b=>b.classList.toggle("on",b.dataset.v===anio));
+    box.querySelectorAll("[data-t] button").forEach(b=>b.classList.toggle("on",selT.has(b.dataset.v)));
+    const f=rec.filter(r=>(anio==="Todo"||r.anio===anio)&&selT.has(r.tipo));
+    const filtrado = anio!=="Todo"||selT.size<TIPOS.length;
+    const rk=con.kpi?f:rec, T=tot(rk), warnK=!con.kpi&&filtrado;
+    const em = warnK?`<span class="flag">✗ TD_KPI no está conectada</span>`:"";
+    box.querySelector("[data-k]").innerHTML=`<div class="kcard${warnK?" bad":""}"><small>Servicios</small><b>${num0(T.n)}</b><em>${em}</em></div><div class="kcard${warnK?" bad":""}"><small>Monto total</small><b>${rd0(T.s)}</b><em>${em}</em></div><div class="kcard${warnK?" bad":""}"><small>Promedio</small><b>${T.n?rd2(T.s/T.n):"—"}</b><em>${em}</em></div>`;
+    const ra=con.ars?f:rec, g=ARS.map(a=>({k:a,s:ra.filter(r=>r.ars===a).reduce((x,r)=>x+r.monto,0)})).sort((a,b)=>b.s-a.s);
+    const sub = !con.ars&&filtrado ? "✗ TD_ARS no está conectada: el gráfico sigue mostrando todo" : (filtrado?"Filtrado por la segmentación":"Sin filtros");
+    box.querySelector("[data-g]").innerHTML=chartBox("Monto por ARS",sub,colSVG(g.map(x=>x.k),[{name:"Monto",color:C1,vals:g.map(x=>x.s)}],{W:640,H:170,short:true,fmt:rd0,fmtLabel:kfmt,pl:50,bmax:56}));
+  };
+  box.querySelectorAll("[data-y] button").forEach(b=>b.onclick=()=>{ anio=b.dataset.v; run(); });
+  box.querySelectorAll("[data-t] button").forEach(b=>b.onclick=e=>{ const v=b.dataset.v;
+    if(e.ctrlKey||e.metaKey){ if(selT.has(v)&&selT.size>1) selT.delete(v); else selT.add(v); } else { selT.clear(); selT.add(v); } run(); });
+  box.querySelector("[data-clr]").onclick=()=>{ TIPOS.forEach(t=>selT.add(t)); run(); };
+  box.querySelectorAll("[data-c]").forEach(c=>c.onchange=()=>{ con[c.dataset.c]=c.checked; run(); });
+  run();
+},
+/* 6 · Antes y después */
+antesDespues(box){
+  const M=ARS.map(a=>MESC.map((_,i)=>rec.filter(r=>r.ars===a&&r.mes===i+1).length));
+  const rainbow=["#ff3b30","#ff9500","#ffcc00","#34c759","#00c7be","#007aff","#5856d6","#af52de","#ff2d55","#a2845e","#8e8e93","#30b0c7"];
+  const uglyPie = pieSVG(MESC,byMes(rec),{W:520,H:150,colors:rainbow});
+  const good = lineSVG(MESC,[{name:"2024",color:C24,vals:byMes(rec,"2024")},{name:"2025",color:C25,vals:byMes(rec,"2025")}],{W:560,H:190,pr:62});
+  box.innerHTML=`<h2 style="font-size:36px">Los mismos datos, dos tableros</h2>
+  <div class="ad">
+    <div><span class="lab no">✗ Antes</span>
+      <div class="ugly">
+        <div style="font-size:15px;font-weight:700;color:#e0421b;text-align:center">INFORME DE SERVICIOS!!!</div>
+        <table><thead><tr><th style="background:#ffcc00">ARS</th>${MESC.map((m,i)=>`<th style="background:${rainbow[i]};color:#fff">${m}</th>`).join("")}</tr></thead>
+        <tbody>${ARS.map((a,i)=>`<tr><td style="background:#e5f6ff">${esc(a)}</td>${M[i].map(v=>`<td style="background:${v>3?"#ffd1dc":"#fff"}">${v}</td>`).join("")}</tr>`).join("")}</tbody></table>
+        <div style="font-size:12px;font-weight:700;text-align:center;color:#007aff">Gráfico 1</div>
+        <div style="filter:drop-shadow(4px 5px 0 #999)">${uglyPie}</div>
+      </div>
+      <div class="why"><span>Muchos números y ninguna respuesta.</span><span>Un circular de 12 porciones y colores sin significado.</span><span>Título genérico: «Gráfico 1».</span></div>
+    </div>
+    <div><span class="lab ok">✓ Después</span>
+      <div class="kcards"><div class="kcard"><small>Servicios</small><b>360</b></div><div class="kcard"><small>Crecimiento 2025</small><b>+40 %</b></div><div class="kcard"><small>Mes más alto</small><b>Diciembre</b></div></div>
+      ${chartBox("La demanda sube al cierre del año","Servicios por mes · 2024 frente a 2025",good,yearLegend)}
+      <div class="why ok"><span>Primero las tarjetas, luego el gráfico.</span><span>Dos colores, cada uno con un significado (el año).</span><span>El título dice el hallazgo.</span></div>
+    </div>
+  </div>`;
+},
+/* ★ Tablero completo */
+tablero(box){
+  let anio="Todo", tipo="Todos";
+  box.innerHTML=`<div class="dash-main">
+      <div class="dtitle"><b>Tablero de servicios de salud · 2024–2025</b><span data-f></span></div>
+      <div class="kcards" data-k></div>
+      <div class="dash-charts" data-c></div>
+    </div>
+    <div class="dash-side">
+      <div class="slicer col"><div class="sh">Año <button data-ca title="Borrar filtro">✕</button></div><div class="sb" data-y>${["2024","2025"].map(y=>`<button data-v="${y}">${y}</button>`).join("")}</div></div>
+      <div class="slicer col"><div class="sh">Tipo de Servicio <button data-ct title="Borrar filtro">✕</button></div><div class="sb" data-t>${TIPOS.map(t=>`<button data-v="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>
+      <p style="font-size:12.5px;color:var(--muted);line-height:1.4">Prueba: elige <b>2025</b> y luego <b>Hospitalización</b>. Todo el tablero cambia.</p>
+    </div>`;
+  const run=()=>{
+    box.querySelectorAll("[data-y] button").forEach(b=>b.classList.toggle("on",b.dataset.v===anio));
+    box.querySelectorAll("[data-t] button").forEach(b=>b.classList.toggle("on",b.dataset.v===tipo));
+    const f=rec.filter(r=>(anio==="Todo"||r.anio===anio)&&(tipo==="Todos"||r.tipo===tipo)), T=tot(f);
+    box.querySelector("[data-f]").textContent=`Año: ${anio==="Todo"?"todos":anio} · Tipo: ${tipo==="Todos"?"todos":tipo}`;
+    box.querySelector("[data-k]").innerHTML=`<div class="kcard"><small>Servicios atendidos</small><b>${num0(T.n)}</b></div><div class="kcard"><small>Monto total</small><b>${rd0(T.s)}</b></div><div class="kcard"><small>Monto promedio por servicio</small><b>${T.n?rd2(T.s/T.n):"—"}</b></div>`;
+    const years = anio==="Todo"?["2024","2025"]:[anio];
+    const ser = years.map(y=>({name:y,color:y==="2024"?C24:C25,vals:byMes(f,y)}));
+    const ga=ARS.map(a=>({k:a,s:f.filter(r=>r.ars===a).reduce((x,r)=>x+r.monto,0)})).sort((a,b)=>b.s-a.s);
+    const gp=PROVS.map(p=>({k:p,n:f.filter(r=>r.prov===p).length})).sort((a,b)=>b.n-a.n);
+    box.querySelector("[data-c]").innerHTML =
+      chartBox("Servicios por mes","TD_Mes · Líneas",lineSVG(MESC,ser,{W:420,H:360,pr:62,pl:30}),years.map(y=>`<span><i style="background:${y==="2024"?C24:C25}"></i>${y}</span>`).join(""))+
+      chartBox("Monto por ARS","TD_ARS · Columnas",colSVG(ga.map(x=>x.k),[{name:"Monto",color:C1,vals:ga.map(x=>x.s)}],{W:330,H:390,short:true,fmt:rd0,fmtLabel:kfmt,pl:40,twoLine:true}))+
+      chartBox("Servicios por provincia","TD_Prov · Columnas",colSVG(gp.map(x=>x.k),[{name:"Servicios",color:C1,vals:gp.map(x=>x.n)}],{W:330,H:390,short:true,pl:30,twoLine:true}));
+  };
+  box.querySelectorAll("[data-y] button").forEach(b=>b.onclick=()=>{ anio = anio===b.dataset.v?"Todo":b.dataset.v; run(); });
+  box.querySelectorAll("[data-t] button").forEach(b=>b.onclick=()=>{ tipo = tipo===b.dataset.v?"Todos":b.dataset.v; run(); });
+  box.querySelector("[data-ca]").onclick=()=>{ anio="Todo"; run(); };
+  box.querySelector("[data-ct]").onclick=()=>{ tipo="Todos"; run(); };
+  run();
+}
+};
+
+/* ---------- Motor ---------- */
+const wrap=document.getElementById("slides");
+wrap.innerHTML=S.map(s=>s.html).join("");
+const els=[...wrap.children];
+els.forEach((el,i)=>S[i].init&&S[i].init(el));
+wrap.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(+b.dataset.go)));
+const NT = TOPICS.length+1;
+const dots=document.getElementById("dots");
+dots.innerHTML=TOPICS.map(t=>t.k).concat(["Ejemplo resuelto"]).map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
+dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INICIO[b.dataset.t]));
+let cur=0;
+function go(i){
+  cur=Math.max(0,Math.min(els.length-1,i));
+  els.forEach((e,j)=>e.classList.toggle("on",j===cur));
+  const tp=S[cur].topic;
+  dots.querySelectorAll("button").forEach((b,j)=>{b.classList.toggle("cur",j===tp);b.classList.toggle("done",tp>j||(tp<0&&cur>1));});
+  document.getElementById("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
+  document.getElementById("topL").textContent = tp<0?"MÓDULO 4 · VISUALIZACIÓN DE DATOS Y DASHBOARDS": tp===T_RES?"MÓDULO 4 · EJEMPLO RESUELTO · EL TABLERO DE LA DIRECTORA":`MÓDULO 4 · TEMA 0${tp+1} DE 0${TOPICS.length} · ${TOPICS[tp].k.toUpperCase()}`;
+  document.getElementById("prev").disabled=cur===0; document.getElementById("next").disabled=cur===els.length-1;
+}
+document.getElementById("prev").onclick=()=>go(cur-1);
+document.getElementById("next").onclick=()=>go(cur+1);
+document.getElementById("fs").onclick=()=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{}); }catch(e){} };
+document.addEventListener("keydown",e=>{
+  const tag=(e.target.tagName||"").toLowerCase();
+  if(tag==="input"||tag==="select") return;
+  if(["ArrowRight","PageDown"].includes(e.key)||(e.key===" "&&tag!=="button")){e.preventDefault();go(cur+1);}
+  else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==="Home") go(0); else if(e.key==="End") go(els.length-1);
+  else if(e.key==="f"||e.key==="F") document.getElementById("fs").click();
+});
+function fit(){ const st=document.getElementById("stage"); const s=Math.min((innerWidth-16)/1280,(innerHeight-16)/720); st.style.transform=`translate(-50%,-50%) scale(${s})`; }
+addEventListener("resize",fit); fit(); go((parseInt(location.hash.slice(1),10)||1)-1);
+</script>
+<!-- BOTÓN PRESENTAR (pantalla completa) · inicio -->
+<style>
+#btnPresentar{position:fixed;top:8px;right:8px;z-index:2147483000;width:34px;height:34px;padding:0;display:grid;place-items:center;
+  border:0;border-radius:8px;background:rgba(30,30,30,.55);color:#fff;cursor:pointer;opacity:.6;
+  transition:opacity .2s ease,transform .15s ease,background-color .2s ease;animation:bpAviso 1.6s ease-in-out 1s 3}
+#btnPresentar:hover,#btnPresentar:focus-visible{opacity:1;transform:scale(1.08);background:rgba(30,30,30,.8)}
+#btnPresentar:focus-visible{outline:2px solid #fff;outline-offset:2px}
+#btnPresentar svg{width:18px;height:18px;display:block}
+#btnPresentar[hidden]{display:none}
+#btnPresentar::after{content:attr(data-tip);position:absolute;top:50%;right:calc(100% + 8px);transform:translateY(-50%);white-space:nowrap;
+  font:600 12px/1 "Segoe UI",Arial,sans-serif;background:rgba(30,30,30,.85);color:#fff;padding:6px 9px;border-radius:6px;
+  opacity:0;pointer-events:none;transition:opacity .15s ease}
+#btnPresentar:hover::after,#btnPresentar:focus-visible::after{opacity:1}
+@keyframes bpAviso{0%,100%{opacity:.6;transform:none}50%{opacity:1;transform:scale(1.15)}}
+@media (prefers-reduced-motion:reduce){#btnPresentar{animation:none}}
+</style>
+<button id="btnPresentar" type="button" hidden aria-label="Pantalla completa" data-tip="Pantalla completa"></button>
+<script>
+(function(){
+  var btn = document.getElementById('btnPresentar'), d = document, raiz = d.documentElement;
+  if(!(d.fullscreenEnabled || d.webkitFullscreenEnabled)) return;   // iPhone y navegadores sin pantalla completa: no se muestra
+  var AMPLIAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+  var REDUCIR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>';
+  btn.hidden = false;
+  function activo(){ return !!(d.fullscreenElement || d.webkitFullscreenElement); }
+  function pintar(){
+    var full = activo(), tip = full ? 'Salir de pantalla completa' : 'Pantalla completa';
+    btn.innerHTML = full ? REDUCIR : AMPLIAR;
+    btn.setAttribute('aria-label', tip);
+    btn.setAttribute('data-tip', tip);
+  }
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    if(activo()) (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+    else { var p = (raiz.requestFullscreen || raiz.webkitRequestFullscreen).call(raiz); if(p && p.catch) p.catch(function(){}); }
+    btn.blur();                            // para que las flechas sigan moviendo las láminas
+  });
+  d.addEventListener('fullscreenchange', pintar);
+  d.addEventListener('webkitfullscreenchange', pintar);
+  pintar();
+})();
+</script>
+<!-- BOTÓN PRESENTAR (pantalla completa) · fin -->
+
