@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
-/* Layout: escenario fijo 1280×720 escalado a la pantalla (proyector). Mismo motor de los Módulos 2 y 3; paleta azul oscuro + azul cielo. */
+/* Layout: escenario fijo 1280×720 escalado a la pantalla (proyector). Mismo motor de los Módulos 2 y 3, solo teoría con ejemplos de ARS; paleta azul oscuro + azul cielo. */
 :root{
   --bg:#e4e9f0;        /* fondo fuera del escenario */
   --paper:#f5f7fa;     /* lámina (gris azulado muy claro) */
@@ -242,6 +242,43 @@ svg text{font-family:var(--sans)}
 .sum code{font-size:14px;display:block;color:var(--ink);margin-top:3px;font-weight:500}
 .sum p{font-size:16px;color:var(--muted)}
 .sum>div>div{min-width:0}
+/* conceptos + ejemplo ARS */
+.cols2{display:grid;grid-template-columns:1fr 1.05fr;gap:40px;flex:1;min-height:0}
+.exl{font-size:15px;color:var(--muted);line-height:1.45;border-top:1px solid var(--line);padding-top:12px}
+.exl b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--xl);margin-bottom:3px}
+.ex{background:var(--card);border:1px solid var(--grid);display:flex;flex-direction:column;min-height:0;min-width:0}
+.ex-h{display:flex;justify-content:space-between;gap:12px;padding:9px 14px;border-bottom:1px solid var(--grid);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--paper)}
+.ex-h span:first-child{color:var(--xl);font-weight:600}
+.ex-b{padding:14px;display:flex;flex-direction:column;gap:10px;min-height:0;flex:1}
+.ex-c{padding:0 14px 14px;font-size:15px;line-height:1.45;color:var(--ink)}
+.map{border-collapse:collapse;width:100%;font-size:15.5px}
+.map td{padding:13px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.35}
+.map td:first-child{width:52%;color:var(--muted)}
+.duo{display:grid;grid-template-columns:1fr 22px 1fr;gap:8px;align-items:center}
+.duo .pv table{font-size:12.5px}
+.arrow{font-size:24px;color:var(--xl);text-align:center}
+.duo2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.duo2>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.sbtn{font-size:13px;padding:4px 9px;border:1px solid var(--grid);background:var(--card);color:var(--muted)}
+.sbtn.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.anat{display:flex;flex-direction:column;gap:8px}
+.anat div{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:12px;background:var(--paper);border-left:4px solid var(--sky);font-size:16px;line-height:1.4}
+.anat b{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--xl);padding-top:2px}
+.anat .bad{border-left-color:var(--warn);background:var(--warn-soft)}
+.anat .bad b{color:var(--warn)}
+.lab{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.lab.no{color:var(--warn)} .lab.ok{color:var(--ok)}
+.raw{border:1px solid var(--grid);background:var(--card);overflow:hidden}
+.raw table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+.raw th{background:#f0f0f0;color:#333;font-weight:600;text-align:left;padding:5px 10px;border:1px solid #ddd}
+.raw td{padding:4px 10px;border:1px solid #e5e5e5;color:#222;white-space:nowrap}
+.raw td:last-child,.raw th:last-child{text-align:right}
+.raw tr.more td{text-align:center;color:var(--muted);font-style:italic;background:var(--paper)}
+.concl3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.concl3 div{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--sky);padding:7px 10px;font-size:13px;line-height:1.35}
+.concl3 i{font-style:normal;font-family:var(--serif);color:var(--xl);font-weight:600;margin-right:6px}
+.ex .kcard b{font-size:23px}
+.ex .kcards[style] .kcard b{font-size:28px}
 </style>
 
 <div id="viewport"><div id="stage">
@@ -336,386 +373,173 @@ function pieSVG(cats,vals,o={}){
 const chartBox = (title,sub,svg,legend) => `<div class="chart"><div class="ct">${esc(title)}</div>${sub?`<div class="cs">${esc(sub)}</div>`:""}${svg}${legend?`<div class="legend">${legend}</div>`:""}</div>`;
 const yearLegend = `<span><i style="background:${C24}"></i>2024</span><span><i style="background:${C25}"></i>2025</span>`;
 
-/* ---------- Contenido de los 6 temas ---------- */
+/* ---------- Datos por ARS (calculados de la base) ---------- */
+const TT = tot(rec);
+const GA = ARS.map(a=>{ const f=rec.filter(r=>r.ars===a); return {k:a, n:f.length, s:f.reduce((x,r)=>x+r.monto,0), n24:f.filter(r=>r.anio==="2024").length, n25:f.filter(r=>r.anio==="2025").length}; }).sort((a,b)=>b.s-a.s);
+const exBox = (title,body,cap) => `<div class="ex"><div class="ex-h"><span>Ejemplo · ARS</span><span>${esc(title)}</span></div><div class="ex-b">${body}</div>${cap?`<p class="ex-c">${cap}</p>`:""}</div>`;
+const kc = (lbl,val,sub) => `<div class="kcard"><small>${lbl}</small><b>${val}</b>${sub?`<em>${sub}</em>`:""}</div>`;
+const colARS = (o={}) => colSVG(GA.map(g=>g.k),[{name:"Suma de Monto",color:C1,vals:GA.map(g=>g.s)}],Object.assign({W:560,H:230,short:true,fmt:rd0,fmtLabel:kfmt,pl:48},o));
+
+/* ---------- Los 7 conceptos ---------- */
 const TOPICS = [
-{ k:"Del dato a la decisión", d:"Qué es un dashboard y para qué sirve.",
-  def:"Un dashboard (tablero) reúne en una sola pantalla los indicadores clave, con gráficos y filtros, para entender en segundos cómo va algo y decidir.",
-  ana:"Es como el tablero de un carro: no te muestra cada pieza del motor, solo la velocidad, la gasolina y las alertas que necesitas para manejar.",
-  partsT:"Las piezas de un dashboard · toca cada una",
-  parts:[["Tarjetas","Números grandes: total de servicios, monto total, monto promedio."],["Gráficos","Muestran la tendencia y la comparación: por mes, por ARS, por provincia."],["Segmentaciones","Botones que filtran todo el tablero a la vez."],["Tablas dinámicas","El motor escondido: cada tarjeta y cada gráfico sale de una."],["Conclusiones","Frases cortas que dicen qué significa y qué hacer."]],
-  uses:[["Reunión de dirección","Responder en 5 minutos cómo van los servicios.","Una pantalla · 3 tarjetas · 3 gráficos"],
-        ["Detectar alertas","Ver de inmediato qué mes, ARS o provincia se sale de lo normal.","Gráfico de líneas por mes"],
-        ["Comparar","Poner lado a lado ARS, provincias o años.","Gráfico de columnas por ARS"],
-        ["Explorar sin rehacer","Un clic en la segmentación y todo el tablero cambia.","Segmentaciones: Año · Tipo de Servicio"]],
-  pit:"Un dashboard no es «poner muchos gráficos». Si un gráfico no responde una pregunta de la dirección, sobra. Menos elementos, mejor lectura." },
+{ k:"Dashboard", d:"Una pantalla para decidir.",
+  q:"¿Qué es un dashboard?",
+  def:"Un dashboard (tablero) reúne en una sola pantalla los indicadores clave de un tema, con gráficos y filtros, para entender en segundos cómo va y tomar decisiones.",
+  ana:"Es como el tablero de un carro: no muestra cada pieza del motor, solo la velocidad, la gasolina y las alertas que se necesitan para manejar.",
+  xl:"Se arma con tablas dinámicas, gráficos y segmentaciones, todos sobre la misma base.",
+  ex:()=>exBox("Un vistazo a las 5 ARS",
+    `<div class="kcards">${kc("Servicios",num0(TT.n))}${kc("Monto total",rd0(TT.s))}${kc("ARS líder","SeNaSa")}</div>
+     ${chartBox("SeNaSa y ARS Humano concentran el monto","Monto por ARS",colARS({H:300}))}`,
+    "En lugar de leer 360 filas, la dirección ve tres números y un gráfico, y ya sabe qué ARS pesa más.") },
+
+{ k:"Indicadores (KPI)", d:"Los números que se vigilan.",
+  q:"¿Qué es un indicador clave (KPI)?",
+  def:"Un KPI es un número que resume el desempeño y que se vigila en el tiempo: cantidad de servicios, monto total, monto promedio. En el dashboard se muestra en una tarjeta: un número grande con su nombre.",
+  ana:"Es el marcador de un partido: antes de ver las jugadas, se mira el resultado.",
+  xl:"La tarjeta toma su número de una tabla dinámica (solo con Valores), para que cambie cuando se filtra.",
+  ex:()=>exBox("Tres KPI por ARS",
+    `<div class="kcards" style="grid-template-columns:1fr">${kc("ARS con más servicios","SeNaSa · 107","29.72 % de los 360 servicios")}${kc("ARS con más monto","SeNaSa · RD$ 1,801,250","26.92 % del monto total")}${kc("Promedio más alto por servicio","Primera ARS · RD$ 26,744.44","El promedio general es RD$ 18,586.81")}</div>`,
+    "Cada tarjeta responde una sola pregunta, con un solo número.") },
 
 { k:"Elegir el gráfico", d:"Cada pregunta tiene su gráfico.",
-  def:"El gráfico se elige según la pregunta: líneas para ver cambios en el tiempo, columnas para comparar categorías, circular para ver partes de un total y una tarjeta para un solo número.",
-  ana:"Es como elegir la herramienta en una caja: no usas un martillo para apretar un tornillo. Cada gráfico hace bien un solo trabajo.",
-  partsT:"Pregunta → gráfico · toca cada uno",
-  parts:[["Líneas","¿Cómo cambia en el tiempo? Meses, trimestres, años."],["Columnas","¿Quién tiene más? Comparar ARS, provincias o servicios, ordenados de mayor a menor."],["Circular","¿Qué parte del total? Solo con pocas categorías (5 o menos)."],["Tarjeta","Un solo número importante: el total o el promedio."],["Tabla","Cuando se necesita el valor exacto de varias filas."]],
-  uses:[["Servicios por mes","Ver si la demanda sube o baja.","Línea · Filas: Mes · Columnas: Año"],
-        ["Monto por ARS","Quién pesa más en el gasto.","Columna agrupada · ordenada de mayor a menor"],
-        ["Peso de cada tipo de servicio","Qué parte del monto es hospitalización.","Circular · 5 tipos de servicio"],
-        ["Total de servicios","Un número que se lee de un vistazo.","Tarjeta: 360"]],
-  pit:"Evita el gráfico circular con muchas porciones (12 meses u 8 PSS): nadie distingue porciones parecidas, usa columnas. Evita también el 3D: deforma los tamaños.",
-  steps:["Lee en voz alta la pregunta de la dirección.","Pregúntate: ¿es <b>tiempo</b>, <b>comparación</b>, <b>parte de un total</b> o <b>un solo número</b>?","Elige un gráfico en el simulador y mira si responde la pregunta.","En Excel para la web, el gráfico de una tabla dinámica puede ser de <b>columnas</b>, <b>líneas</b>, <b>circular</b> o <b>radial</b>."],
-  conf:"Tiempo → Línea · Comparar → Columna · Parte del total → Circular · Un número → Tarjeta", lbl:"REGLA", sim:"elegir", ph:"Decidámoslo juntos" },
+  q:"¿Qué gráfico uso para cada pregunta?",
+  def:"El gráfico se elige según la pregunta: columnas para comparar categorías, líneas para ver cambios en el tiempo, circular para ver partes de un total (pocas categorías) y tarjeta para un solo número.",
+  ana:"Es como elegir la herramienta en una caja: no se usa un martillo para apretar un tornillo.",
+  xl:"Con tablas dinámicas, Excel para la web ofrece columnas, líneas, circular y radial.",
+  ex:()=>exBox("Pregunta → gráfico",
+    `<table class="map">
+      <tr><td>¿Qué ARS tiene más monto?</td><td><b>Columnas</b>, ordenadas de mayor a menor</td></tr>
+      <tr><td>¿Cómo cambiaron los servicios de cada ARS de 2024 a 2025?</td><td><b>Columnas agrupadas</b> por año</td></tr>
+      <tr><td>¿Qué parte del monto aporta cada ARS?</td><td><b>Circular</b> (son solo 5 ARS)</td></tr>
+      <tr><td>¿Cuántos servicios tiene SeNaSa?</td><td><b>Tarjeta</b>: 107</td></tr>
+     </table>`,
+    "Error frecuente: un circular con muchas porciones o un gráfico en 3D. No se distinguen los tamaños.") },
 
-{ k:"Tarjetas de indicadores", d:"Los números clave, grandes y a la vista.",
-  def:"Una tarjeta es una celda grande que muestra un indicador clave (KPI): total de servicios, monto total o monto promedio. Para que cambie con las segmentaciones, el número tiene que venir de una tabla dinámica.",
-  ana:"Es el marcador de un partido: antes de ver las jugadas, miras el resultado.",
-  partsT:"Las piezas · toca cada una",
-  parts:[["TD_KPI","Una tabla dinámica con campos solo en Valores, sin Filas. Vive en la hoja Dashboard, celda T5, y da los totales del tablero."],["Cuenta de ID Servicio","Cuántos servicios hay: 360."],["Suma de Monto","Cuánto dinero: RD$ 6,691,250."],["Promedio de Monto","Cuánto cuesta un servicio típico: RD$ 18,586.81."],["= y clic","En la tarjeta escribes = y haces clic en el número de TD_KPI. Si Excel escribe IMPORTARDATOSDINAMICOS, es normal: déjalo así."]],
-  uses:[["Servicios atendidos","El volumen total del período.","Cuenta de ID Servicio → 360"],
-        ["Monto total","El gasto total del período.","Suma de Monto → RD$ 6,691,250"],
-        ["Costo promedio","Cuánto cuesta un servicio típico.","Promedio de Monto → RD$ 18,586.81"],
-        ["Tarjeta que se filtra","Con la segmentación en 2025, la tarjeta muestra 210.","Tarjeta = número de TD_KPI (no =SUMA de la base)"]],
-  pit:"Si la tarjeta usa =SUMA(tblServicios[Monto]), siempre dirá 6,691,250 aunque filtres por año: las segmentaciones solo filtran tablas dinámicas. Conecta la tarjeta a TD_KPI.",
-  steps:["Abre <code>Modulo4-Base-Dashboard.xlsx</code> en Excel (Microsoft 365). Clic en <code>A2</code> de la hoja <code>Servicios</code> › <code>Insertar › Tabla dinámica</code>. Destino: <code>Hoja de cálculo existente</code> › <code>Dashboard!T5</code>.","Arrastra a <b>Valores</b>: <code>ID Servicio</code> (Cuenta), <code>Monto</code> (Suma) y otra vez <code>Monto</code>. Sobre este último: clic derecho › <code>Resumir valores por › Promedio</code>.","En <code>B6</code> escribe <code>=</code>, haz clic en el número de la cuenta (<code>T6</code>) y pulsa Enter. Repite en <code>F6</code> (suma, <code>U6</code>) y <code>J6</code> (promedio, <code>V6</code>).","Resultado: <b>360</b> · <b>RD$ 6,691,250</b> · <b>RD$ 18,586.81</b>. La plantilla ya trae el formato grande."],
-  conf:"TD_KPI · Valores: Cuenta de ID Servicio · Suma de Monto · Promedio de Monto", sim:"tarjetas", dl:true },
+{ k:"Gráfico de tabla dinámica", d:"El gráfico que sigue a la tabla.",
+  q:"¿Qué es un gráfico de tabla dinámica?",
+  def:"Es un gráfico creado desde una tabla dinámica. Queda conectado a ella: si la tabla dinámica cambia o se filtra, el gráfico se actualiza solo.",
+  ana:"La tabla dinámica es la cocina y el gráfico es el plato servido: si cambia la receta, el plato cambia.",
+  xl:"Clic dentro de la tabla dinámica › Insertar › Columna (o Línea, o Circular).",
+  ex:()=>exBox("De la tabla dinámica al gráfico",
+    `<div class="duo"><div class="pv"><table><thead><tr><th>Etiquetas de fila</th><th>Suma de Monto</th></tr></thead><tbody>${GA.map(g=>`<tr><td>${esc(g.k)}</td><td>${num2(g.s)}</td></tr>`).join("")}<tr class="tot"><td>Total general</td><td>${num2(TT.s)}</td></tr></tbody></table></div>
+     <div class="arrow">→</div>${chartBox("Monto por ARS","",colARS({W:360,H:330,pl:44,twoLine:true}))}</div>`,
+    "Filas: ARS · Valores: Suma de Monto · ordenado de mayor a menor. El gráfico dibuja exactamente esa tabla.") },
 
-{ k:"Gráficos de la tabla dinámica", d:"Tendencia, comparación y distribución.",
-  def:"En Excel para la web, el gráfico de una tabla dinámica se crea con un clic dentro de ella › pestaña Insertar › Columna, Línea o Circular. Queda conectado: si la tabla dinámica cambia o se filtra, el gráfico cambia también.",
-  ana:"La tabla dinámica es la cocina y el gráfico es el plato servido: si cambias la receta, el plato cambia solo.",
-  partsT:"Las tres tablas del tablero · toca cada una",
-  parts:[["TD_Mes · T10","Filas: Mes · Columnas: Año · Valores: Cuenta de ID Servicio → gráfico de Líneas."],["TD_ARS · T29","Filas: ARS · Valores: Suma de Monto, ordenado de mayor a menor → Columnas."],["TD_Prov · T38","Filas: Provincia · Valores: Cuenta de ID Servicio, ordenado de mayor a menor → Columnas."],["Título","Cambia «Total» por lo que el gráfico demuestra."],["Ubicar","Arrastra el gráfico por su borde hasta su recuadro y ajusta el tamaño desde las esquinas."]],
-  uses:[["Evolución por período","Cómo se mueve la demanda mes a mes, 2024 frente a 2025.","Clic en TD_Mes › Insertar › Línea"],
-        ["Comparación entre ARS","Qué ARS concentra más monto.","Clic en TD_ARS › Insertar › Columna"],
-        ["Distribución por provincia","Dónde se concentran los servicios.","Clic en TD_Prov › Insertar › Columna"],
-        ["Un tablero ordenado","Cada gráfico en su recuadro de la hoja Dashboard.","Arrastra el gráfico · ajusta las esquinas"]],
-  pit:"Haz clic dentro de la tabla dinámica antes de insertar el gráfico. Si seleccionas celdas normales, Excel crea un gráfico común que no responde a las segmentaciones.",
-  steps:["En <code>Dashboard!T10</code> crea <code>TD_Mes</code>: Filas <code>Mes</code>, Columnas <code>Año</code>, Valores <code>ID Servicio</code> (Cuenta).","Clic dentro de la tabla dinámica › <code>Insertar › Línea</code>. Arrastra el gráfico al recuadro «Gráfico 1» y cambia el título: «La demanda sube al cierre del año».","Crea <code>TD_ARS</code> en <code>T29</code> (Filas <code>ARS</code>, Valores <code>Monto</code>) y <code>TD_Prov</code> en <code>T38</code> (Filas <code>Provincia</code>, Valores <code>ID Servicio</code>). Ordénalas de mayor a menor e inserta a cada una un gráfico de <b>Columna</b>.","Arrastra cada gráfico a su recuadro. Resultado: <b>diciembre</b> es el mes más alto (17 y 23), <b>SeNaSa</b> lidera en monto y <b>Distrito Nacional</b> en servicios (112)."],
-  conf:"TD_Mes → Línea · TD_ARS → Columna · TD_Prov → Columna · todo en la hoja Dashboard", sim:"graficos" },
+{ k:"Segmentaciones", d:"Filtrar todo con un clic.",
+  q:"¿Qué es una segmentación?",
+  def:"Una segmentación es un panel de botones que filtra las tablas dinámicas. Si se conecta a todas las del tablero, un clic cambia a la vez tarjetas y gráficos.",
+  ana:"Es el interruptor general de la casa: en lugar de apagar bombillo por bombillo, se baja uno y se apaga todo.",
+  xl:"Analizar tabla dinámica › Segmentación. Para conectarla a las demás: pestaña Segmentación › Configuración de segmentación › Conexiones de tabla dinámica.",
+  ex:()=>{ const s=GA.find(g=>g.k==="SeNaSa"); return exBox("Un clic en SeNaSa",
+    `<div class="slicer"><div class="sh">ARS <span class="flag" style="color:var(--xl)">✕ Borrar filtro</span></div><div class="sb">${ARS.map(a=>`<span class="sbtn${a==="SeNaSa"?" on":""}">${esc(a)}</span>`).join("")}</div></div>
+     <div class="kcards">${kc("Servicios",num0(s.n))}${kc("Monto total",rd0(s.s))}${kc("Promedio",rd2(s.s/s.n))}</div>
+     ${chartBox("SeNaSa: de 47 servicios en 2024 a 60 en 2025","Servicios por año",colSVG(["2024","2025"],[{name:"Servicios",color:C1,vals:[s.n24,s.n25]}],{W:560,H:230,bmax:60,labelAll:true}))}`,
+    "Todo el tablero muestra solo SeNaSa. Con «Borrar filtro» vuelven las 5 ARS."); } },
 
-{ k:"Segmentaciones del tablero", d:"Un clic filtra todo el tablero.",
-  def:"Una segmentación filtra la tabla dinámica en la que se creó. Desde Configuración de segmentación se conecta a las demás, y así un solo clic cambia todo el tablero: tarjetas y gráficos.",
-  ana:"Es el interruptor general de la casa: en lugar de apagar bombillo por bombillo, bajas uno y se apaga todo.",
-  partsT:"Herramientas · toca cada una",
-  parts:[["Insertar","Clic dentro de una tabla dinámica › pestaña Analizar tabla dinámica › Segmentación › marca los campos › Aceptar."],["Conexiones","Selecciona la segmentación › pestaña Segmentación › Configuración de segmentación › Conexiones de tabla dinámica › marca las 4. (En Excel de escritorio se llama Conexiones de informe.)"],["Misma base","Solo se conectan tablas dinámicas creadas desde la misma tabla: tblServicios."],["Ubicar","Arrastra la segmentación hasta la columna de la derecha del Dashboard."],["Borrar filtro","El botón Borrar filtro (embudo con la X) vuelve a mostrar todo. Ctrl + clic elige varios."]],
-  uses:[["Ver un solo año","El tablero completo, solo con 2025.","Año = 2025 → 210 servicios"],
-        ["Un tipo de servicio","Solo hospitalizaciones: 42 servicios y RD$ 4,889,250.","Tipo de Servicio = Hospitalización"],
-        ["Responder en la reunión","«¿Y solo consultas en 2025?»: dos clics.","Año + Tipo de Servicio"],
-        ["Comprobar la conexión","Si una tarjeta no cambia, falta conectarla.","Segmentación › Configuración de segmentación"]],
-  pit:"Si al filtrar una tarjeta o un gráfico no cambia, esa tabla dinámica no está marcada en Conexiones de tabla dinámica. Si ni siquiera aparece en la lista, se creó desde otra base: vuelve a crearla desde tblServicios.",
-  steps:["Clic dentro de <code>TD_KPI</code> › pestaña <code>Analizar tabla dinámica</code> › <code>Segmentación</code> › marca <code>Año</code> y <code>Tipo de Servicio</code> › <code>Aceptar</code>.","Selecciona la segmentación <code>Año</code> › pestaña <code>Segmentación</code> › <code>Configuración de segmentación</code> › en <b>Conexiones de tabla dinámica</b> marca las 4. Repite con <code>Tipo de Servicio</code>.","Arrastra las dos segmentaciones a la columna de la derecha del <code>Dashboard</code> (<code>O5:Q43</code>).","Prueba con <b>2025</b>: <b>210</b> · <b>RD$ 3,512,850</b> · <b>RD$ 16,727.86</b>, y todos los gráficos cambian."],
-  conf:"Segmentaciones: Año · Tipo de Servicio → conectadas a las 4 tablas dinámicas", lbl:"SEG", sim:"segmentar" },
+{ k:"Diseño", d:"Ordenado, claro, sin adornos.",
+  q:"¿Cómo se ve un tablero profesional?",
+  def:"Un buen tablero se lee de arriba abajo: primero las tarjetas, luego los gráficos, y a un lado las segmentaciones. Usa pocos colores con significado, títulos que dicen el hallazgo y nada que no aporte información.",
+  ana:"Es como una vitrina bien arreglada: lo importante al frente, sin amontonar.",
+  xl:"Ayuda ocultar la cuadrícula de la hoja: Vista › Líneas de cuadrícula.",
+  ex:()=>{ const rb=["#ff3b30","#ffcc00","#34c759","#007aff","#af52de"];
+    return exBox("El mismo dato, dos diseños",
+    `<div class="duo2"><div><span class="lab no">✗ Antes</span><div class="ugly"><div style="font-size:13px;font-weight:700;color:#e0421b;text-align:center">Gráfico 1</div><div style="filter:drop-shadow(4px 5px 0 #999)">${pieSVG(GA.map(g=>g.k),GA.map(g=>g.s),{W:380,H:170,colors:rb})}</div></div>
+       <div class="why"><span>Título genérico</span><span>Colores sin significado</span><span>Sombra que estorba</span></div></div>
+     <div><span class="lab ok">✓ Después</span>${chartBox("SeNaSa y ARS Humano: 52.66 % del monto","Monto por ARS",colARS({W:360,H:200,pl:44,twoLine:true}))}
+       <div class="why ok"><span>El título dice el hallazgo</span><span>Un solo color</span><span>Ordenado de mayor a menor</span></div></div></div>`,""); } },
 
-{ k:"Diseño y conclusiones", d:"Ordenado, claro y con un mensaje.",
-  def:"Un buen tablero se lee de arriba abajo y de izquierda a derecha: primero las tarjetas, luego los gráficos. Lleva pocos colores, títulos que dicen el hallazgo y, al final, conclusiones con dato y recomendación.",
-  ana:"Es como una vitrina bien arreglada: lo importante al frente, sin amontonar, para que quien pasa entienda en segundos.",
-  partsT:"Reglas de diseño · toca cada una",
-  parts:[["Orden","Arriba: tarjetas. Al centro: gráficos. A un lado: segmentaciones."],["Pocos colores","Un color principal y uno de contraste para resaltar. Nada de arcoíris."],["Títulos que concluyen","No «Gráfico 1»: mejor «Diciembre es el mes con más servicios»."],["Quitar lo que sobra","Sin 3D, sin sombras, sin cuadrícula de la hoja, sin adornos."],["Conclusión","Dato + comparación + recomendación para decidir."]],
-  uses:[["Ocultar la cuadrícula","El tablero se ve limpio, como una página.","Vista › desmarca Líneas de cuadrícula"],
-        ["Mismo tamaño, bien alineados","Gráficos del mismo alto, alineados a las columnas.","Arrastra los bordes hasta los recuadros de la plantilla"],
-        ["Escribir para la dirección","Conclusiones de 1 o 2 líneas, siempre con un número.","Dato + comparación + recomendación"],
-        ["Todo en un vistazo","Que todo quepa en la pantalla, sin desplazarse.","Zoom 90 % · todo visible"]],
-  pit:"Más no es mejor. Un tablero con 10 gráficos, colores distintos y efectos 3D cansa y confunde. Si un elemento no responde una pregunta, quítalo.",
-  extra:"antesDespues" }
+{ k:"Conclusiones", d:"Del número a la decisión.",
+  q:"¿Cómo se escribe una conclusión?",
+  def:"Una conclusión convierte lo que muestra el tablero en una frase para decidir. Lleva un dato exacto, una comparación y una recomendación. Una opinión sin números no es una conclusión.",
+  ana:"Es como el informe del médico: no basta con los resultados del laboratorio, hay que escribir el diagnóstico.",
+  xl:"Los números salen del propio tablero: tarjetas, gráficos y segmentaciones.",
+  ex:()=>exBox("Una conclusión sobre Primera ARS",
+    `<div class="anat">
+      <div><b>Dato</b><span>Primera ARS tiene el <strong>10 %</strong> de los servicios (36 de 360)…</span></div>
+      <div><b>Comparación</b><span>…pero el <strong>14.39 %</strong> del monto: su promedio, <strong>RD$ 26,744.44</strong>, es el más alto de las 5 ARS.</span></div>
+      <div><b>Recomendación</b><span>Revisar sus hospitalizaciones: <strong>6 casos</strong> suman <strong>RD$ 775,450</strong>, el 80.54 % de su monto.</span></div>
+      <div class="bad"><b>✗ No es conclusión</b><span>«Primera ARS es la más cara.» No dice cuánto ni frente a quién.</span></div>
+     </div>`,"") }
 ];
-const QT=["¿Qué es un dashboard?","¿Qué gráfico uso para cada pregunta?","¿Qué es una tarjeta de indicador?","¿Cómo se crea un gráfico de una tabla dinámica?","¿Cómo filtro todo el tablero a la vez?","¿Cómo se ve un tablero profesional?"];
-const SH=["Tarjetas + gráficos + segmentaciones en una pantalla","Tiempo → Línea · Comparar → Columna · Parte → Circular · Número → Tarjeta","TD_KPI (solo Valores) › en la tarjeta: = y clic","Clic en la TD › Insertar › Línea o Columna › arrastrar al recuadro","Segmentación › Configuración de segmentación › Conexiones de tabla dinámica","Orden · pocos colores · títulos que concluyen · dato + recomendación"];
 
 /* ---------- Construcción de diapositivas ---------- */
 const S = [], INICIO = [];
-const T_RES = TOPICS.length;   // índice del bloque «Ejemplo resuelto»
+const T_EJ = TOPICS.length;
 S.push({topic:-1, html:`<div class="slide cover">
   <div class="mod">Módulo 4</div>
   <h1>Visualización de datos y dashboards</h1>
   <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
-  <div class="kpis"><div><small>Servicios</small><b>360</b></div><div><small>Monto total</small><b>RD$ 6.69 M</b></div><div><small>Promedio</small><b>RD$ 18,587</b></div></div>
-  <div class="hint">Base de práctica: tblServicios · ${rec.length} servicios de salud · ene 2024 – dic 2025 · use ← → para avanzar</div>
+  <div class="kpis"><div><small>Servicios</small><b>360</b></div><div><small>Monto total</small><b>RD$ 6.69 M</b></div><div><small>ARS</small><b>5</b></div></div>
+  <div class="hint">Base: tblServicios · ${rec.length} servicios de salud · ene 2024 – dic 2025 · use ← → para avanzar</div>
+</div>`});
+
+const RAWN=12;
+S.push({topic:-1, html:`<div class="slide" style="gap:16px">
+  <div class="eyebrow">Punto de partida</div>
+  <h2 style="font-size:40px">Así llegan los datos</h2>
+  <div class="raw"><table><thead><tr><th>ID Servicio</th><th>Fecha</th><th>ARS</th><th>PSS</th><th>Tipo de Servicio</th><th>Provincia</th><th>Monto</th></tr></thead>
+    <tbody>${rec.slice(0,RAWN).map(r=>`<tr><td>${r.id}</td><td>${r.fecha.slice(8,10)}/${r.fecha.slice(5,7)}/${r.anio}</td><td>${esc(r.ars)}</td><td>${esc(r.pss)}</td><td>${esc(r.tipo)}</td><td>${esc(r.prov)}</td><td>${num0(r.monto)}</td></tr>`).join("")}
+    <tr class="more"><td colspan="7">… ${rec.length-RAWN} filas más · ${rec.length} servicios en total</td></tr></tbody></table></div>
+  <div style="display:grid;grid-template-columns:1fr 380px;gap:16px;align-items:stretch">
+    <div class="pit" style="background:var(--xl-soft)"><b style="color:var(--xl)">La pregunta</b><span>Con esta tabla, ¿quién puede decir rápido qué ARS tiene más servicios o más monto? Nadie. Para eso existe un <strong>dashboard</strong>.</span></div>
+    <a class="dlbtn" href="Modulo4-Base-Dashboard.xlsx" download><span class="ic">⬇</span><span><b>Base de datos (Excel)</b><small>Modulo4-Base-Dashboard.xlsx · tabla tblServicios · ${rec.length} filas</small></span></a>
+  </div>
 </div>`});
 
 S.push({topic:-1, html:`<div class="slide">
   <div class="eyebrow">Contenido</div>
-  <h2>Seis herramientas y un tablero resuelto</h2>
-  <p class="lead" style="font-size:20px">Cada tema tiene <b>concepto</b> y <b>utilidad</b>. En las <b>prácticas en vivo</b> construimos, paso a paso, el mismo dashboard que al final se presenta <b>resuelto y explicado</b>.</p>
+  <h2>Siete conceptos y un ejemplo</h2>
+  <p class="lead" style="font-size:20px">Cada concepto se define y se ilustra con un ejemplo sobre las <b>ARS</b> de la base.</p>
   <div class="idx" data-idx></div>
   <p class="note"><b>Objetivo:</b> diseñar dashboards en Excel que faciliten la interpretación de los datos y apoyen la toma de decisiones.</p>
-</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = TOPICS.map((t,i)=>`<button data-go="${INICIO[i]}"><span class="n">0${i+1}</span><span class="k">${t.k}</span><span class="d">${t.d}</span></button>`).join("")+`<button class="res" data-go="${INICIO[T_RES]}"><span class="n">★</span><span class="k">Ejemplo resuelto</span><span class="d">El tablero de la directora, explicado.</span></button>`; }});
+</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = TOPICS.map((t,i)=>`<button data-go="${INICIO[i]}"><span class="n">0${i+1}</span><span class="k">${t.k}</span><span class="d">${t.d}</span></button>`).join("")+`<button class="res" data-go="${INICIO[T_EJ]}"><span class="n">★</span><span class="k">Tablero de ARS</span><span class="d">Todos los conceptos juntos.</span></button>`; }});
 
 TOPICS.forEach((t,i)=>{
-  const n = "0"+(i+1);
-  const eb = tag => `<div class="eyebrow"><span class="n">${n}</span><span>${t.k}</span><span class="tag">${tag}</span></div>`;
   INICIO[i]=S.length;
-  S.push({topic:i, html:`<div class="slide">${eb("Concepto")}
-    <div class="cols">
-      <div style="display:flex;flex-direction:column;gap:22px">
-        <h2>${QT[i]}</h2>
-        <p class="lead">${t.def}</p>
-        <p class="analogy">${t.ana}</p>
+  S.push({topic:i, html:`<div class="slide">
+    <div class="eyebrow"><span class="n">0${i+1}</span><span>${t.k}</span><span class="tag">Concepto</span></div>
+    <div class="cols2">
+      <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+        <h2 style="font-size:42px">${t.q}</h2>
+        <p class="lead" style="font-size:21px">${t.def}</p>
+        <p class="analogy" style="font-size:19px">${t.ana}</p>
+        <p class="exl"><b>En Excel</b>${esc(t.xl)}</p>
       </div>
-      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
-        <h3 class="muted" style="font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase">${t.partsT}</h3>
-        <ul class="args">${t.parts.map((a,j)=>`<li data-a="${j}"><div><code>${esc(a[0])}</code></div><div>${esc(a[1])}</div></li>`).join("")}</ul>
-      </div>
-    </div></div>`, init:el=>{
-      el.querySelectorAll("[data-a]").forEach(x=>x.addEventListener("click",()=>el.querySelectorAll("[data-a]").forEach(y=>y.classList.toggle("on",y===x))));
-    }});
-  S.push({topic:i, html:`<div class="slide">${eb("Utilidad")}
-    <h2>¿Para qué nos sirve en el trabajo?</h2>
-    <div class="uses">${t.uses.map(u=>`<div class="use"><h3>${u[0]}</h3><p>${u[1]}</p><code>${esc(u[2])}</code></div>`).join("")}</div>
-    <div class="pit"><b>Error común</b><span>${t.pit}</span></div></div>`});
-  if(t.sim) S.push({topic:i, html:`<div class="slide">${eb("Práctica en vivo")}
-    <div class="prac">
-      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
-        <h2 style="font-size:38px">${t.ph||"Hagámoslo juntos"}</h2>
-        <ol class="steps">${t.steps.map(s=>`<li><span>${s}</span></li>`).join("")}</ol>
-        <div class="fbar"><span class="lbl">${t.lbl||"TD"}</span><span class="f">${esc(t.conf)}</span></div>${t.dl?`<a class="dlbtn" href="Modulo4-Base-Dashboard.xlsx" download><span class="ic">⬇</span><span><b>Descarga la base y la plantilla</b><small>Modulo4-Base-Dashboard.xlsx · hojas Servicios y Dashboard</small></span></a>`:""}
-      </div>
-      <div class="sim"></div>
-    </div></div>`, init:el=>SIMS[t.sim](el.querySelector(".sim"))});
-  if(t.extra) S.push({topic:i, html:`<div class="slide">${eb("Antes y después")}<div data-x style="display:flex;flex-direction:column;gap:14px;flex:1;min-height:0"></div></div>`, init:el=>SIMS[t.extra](el.querySelector("[data-x]"))});
+      ${t.ex()}
+    </div></div>`});
 });
 
-/* ---------- Ejemplo resuelto ---------- */
-const ebR = tag => `<div class="eyebrow"><span class="n">★</span><span>Ejemplo resuelto</span><span class="tag">${tag}</span></div>`;
-INICIO[T_RES]=S.length;
-S.push({topic:T_RES, html:`<div class="slide">${ebR("1 · El encargo")}
-  <div class="brief">
-    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
-      <h2 style="font-size:40px">El tablero de la directora</h2>
-      <p style="font-size:18px;line-height:1.5">La directora de una institución de salud tiene <b>5 minutos</b> antes de una reunión. Los informes en tablas no le sirven: necesita ver en <b>una sola pantalla</b> cómo van los servicios de 2024 y 2025. Estas son sus preguntas, y la pieza del tablero que responde cada una:</p>
-      <div class="qlist">
-        <div><span class="n">1</span><span>¿Cuántos servicios y cuánto dinero?</span><code>3 tarjetas</code></div>
-        <div><span class="n">2</span><span>¿Cómo se mueve la demanda en el año?</span><code>Líneas por mes</code></div>
-        <div><span class="n">3</span><span>¿Qué ARS pesa más en el gasto?</span><code>Columnas por ARS</code></div>
-        <div><span class="n">4</span><span>¿Dónde se concentran los servicios?</span><code>Columnas por provincia</code></div>
-        <div><span class="n">5</span><span>¿Y si solo miro un año o un tipo de servicio?</span><code>2 segmentaciones</code></div>
+INICIO[T_EJ]=S.length;
+S.push({topic:T_EJ, html:`<div class="slide" style="padding:58px 56px 62px;gap:10px">
+  <div class="eyebrow"><span class="n">★</span><span>Ejemplo integrador</span><span class="tag">Todos los conceptos juntos</span></div>
+  <div class="dash" style="grid-template-columns:1fr 150px">
+    <div class="dash-main">
+      <div class="dtitle"><b>Tablero de ARS · servicios de salud 2024–2025</b><span>Fuente: tblServicios</span></div>
+      <div class="kcards">${kc("Servicios atendidos",num0(TT.n))}${kc("Monto total",rd0(TT.s))}${kc("Monto promedio por servicio",rd2(TT.s/TT.n))}</div>
+      <div class="dash-charts" style="grid-template-columns:1fr 1.1fr 1fr">
+        ${chartBox("Dos ARS concentran el 52.66 % del monto","Monto por ARS · columnas",colARS({W:340,H:300,pl:40,twoLine:true}))}
+        ${chartBox("Todas las ARS crecieron en 2025","Servicios por ARS y año · columnas agrupadas",colSVG(GA.map(g=>g.k),[{name:"2024",color:C24,vals:GA.map(g=>g.n24)},{name:"2025",color:C25,vals:GA.map(g=>g.n25)}],{W:380,H:282,short:true,pl:30,twoLine:true,labelAll:false}),yearLegend)}
+        ${chartBox("Participación en el monto","Circular · 5 ARS",pieSVG(GA.map(g=>sh(g.k)),GA.map(g=>g.s),{W:340,H:200}))}
+      </div>
+      <div class="concl3">
+        <div><i>1</i>SeNaSa (RD$ 1,801,250) y ARS Humano (RD$ 1,722,400) suman el 52.66 % del monto.</div>
+        <div><i>2</i>Primera ARS más que duplicó sus servicios: de 11 en 2024 a 25 en 2025.</div>
+        <div><i>3</i>Primera ARS tiene el promedio más alto (RD$ 26,744.44): revisar sus hospitalizaciones.</div>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;min-width:0;min-height:0">
-      <h3 class="muted" style="font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase">El plano · hoja Dashboard de la plantilla</h3>
-      <div class="plano" style="flex:1">
-        <div class="t">Tablero de servicios de salud · 2024–2025</div>
-        <div class="k">Tarjeta 1<br>Servicios · B6</div><div class="k">Tarjeta 2<br>Monto total · F6</div><div class="k">Tarjeta 3<br>Promedio · J6</div>
-        <div class="s">Segmen&shy;taciones<br><br>Año<br><br>Tipo de Servicio</div><div class="m">Motor<br>col. T<br><br>TD_KPI<br>TD_Mes<br>TD_ARS<br>TD_Prov</div>
-        <div class="g" style="grid-column:1/4">Gráfico 1 · Servicios por mes (Líneas)</div>
-        <div class="g">Gráfico 2<br>Monto por ARS</div><div class="g" style="grid-column:2/4">Gráfico 3 · Servicios por provincia</div>
-        <div class="c">Conclusiones para la dirección</div>
-      </div>
+    <div class="dash-side">
+      <div class="slicer col"><div class="sh">Año</div><div class="sb"><span class="sbtn on">2024</span><span class="sbtn on">2025</span></div></div>
+      <div class="slicer col"><div class="sh">Tipo de Servicio</div><div class="sb">${TIPOS.map(t=>`<span class="sbtn on">${esc(t)}</span>`).join("")}</div></div>
+      <p style="font-size:12.5px;color:var(--muted);line-height:1.4">Tarjetas · gráficos · segmentaciones · conclusiones.</p>
     </div>
-  </div></div>`});
-
-S.push({topic:T_RES, html:`<div class="slide">${ebR("2 · Cómo se construyó")}
-  <h2 style="font-size:36px">Cuatro tablas dinámicas, dos segmentaciones</h2>
-  <table class="ptab">
-    <thead><tr><th></th><th>Tabla</th><th>Dónde</th><th>Filas</th><th>Columnas</th><th>Valores</th><th>Se muestra como</th><th>Resultado (todo)</th></tr></thead>
-    <tbody>
-      <tr><td class="n">1</td><td>TD_KPI</td><td>T5</td><td>—</td><td>—</td><td>Cuenta de ID Servicio · Suma de Monto · Promedio de Monto</td><td>3 tarjetas (B6, F6, J6)</td><td>360 · RD$ 6,691,250 · RD$ 18,586.81</td></tr>
-      <tr><td class="n">2</td><td>TD_Mes</td><td>T10</td><td>Mes</td><td>Año</td><td>Cuenta de ID Servicio</td><td>Líneas</td><td>Diciembre, el más alto: 17 y 23</td></tr>
-      <tr><td class="n">3</td><td>TD_ARS</td><td>T29</td><td>ARS</td><td>—</td><td>Suma de Monto · orden ↓</td><td>Columna agrupada</td><td>SeNaSa: RD$ 1,801,250</td></tr>
-      <tr><td class="n">4</td><td>TD_Prov</td><td>T38</td><td>Provincia</td><td>—</td><td>Cuenta de ID Servicio · orden ↓</td><td>Columna agrupada</td><td>Distrito Nacional: 112</td></tr>
-      <tr><td class="n">5</td><td>Segmentaciones</td><td>O5</td><td colspan="3"><code>Año</code> y <code>Tipo de Servicio</code> › <code>Configuración de segmentación</code> › <code>Conexiones de tabla dinámica</code> › marcar las 4</td><td>Botones a la derecha</td><td>2025: 210 · RD$ 3,512,850</td></tr>
-    </tbody>
-  </table>
-  <div style="display:grid;grid-template-columns:1fr 360px;gap:16px;align-items:stretch"><div class="pit" style="background:var(--xl-soft)"><b style="color:var(--xl)">Por qué así</b><span>Todo sale de <strong>tblServicios</strong> y vive en la hoja <strong>Dashboard</strong> (las tablas dinámicas, en la columna T), por eso las segmentaciones pueden controlar las 4. Las tarjetas toman su número de <strong>TD_KPI</strong> y no de la base: así también se filtran.</span></div>
-  <a class="dlbtn" href="Modulo4-Base-Dashboard.xlsx" download><span class="ic">⬇</span><span><b>Base y plantilla del tablero</b><small>Modulo4-Base-Dashboard.xlsx · hojas Servicios (con Año y Mes) y Dashboard</small></span></a></div>
+  </div>
 </div>`});
-
-S.push({topic:T_RES, html:`<div class="slide" style="padding:58px 56px 62px;gap:12px">${ebR("3 · El tablero terminado")}<div class="dash" data-dash></div></div>`, init:el=>SIMS.tablero(el.querySelector("[data-dash]"))});
-
-const CONCL=[
- ["Más servicios, menos costo por servicio","Los servicios crecieron de 150 (2024) a 210 (2025), un +40 %, pero el monto total solo subió +10.52 % (de RD$ 3,178,400 a RD$ 3,512,850). El promedio por servicio bajó de RD$ 21,189.33 a RD$ 16,727.86.","El crecimiento viene de servicios de bajo costo: las consultas pasaron de 43 a 78. Conviene sostener la atención ambulatoria, que amplía la cobertura sin disparar el gasto."],
- ["La hospitalización manda en el gasto","Hospitalización tiene solo 42 de 360 servicios (11.67 %), pero suma RD$ 4,889,250: el 73.07 % del monto total.","Cualquier ahorro real pasa por revisar las autorizaciones y los días de estancia en hospitalización."],
- ["Dos ARS concentran más de la mitad del monto","SeNaSa lidera con RD$ 1,801,250 (26.92 %) y ARS Humano la sigue de cerca con RD$ 1,722,400 (25.74 %), aunque con 18 servicios menos (89 frente a 107).","Cada servicio de ARS Humano cuesta más en promedio (RD$ 19,352.81 frente a RD$ 16,834.11). Vale la pena revisar qué servicios se le facturan."],
- ["La demanda sube al cierre del año","Octubre, noviembre y diciembre suman 112 de los 360 servicios (31.11 %). Diciembre es el mes más alto en los dos años (17 y 23).","Reforzar personal, turnos y presupuesto en el último trimestre."],
- ["Distrito Nacional pierde peso","Distrito Nacional concentra 112 servicios (31.11 %), pero su parte bajó del 36 % en 2024 (54 de 150) al 27.62 % en 2025 (58 de 210). Santiago pasó de 21 a 42 servicios y Santo Domingo, de 26 a 43.","La demanda crece fuera de la capital: hay que revisar la red de prestadores en Santiago y Santo Domingo."]
-];
-S.push({topic:T_RES, html:`<div class="slide" style="gap:14px">${ebR("4 · Conclusiones")}
-  <h2 style="font-size:34px">Lo que la directora se lleva a la reunión</h2>
-  <div class="concl">${CONCL.map((c,i)=>`<div class="cc hid"><h3><i>${i+1}</i>${esc(c[0])}</h3><p>${esc(c[1])}</p><div class="dec"><b>Decisión sugerida · </b>${esc(c[2])}</div></div>`).join("")}<div class="cc" style="cursor:default;background:var(--mark);justify-content:center"><h3><i>✎</i>Cómo se escribe</h3><p>Cada hallazgo lleva un <b>dato</b> (número exacto), una <b>comparación</b> (frente a quién o a cuándo) y una <b>decisión sugerida</b>.</p><p class="muted" style="font-size:13px">Toca cada tarjeta para revelarla.</p></div></div>
-</div>`, init:el=>el.querySelectorAll(".cc.hid").forEach(d=>d.onclick=()=>d.classList.toggle("hid"))});
 
 S.push({topic:-1, html:`<div class="slide">
   <div class="eyebrow">Resumen</div>
   <h2>Lo que aprendimos hoy</h2>
-  <div class="sum">${TOPICS.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${esc(SH[i])}</code></div></div>`).join("")}</div>
-  <p class="note"><b>Recuerda:</b> un dashboard responde preguntas. Si un elemento no responde ninguna, sobra.</p>
+  <div class="sum">${TOPICS.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${esc(t.k)}</code></div></div>`).join("")}<div><span class="n">★</span><div><p>Un dashboard responde preguntas.</p><code>Si un elemento no responde ninguna, sobra.</code></div></div></div>
 </div>`});
-
-/* ---------- Simuladores ---------- */
-function head(title){ return `<div class="sim-h"><span>${title}</span><span class="live">● en vivo</span></div>`; }
-
-const SIMS = {
-/* 2 · Elegir el gráfico */
-elegir(box){
-  const tipoMonto = group(rec,"tipo").sort((a,b)=>b.s-a.s), arsMonto = group(rec,"ars").sort((a,b)=>b.s-a.s), meses = byMes(rec);
-  const Q=[
-    {q:"¿Cómo cambió la cantidad de servicios mes a mes?", cats:MESC, vals:meses, fmt:num0, best:"Línea",
-     v:{"Línea":["ok","La línea muestra la tendencia: la demanda sube hacia diciembre (40 servicios)."],"Columnas":["mid","Se puede, pero la línea deja ver mejor la subida y la bajada."],"Circular":["no","12 porciones casi iguales: no se ve ninguna tendencia."],"Tarjeta":["no","Un solo número (360) esconde cómo cambió cada mes."]}},
-    {q:"¿Qué ARS tiene más monto?", cats:arsMonto.map(g=>g.k), vals:arsMonto.map(g=>g.s), fmt:rd0, best:"Columnas",
-     v:{"Columnas":["ok","Columnas ordenadas: se ve de inmediato que SeNaSa lidera, muy de cerca de ARS Humano."],"Línea":["no","Las ARS no son una secuencia en el tiempo: la línea inventa una tendencia que no existe."],"Circular":["mid","Con 5 ARS se puede, pero SeNaSa (26.92 %) y ARS Humano (25.74 %) se ven iguales. Las columnas comparan mejor."],"Tarjeta":["no","Un total no compara ARS."]}},
-    {q:"¿Qué parte del monto es de cada tipo de servicio?", cats:tipoMonto.map(g=>g.k), vals:tipoMonto.map(g=>g.s), fmt:rd0, best:"Circular",
-     v:{"Circular":["ok","Pocas categorías y partes de un total: Hospitalización es el 73.07 % del monto."],"Columnas":["mid","También funciona; el circular deja más claro que son partes de un todo."],"Línea":["no","Los tipos de servicio no van en el tiempo: la línea confunde."],"Tarjeta":["no","Un total no muestra cómo se reparte."]}},
-    {q:"¿Cuántos servicios se atendieron en total?", cats:["Total"], vals:[360], fmt:num0, best:"Tarjeta",
-     v:{"Tarjeta":["ok","Un solo número importante: tarjeta grande. 360 servicios."],"Columnas":["no","Una sola columna es un gráfico que no compara nada."],"Línea":["no","Una línea necesita varios momentos en el tiempo."],"Circular":["no","Un círculo entero no dice nada."]}}
-  ];
-  let qi=0, ty="Línea";
-  box.innerHTML = head("Simulador · ¿qué gráfico responde la pregunta?")+`<div class="sim-b">
-    <div class="qbtns">${Q.map((q,i)=>`<button data-q="${i}">${i+1}. ${esc(q.q)}</button>`).join("")}</div>
-    <div class="pills">${["Línea","Columnas","Circular","Tarjeta"].map(t=>`<button data-t="${t}">${t}</button>`).join("")}</div>
-    <div data-c style="min-height:0"></div><div data-v></div></div>`;
-  const run=()=>{
-    const q=Q[qi];
-    box.querySelectorAll("[data-q]").forEach(b=>b.classList.toggle("on",+b.dataset.q===qi));
-    box.querySelectorAll("[data-t]").forEach(b=>b.classList.toggle("on",b.dataset.t===ty));
-    let svg;
-    if(ty==="Tarjeta") svg=`<div class="kcards" style="grid-template-columns:1fr"><div class="kcard"><small>${q.cats.length>1?"Total":"Servicios atendidos"}</small><b>${q.fmt(q.vals.reduce((a,b)=>a+b,0))}</b></div></div>`;
-    else if(ty==="Línea") svg=lineSVG(q.cats,[{name:"",color:C1,vals:q.vals}],{W:640,H:170,short:true,fmt:q.fmt,pr:40,pl:52});
-    else if(ty==="Columnas") svg=colSVG(q.cats,[{name:"",color:C1,vals:q.vals}],{W:640,H:170,short:true,fmt:q.fmt,fmtLabel:q.fmt===rd0?kfmt:num0,pl:52});
-    else svg=pieSVG(q.cats,q.vals,{W:640,H:170,fmt:q.fmt});
-    box.querySelector("[data-c]").innerHTML = ty==="Tarjeta"? svg : `<div class="chart">${svg}</div>`;
-    const [c,txt]=q.v[ty]; const L={ok:"✓ Correcto",mid:"◐ Se puede, pero…",no:"✗ No conviene"};
-    box.querySelector("[data-v]").innerHTML=`<div class="verdict ${c}"><b>${L[c]}</b><span>${esc(txt)}</span></div>`;
-  };
-  box.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{ qi=+b.dataset.q; run(); });
-  box.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{ ty=b.dataset.t; run(); });
-  run();
-},
-/* 3 · Tarjetas */
-tarjetas(box){
-  box.innerHTML = head("Simulador · tarjetas conectadas a TD_KPI")+`<div class="sim-b">
-    <div class="ctrls">
-      <label class="ctrl">Segmentación · Año<select data-y>${opts(["(Todos)","2024","2025"],"(Todos)")}</select></label>
-      <label class="ctrl">Segmentación · Tipo de Servicio<select data-t>${opts(["(Todos)"].concat(TIPOS),"(Todos)")}</select></label>
-    </div>
-    <div class="ctrl">Dashboard!T5 · TD_KPI, tabla dinámica solo con Valores</div>
-    <div class="pv" data-p></div>
-    <div class="ctrl">Hoja Dashboard · las tarjetas toman el número de TD_KPI</div>
-    <div class="kcards" data-k></div>
-    <div class="ctrl">Comparación · tarjeta hecha con una fórmula sobre la base</div>
-    <div class="kcards" style="grid-template-columns:1fr" data-bad></div></div>`;
-  const q=s=>box.querySelector(s);
-  const run=()=>{
-    const y=q("[data-y]").value, t=q("[data-t]").value;
-    const rows=rec.filter(r=>(y==="(Todos)"||r.anio===y)&&(t==="(Todos)"||r.tipo===t)), T=tot(rows);
-    q("[data-p]").innerHTML=`<table><thead><tr><th>Cuenta de ID Servicio</th><th>Suma de Monto</th><th>Promedio de Monto</th></tr></thead><tbody><tr class="tot"><td style="text-align:right">${num0(T.n)}</td><td>${num2(T.s)}</td><td>${num2(T.s/T.n)}</td></tr></tbody></table>`;
-    q("[data-k]").innerHTML=`<div class="kcard"><small>Servicios atendidos</small><b>${num0(T.n)}</b><em>B6 = T6 · Cuenta</em></div><div class="kcard"><small>Monto total</small><b>${rd0(T.s)}</b><em>F6 = U6 · Suma</em></div><div class="kcard"><small>Monto promedio</small><b>${rd2(T.s/T.n)}</b><em>J6 = V6 · Promedio</em></div>`;
-    const filt = y!=="(Todos)"||t!=="(Todos)";
-    q("[data-bad]").innerHTML=`<div class="kcard${filt?" bad":""}"><small>Monto total · =SUMA(tblServicios[Monto])</small><b>${rd0(6691250)}</b><em>${filt?`<span class="flag">✗ No cambió: la fórmula lee toda la base y no ve la segmentación.</span>`:"Sin filtros, coincide. Ahora elige un año en la segmentación."}</em></div>`;
-  };
-  box.querySelectorAll("select").forEach(s=>s.onchange=run); run();
-},
-/* 4 · Gráficos */
-graficos(box){
-  const TD={
-    "TD_Mes · Mes × Año":()=>({cats:MESC,series:[{name:"2024",color:C24,vals:byMes(rec,"2024")},{name:"2025",color:C25,vals:byMes(rec,"2025")}],fmt:num0,best:"Línea",
-      rows:MESC.map((m,i)=>[m+" ("+(i+1)+")",byMes(rec,"2024")[i],byMes(rec,"2025")[i]]),cols:["2024","2025"]}),
-    "TD_ARS · Suma de Monto":()=>{ const g=group(rec,"ars").sort((a,b)=>b.s-a.s); return {cats:g.map(x=>x.k),series:[{name:"Suma de Monto",color:C1,vals:g.map(x=>x.s)}],fmt:rd0,best:"Columna agrupada",rows:g.map(x=>[x.k,x.s]),cols:["Suma de Monto"]}; },
-    "TD_Prov · Cuenta de ID Servicio":()=>{ const g=group(rec,"prov").sort((a,b)=>b.n-a.n); return {cats:g.map(x=>x.k),series:[{name:"Cuenta de ID Servicio",color:C1,vals:g.map(x=>x.n)}],fmt:num0,best:"Columna agrupada",rows:g.map(x=>[x.k,x.n]),cols:["Cuenta de ID Servicio"]}; }
-  };
-  box.innerHTML = head("Simulador · Insertar › gráfico de la tabla dinámica")+`<div class="sim-b">
-    <div class="ctrls">
-      <label class="ctrl">Tabla dinámica<select data-d>${opts(Object.keys(TD),"TD_Mes · Mes × Año")}</select></label>
-      <label class="ctrl">Tipo de gráfico<select data-g>${opts(["Línea","Columna agrupada","Circular"],"Línea")}</select></label>
-    </div>
-    <div data-c></div><div data-v></div></div>`;
-  const q=s=>box.querySelector(s);
-  const run=()=>{
-    const d=TD[q("[data-d]").value](), g=q("[data-g]").value; let svg, verdict;
-    if(g==="Línea") svg=lineSVG(d.cats,d.series,{W:640,H:220,short:true,fmt:d.fmt,pl:50,pr:d.series.length>1?62:20});
-    else if(g==="Columna agrupada") svg=colSVG(d.cats,d.series,{W:640,H:220,short:true,fmt:d.fmt,fmtLabel:d.fmt===rd0?kfmt:num0,pl:50,bmax:40});
-    else svg= d.series.length>1 ? `<div class="empty" style="padding:30px 10px;font-size:14px;color:var(--muted)">Un gráfico circular muestra una sola serie: aquí hay dos (2024 y 2025). Excel solo dibujaría 2024.</div>` : pieSVG(d.cats,d.series[0].vals,{W:640,H:220,fmt:d.fmt,colors:d.cats.map((_,i)=>CAT[i%5])});
-    const title = d.best===g ? (q("[data-d]").value.startsWith("TD_Mes")?"La demanda sube al cierre del año":q("[data-d]").value.startsWith("TD_ARS")?"SeNaSa y ARS Humano concentran el monto":"Distrito Nacional concentra los servicios") : "Total";
-    q("[data-c]").innerHTML=chartBox(title,"",svg,d.series.length>1&&g!=="Circular"?yearLegend:"");
-    verdict = d.best===g ? ["ok","✓ Buena elección","Este gráfico responde la pregunta de esta tabla dinámica. Cambia el título «Total» por el hallazgo."]
-      : g==="Circular" ? ["no","✗ No conviene", d.series.length>1?"Dos series no caben en un circular.":"Con 6 provincias o 5 ARS de tamaño parecido, las porciones no se distinguen."]
-      : ["mid","◐ Se puede, pero…", g==="Línea"?"Las categorías no son tiempo: la línea sugiere una tendencia que no existe.":"Funciona, pero para ver la evolución en el tiempo la línea se lee mejor."];
-    q("[data-v]").innerHTML=`<div class="verdict ${verdict[0]}"><b>${verdict[1]}</b><span>${esc(verdict[2])}</span></div>`;
-  };
-  box.querySelectorAll("select").forEach(s=>s.onchange=run); run();
-},
-/* 5 · Segmentaciones */
-segmentar(box){
-  let anio="Todo"; const selT=new Set(TIPOS); const con={kpi:true,ars:true};
-  box.innerHTML = head("Simulador · segmentaciones y sus conexiones")+`<div class="sim-b">
-    <div style="display:grid;grid-template-columns:200px 1fr;gap:10px">
-      <div class="slicer"><div class="sh">Año</div><div class="sb" data-y>${["Todo","2024","2025"].map(y=>`<button data-v="${y}">${y}</button>`).join("")}</div></div>
-      <div class="slicer"><div class="sh">Tipo de Servicio <button data-clr title="Borrar filtro">✕ Borrar filtro</button></div><div class="sb" data-t>${TIPOS.map(t=>`<button data-v="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>
-    </div>
-    <div class="conn"><b style="font-family:var(--mono);font-size:12px;color:var(--muted)">CONEXIONES DE TABLA DINÁMICA:</b><label><input type="checkbox" data-c="kpi" checked>TD_KPI</label><label><input type="checkbox" data-c="ars" checked>TD_ARS</label></div>
-    <div class="kcards" data-k></div><div data-g></div></div>`;
-  const run=()=>{
-    box.querySelectorAll("[data-y] button").forEach(b=>b.classList.toggle("on",b.dataset.v===anio));
-    box.querySelectorAll("[data-t] button").forEach(b=>b.classList.toggle("on",selT.has(b.dataset.v)));
-    const f=rec.filter(r=>(anio==="Todo"||r.anio===anio)&&selT.has(r.tipo));
-    const filtrado = anio!=="Todo"||selT.size<TIPOS.length;
-    const rk=con.kpi?f:rec, T=tot(rk), warnK=!con.kpi&&filtrado;
-    const em = warnK?`<span class="flag">✗ TD_KPI no está conectada</span>`:"";
-    box.querySelector("[data-k]").innerHTML=`<div class="kcard${warnK?" bad":""}"><small>Servicios</small><b>${num0(T.n)}</b><em>${em}</em></div><div class="kcard${warnK?" bad":""}"><small>Monto total</small><b>${rd0(T.s)}</b><em>${em}</em></div><div class="kcard${warnK?" bad":""}"><small>Promedio</small><b>${T.n?rd2(T.s/T.n):"—"}</b><em>${em}</em></div>`;
-    const ra=con.ars?f:rec, g=ARS.map(a=>({k:a,s:ra.filter(r=>r.ars===a).reduce((x,r)=>x+r.monto,0)})).sort((a,b)=>b.s-a.s);
-    const sub = !con.ars&&filtrado ? "✗ TD_ARS no está conectada: el gráfico sigue mostrando todo" : (filtrado?"Filtrado por la segmentación":"Sin filtros");
-    box.querySelector("[data-g]").innerHTML=chartBox("Monto por ARS",sub,colSVG(g.map(x=>x.k),[{name:"Monto",color:C1,vals:g.map(x=>x.s)}],{W:640,H:170,short:true,fmt:rd0,fmtLabel:kfmt,pl:50,bmax:56}));
-  };
-  box.querySelectorAll("[data-y] button").forEach(b=>b.onclick=()=>{ anio=b.dataset.v; run(); });
-  box.querySelectorAll("[data-t] button").forEach(b=>b.onclick=e=>{ const v=b.dataset.v;
-    if(e.ctrlKey||e.metaKey){ if(selT.has(v)&&selT.size>1) selT.delete(v); else selT.add(v); } else { selT.clear(); selT.add(v); } run(); });
-  box.querySelector("[data-clr]").onclick=()=>{ TIPOS.forEach(t=>selT.add(t)); run(); };
-  box.querySelectorAll("[data-c]").forEach(c=>c.onchange=()=>{ con[c.dataset.c]=c.checked; run(); });
-  run();
-},
-/* 6 · Antes y después */
-antesDespues(box){
-  const M=ARS.map(a=>MESC.map((_,i)=>rec.filter(r=>r.ars===a&&r.mes===i+1).length));
-  const rainbow=["#ff3b30","#ff9500","#ffcc00","#34c759","#00c7be","#007aff","#5856d6","#af52de","#ff2d55","#a2845e","#8e8e93","#30b0c7"];
-  const uglyPie = pieSVG(MESC,byMes(rec),{W:520,H:150,colors:rainbow});
-  const good = lineSVG(MESC,[{name:"2024",color:C24,vals:byMes(rec,"2024")},{name:"2025",color:C25,vals:byMes(rec,"2025")}],{W:560,H:190,pr:62});
-  box.innerHTML=`<h2 style="font-size:36px">Los mismos datos, dos tableros</h2>
-  <div class="ad">
-    <div><span class="lab no">✗ Antes</span>
-      <div class="ugly">
-        <div style="font-size:15px;font-weight:700;color:#e0421b;text-align:center">INFORME DE SERVICIOS!!!</div>
-        <table><thead><tr><th style="background:#ffcc00">ARS</th>${MESC.map((m,i)=>`<th style="background:${rainbow[i]};color:#fff">${m}</th>`).join("")}</tr></thead>
-        <tbody>${ARS.map((a,i)=>`<tr><td style="background:#e5f6ff">${esc(a)}</td>${M[i].map(v=>`<td style="background:${v>3?"#ffd1dc":"#fff"}">${v}</td>`).join("")}</tr>`).join("")}</tbody></table>
-        <div style="font-size:12px;font-weight:700;text-align:center;color:#007aff">Gráfico 1</div>
-        <div style="filter:drop-shadow(4px 5px 0 #999)">${uglyPie}</div>
-      </div>
-      <div class="why"><span>Muchos números y ninguna respuesta.</span><span>Un circular de 12 porciones y colores sin significado.</span><span>Título genérico: «Gráfico 1».</span></div>
-    </div>
-    <div><span class="lab ok">✓ Después</span>
-      <div class="kcards"><div class="kcard"><small>Servicios</small><b>360</b></div><div class="kcard"><small>Crecimiento 2025</small><b>+40 %</b></div><div class="kcard"><small>Mes más alto</small><b>Diciembre</b></div></div>
-      ${chartBox("La demanda sube al cierre del año","Servicios por mes · 2024 frente a 2025",good,yearLegend)}
-      <div class="why ok"><span>Primero las tarjetas, luego el gráfico.</span><span>Dos colores, cada uno con un significado (el año).</span><span>El título dice el hallazgo.</span></div>
-    </div>
-  </div>`;
-},
-/* ★ Tablero completo */
-tablero(box){
-  let anio="Todo", tipo="Todos";
-  box.innerHTML=`<div class="dash-main">
-      <div class="dtitle"><b>Tablero de servicios de salud · 2024–2025</b><span data-f></span></div>
-      <div class="kcards" data-k></div>
-      <div class="dash-charts" data-c></div>
-    </div>
-    <div class="dash-side">
-      <div class="slicer col"><div class="sh">Año <button data-ca title="Borrar filtro">✕</button></div><div class="sb" data-y>${["2024","2025"].map(y=>`<button data-v="${y}">${y}</button>`).join("")}</div></div>
-      <div class="slicer col"><div class="sh">Tipo de Servicio <button data-ct title="Borrar filtro">✕</button></div><div class="sb" data-t>${TIPOS.map(t=>`<button data-v="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>
-      <p style="font-size:12.5px;color:var(--muted);line-height:1.4">Prueba: elige <b>2025</b> y luego <b>Hospitalización</b>. Todo el tablero cambia.</p>
-    </div>`;
-  const run=()=>{
-    box.querySelectorAll("[data-y] button").forEach(b=>b.classList.toggle("on",b.dataset.v===anio));
-    box.querySelectorAll("[data-t] button").forEach(b=>b.classList.toggle("on",b.dataset.v===tipo));
-    const f=rec.filter(r=>(anio==="Todo"||r.anio===anio)&&(tipo==="Todos"||r.tipo===tipo)), T=tot(f);
-    box.querySelector("[data-f]").textContent=`Año: ${anio==="Todo"?"todos":anio} · Tipo: ${tipo==="Todos"?"todos":tipo}`;
-    box.querySelector("[data-k]").innerHTML=`<div class="kcard"><small>Servicios atendidos</small><b>${num0(T.n)}</b></div><div class="kcard"><small>Monto total</small><b>${rd0(T.s)}</b></div><div class="kcard"><small>Monto promedio por servicio</small><b>${T.n?rd2(T.s/T.n):"—"}</b></div>`;
-    const years = anio==="Todo"?["2024","2025"]:[anio];
-    const ser = years.map(y=>({name:y,color:y==="2024"?C24:C25,vals:byMes(f,y)}));
-    const ga=ARS.map(a=>({k:a,s:f.filter(r=>r.ars===a).reduce((x,r)=>x+r.monto,0)})).sort((a,b)=>b.s-a.s);
-    const gp=PROVS.map(p=>({k:p,n:f.filter(r=>r.prov===p).length})).sort((a,b)=>b.n-a.n);
-    box.querySelector("[data-c]").innerHTML =
-      chartBox("Servicios por mes","TD_Mes · Líneas",lineSVG(MESC,ser,{W:420,H:360,pr:62,pl:30}),years.map(y=>`<span><i style="background:${y==="2024"?C24:C25}"></i>${y}</span>`).join(""))+
-      chartBox("Monto por ARS","TD_ARS · Columnas",colSVG(ga.map(x=>x.k),[{name:"Monto",color:C1,vals:ga.map(x=>x.s)}],{W:330,H:390,short:true,fmt:rd0,fmtLabel:kfmt,pl:40,twoLine:true}))+
-      chartBox("Servicios por provincia","TD_Prov · Columnas",colSVG(gp.map(x=>x.k),[{name:"Servicios",color:C1,vals:gp.map(x=>x.n)}],{W:330,H:390,short:true,pl:30,twoLine:true}));
-  };
-  box.querySelectorAll("[data-y] button").forEach(b=>b.onclick=()=>{ anio = anio===b.dataset.v?"Todo":b.dataset.v; run(); });
-  box.querySelectorAll("[data-t] button").forEach(b=>b.onclick=()=>{ tipo = tipo===b.dataset.v?"Todos":b.dataset.v; run(); });
-  box.querySelector("[data-ca]").onclick=()=>{ anio="Todo"; run(); };
-  box.querySelector("[data-ct]").onclick=()=>{ tipo="Todos"; run(); };
-  run();
-}
-};
 
 /* ---------- Motor ---------- */
 const wrap=document.getElementById("slides");
@@ -723,18 +547,17 @@ wrap.innerHTML=S.map(s=>s.html).join("");
 const els=[...wrap.children];
 els.forEach((el,i)=>S[i].init&&S[i].init(el));
 wrap.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(+b.dataset.go)));
-const NT = TOPICS.length+1;
 const dots=document.getElementById("dots");
-dots.innerHTML=TOPICS.map(t=>t.k).concat(["Ejemplo resuelto"]).map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
+dots.innerHTML=TOPICS.map(t=>t.k).concat(["Tablero de ARS"]).map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
 dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INICIO[b.dataset.t]));
 let cur=0;
 function go(i){
   cur=Math.max(0,Math.min(els.length-1,i));
   els.forEach((e,j)=>e.classList.toggle("on",j===cur));
   const tp=S[cur].topic;
-  dots.querySelectorAll("button").forEach((b,j)=>{b.classList.toggle("cur",j===tp);b.classList.toggle("done",tp>j||(tp<0&&cur>1));});
+  dots.querySelectorAll("button").forEach((b,j)=>{b.classList.toggle("cur",j===tp);b.classList.toggle("done",tp>j||(tp<0&&cur>2));});
   document.getElementById("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
-  document.getElementById("topL").textContent = tp<0?"MÓDULO 4 · VISUALIZACIÓN DE DATOS Y DASHBOARDS": tp===T_RES?"MÓDULO 4 · EJEMPLO RESUELTO · EL TABLERO DE LA DIRECTORA":`MÓDULO 4 · TEMA 0${tp+1} DE 0${TOPICS.length} · ${TOPICS[tp].k.toUpperCase()}`;
+  document.getElementById("topL").textContent = tp<0?"MÓDULO 4 · VISUALIZACIÓN DE DATOS Y DASHBOARDS": tp===T_EJ?"MÓDULO 4 · EJEMPLO INTEGRADOR · TABLERO DE ARS":`MÓDULO 4 · CONCEPTO 0${tp+1} DE 0${TOPICS.length} · ${TOPICS[tp].k.toUpperCase()}`;
   document.getElementById("prev").disabled=cur===0; document.getElementById("next").disabled=cur===els.length-1;
 }
 document.getElementById("prev").onclick=()=>go(cur-1);
