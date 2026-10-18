@@ -503,7 +503,7 @@ const TOPICS = [
 
 /* ---------- Construcción de diapositivas ---------- */
 const S = [], INICIO = [];
-const T_EJ = TOPICS.length, T_PR = T_EJ+1, NP = 8;
+const T_EJ = TOPICS.length, T_PR = T_EJ+1, NP = 4;
 S.push({topic:-1, html:`<div class="slide cover">
   <div class="mod">Módulo 4.</div>
   <h1>Visualización de datos y dashboards.</h1>
@@ -531,7 +531,7 @@ S.push({topic:-1, html:`<div class="slide">
   <p class="lead" style="font-size:20px;max-width:none">Cada concepto se define y se ilustra con un ejemplo sobre las <b>ARS</b> de la base. Al final, usted arma su propio dashboard en <b>Excel 2021</b>, paso a paso.</p>
   <div class="idx" data-idx></div>
   <p class="note"><b>Objetivo:</b> diseñar dashboards en Excel que faciliten la interpretación de los datos y apoyen la toma de decisiones.</p>
-</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = TOPICS.map((t,i)=>`<button data-go="${INICIO[i]}"><span class="n">0${i+1}</span><span class="k">${dot(t.k)}</span><span class="d">${t.d}</span></button>`).join("")+`<button class="res" data-go="${INICIO[T_EJ]}"><span class="n">★</span><span class="k">Tablero de ARS.</span><span class="d">Todos los conceptos juntos.</span></button><button class="pr" data-go="${INICIO[T_PR]}"><span class="n">✎</span><span class="k">Práctica guiada.</span><span class="d">Su dashboard con gráficos dinámicos, en 8 pasos.</span></button>`; }});
+</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = TOPICS.map((t,i)=>`<button data-go="${INICIO[i]}"><span class="n">0${i+1}</span><span class="k">${dot(t.k)}</span><span class="d">${t.d}</span></button>`).join("")+`<button class="res" data-go="${INICIO[T_EJ]}"><span class="n">★</span><span class="k">Tablero de ARS.</span><span class="d">Todos los conceptos juntos.</span></button><button class="pr" data-go="${INICIO[T_PR]}"><span class="n">✎</span><span class="k">Práctica guiada.</span><span class="d">Su primer dashboard con gráficos dinámicos, en 4 pasos.</span></button>`; }});
 
 TOPICS.forEach((t,i)=>{
   INICIO[i]=S.length;
@@ -580,172 +580,96 @@ S.push({topic:-1, html:`<div class="slide">
   <div class="sum">${TOPICS.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${esc(dot(t.k))}</code></div></div>`).join("")}<div><span class="n">★</span><div><p>Un dashboard responde preguntas.</p><code>Si un elemento no responde ninguna, sobra.</code></div></div></div>
 </div>`});
 
-/* ---------- Práctica guiada (Excel 2021, sin simulador) ---------- */
-const PT = group(rec,"tipo").sort((a,b)=>b.s-a.s), M24=byMes(rec,"2024"), M25=byMes(rec,"2025");
+/* ---------- Práctica guiada (Excel 2021, sin simulador): corta, 4 pasos + ideas para ampliar ---------- */
 const mn = s => `<span class="mn">${s}</span>`;
 const pvT = (head,rows,total) => `<div class="pv"><table><thead><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}${total?`<tr class="tot">${total.map(c=>`<td>${c}</td>`).join("")}</tr>`:""}</tbody></table></div>`;
-const paso = (n,titulo,pasos,der,nota) => S.push({topic:T_PR, paso:n, html:`<div class="slide" style="padding:58px 64px 64px;gap:14px">
+const paso = (n,titulo,para,pasos,der,nota) => S.push({topic:T_PR, paso:n, html:`<div class="slide" style="padding:58px 64px 64px;gap:14px">
   <div class="eyebrow"><span class="n">${n}</span><span>Paso ${n} de ${NP}.</span><span class="tag">Práctica · Excel 2021.</span></div>
-  <h2 style="font-size:34px">${titulo}</h2>
+  <h2 style="font-size:36px">${titulo}</h2>
+  <p class="analogy" style="font-size:18px;padding:2px 0 2px 16px">${para}</p>
   <div class="pgrid">
-    <div style="display:flex;flex-direction:column;gap:12px;min-width:0"><ol class="st">${pasos.map(p=>`<li><span>${p}</span></li>`).join("")}</ol>${nota?`<p class="tipx">${nota}</p>`:""}</div>
+    <div style="display:flex;flex-direction:column;gap:12px;min-width:0"><ol class="st" style="gap:11px">${pasos.map(p=>`<li style="font-size:17px"><span>${p}</span></li>`).join("")}</ol>${nota?`<p class="tipx">${nota}</p>`:""}</div>
     <div class="okb"><div class="ok-h">✓ Compruebe.</div><div class="ok-b">${der}</div></div>
   </div></div>`});
-const crearTD = celda => `Vaya a la hoja <b>Servicios</b>, haga clic en una celda de la tabla y cree otra tabla dinámica como en el paso 2, con Ubicación <code>Dashboard!$${celda.replace(/(\d+)/,"$$$1")}</code>.`;
-const fmtRD = `Formato: ${mn("Configuración de campo de valor › Formato de número › Personalizada")} › <code>"RD$ "#,##0.00</code>.`;
-const sinBotones = `${mn("Analizar gráfico dinámico › Botones de campo › Ocultar todo")}.`;
+const R25 = rec.filter(r=>r.anio==="2025"), T25 = tot(R25), G25 = group(R25,"ars").sort((a,b)=>b.s-a.s);
+const colG = (G,o={}) => colSVG(G.map(g=>g.k),[{name:"Suma de Monto",color:C1,vals:G.map(g=>g.s)}],Object.assign({W:480,H:190,short:true,fmt:rd0,fmtLabel:rdk,fmtAxis:rdk,pl:62},o));
+const slicerAnio = sel => `<div class="slicer" style="width:220px"><div class="sh">Año</div><div class="sb"><span class="sbtn${sel!=="2025"?" on":""}">2024</span><span class="sbtn on">2025</span></div></div>`;
 const PASOS = [
-  ["Prepare la base y la hoja Dashboard.","B2"],
-  ["Cree la tabla dinámica de indicadores.","T3"],
-  ["Convierta los indicadores en tarjetas.","B4:L5"],
-  ["Gráfico de columnas: monto por ARS.","T7 · B7:H21"],
-  ["Gráfico de líneas: servicios por mes.","T16 · J7:P21"],
-  ["Gráfico circular: monto por tipo.","T33 · B23:H37"],
-  ["Segmentaciones que filtran todo.","J23:P37"],
-  ["Diseño final y conclusiones.","B39:B41"]];
+  ["Tabla dinámica.","Resume las 360 filas por ARS."],
+  ["Gráfico dinámico.","Dibuja esa tabla."],
+  ["Segmentación.","Filtra por año con un clic."],
+  ["Conclusión.","Dice qué se decide."]];
 
 INICIO[T_PR]=S.length;
-S.push({topic:T_PR, paso:0, html:`<div class="slide" style="padding:58px 64px 64px;gap:14px">
-  <div class="eyebrow"><span class="n">✎</span><span>Práctica guiada.</span><span class="tag">Excel 2021 · paso a paso.</span></div>
-  <h2 style="font-size:38px">Su propio dashboard con gráficos dinámicos.</h2>
-  <div class="brief" style="gap:28px;grid-template-columns:1fr 1fr">
-    <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
-      <p class="lead" style="font-size:17px">En una hoja nueva llamada <b>Dashboard</b> armará 3 tarjetas, 3 gráficos dinámicos y 2 segmentaciones que filtran todo a la vez. Cada paso dice dónde hacer clic y qué resultado debe ver.</p>
-      <div class="qlist">${PASOS.map((p,i)=>`<div style="padding:6px 6px;font-size:15px"><span class="n" style="font-size:19px">${i+1}</span><span>${p[0]}</span><code>${p[1]}</code></div>`).join("")}</div>
+S.push({topic:T_PR, paso:0, html:`<div class="slide" style="gap:18px">
+  <div class="eyebrow"><span class="n">✎</span><span>Práctica guiada.</span><span class="tag">Excel 2021 · 4 pasos.</span></div>
+  <h2 style="font-size:42px">Su primer dashboard en 4 pasos.</h2>
+  <div class="brief" style="gap:32px;grid-template-columns:1fr 1fr">
+    <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+      <p class="lead" style="font-size:19px">La pregunta: <b>¿qué ARS tiene más monto, y cambia de un año a otro?</b> La responderemos con una tabla dinámica, un gráfico y un filtro.</p>
+      <div class="qlist">${PASOS.map((p,i)=>`<div style="grid-template-columns:36px 1fr;font-size:17px"><span class="n">${i+1}</span><span><b>${p[0]}</b> ${p[1]}</span></div>`).join("")}</div>
       <a class="dlbtn" href="Modulo4-Base-Dashboard.xlsx" download><span class="ic">⬇</span><span><b>Base de datos (Excel)</b><small>Modulo4-Base-Dashboard.xlsx · tabla tblServicios · ${rec.length} filas</small></span></a>
     </div>
-    <div style="display:flex;flex-direction:column;gap:8px;min-height:0">
-      <div class="lab ok">Plano de la hoja Dashboard.</div>
-      <div class="plano2" style="flex:1">
-        <div class="t"><span><b>Título · B2</b></span></div>
-        <div class="k"><span><b>Servicios</b>B4:D5</span></div><div class="k"><span><b>Monto total</b>F4:H5</span></div><div class="k"><span><b>Promedio</b>J4:L5</span></div><div style="border:0"></div>
-        <div class="g g1"><span><b>Gráfico 1 · columnas</b>Monto por ARS<br>B7:H21</span></div><div class="g g2"><span><b>Gráfico 2 · líneas</b>Servicios por mes<br>J7:P21</span></div>
-        <div class="g g1"><span><b>Gráfico 3 · circular</b>Monto por tipo<br>B23:H37</span></div><div class="s"><span><b>Año</b>J23:L37</span></div><div class="s"><span><b>Tipo de Servicio</b>M23:P37</span></div>
-        <div class="c"><span><b>Conclusiones</b>B39:B41</span></div>
-        <div class="m"><span><b>Tablas dinámicas</b>columna T<br>(fuera de la vista)</span></div>
+    <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+      <div class="lab ok">Lo que tendrá al final.</div>
+      <div style="background:var(--card);border:1px solid var(--grid);padding:12px;display:flex;flex-direction:column;gap:10px">
+        ${slicerAnio("ambos")}
+        ${chartBox("SeNaSa lidera el monto","Gráfico dinámico · columnas",colG(GA,{W:500,H:230}))}
+        <div class="concl3" style="grid-template-columns:1fr"><div><i>✎</i>Una conclusión con números.</div></div>
       </div>
     </div>
   </div></div>`});
 
-paso(1,"Prepare la base y la hoja Dashboard.",[
-  `Abra <b>Modulo4-Base-Dashboard.xlsx</b>. Si aparece la barra amarilla, pulse ${mn("Habilitar edición")}.`,
-  `Haga clic en cualquier celda de los datos. En la pestaña ${mn("Diseño de tabla")}, el cuadro <b>Nombre de la tabla</b> debe decir <code>tblServicios</code>.`,
-  `Haga clic en el botón <b>⊕</b> que está junto a la pestaña <b>Servicios</b> para crear una hoja nueva.`,
-  `Haga doble clic en la pestaña nueva, escriba <b>Dashboard</b> y pulse Enter.`,
-  `En <code>B2</code> de Dashboard escriba <b>Tablero de servicios de salud 2024–2025.</b> Póngalo en negrita, tamaño 20.`],
-  `<div style="border:1px solid var(--grid)"><div style="padding:16px;font-family:var(--serif);font-size:20px;font-weight:600">Tablero de servicios de salud 2024–2025.</div><div class="tabsx"><span>Servicios</span><span class="on">Dashboard</span><span>⊕</span></div></div>
-   <ul class="ckl"><li>El libro tiene dos hojas: Servicios y Dashboard.</li><li>tblServicios tiene ${rec.length} filas y 9 columnas: ID Servicio, Fecha, ARS, PSS, Tipo de Servicio, Provincia, Monto, Año y Mes.</li><li>El título está en B2 de la hoja Dashboard.</li></ul>`,
-  `<b>Idea clave:</b> todo el tablero se arma en la hoja Dashboard. A la izquierda va lo que se ve; en la columna T, las tablas dinámicas que lo alimentan.`);
-
-paso(2,"Cree la tabla dinámica de indicadores (TD_KPI).",[
-  `En la hoja <b>Servicios</b>, haga clic en cualquier celda de la tabla.`,
-  `${mn("Insertar › Tabla dinámica")}. Si se abre un menú, elija <b>De una tabla o rango</b>.`,
-  `En <b>Tabla o rango</b> debe decir <code>tblServicios</code>. Marque <b>Hoja de cálculo existente</b>.`,
-  `Haga clic en el cuadro <b>Ubicación</b>, vaya a la hoja Dashboard y haga clic en <code>T3</code>. Debe decir <code>Dashboard!$T$3</code>. Pulse <b>Aceptar</b>.`,
-  `En la lista de campos, arrastre a <b>Valores</b>: ID Servicio, Monto y otra vez Monto.`,
-  `Clic en <b>Suma de Monto2</b> › ${mn("Configuración de campo de valor")} › <b>Promedio</b> › Aceptar.`,
-  `En los dos montos: ${fmtRD.replace("Formato: ","")}`,
-  `${mn("Analizar tabla dinámica")} › cuadro <b>Nombre de tabla dinámica</b> (a la izquierda): escriba <code>TD_KPI</code> y pulse Enter.`],
-  `${pvT(["Cuenta de ID Servicio","Suma de Monto","Promedio de Monto"],[[num0(TT.n),rd2(TT.s),rd2(TT.s/TT.n)]])}
-   <ul class="ckl"><li><code>T4</code> = ${num0(TT.n)} servicios.</li><li><code>U4</code> = ${rd2(TT.s)}.</li><li><code>V4</code> = ${rd2(TT.s/TT.n)}.</li></ul>`,
-  `<b>¿Desapareció la lista de campos?</b> Haga clic dentro de la tabla dinámica › ${mn("Analizar tabla dinámica › Lista de campos")}.`);
-
-paso(3,"Convierta los indicadores en tarjetas.",[
-  `En <code>B4</code> escriba <b>Servicios</b>; en <code>F4</code>, <b>Monto total</b>; en <code>J4</code>, <b>Monto promedio</b>.`,
-  `En <code>B5</code> escriba <code>=T4</code>; en <code>F5</code>, <code>=U4</code>; en <code>J5</code>, <code>=V4</code>.`,
-  `Seleccione F5 y J5 › <b>Ctrl + 1</b> › ${mn("Número › Personalizada")} › Tipo: <code>"RD$ "#,##0.00</code>.`,
-  `Seleccione <code>B4:D4</code> › ${mn("Inicio › Combinar y centrar")}. Repita con B5:D5, F4:H4, F5:H5, J4:L4 y J5:L5.`,
-  `Ponga la fila 5 en negrita, tamaño 22. Dé a cada tarjeta (B4:D5, F4:H5, J4:L5) un relleno claro y un borde.`],
-  `<div class="kcards" style="grid-template-columns:1fr">${kc("Servicios",num0(TT.n))}${kc("Monto total",rd2(TT.s))}${kc("Monto promedio",rd2(TT.s/TT.n))}</div>
-   <p>Las tarjetas toman el número de TD_KPI. Cuando se agreguen las segmentaciones (paso 7), cambiarán solas.</p>`,
-  `<b>Nota:</b> si en lugar de escribir <code>=T4</code> hace clic en T4, Excel crea una fórmula <code>=IMPORTARDATOSDINAMICOS(...)</code>. También funciona y da el mismo número.`);
-
-paso(4,"Gráfico dinámico de columnas: monto por ARS.",[
-  crearTD("T7"),
-  `Filas: <b>ARS</b> · Valores: <b>Monto</b> (Suma de Monto). ${fmtRD}`,
+paso(1,"Cree la tabla dinámica.","Para qué: convertir 360 filas en 5 totales, uno por ARS.",[
+  `Abra la base y haga clic en cualquier celda de la tabla.`,
+  `${mn("Insertar › Tabla dinámica")}. Deje <b>Hoja de cálculo nueva</b> y pulse <b>Aceptar</b>.`,
+  `En la lista de campos, arrastre <b>ARS</b> a <b>Filas</b> y <b>Monto</b> a <b>Valores</b>.`,
   `Clic derecho sobre un monto › ${mn("Ordenar › Ordenar de mayor a menor")}.`,
-  `Nombre de tabla dinámica: <code>TD_ARS</code>.`,
-  `Con un clic dentro de TD_ARS: ${mn("Analizar tabla dinámica › Gráfico dinámico")} › <b>Columna</b> › <b>Columna agrupada</b> › Aceptar.`,
-  `Arrastre el gráfico hasta <code>B7</code> y estírelo hasta <code>H21</code>. Con <b>Alt</b> pulsada se ajusta a las celdas.`,
-  `Clic en el título y escriba <b>SeNaSa lidera el monto.</b> Seleccione la leyenda y pulse Supr. Luego ${sinBotones}`],
+  `Doble clic en la pestaña de la hoja nueva y llámela <b>Dashboard</b>.`],
   `${pvT(["Etiquetas de fila","Suma de Monto"],GA.map(g=>[esc(g.k),rd2(g.s)]),["Total general",rd2(TT.s)])}
-   ${chartBox("SeNaSa lidera el monto","",colARS({W:480,H:190,pl:62}))}`);
+   <p>SeNaSa queda primero con <b>${rd2(GA[0].s)}</b>.</p>`,
+  `<b>Opcional:</b> para ver los montos con RD$, haga clic derecho en un monto › ${mn("Formato de número")} › Personalizada › <code>"RD$ "#,##0.00</code>.`);
 
-paso(5,"Gráfico dinámico de líneas: servicios por mes.",[
-  crearTD("T16"),
-  `Filas: <b>Mes</b> · Columnas: <b>Año</b> · Valores: <b>ID Servicio</b> (Cuenta de ID Servicio).`,
-  `Nombre de tabla dinámica: <code>TD_Mes</code>.`,
-  `${mn("Analizar tabla dinámica › Gráfico dinámico")} › <b>Línea</b> › <b>Línea con marcadores</b> › Aceptar.`,
-  `Muévalo a <code>J7:P21</code>. Título: <b>Los servicios crecieron en 2025.</b>`,
-  `Deje la leyenda: indica qué línea es 2024 y cuál 2025. Luego ${sinBotones}`,
-  `Opcional: clic en la línea 2024 › ${mn("Formato › Contorno de forma")} › naranja.`],
-  `${pvT(["Mes","2024","2025","Total general"],[[1,M24[0],M25[0],M24[0]+M25[0]],[2,M24[1],M25[1],M24[1]+M25[1]],["…","…","…","…"],[11,M24[10],M25[10],M24[10]+M25[10]],[12,M24[11],M25[11],M24[11]+M25[11]]],["Total general",150,210,360])}
-   ${chartBox("Los servicios crecieron en 2025","",lineSVG(MESC.map((_,i)=>String(i+1)),[{name:"2024",color:C24,vals:M24},{name:"2025",color:C25,vals:M25}],{W:480,H:170,pr:70}),yearLegend)}
-   <p>El punto más alto es diciembre de 2025: <b>${M25[11]} servicios</b>.</p>`);
+paso(2,"Convierta la tabla en un gráfico dinámico.","Para qué: que la diferencia entre las ARS se vea de un vistazo.",[
+  `Haga clic dentro de la tabla dinámica.`,
+  `${mn("Analizar tabla dinámica › Gráfico dinámico")} › <b>Columna</b> › <b>Columna agrupada</b> › Aceptar.`,
+  `Clic en el título del gráfico y escriba lo que se ve: <b>SeNaSa lidera el monto.</b>`,
+  `Para limpiarlo: ${mn("Analizar gráfico dinámico › Botones de campo › Ocultar todo")}.`],
+  `${chartBox("SeNaSa lidera el monto","",colG(GA,{H:220}))}
+   <p>El gráfico está <b>conectado</b> a la tabla dinámica: si la tabla cambia, el gráfico cambia solo.</p>`);
 
-paso(6,"Gráfico dinámico circular: monto por tipo de servicio.",[
-  crearTD("T33"),
-  `Filas: <b>Tipo de Servicio</b> · Valores: <b>Monto</b>. Formato <code>"RD$ "#,##0.00</code> y ${mn("Ordenar de mayor a menor")}.`,
-  `Nombre de tabla dinámica: <code>TD_Tipo</code>.`,
-  `${mn("Analizar tabla dinámica › Gráfico dinámico")} › <b>Circular</b> › <b>Circular</b> › Aceptar.`,
-  `Muévalo a <code>B23:H37</code>. Título: <b>Hospitalización: 73 % del monto.</b>`,
-  `Botón <b>+</b> (Elementos de gráfico) › ${mn("Etiquetas de datos › Más opciones")}: marque <b>Porcentaje</b> y desmarque <b>Valor</b>.`,
-  `${sinBotones.replace(/\.$/,"")}.`],
-  `${pvT(["Etiquetas de fila","Suma de Monto","% del monto"],PT.map(g=>[esc(g.k),rd2(g.s),pct(g.s/TT.s)]),["Total general",rd2(TT.s),"100.00 %"])}
-   ${chartBox("Hospitalización: 73 % del monto","",pieSVG(PT.map(g=>g.k),PT.map(g=>g.s),{W:480,H:170}))}`);
+paso(3,"Agregue una segmentación por año.","Para qué: filtrar con un clic, sin tocar la tabla.",[
+  `Haga clic dentro de la tabla dinámica.`,
+  `${mn("Analizar tabla dinámica › Insertar segmentación de datos")}.`,
+  `Marque <b>Año</b> › Aceptar. Colóquela al lado del gráfico.`,
+  `Haga clic en <b>2025</b> y observe el gráfico.`,
+  `Para volver a ver todo, pulse el embudo con ✕ (<b>Borrar filtro</b>).`],
+  `${slicerAnio("2025")}
+   ${chartBox("Solo 2025","",colG(G25,{H:190}))}
+   <p>Con 2025, el total baja a <b>${rd2(T25.s)}</b> y SeNaSa sigue primero: <b>${rd2(G25[0].s)}</b>.</p>`);
 
-{ const s25=rec.filter(r=>r.anio==="2025"), t25=tot(s25), sn25=tot(s25.filter(r=>r.ars==="SeNaSa"));
-  const hos=rec.filter(r=>r.tipo==="Hospitalización"), th=tot(hos), hh=tot(hos.filter(r=>r.ars==="ARS Humano")), hs=tot(hos.filter(r=>r.ars==="SeNaSa"));
-paso(7,"Segmentaciones que filtran todo el tablero.",[
-  `Clic dentro de TD_ARS › ${mn("Analizar tabla dinámica › Insertar segmentación de datos")}.`,
-  `Marque <b>Año</b> y <b>Tipo de Servicio</b> › Aceptar.`,
-  `Mueva la segmentación Año a <code>J23:L37</code> y Tipo de Servicio a <code>M23:P37</code>.`,
-  `Clic en la segmentación Año › pestaña ${mn("Segmentación › Conexiones de informe")}.`,
-  `Marque las cuatro: <code>TD_KPI</code>, <code>TD_ARS</code>, <code>TD_Mes</code> y <code>TD_Tipo</code> › Aceptar.`,
-  `Repita los pasos 4 y 5 con la segmentación <b>Tipo de Servicio</b>.`],
-  `<div><b>Prueba 1.</b> Clic en <span class="sbtn on">2025</span></div>
-   <div class="kcards sm">${kc("Servicios",num0(t25.n))}${kc("Monto total",rd2(t25.s))}${kc("Promedio",rd2(t25.s/t25.n))}</div>
-   <p>SeNaSa sigue primero en el gráfico de columnas: <b>${rd2(sn25.s)}</b>. Luego pulse el embudo con ✕ (Borrar filtro).</p>
-   <div><b>Prueba 2.</b> Clic en <span class="sbtn on">Hospitalización</span></div>
-   <p><b>${th.n} servicios</b> y <b>${rd2(th.s)}</b>. Ahora <b>ARS Humano</b> pasa al primer lugar: ${rd2(hh.s)} (SeNaSa: ${rd2(hs.s)}). Al terminar, borre el filtro.</p>`,
-  `<b>Importante:</b> la segmentación nace conectada solo a TD_ARS. Sin las <b>Conexiones de informe</b>, las tarjetas y los otros gráficos no cambian.`); }
+paso(4,"Escriba una conclusión.","Para qué: un dashboard sirve para decidir, no solo para mirar.",[
+  `Mire el gráfico con y sin el filtro de 2025.`,
+  `Debajo del gráfico, en una celda, escriba una frase con tres partes: <b>dato</b>, <b>comparación</b> y <b>recomendación</b>.`,
+  `Use los números exactos de la tabla dinámica.`,
+  `Guarde el archivo: ${mn("Archivo › Guardar como")}.`],
+  `<div class="anat">
+     <div><b>Dato</b><span>SeNaSa suma <strong>${rd2(GA[0].s)}</strong>…</span></div>
+     <div><b>Comparación</b><span>…el monto más alto de las 5 ARS, también en 2025 (<strong>${rd2(G25[0].s)}</strong>)…</span></div>
+     <div><b>Recomendación</b><span>…por eso conviene darle seguimiento mensual.</span></div>
+   </div>`);
 
-paso(8,"Diseño final y conclusiones.",[
-  `${mn("Vista")} › desmarque <b>Líneas de cuadrícula</b>.`,
-  `Seleccione los tres gráficos con <b>Ctrl</b> › pestaña ${mn("Formato › Alinear")} para que queden parejos.`,
-  `Clic en cada segmentación › pestaña ${mn("Segmentación")} › elija un estilo azul.`,
-  `En <code>B39</code>, <code>B40</code> y <code>B41</code> escriba tres conclusiones con <b>dato, comparación y recomendación</b>. Vea el ejemplo en la lámina siguiente.`,
-  `No oculte las columnas de las tablas dinámicas: si se ocultan, los gráficos quedan en blanco. Déjelas a la derecha, fuera de la vista.`,
-  `${mn("Archivo › Guardar como")} › Libro de Excel (.xlsx) con el nombre <code>Modulo4-Dashboard-SuNombre.xlsx</code>.`],
-  `<ul class="ckl">
-    <li>Tres tarjetas que cambian al usar las segmentaciones.</li>
-    <li>Tres gráficos dinámicos sin botones de campo y con títulos que dicen el hallazgo.</li>
-    <li>Dos segmentaciones conectadas a las cuatro tablas dinámicas.</li>
-    <li>Montos en formato <code>"RD$ "#,##0.00</code>.</li>
-    <li>Hoja sin cuadrícula: tarjetas arriba, gráficos al centro, conclusiones abajo.</li>
-    <li>Tres conclusiones con números exactos.</li></ul>`);
-
-S.push({topic:T_PR, paso:"fin", html:`<div class="slide" style="padding:58px 56px 62px;gap:10px">
-  <div class="eyebrow"><span class="n">✓</span><span>Así debe quedar.</span><span class="tag">Hoja Dashboard · sin filtros.</span></div>
-  <div class="dash" style="grid-template-columns:1fr 150px">
-    <div class="dash-main">
-      <div class="dtitle"><b>Tablero de servicios de salud 2024–2025.</b><span>Fuente: tblServicios</span></div>
-      <div class="kcards">${kc("Servicios",num0(TT.n))}${kc("Monto total",rd2(TT.s))}${kc("Monto promedio",rd2(TT.s/TT.n))}</div>
-      <div class="dash-charts" style="grid-template-columns:1fr 1.1fr 1fr">
-        ${chartBox("SeNaSa lidera el monto","Gráfico 1 · columnas · TD_ARS",colARS({W:340,H:270,pl:62,twoLine:true}))}
-        ${chartBox("Los servicios crecieron en 2025","Gráfico 2 · líneas · TD_Mes",lineSVG(MESC.map((_,i)=>String(i+1)),[{name:"2024",color:C24,vals:M24},{name:"2025",color:C25,vals:M25}],{W:380,H:250,pr:64}),yearLegend)}
-        ${chartBox("Hospitalización: 73 % del monto","Gráfico 3 · circular · TD_Tipo",pieSVG(PT.map(g=>sh(g.k)),PT.map(g=>g.s),{W:400,H:200}))}
-      </div>
-      <div class="concl3">
-        <div><i>B39</i>Hospitalización es solo el 11.67 % de los servicios (42 de 360), pero suma ${rd2(PT[0].s)}, el 73.07 % del monto: vigilar sus costos.</div>
-        <div><i>B40</i>Los servicios pasaron de 150 en 2024 a 210 en 2025 (+40 %); diciembre de 2025 fue el mes más alto, con 23: reforzar la atención de fin de año.</div>
-        <div><i>B41</i>SeNaSa lidera el monto total (${rd2(GA[0].s)}), pero en Hospitalización la supera ARS Humano (RD$ 1,325,000.00): revisar sus hospitalizaciones.</div>
-      </div>
-    </div>
-    <div class="dash-side">
-      <div class="slicer col"><div class="sh">Año</div><div class="sb"><span class="sbtn on">2024</span><span class="sbtn on">2025</span></div></div>
-      <div class="slicer col"><div class="sh">Tipo de Servicio</div><div class="sb">${TIPOS.map(t=>`<span class="sbtn on">${esc(t)}</span>`).join("")}</div></div>
-    </div>
+S.push({topic:T_PR, paso:"fin", html:`<div class="slide" style="gap:18px">
+  <div class="eyebrow"><span class="n">+</span><span>Su turno.</span><span class="tag">Opcional · para ampliar.</span></div>
+  <h2 style="font-size:42px">Haga crecer su dashboard.</h2>
+  <p class="lead" style="font-size:19px;max-width:none">Ya tiene la base. Agregue lo que su pregunta necesite: cada idea se arma igual que los pasos 1 a 3.</p>
+  <div class="uses" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+    <div class="use"><h3>Una tarjeta.</h3><p>Una tabla dinámica solo con <b>Monto</b> en Valores, y en otra celda escriba <code>=</code> y haga clic en ese total. Póngalo con letra grande.</p></div>
+    <div class="use"><h3>Otro gráfico.</h3><p>Una tabla dinámica con <b>Mes</b> en Filas y <b>Año</b> en Columnas, y un gráfico de <b>Línea</b>.</p></div>
+    <div class="use"><h3>Otro filtro.</h3><p>Una segmentación de <b>Tipo de Servicio</b> o <b>Provincia</b>.</p></div>
+    <div class="use"><h3>Un filtro para todo.</h3><p>Clic en la segmentación › ${mn("Segmentación › Conexiones de informe")} › marque todas las tablas dinámicas.</p></div>
+    <div class="use"><h3>Mejor diseño.</h3><p>${mn("Vista")} › desmarque <b>Líneas de cuadrícula</b>; títulos que digan el hallazgo.</p></div>
+    <div class="use"><h3>Más conclusiones.</h3><p>Una por gráfico, siempre con dato, comparación y recomendación.</p></div>
   </div>
 </div>`});
 
@@ -765,7 +689,7 @@ function go(i){
   const tp=S[cur].topic;
   dots.querySelectorAll("button").forEach((b,j)=>{b.classList.toggle("cur",j===tp);b.classList.toggle("done",tp>j||(tp<0&&cur>2));});
   document.getElementById("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
-  document.getElementById("topL").textContent = tp<0?"MÓDULO 4 · VISUALIZACIÓN DE DATOS Y DASHBOARDS.": tp===T_EJ?"MÓDULO 4 · EJEMPLO INTEGRADOR · TABLERO DE ARS.": tp===T_PR?`MÓDULO 4 · PRÁCTICA GUIADA · ${S[cur].paso==="fin"?"RESULTADO.":S[cur].paso?`PASO ${S[cur].paso} DE ${NP}.`:"EXCEL 2021."}`:`MÓDULO 4 · CONCEPTO 0${tp+1} DE 0${TOPICS.length} · ${dot(TOPICS[tp].k).toUpperCase()}`;
+  document.getElementById("topL").textContent = tp<0?"MÓDULO 4 · VISUALIZACIÓN DE DATOS Y DASHBOARDS.": tp===T_EJ?"MÓDULO 4 · EJEMPLO INTEGRADOR · TABLERO DE ARS.": tp===T_PR?`MÓDULO 4 · PRÁCTICA GUIADA · ${S[cur].paso==="fin"?"SU TURNO.":S[cur].paso?`PASO ${S[cur].paso} DE ${NP}.`:"EXCEL 2021."}`:`MÓDULO 4 · CONCEPTO 0${tp+1} DE 0${TOPICS.length} · ${dot(TOPICS[tp].k).toUpperCase()}`;
   document.getElementById("prev").disabled=cur===0; document.getElementById("next").disabled=cur===els.length-1;
 }
 document.getElementById("prev").onclick=()=>go(cur-1);
