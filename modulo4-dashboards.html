@@ -316,7 +316,7 @@ svg text{font-family:var(--sans)}
 .ok-b .kcards.sm .kcard{padding:8px 10px}
 .ok-b .kcards.sm .kcard b{font-size:20px}
 .exl strong{color:var(--ink);font-weight:600}
-.idx button.pr{grid-column:span 2;border-right:0;background:var(--xl-soft)}
+.idx button.pr{grid-column:span 3;border-right:0;background:var(--xl-soft)}
 </style>
 
 <div id="viewport"><div id="stage">
@@ -486,20 +486,7 @@ const TOPICS = [
     `<div class="duo2"><div><span class="lab no">✗ Antes</span><div class="ugly"><div style="font-size:13px;font-weight:700;color:#e0421b;text-align:center">Gráfico 1</div><div style="filter:drop-shadow(4px 5px 0 #999)">${pieSVG(GA.map(g=>g.k),GA.map(g=>g.s),{W:380,H:170,colors:rb})}</div></div>
        <div class="why"><span>Título genérico</span><span>Colores sin significado</span><span>Sombra que estorba</span></div></div>
      <div><span class="lab ok">✓ Después</span>${chartBox("SeNaSa y ARS Humano: 52.66 % del monto","Monto por ARS",colARS({W:360,H:200,pl:64,twoLine:true}))}
-       <div class="why ok"><span>El título dice el hallazgo</span><span>Un solo color</span><span>Ordenado de mayor a menor</span></div></div></div>`,""); } },
-
-{ k:"Conclusiones", d:"Del número a la decisión.",
-  q:"¿Cómo se escribe una conclusión?",
-  def:"Una conclusión convierte lo que muestra el tablero en una frase para decidir. Lleva un dato exacto, una comparación y una recomendación. Una opinión sin números no es una conclusión.",
-  ana:"Es como el informe del médico: no basta con los resultados del laboratorio, hay que escribir el diagnóstico.",
-  xl:"Los números salen del propio tablero: tarjetas, gráficos y segmentaciones.",
-  ex:()=>exBox("Una conclusión sobre Primera ARS",
-    `<div class="anat">
-      <div><b>Dato</b><span>Primera ARS tiene el <strong>10 %</strong> de los servicios (36 de 360)…</span></div>
-      <div><b>Comparación</b><span>…pero el <strong>14.39 %</strong> del monto: su promedio, <strong>RD$ 26,744.44</strong>, es el más alto de las 5 ARS.</span></div>
-      <div><b>Recomendación</b><span>Revisar sus hospitalizaciones: <strong>6 casos</strong> suman <strong>RD$ 775,450</strong>, el 80.54 % de su monto.</span></div>
-      <div class="bad"><b>✗ No es conclusión</b><span>«Primera ARS es la más cara.» No dice cuánto ni frente a quién.</span></div>
-     </div>`,"") }
+       <div class="why ok"><span>El título dice el hallazgo</span><span>Un solo color</span><span>Ordenado de mayor a menor</span></div></div></div>`,""); } }
 ];
 
 /* ---------- Construcción de diapositivas ---------- */
@@ -528,7 +515,7 @@ S.push({topic:-1, html:`<div class="slide" style="gap:16px">
 
 S.push({topic:-1, html:`<div class="slide">
   <div class="eyebrow">Contenido.</div>
-  <h2>Siete conceptos, un ejemplo y una práctica.</h2>
+  <h2>Seis conceptos, un ejemplo y una práctica.</h2>
   <p class="lead" style="font-size:20px;max-width:none">Cada concepto se define y se ilustra con un ejemplo sobre las <b>ARS</b> de la base. Al final, usted arma su propio dashboard en <b>Excel 2021</b>, paso a paso.</p>
   <div class="idx" data-idx></div>
   <p class="note"><b>Objetivo:</b> diseñar dashboards en Excel que faciliten la interpretación de los datos y apoyen la toma de decisiones.</p>
@@ -665,15 +652,7 @@ const MAS = {
   imp:{ h:"¿Por qué importa el diseño?",
     ben:[["Se entiende sin explicar.","El lector sabe dónde mirar."],["Da confianza.","Un tablero ordenado se ve profesional."],["Evita errores.","Colores y ejes claros no confunden."],["Ahorra tiempo.","Se encuentra el dato enseguida."]],
     uses:[["Reunión de gerencia","Tablero proyectado y fácil de leer de lejos."],["Pantalla en una oficina","Indicadores del día a la vista de todos."],["Informe mensual","El tablero guardado como PDF."],["Equipo de trabajo","Un archivo compartido que todos entienden."]],
-    ej:"Un gráfico titulado «Gráfico 1» obliga a adivinar; «SeNaSa y ARS Humano: 52.66 % del monto» ya dice el hallazgo." } },
-6:{ teo:{ h:"Cómo se arma una conclusión.", intro:"Una buena conclusión responde <b>cuatro preguntas</b>.",
-    items:[["Dato","¿Qué número muestra el tablero?"],["Comparación","¿Frente a qué? Otro año, otra ARS, el promedio."],["Causa posible","¿Qué podría explicarlo?"],["Recomendación","¿Qué conviene hacer?"]],
-    side:"Palabras que ayudan.", head:["Para","Use"],
-    rows:[["Comparar","«más que», «frente a», «pasó de … a …»"],["Proporción","«el 73.07 % de», «uno de cada …»"],["Tendencia","«subió», «bajó», «se mantuvo»"],["Actuar","«revisar», «reforzar», «dar seguimiento»"]] },
-  imp:{ h:"¿Por qué importan las conclusiones?",
-    ben:[["Convierten datos en acciones.","El tablero termina en una decisión."],["Evitan malas lecturas.","Todos entienden lo mismo."],["Ayudan a quien decide.","La gerencia no tiene que interpretar gráficos."],["Dejan constancia.","Se puede revisar después si se cumplió."]],
-    uses:[["Informe mensual","Tres conclusiones al pie del tablero."],["Reunión de gerencia","La conclusión abre la conversación."],["Auditoría médica","Indica qué casos revisar."],["Presupuesto","Justifica dónde invertir."]],
-    ej:"Los servicios pasaron de 150 en 2024 a 210 en 2025 (+40 %), con el pico en diciembre de 2025 (23): conviene reforzar la atención a fin de año." } }
+    ej:"Un gráfico titulado «Gráfico 1» obliga a adivinar; «SeNaSa y ARS Humano: 52.66 % del monto» ya dice el hallazgo." } }
 };
 
 TOPICS.forEach((t,i)=>{
@@ -699,22 +678,17 @@ S.push({topic:T_EJ, html:`<div class="slide" style="padding:58px 56px 62px;gap:1
   <div class="dash" style="grid-template-columns:1fr 150px">
     <div class="dash-main">
       <div class="dtitle"><b>Tablero de ARS · servicios de salud 2024–2025.</b><span>Fuente: tblServicios</span></div>
-      <div class="kcards">${kc("Servicios atendidos",num0(TT.n))}${kc("Monto total",rd0(TT.s))}${kc("Monto promedio por servicio",rd2(TT.s/TT.n))}</div>
+      <div class="kcards">${kc("Servicios atendidos",num0(TT.n))}${kc("Monto total",rd2(TT.s))}${kc("Monto promedio por servicio",rd2(TT.s/TT.n))}</div>
       <div class="dash-charts" style="grid-template-columns:1fr 1.1fr 1fr">
         ${chartBox("Dos ARS concentran el 52.66 % del monto","Monto por ARS · columnas",colARS({W:340,H:300,pl:62,twoLine:true}))}
         ${chartBox("Todas las ARS crecieron en 2025","Servicios por ARS y año · columnas agrupadas",colSVG(GA.map(g=>g.k),[{name:"2024",color:C24,vals:GA.map(g=>g.n24)},{name:"2025",color:C25,vals:GA.map(g=>g.n25)}],{W:380,H:282,short:true,pl:30,twoLine:true,labelAll:false}),yearLegend)}
         ${chartBox("Participación en el monto","Circular · 5 ARS",pieSVG(GA.map(g=>sh(g.k)),GA.map(g=>g.s),{W:340,H:200}))}
       </div>
-      <div class="concl3">
-        <div><i>1</i>SeNaSa (RD$ 1,801,250) y ARS Humano (RD$ 1,722,400) suman el 52.66 % del monto.</div>
-        <div><i>2</i>Primera ARS más que duplicó sus servicios: de 11 en 2024 a 25 en 2025.</div>
-        <div><i>3</i>Primera ARS tiene el promedio más alto (RD$ 26,744.44): revisar sus hospitalizaciones.</div>
-      </div>
     </div>
     <div class="dash-side">
       <div class="slicer col"><div class="sh">Año</div><div class="sb"><span class="sbtn on">2024</span><span class="sbtn on">2025</span></div></div>
       <div class="slicer col"><div class="sh">Tipo de Servicio</div><div class="sb">${TIPOS.map(t=>`<span class="sbtn on">${esc(t)}</span>`).join("")}</div></div>
-      <p style="font-size:12.5px;color:var(--muted);line-height:1.4">Tarjetas · gráficos · segmentaciones · conclusiones.</p>
+      <p style="font-size:12.5px;color:var(--muted);line-height:1.4">Tarjetas · gráficos · segmentaciones.</p>
     </div>
   </div>
 </div>`});
