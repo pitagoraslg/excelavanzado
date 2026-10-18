@@ -315,6 +315,7 @@ svg text{font-family:var(--sans)}
 .ok-b .kcards.sm{grid-template-columns:.7fr 1.15fr 1.15fr}
 .ok-b .kcards.sm .kcard{padding:8px 10px}
 .ok-b .kcards.sm .kcard b{font-size:20px}
+.exl strong{color:var(--ink);font-weight:600}
 .idx button.pr{grid-column:span 2;border-right:0;background:var(--xl-soft)}
 </style>
 
@@ -533,6 +534,148 @@ S.push({topic:-1, html:`<div class="slide">
   <p class="note"><b>Objetivo:</b> diseñar dashboards en Excel que faciliten la interpretación de los datos y apoyen la toma de decisiones.</p>
 </div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = TOPICS.map((t,i)=>`<button data-go="${INICIO[i]}"><span class="n">0${i+1}</span><span class="k">${dot(t.k)}</span><span class="d">${t.d}</span></button>`).join("")+`<button class="res" data-go="${INICIO[T_EJ]}"><span class="n">★</span><span class="k">Tablero de ARS.</span><span class="d">Todos los conceptos juntos.</span></button><button class="pr" data-go="${INICIO[T_PR]}"><span class="n">✎</span><span class="k">Práctica guiada.</span><span class="d">Gráficos dinámicos, una segmentación para todo y tablas ocultas.</span></button>`; }});
 
+/* Dos láminas más de teoría sobre el dashboard: partes y diferencia con un reporte; importancia y usos prácticos */
+const DASH_EXTRA = [
+`<div class="slide" style="gap:18px">
+  <div class="eyebrow"><span class="n">01</span><span>Dashboard.</span><span class="tag">Teoría · sus partes.</span></div>
+  <h2 style="font-size:40px">¿Qué tiene un dashboard?</h2>
+  <div class="cols2" style="grid-template-columns:1fr 1fr;gap:36px">
+    <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+      <p class="lead" style="font-size:19px">Todo dashboard, sencillo o grande, se arma con <b>cuatro piezas</b>.</p>
+      <div class="anat">
+        <div><b>1 · Título</b><span>Dice qué se mide y de cuándo son los datos: <em>Servicios de salud 2024–2025.</em></span></div>
+        <div><b>2 · Indicadores</b><span>Tarjetas con los números clave (KPI): servicios, monto total, promedio.</span></div>
+        <div><b>3 · Gráficos</b><span>Muestran comparaciones y tendencias: monto por ARS, servicios por mes.</span></div>
+        <div><b>4 · Filtros</b><span>Segmentaciones que dejan elegir qué mirar: un año, un tipo de servicio.</span></div>
+      </div>
+      <p class="analogy" style="font-size:17px">Si una pieza no ayuda a responder una pregunta, sobra.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+      <div class="lab ok">Reporte frente a dashboard.</div>
+      <table class="ptab">
+        <tr><th></th><th>Reporte</th><th>Dashboard</th></tr>
+        <tr><td>Tamaño</td><td>Muchas filas o páginas</td><td>Una sola pantalla</td></tr>
+        <tr><td>Se usa para</td><td>Leer el detalle</td><td>Ver el resumen en segundos</td></tr>
+        <tr><td>Forma</td><td>Tablas y texto</td><td>Tarjetas, gráficos y filtros</td></tr>
+        <tr><td>Interacción</td><td>Fijo: se lee como está</td><td>Interactivo: se filtra con un clic</td></tr>
+        <tr><td>Actualización</td><td>Se rehace cada vez</td><td>Se actualiza con los datos nuevos</td></tr>
+        <tr><td>Ejemplo</td><td>Las ${rec.length} filas de tblServicios</td><td>3 tarjetas y 2 gráficos de ARS</td></tr>
+      </table>
+      <p class="exl"><b>En Excel</b>Las tablas dinámicas calculan, los gráficos dinámicos muestran y las segmentaciones filtran. Con <strong>Datos › Actualizar todo</strong>, el dashboard toma los datos nuevos.</p>
+    </div>
+  </div></div>`,
+`<div class="slide" style="gap:18px">
+  <div class="eyebrow"><span class="n">01</span><span>Dashboard.</span><span class="tag">Teoría · importancia y uso práctico.</span></div>
+  <h2 style="font-size:40px">¿Por qué es importante un dashboard?</h2>
+  <div class="cols2" style="grid-template-columns:1fr 1fr;gap:32px">
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+      <div class="lab ok">Lo que aporta.</div>
+      <div class="uses" style="gap:10px">
+        <div class="use" style="padding:12px 14px"><h3>Ahorra tiempo.</h3><p>De ${rec.length} filas a 3 números y 2 gráficos que se leen en segundos.</p></div>
+        <div class="use" style="padding:12px 14px"><h3>Decide con datos.</h3><p>Las decisiones se apoyan en cifras, no en impresiones.</p></div>
+        <div class="use" style="padding:12px 14px"><h3>Avisa a tiempo.</h3><p>Una subida o caída se ve enseguida en el gráfico.</p></div>
+        <div class="use" style="padding:12px 14px"><h3>Una sola versión.</h3><p>Todo el equipo mira los mismos números.</p></div>
+      </div>
+      <p class="analogy" style="font-size:17px">Un dashboard no reemplaza los datos: los resume para que alguien pueda actuar.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+      <div class="lab ok">Usos prácticos.</div>
+      <table class="map" style="font-size:15px">
+        <tr><td style="width:34%"><b>Salud (ARS)</b></td><td>Servicios y monto por ARS, prestador y mes; alerta cuando suben las hospitalizaciones.</td></tr>
+        <tr><td style="width:34%"><b>Ventas</b></td><td>Ventas por mes, vendedor y producto, y su avance frente a la meta.</td></tr>
+        <tr><td style="width:34%"><b>Finanzas</b></td><td>Gastos frente al presupuesto, por departamento.</td></tr>
+        <tr><td style="width:34%"><b>Recursos humanos</b></td><td>Personal por área, ausencias y rotación.</td></tr>
+        <tr><td style="width:34%"><b>Educación</b></td><td>Asistencia y calificaciones por curso.</td></tr>
+      </table>
+      <div class="pit" style="background:var(--xl-soft)"><b style="color:var(--xl)">Ejemplo</b><span>Con el dashboard de ARS, la gerencia ve en un clic que SeNaSa lidera el monto (${rd2(GA[0].s)}) y que los servicios subieron de 150 en 2024 a 210 en 2025.</span></div>
+    </div>
+  </div></div>`];
+
+/* Temas 02–07: una lámina de teoría a fondo y una de importancia y uso práctico */
+const teoSlide = (i,d) => `<div class="slide" style="gap:18px">
+  <div class="eyebrow"><span class="n">0${i+1}</span><span>${dot(TOPICS[i].k)}</span><span class="tag">Teoría · a fondo.</span></div>
+  <h2 style="font-size:40px">${d.h}</h2>
+  <div class="cols2" style="grid-template-columns:1fr 1fr;gap:36px">
+    <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+      <p class="lead" style="font-size:19px">${d.intro}</p>
+      <div class="anat">${d.items.map(([a,b])=>`<div><b>${a}</b><span>${b}</span></div>`).join("")}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+      <div class="lab ok">${d.side}</div>
+      <table class="ptab"><tr>${d.head.map(h=>`<th>${h}</th>`).join("")}</tr>${d.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</table>
+      ${d.xl?`<p class="exl"><b>En Excel</b>${d.xl.replace(/<(\/?)b>/g,"<$1strong>")}</p>`:""}
+    </div>
+  </div></div>`;
+const impSlide = (i,d) => `<div class="slide" style="gap:18px">
+  <div class="eyebrow"><span class="n">0${i+1}</span><span>${dot(TOPICS[i].k)}</span><span class="tag">Importancia y uso práctico.</span></div>
+  <h2 style="font-size:40px">${d.h}</h2>
+  <div class="cols2" style="grid-template-columns:1fr 1fr;gap:32px">
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+      <div class="lab ok">Lo que aporta.</div>
+      <div class="uses" style="gap:10px">${d.ben.map(([a,b])=>`<div class="use" style="padding:12px 14px"><h3>${a}</h3><p>${b}</p></div>`).join("")}</div>
+      ${d.ana?`<p class="analogy" style="font-size:17px">${d.ana}</p>`:""}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+      <div class="lab ok">Usos prácticos.</div>
+      <table class="map" style="font-size:15px">${d.uses.map(([a,b])=>`<tr><td style="width:34%"><b>${a}</b></td><td>${b}</td></tr>`).join("")}</table>
+      <div class="pit" style="background:var(--xl-soft)"><b style="color:var(--xl)">Ejemplo</b><span>${d.ej}</span></div>
+    </div>
+  </div></div>`;
+const MAS = {
+1:{ teo:{ h:"¿Qué hace bueno a un KPI?", intro:"No todo número es un indicador clave. Un buen KPI cumple <b>cuatro condiciones</b>.",
+    items:[["Medible","Es un número exacto, no una opinión: 360 servicios."],["Relevante","Está ligado a un objetivo: controlar el gasto, atender más personas."],["Comparable","Se mira frente a algo: la meta, el año anterior o el promedio."],["Claro","Tiene un nombre corto y su unidad: «Monto total (RD$)»."]],
+    side:"Tipos de KPI, con la base de ARS.", head:["Tipo","KPI","Valor"],
+    rows:[["Cantidad","Servicios atendidos","360"],["Monto","Monto total","RD$ 6,691,250.00"],["Promedio","Monto por servicio","RD$ 18,586.81"],["Porcentaje","Participación de SeNaSa","26.92 %"],["Variación","Servicios 2025 frente a 2024","+40 %"]],
+    xl:"En la tabla dinámica, <b>Configuración de campo de valor</b> cambia Suma por Cuenta o Promedio, y <b>Mostrar valores como</b> da porcentajes." },
+  imp:{ h:"¿Por qué importan los KPI?",
+    ben:[["Enfocan la atención.","De todos los datos, señalan los pocos que hay que vigilar."],["Miden el avance.","Muestran si se acerca o se aleja de la meta."],["Avisan.","Un KPI que cambia mucho es una alerta para revisar."],["Unen al equipo.","Todos hablan del mismo número."]],
+    ana:"Lo que no se mide no se puede mejorar.",
+    uses:[["Salud (ARS)","Servicios por mes y monto promedio por servicio."],["Ventas","Ventas del mes frente a la meta."],["Finanzas","Porcentaje del presupuesto ya gastado."],["Recursos humanos","Porcentaje de ausencias por mes."],["Atención al cliente","Tiempo promedio de respuesta."]],
+    ej:"El monto promedio de Primera ARS (RD$ 26,744.44) está muy por encima del general (RD$ 18,586.81): el KPI indica dónde mirar." } },
+2:{ teo:{ h:"Los gráficos más usados.", intro:"Con <b>cuatro tipos</b> se responde la mayoría de las preguntas de un dashboard.",
+    items:[["Columnas y barras","Comparan categorías. Las barras horizontales sirven cuando los nombres son largos."],["Líneas","Muestran cómo cambia algo en el tiempo: meses, trimestres, años."],["Circular o anillo","Muestran partes de un total. Úselos solo con 5 o 6 porciones como máximo."],["Combinado","Muestra dos medidas a la vez: monto en columnas y cantidad en línea."]],
+    side:"Reglas de oro.", head:["Regla","Por qué"],
+    rows:[["El eje empieza en 0","Si no, las diferencias se ven más grandes de lo que son."],["Ordenar de mayor a menor","El ranking se lee de un vistazo."],["Un color por significado","Por ejemplo: 2024 naranja y 2025 azul en todo el tablero."],["Sin 3D ni sombras","Deforman los tamaños y distraen."],["Título que dice el hallazgo","«SeNaSa lidera el monto», no «Gráfico 1»."]] },
+  imp:{ h:"¿Por qué importa elegir bien el gráfico?",
+    ben:[["Se entiende rápido.","El gráfico correcto responde la pregunta sin explicación."],["Evita engaños.","Un mal gráfico puede exagerar o esconder diferencias."],["Resalta lo importante.","Lleva la vista al dato que decide."],["Se recuerda mejor.","Una imagen clara se recuerda más que una tabla."]],
+    uses:[["Ranking de ARS","Columnas, de mayor a menor."],["Servicios por mes","Líneas, una por año."],["Peso de cada tipo de servicio","Circular (son 5 tipos)."],["Monto y cantidad por mes","Combinado: columnas y línea."],["Nombres largos de prestadores","Barras horizontales."]],
+    ej:"Hospitalización es el 73.07 % del monto. En un gráfico circular se ve al instante; en una tabla, habría que calcularlo." } },
+3:{ teo:{ h:"Cómo se conecta el gráfico con la tabla.", intro:"Cada parte del gráfico dinámico sale de un área de la <b>lista de campos</b>.",
+    items:[["Filas","Se convierten en el eje horizontal: las ARS."],["Columnas","Se convierten en la leyenda: una serie por año."],["Valores","Dan la altura de las columnas: Suma de Monto."],["Filtros","Lo que se filtra en la tabla también se filtra en el gráfico."]],
+    side:"Gráfico dinámico frente a gráfico normal.", head:["","Gráfico dinámico","Gráfico normal"],
+    rows:[["Origen","Una tabla dinámica","Un rango de celdas"],["Al filtrar","Cambia con la tabla y las segmentaciones","No cambia"],["Otro campo","Se arrastra en la lista de campos","Hay que rehacer el rango"],["Datos nuevos","Datos › Actualizar todo","Ajustar el rango a mano"],["Tipos","Casi todos (no dispersión ni mapa)","Todos"]] },
+  imp:{ h:"¿Por qué usar gráficos dinámicos?",
+    ben:[["Siempre al día.","Con Actualizar todo, toma los datos nuevos."],["Cambia en segundos.","Otro campo en Filas y el gráfico responde otra pregunta."],["Filtra con el tablero.","Obedece a las segmentaciones."],["Sin fórmulas.","La tabla dinámica hace los cálculos."]],
+    uses:[["Salud (ARS)","Monto por ARS que cambia al elegir el año."],["Ventas","Ventas por región, y en un clic por producto."],["Inventario","Existencias por almacén y por mes."],["Educación","Promedio de notas por curso y sección."]],
+    ej:"Si llegan los servicios de 2026, se agregan a tblServicios y se pulsa <b>Datos › Actualizar todo</b>: el gráfico se actualiza solo." } },
+4:{ teo:{ h:"Cómo funciona una segmentación.", intro:"Una segmentación tiene <b>un botón por cada valor</b> del campo elegido.",
+    items:[["Un clic","Filtra un solo valor: 2025."],["Varios valores","Ctrl + clic, o el botón de selección múltiple."],["Borrar filtro","El embudo con ✕ vuelve a mostrar todo."],["Conexiones","Una segmentación puede filtrar varias tablas dinámicas que salen de la misma tabla."]],
+    side:"Tres formas de filtrar.", head:["","Cómo se ve","Sirve para"],
+    rows:[["Segmentación","Botones siempre visibles","Cualquier campo de texto o número"],["Filtro de la tabla dinámica","Lista desplegable","Filtrar sin ocupar espacio, pero no se ve qué está filtrado"],["Escala de tiempo","Barra de fechas","Solo fechas: años, trimestres, meses o días"]],
+    xl:"Con la segmentación seleccionada, la pestaña <b>Segmentación</b> tiene Conexiones de informe, estilos, columnas y tamaño de los botones." },
+  imp:{ h:"¿Por qué importan las segmentaciones?",
+    ben:[["Cualquiera puede filtrar.","No hace falta saber de tablas dinámicas."],["Se ve qué está filtrado.","El botón marcado lo dice."],["Un clic mueve todo.","Tarjetas y gráficos cambian a la vez."],["Explorar sin dañar.","Filtrar no cambia los datos originales."]],
+    uses:[["Salud (ARS)","Año, ARS, tipo de servicio, provincia."],["Ventas","Región, vendedor, producto."],["Recursos humanos","Departamento y tipo de contrato."],["Educación","Curso, sección, período."]],
+    ej:"Al elegir Hospitalización, ARS Humano (RD$ 1,325,000.00) supera a SeNaSa (RD$ 1,278,700.00). El total no lo mostraba." } },
+5:{ teo:{ h:"Principios de diseño.", intro:"Cuatro principios hacen que un tablero se lea solo.",
+    items:[["Jerarquía","Lo más importante va arriba a la izquierda, donde empieza la vista."],["Alineación","Gráficos del mismo tamaño y con los bordes alineados."],["Color con significado","Pocos colores, siempre con el mismo sentido; el rojo solo para alertas."],["Espacio en blanco","Separar los bloques para no amontonar."]],
+    side:"Dónde va cada cosa.", head:["Zona","Qué lleva"],
+    rows:[["Arriba","Título y tarjetas de KPI"],["Centro","Los gráficos principales"],["A un lado","Las segmentaciones"],["Abajo","Detalle, notas o fuente de los datos"]],
+    xl:"<b>Vista</b> › quitar Líneas de cuadrícula. <b>Formato › Alinear</b> empareja los gráficos. Con <b>Alt</b> pulsada, el gráfico se ajusta a las celdas." },
+  imp:{ h:"¿Por qué importa el diseño?",
+    ben:[["Se entiende sin explicar.","El lector sabe dónde mirar."],["Da confianza.","Un tablero ordenado se ve profesional."],["Evita errores.","Colores y ejes claros no confunden."],["Ahorra tiempo.","Se encuentra el dato enseguida."]],
+    uses:[["Reunión de gerencia","Tablero proyectado y fácil de leer de lejos."],["Pantalla en una oficina","Indicadores del día a la vista de todos."],["Informe mensual","El tablero guardado como PDF."],["Equipo de trabajo","Un archivo compartido que todos entienden."]],
+    ej:"Un gráfico titulado «Gráfico 1» obliga a adivinar; «SeNaSa y ARS Humano: 52.66 % del monto» ya dice el hallazgo." } },
+6:{ teo:{ h:"Cómo se arma una conclusión.", intro:"Una buena conclusión responde <b>cuatro preguntas</b>.",
+    items:[["Dato","¿Qué número muestra el tablero?"],["Comparación","¿Frente a qué? Otro año, otra ARS, el promedio."],["Causa posible","¿Qué podría explicarlo?"],["Recomendación","¿Qué conviene hacer?"]],
+    side:"Palabras que ayudan.", head:["Para","Use"],
+    rows:[["Comparar","«más que», «frente a», «pasó de … a …»"],["Proporción","«el 73.07 % de», «uno de cada …»"],["Tendencia","«subió», «bajó», «se mantuvo»"],["Actuar","«revisar», «reforzar», «dar seguimiento»"]] },
+  imp:{ h:"¿Por qué importan las conclusiones?",
+    ben:[["Convierten datos en acciones.","El tablero termina en una decisión."],["Evitan malas lecturas.","Todos entienden lo mismo."],["Ayudan a quien decide.","La gerencia no tiene que interpretar gráficos."],["Dejan constancia.","Se puede revisar después si se cumplió."]],
+    uses:[["Informe mensual","Tres conclusiones al pie del tablero."],["Reunión de gerencia","La conclusión abre la conversación."],["Auditoría médica","Indica qué casos revisar."],["Presupuesto","Justifica dónde invertir."]],
+    ej:"Los servicios pasaron de 150 en 2024 a 210 en 2025 (+40 %), con el pico en diciembre de 2025 (23): conviene reforzar la atención a fin de año." } }
+};
+
 TOPICS.forEach((t,i)=>{
   INICIO[i]=S.length;
   S.push({topic:i, html:`<div class="slide">
@@ -546,6 +689,8 @@ TOPICS.forEach((t,i)=>{
       </div>
       ${t.ex()}
     </div></div>`});
+  if(i===0) DASH_EXTRA.forEach(h=>S.push({topic:0, html:h}));
+  else if(MAS[i]){ S.push({topic:i, html:teoSlide(i,MAS[i].teo)}); S.push({topic:i, html:impSlide(i,MAS[i].imp)}); }
 });
 
 INICIO[T_EJ]=S.length;
