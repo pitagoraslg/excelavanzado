@@ -494,7 +494,7 @@ const TOPICS = [
 
 /* ---------- Construcción de diapositivas ---------- */
 const S = [], INICIO = [];
-const T_EJ = TOPICS.length, T_PR = T_EJ+1, NP = 5;
+const T_EJ = TOPICS.length, T_PR = T_EJ+1, NP = 4;
 { const GTc = group(rec,"tipo").sort((a,b)=>b.s-a.s);
 S.push({topic:-1, html:`<div class="slide cover" style="gap:22px">
   <div class="mod">Módulo 4.</div>
@@ -527,7 +527,7 @@ S.push({topic:-1, html:`<div class="slide">
   <p class="lead" style="font-size:20px;max-width:none">Cada concepto se define y se ilustra con un ejemplo sobre las <b>ARS</b> de la base. Al final, usted arma su propio dashboard en <b>Excel 2021</b>, paso a paso.</p>
   <div class="idx" data-idx></div>
   <p class="note"><b>Objetivo:</b> diseñar dashboards en Excel que faciliten la interpretación de los datos y apoyen la toma de decisiones.</p>
-</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = TOPICS.map((t,i)=>`<button data-go="${INICIO[i]}"><span class="n">0${i+1}</span><span class="k">${dot(t.k)}</span><span class="d">${t.d}</span></button>`).join("")+`<button class="res" data-go="${INICIO[T_EJ]}"><span class="n">★</span><span class="k">Tablero de ARS.</span><span class="d">Todos los conceptos juntos.</span></button><button class="pr" data-go="${INICIO[T_PR]}"><span class="n">✎</span><span class="k">Práctica guiada.</span><span class="d">Gráficos dinámicos, una segmentación para todo y tablas ocultas.</span></button>`; }});
+</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = TOPICS.map((t,i)=>`<button data-go="${INICIO[i]}"><span class="n">0${i+1}</span><span class="k">${dot(t.k)}</span><span class="d">${t.d}</span></button>`).join("")+`<button class="res" data-go="${INICIO[T_EJ]}"><span class="n">★</span><span class="k">Tablero de ARS.</span><span class="d">Todos los conceptos juntos.</span></button><button class="pr" data-go="${INICIO[T_PR]}"><span class="n">✎</span><span class="k">Práctica guiada.</span><span class="d">Gráficos dinámicos en una hoja Dashboard y una segmentación para todo.</span></button>`; }});
 
 /* Dos láminas más de teoría sobre el dashboard: partes y diferencia con un reporte; importancia y usos prácticos */
 const DASH_EXTRA = [
@@ -728,8 +728,7 @@ const PASOS = [
   ["Tabla dinámica.","En una hoja aparte llamada Tablas."],
   ["Gráfico dinámico.","Se lleva a la hoja Dashboard."],
   ["Segundo gráfico.","Lo mismo, por tipo de servicio."],
-  ["Una segmentación para todo.","Un clic cambia los dos gráficos."],
-  ["Ocultar las tablas.","En Dashboard solo se ven los gráficos."]];
+  ["Una segmentación para todo.","Un clic cambia los dos gráficos."]];
 
 INICIO[T_PR]=S.length;
 S.push({topic:T_PR, paso:0, html:`<div class="slide" style="gap:16px">
@@ -737,7 +736,7 @@ S.push({topic:T_PR, paso:0, html:`<div class="slide" style="gap:16px">
   <h2 style="font-size:42px">Su primer dashboard en ${NP} pasos.</h2>
   <div class="brief" style="gap:32px;grid-template-columns:1fr 1.05fr">
     <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
-      <p class="lead" style="font-size:18px">La idea: las <b>tablas dinámicas</b> trabajan escondidas en una hoja, y la hoja <b>Dashboard</b> muestra solo los gráficos y un filtro que los mueve a todos.</p>
+      <p class="lead" style="font-size:18px">La idea: las <b>tablas dinámicas</b> trabajan en la hoja <b>Tablas</b>, y la hoja <b>Dashboard</b> muestra solo los gráficos y un filtro que los mueve a todos.</p>
       <div class="qlist">${PASOS.map((p,i)=>`<div style="grid-template-columns:36px 1fr;font-size:16.5px;padding:8px 6px"><span class="n">${i+1}</span><span><b>${p[0]}</b> ${p[1]}</span></div>`).join("")}</div>
       <a class="dlbtn" href="Modulo4-Base-Dashboard.xlsx" download><span class="ic">⬇</span><span><b>Base de datos (Excel)</b><small>Modulo4-Base-Dashboard.xlsx · tabla tblServicios · ${rec.length} filas</small></span></a>
     </div>
@@ -749,7 +748,7 @@ S.push({topic:T_PR, paso:0, html:`<div class="slide" style="gap:16px">
           ${chartBox("Monto por ARS","",colG(GA,{W:300,H:220,pl:54,twoLine:true}))}
           ${chartBox("Monto por tipo de servicio","",colG(GT,{W:300,H:220,pl:54,tiny:true,color:C25}))}
         </div>
-        ${tabs([["Dashboard","on"],["Tablas (oculta)"]])}
+        ${tabs([["Dashboard","on"],["Tablas"]])}
       </div>
     </div>
   </div></div>`});
@@ -795,15 +794,6 @@ paso(4,"Una segmentación que mueve los dos gráficos.","Para qué: un solo clic
    <p>Con 2025: SeNaSa <b>${rd2(G25[0].s)}</b> y Hospitalización <b>${rd2(GT25[0].s)}</b>. Total: <b>${rd2(T25.s)}</b>.</p>`,
   `<b>Si solo cambia un gráfico</b>, falta la conexión: vuelva a abrir <b>Conexiones de informe</b> y marque las dos tablas. Una segmentación nueva solo filtra la tabla donde se creó.`);
 
-paso(5,"Oculte las tablas dinámicas.","Para qué: que quien abra el archivo vea un tablero limpio, solo con gráficos.",[
-  `Clic derecho en la pestaña <b>Tablas</b> › <b>Ocultar</b>.`,
-  `En Dashboard: ${mn("Vista")} › desmarque <b>Líneas de cuadrícula</b>.`,
-  `Pruebe la segmentación: los gráficos siguen funcionando con la hoja oculta.`,
-  `Para volver a ver las tablas: clic derecho en cualquier pestaña › <b>Mostrar</b> › Tablas.`],
-  `${tabs([["Dashboard","on"]])}
-   <ul class="ckl"><li>Solo se ven las hojas Servicios y Dashboard.</li><li>Dashboard tiene la segmentación y los dos gráficos, sin cuadrícula.</li><li>Al pulsar 2024 o 2025, los dos gráficos cambian.</li></ul>`,
-  `<b>Ojo:</b> oculte la <b>hoja</b>, no las columnas. Si se ocultan las columnas de una tabla dinámica, su gráfico queda en blanco.`);
-
 S.push({topic:T_PR, paso:"fin", html:`<div class="slide" style="gap:18px">
   <div class="eyebrow"><span class="n">+</span><span>Su turno.</span><span class="tag">Opcional · para ampliar.</span></div>
   <h2 style="font-size:42px">Haga crecer su dashboard.</h2>
@@ -813,8 +803,8 @@ S.push({topic:T_PR, paso:"fin", html:`<div class="slide" style="gap:18px">
     <div class="use"><h3>Otro gráfico.</h3><p><b>Mes</b> en Filas y <b>Año</b> en Columnas, con un gráfico de <b>Línea</b>.</p></div>
     <div class="use"><h3>Una segunda segmentación.</h3><p><b>Tipo de Servicio</b> o <b>Provincia</b>, conectada a todas las tablas con ${mn("Conexiones de informe")}.</p></div>
     <div class="use"><h3>Una escala de tiempo.</h3><p>${mn("Analizar tabla dinámica › Insertar escala de tiempo")} › <b>Fecha</b>: filtra por meses o trimestres.</p></div>
-    <div class="use"><h3>Estilo y color.</h3><p>${mn("Diseño › Estilos de diseño")} en los gráficos y ${mn("Segmentación › Estilos")} en los filtros.</p></div>
-    <div class="use"><h3>Proteger el tablero.</h3><p>${mn("Revisar › Proteger libro")}: así nadie puede mostrar la hoja Tablas sin la contraseña.</p></div>
+    <div class="use"><h3>Estilo y color.</h3><p>${mn("Diseño › Estilos de diseño")} en los gráficos, ${mn("Segmentación › Estilos")} en los filtros y ${mn("Vista")} › sin <b>Líneas de cuadrícula</b>.</p></div>
+    <div class="use"><h3>Datos nuevos.</h3><p>Si se agregan filas a tblServicios, ${mn("Datos › Actualizar todo")} y los gráficos cambian solos.</p></div>
   </div>
 </div>`});
 
