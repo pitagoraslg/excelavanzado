@@ -498,17 +498,17 @@ const TOPICS = [
 ];
 
 /* ---------- Referencias (APA 7.ª edición), en orden alfabético ---------- */
-const MSU = (t,u) => `Microsoft. (s. f.). <i>${t}</i>. Microsoft Support. <a href="${u}" target="_blank" rel="noopener">${u.replace(/%C3%A1/g,"á")}</a>`;
+const MSU = (l,t,u) => `Microsoft. (s. f.-${l}). <i>${t}</i>. Microsoft Support. <a href="${u}" target="_blank" rel="noopener">${u.replace(/%C3%A1/g,"á")}</a>`;
 const REFS = [
   "Alexander, M., &amp; Walkenbach, J. (2013). <i>Excel dashboards and reports</i> (2.ª ed.). Wiley.",
   "Few, S. (2013). <i>Information dashboard design: Displaying data for at-a-glance monitoring</i> (2.ª ed.). Analytics Press.",
   "Figueroa, J. (2026). <i>Modulo4-Base-Dashboard.xlsx</i> [Conjunto de datos ficticio con fines didácticos]. Instituto de Capacitación y Desarrollo Profesional Siglo XXI (ICADEP-XXI).",
   "Kaplan, R. S., &amp; Norton, D. P. (1996). <i>The balanced scorecard: Translating strategy into action</i>. Harvard Business School Press.",
   "Knaflic, C. N. (2015). <i>Storytelling with data: A data visualization guide for business professionals</i>. Wiley.",
-  MSU("Crear un gráfico dinámico","https://support.microsoft.com/es-es/office/crear-un-gr%C3%A1fico-din%C3%A1mico-c1b1e057-6990-4c38-b52b-8255538e7b1c"),
-  MSU("Crear una escala de tiempo de tabla dinámica para filtrar datos","https://support.microsoft.com/es-es/office/crear-una-escala-de-tiempo-de-tabla-din%C3%A1mica-para-filtrar-fechas-d3956083-01be-408c-906d-6fc99d9fadfa"),
-  MSU("Crear una tabla dinámica para analizar datos de una hoja de cálculo","https://support.microsoft.com/es-es/office/crear-una-tabla-din%C3%A1mica-para-analizar-datos-de-una-hoja-de-c%C3%A1lculo-a9a84538-bfe9-40a9-a8e9-f99134456576"),
-  MSU("Usar segmentaciones para filtrar datos","https://support.microsoft.com/es-es/office/usar-segmentaciones-para-filtrar-datos-249f966b-a9d5-4b0f-b31a-12651785d29d"),
+  MSU("a","Crear un gráfico dinámico","https://support.microsoft.com/es-es/office/crear-un-gr%C3%A1fico-din%C3%A1mico-c1b1e057-6990-4c38-b52b-8255538e7b1c"),
+  MSU("b","Crear una escala de tiempo de tabla dinámica para filtrar datos","https://support.microsoft.com/es-es/office/crear-una-escala-de-tiempo-de-tabla-din%C3%A1mica-para-filtrar-fechas-d3956083-01be-408c-906d-6fc99d9fadfa"),
+  MSU("c","Crear una tabla dinámica para analizar datos de una hoja de cálculo","https://support.microsoft.com/es-es/office/crear-una-tabla-din%C3%A1mica-para-analizar-datos-de-una-hoja-de-c%C3%A1lculo-a9a84538-bfe9-40a9-a8e9-f99134456576"),
+  MSU("d","Usar segmentaciones para filtrar datos","https://support.microsoft.com/es-es/office/usar-segmentaciones-para-filtrar-datos-249f966b-a9d5-4b0f-b31a-12651785d29d"),
   "Parmenter, D. (2015). <i>Key performance indicators: Developing, implementing, and using winning KPIs</i> (3.ª ed.). Wiley.",
   "Tufte, E. R. (2001). <i>The visual display of quantitative information</i> (2.ª ed.). Graphics Press."
 ];
@@ -850,7 +850,6 @@ S.push({topic:T_PR, paso:"fin", html:`<div class="slide" style="gap:18px">
 S.push({topic:-1, html:`<div class="slide" style="gap:14px">
   <div class="eyebrow">Bibliografía.</div>
   <h2 style="font-size:40px">Referencias.</h2>
-  <p class="note" style="margin:0">Normas APA, 7.ª edición.</p>
   <ul class="refs">${REFS.map(r=>`<li>${r}</li>`).join("")}</ul>
 </div>`});
 

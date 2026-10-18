@@ -75,6 +75,9 @@ code,.code{font-family:var(--mono)}
 .cover .fx .caret{border-left:2px solid var(--xl);animation:blink 1s steps(1) infinite;padding:0;margin:8px 0}
 @keyframes blink{50%{opacity:0}}
 .cover .hint{font-family:var(--mono);font-size:14px;color:var(--muted)}
+.refs{list-style:none;margin:0;padding:0;border-top:2px solid var(--ink);display:flex;flex-direction:column;gap:7px;padding-top:12px}
+.refs li{font-size:14.5px;line-height:1.4;padding-left:36px;text-indent:-36px}
+.refs a{color:var(--xl);word-break:break-all;text-decoration:none}
 .cover-logo{position:absolute;top:54px;right:72px;height:96px;width:auto;mix-blend-mode:multiply}
 
 /* index grid like the screenshot */
@@ -499,6 +502,27 @@ function copy(txt,btn){
   try{ navigator.clipboard.writeText(txt).then(done,()=>sel(btn)); }catch(e){ sel(btn); }
 }
 function sel(btn){ const r=document.createRange(); r.selectNodeContents(btn.previousElementSibling); const s=getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent="Ctrl+C"; }
+
+/* ---------- Referencias (formato APA), en orden alfabético ---------- */
+const MSU = (l,t,u) => `Microsoft. (s. f.-${l}). <i>${t}</i>. Microsoft Support. <a href="${u}" target="_blank" rel="noopener">${decodeURI(u)}</a>`;
+const REFS = [
+  "Alexander, M., Kusleika, R., &amp; Walkenbach, J. (2018). <i>Excel 2019 bible</i>. Wiley. <a href=\"https://doi.org/10.1002/9781119549376\" target=\"_blank\" rel=\"noopener\">https://doi.org/10.1002/9781119549376</a>",
+  "Figueroa, J. (2026). <i>Modulo2-Base-Reclamaciones.xlsx</i> [Conjunto de datos ficticio con fines didácticos]. Instituto de Capacitación y Desarrollo Profesional Siglo XXI (ICADEP-XXI).",
+  MSU("a","Función AÑO","https://support.microsoft.com/es-es/office/funci%C3%B3n-a%C3%B1o-c64f017a-1354-490d-981f-578e8ec8d3b9"),
+  MSU("b","Función BUSCARX","https://support.microsoft.com/es-es/office/funci%C3%B3n-buscarx-b7fd680e-6d10-43e6-84f9-88eae8bf5929"),
+  MSU("c","Función CONTAR.SI.CONJUNTO","https://support.microsoft.com/es-es/office/funci%C3%B3n-contar-si-conjunto-dda3dc6e-f74e-4aee-88bc-aa8c2a866842"),
+  MSU("d","Función FILTRAR","https://support.microsoft.com/es-es/office/funci%C3%B3n-filtrar-f4f7cb66-82eb-4767-8f7c-4877ad80c759"),
+  MSU("e","Función IZQUIERDA","https://support.microsoft.com/es-es/office/funciones-izquierda-e-izquierdab-9203d2d2-7960-479b-84c6-1ea52b99640c"),
+  MSU("f","Función SI.CONJUNTO","https://support.microsoft.com/es-es/office/funci%C3%B3n-si-conjunto-36329a26-37b2-467c-972b-4a39bd951d45"),
+  MSU("g","Función SUMAR.SI.CONJUNTO","https://support.microsoft.com/es-es/office/funci%C3%B3n-sumar-si-conjunto-c9e748f5-7ea7-455d-9406-611cebce642b"),
+  MSU("h","Función TEXTO","https://support.microsoft.com/es-es/office/funci%C3%B3n-texto-20d5ac4d-7b94-49fd-bb38-93d29371225c"),
+  MSU("i","SI (función SI)","https://support.microsoft.com/es-es/office/funci%C3%B3n-si-69aed7c9-4e8a-4755-a9bc-aa8bbff73be2")
+];
+S.push({topic:-1, html:`<div class="slide" style="gap:14px">
+  <div class="eyebrow">Bibliografía.</div>
+  <h2 style="font-size:40px">Referencias.</h2>
+  <ul class="refs">${REFS.map(r=>`<li>${r}</li>`).join("")}</ul>
+</div>`});
 
 /* ---------- Motor ---------- */
 const wrap=document.getElementById("slides");

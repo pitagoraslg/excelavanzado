@@ -1249,6 +1249,35 @@
     onEnter:function(stage){
       if(stage===0) triggerConfetti();
     }
+  },
+
+  /* 11 — REFERENCIAS (lámina informativa, sin pregunta) */
+  {
+    ref:'A12',
+    title:'Referencias',
+    maxStage:0,
+    interactiveStage:1,
+    responseType:'none',
+    info:true,
+    facRender:function(){
+      var MS='https://support.microsoft.com/es-es/office/';
+      function ms(l,t,u){ return 'Microsoft. (s. f.-'+l+'). <i>'+t+'</i>. Microsoft Support. <a href="'+MS+u+'" target="_blank" rel="noopener">'+decodeURI(MS+u)+'</a>'; }
+      var refs=[
+        'Alexander, M., Kusleika, R., &amp; Walkenbach, J. (2018). <i>Excel 2019 bible</i>. Wiley. <a href="https://doi.org/10.1002/9781119549376" target="_blank" rel="noopener">https://doi.org/10.1002/9781119549376</a>',
+        ms('a','Cambiar entre referencias relativas, absolutas y mixtas','cambiar-entre-referencias-relativas-absolutas-y-mixtas-dfec08cd-ae65-4f56-839e-5f0d8d0baca9'),
+        ms('b','Función MAX','funci%C3%B3n-max-e0012414-9ac8-4b34-9a47-73e662c08098'),
+        ms('c','Función MIN','funci%C3%B3n-min-61635d12-920f-4ce2-a70f-96f202dcc152'),
+        ms('d','Función PROMEDIO','funci%C3%B3n-promedio-047bac88-d466-426c-a32b-8f33eb960cf6'),
+        ms('e','Función SUMA','funci%C3%B3n-suma-043e1c7d-7726-4e80-8f32-07b23e057f89'),
+        ms('f','Información general sobre fórmulas en Excel','informaci%C3%B3n-general-sobre-f%C3%B3rmulas-en-excel-ecfdc708-9162-49e8-b993-c311f47ca173'),
+        ms('g','Usar Excel como calculadora','usar-excel-como-calculadora-a1abc057-ed11-443a-a635-68216555ad0a')
+      ];
+      return '<h1 class="slide-title">Referencias.</h1>'
+        + '<ul style="list-style:none;margin:18px 0 0;padding:14px 0 0;border-top:2px solid currentColor;text-align:left;">'
+        + refs.map(function(r){ return '<li style="font-size:.9rem;line-height:1.45;padding-left:28px;text-indent:-28px;margin:0 0 9px;word-break:break-word;">'+r+'</li>'; }).join('')
+        + '</ul>';
+    },
+    partRender:function(stage){ return mirrorFacContent(this, stage); }
   }
 
   ];
@@ -1591,7 +1620,10 @@
     var atVeryStart = (S.step===0 && S.stage===0);
     var atVeryEnd = (S.step===SLIDES.length-1 && S.stage>=slide.maxStage);
     var stageHint, forwardLabel;
-    if(S.stage < slide.interactiveStage){
+    if(slide.info){
+      stageHint = 'Lámina informativa';
+      forwardLabel = 'Siguiente ▸';
+    } else if(S.stage < slide.interactiveStage){
       var left = slide.interactiveStage - S.stage;
       stageHint = 'Pregunta se activa en '+left+' clic'+(left===1?'':'s')+' más';
       forwardLabel = (left===1) ? 'Siguiente ▸ (activa pregunta)' : 'Siguiente ▸';
