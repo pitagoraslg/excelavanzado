@@ -78,6 +78,9 @@ code,.code{font-family:var(--mono)}
 .cover .kpis div{background:var(--card);border:1px solid var(--grid);border-top:3px solid var(--sky);padding:10px 18px;min-width:150px}
 .cover .kpis small{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .cover .kpis b{font-family:var(--serif);font-size:30px;font-weight:600;font-variant-numeric:tabular-nums}
+.refs{list-style:none;margin:0;padding:0;border-top:2px solid var(--ink);display:flex;flex-direction:column;gap:7px;padding-top:12px}
+.refs li{font-size:14.5px;line-height:1.4;padding-left:36px;text-indent:-36px}
+.refs a{color:var(--xl);word-break:break-all;text-decoration:none}
 .cover-logo{position:absolute;top:54px;right:72px;height:96px;width:auto;mix-blend-mode:multiply}
 .cover-charts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .cover-charts .chart{border-top:3px solid var(--sky)}
@@ -494,6 +497,22 @@ const TOPICS = [
        <div class="why ok"><span>El título dice el hallazgo</span><span>Un solo color</span><span>Ordenado de mayor a menor</span></div></div></div>`,""); } }
 ];
 
+/* ---------- Referencias (APA 7.ª edición), en orden alfabético ---------- */
+const MSU = (t,u) => `Microsoft. (s. f.). <i>${t}</i>. Microsoft Support. <a href="${u}" target="_blank" rel="noopener">${u.replace(/%C3%A1/g,"á")}</a>`;
+const REFS = [
+  "Alexander, M., &amp; Walkenbach, J. (2013). <i>Excel dashboards and reports</i> (2.ª ed.). Wiley.",
+  "Few, S. (2013). <i>Information dashboard design: Displaying data for at-a-glance monitoring</i> (2.ª ed.). Analytics Press.",
+  "Figueroa, J. (2026). <i>Modulo4-Base-Dashboard.xlsx</i> [Conjunto de datos ficticio con fines didácticos]. Instituto de Capacitación y Desarrollo Profesional Siglo XXI (ICADEP-XXI).",
+  "Kaplan, R. S., &amp; Norton, D. P. (1996). <i>The balanced scorecard: Translating strategy into action</i>. Harvard Business School Press.",
+  "Knaflic, C. N. (2015). <i>Storytelling with data: A data visualization guide for business professionals</i>. Wiley.",
+  MSU("Crear un gráfico dinámico","https://support.microsoft.com/es-es/office/crear-un-gr%C3%A1fico-din%C3%A1mico-c1b1e057-6990-4c38-b52b-8255538e7b1c"),
+  MSU("Crear una escala de tiempo de tabla dinámica para filtrar datos","https://support.microsoft.com/es-es/office/crear-una-escala-de-tiempo-de-tabla-din%C3%A1mica-para-filtrar-fechas-d3956083-01be-408c-906d-6fc99d9fadfa"),
+  MSU("Crear una tabla dinámica para analizar datos de una hoja de cálculo","https://support.microsoft.com/es-es/office/crear-una-tabla-din%C3%A1mica-para-analizar-datos-de-una-hoja-de-c%C3%A1lculo-a9a84538-bfe9-40a9-a8e9-f99134456576"),
+  MSU("Usar segmentaciones para filtrar datos","https://support.microsoft.com/es-es/office/usar-segmentaciones-para-filtrar-datos-249f966b-a9d5-4b0f-b31a-12651785d29d"),
+  "Parmenter, D. (2015). <i>Key performance indicators: Developing, implementing, and using winning KPIs</i> (3.ª ed.). Wiley.",
+  "Tufte, E. R. (2001). <i>The visual display of quantitative information</i> (2.ª ed.). Graphics Press."
+];
+
 /* ---------- Construcción de diapositivas ---------- */
 const S = [], INICIO = [];
 const T_EJ = TOPICS.length, T_PR = T_EJ+1, NP = 5;
@@ -825,6 +844,14 @@ S.push({topic:T_PR, paso:"fin", html:`<div class="slide" style="gap:18px">
     <div class="use"><h3>Estilo y color.</h3><p>${mn("Diseño › Estilos de diseño")} en los gráficos, ${mn("Segmentación › Estilos")} en los filtros y ${mn("Vista")} › sin <b>Líneas de cuadrícula</b>.</p></div>
     <div class="use"><h3>Datos nuevos.</h3><p>Si se agregan filas a tblServicios, ${mn("Datos › Actualizar todo")} y los gráficos cambian solos.</p></div>
   </div>
+</div>`});
+
+/* ---------- Bibliografía (última lámina) ---------- */
+S.push({topic:-1, html:`<div class="slide" style="gap:14px">
+  <div class="eyebrow">Bibliografía.</div>
+  <h2 style="font-size:40px">Referencias.</h2>
+  <p class="note" style="margin:0">Normas APA, 7.ª edición.</p>
+  <ul class="refs">${REFS.map(r=>`<li>${r}</li>`).join("")}</ul>
 </div>`});
 
 /* ---------- Motor ---------- */
