@@ -75,6 +75,7 @@ code,.code{font-family:var(--mono)}
 .cover .fx .caret{border-left:2px solid var(--xl);animation:blink 1s steps(1) infinite;padding:0;margin:8px 0}
 @keyframes blink{50%{opacity:0}}
 .cover .hint{font-family:var(--mono);font-size:14px;color:var(--muted)}
+.cover-logo{position:absolute;top:54px;right:72px;height:96px;width:auto;mix-blend-mode:multiply}
 
 /* index grid like the screenshot */
 .idx{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink)}
@@ -316,6 +317,7 @@ const SH=["=BUSCARX(buscado; columna_buscar; columna_resultado)","=SI(prueba; si
 /* ---------- Construcción de diapositivas ---------- */
 const S = []; // {html, topic, init}
 S.push({topic:-1, html:`<div class="slide cover">
+  <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
   <div class="mod">Módulo 2</div>
   <h1>Funciones avanzadas de Excel</h1>
   <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>

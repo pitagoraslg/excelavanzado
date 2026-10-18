@@ -134,6 +134,11 @@
   /* ---------- PORTADA ---------- */
   .cover .slide-inner{align-items:flex-start;}
   .cover-logo{width:min(580px,100%); height:auto; margin-bottom:clamp(14px,3vh,30px);}
+  /* En pantallas anchas, el logo va arriba a la derecha (igual que en las presentaciones de los Módulos 2, 3 y 4) */
+  @media (min-width:901px){
+    .cover .slide-inner{position:relative;}
+    .cover-logo{position:absolute; top:0; right:0; width:min(400px,36%); margin:0; mix-blend-mode:multiply;}
+  }
   .cover .eyebrow{font-size:.95rem; font-weight:600; color:var(--teal); margin-bottom:14px;}
   .cover h1{font-size:clamp(2.2rem,4.6vw,3.4rem); line-height:1.07; color:var(--navy); max-width:17ch; letter-spacing:-.01em;}
   .cover .lede{font-family:'Newsreader',serif; font-style:italic; font-size:clamp(1.1rem,2vw,1.4rem); max-width:44ch; margin-top:14px; color:var(--ink-soft);}

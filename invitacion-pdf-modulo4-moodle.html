@@ -1,0 +1,66 @@
+<!-- Invitación al documento de estudio (PDF) del Módulo 4 para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes p4-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes p4-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(201,87,63,.45); } 50% { box-shadow: 0 0 0 12px rgba(201,87,63,0); } }
+  @keyframes p4-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(-4deg); } }
+  @keyframes p4-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  .p4-in { animation: p4-in .7s ease-out both; }
+  .p4-d1 { animation-delay: .1s; } .p4-d2 { animation-delay: .25s; } .p4-d3 { animation-delay: .4s; }
+  .p4-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .p4-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(31,61,51,.14); }
+  .p4-float { display: inline-block; animation: p4-float 3s ease-in-out infinite; }
+  .p4-btn { animation: p4-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .p4-btn:hover { transform: scale(1.04); background-color: #163027 !important; }
+  .p4-bar { background: linear-gradient(90deg, #E4EFE8 0%, #1F3D33 30%, #C9573F 55%, #E4EFE8 80%, #1F3D33 100%); background-size: 200% 100%; animation: p4-shine 7s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .p4-in, .p4-btn, .p4-float, .p4-bar { animation: none !important; } }
+</style>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #1F2A26; line-height: 1.55; background-color: #F7F4EE; border-radius: 10px; overflow: hidden; border: 1px solid #E2DDD2;">
+
+  <div class="p4-bar" style="height: 6px; background-color: #1F3D33;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #1F3D33;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="p4-float">📘</span></td>
+      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
+        <p class="p4-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #F3B9A8;">Material de estudio · Módulo 4</p>
+        <h2 class="p4-in p4-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 27px; font-weight: normal; line-height: 1.2; color: #FFFFFF;">Visualización de datos y dashboards, para leer, imprimir o repasar.</h2>
+        <p class="p4-in p4-d2" style="margin: 0; font-size: 15px; color: #DCE9E2;">Lo más importante del módulo en un <strong style="color: #FFFFFF;">documento PDF</strong>: cada concepto con su explicación, un ejemplo con la base de ARS y los <strong style="color: #FFFFFF;">menús de Excel 2021</strong>. Ideal para tenerlo a mano mientras armas tu dashboard.</p>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Datos rápidos -->
+  <table class="p4-in p4-d2" style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 10px; margin: 4px 0 0;" role="presentation">
+    <tr>
+      <td class="p4-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #1F3D33; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">🧩</span><br>
+        <strong style="color: #1F3D33; font-size: 18px;">6 conceptos</strong><br>
+        <span style="font-size: 13px; color: #5F6B64;">Del dashboard al diseño, con ejemplos</span>
+      </td>
+      <td class="p4-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #C9573F; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">📊</span><br>
+        <strong style="color: #1F3D33; font-size: 18px;">Tablero de ARS</strong><br>
+        <span style="font-size: 13px; color: #5F6B64;">Todos los conceptos juntos</span>
+      </td>
+      <td class="p4-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #2F6B52; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">🧭</span><br>
+        <strong style="color: #1F3D33; font-size: 18px;">Guía rápida</strong><br>
+        <span style="font-size: 13px; color: #5F6B64;">Los menús de Excel 2021 en una tabla</span>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 4px 26px 26px;">
+
+    <!-- Llamado a la acción -->
+    <div class="p4-in p4-d3" style="text-align: center; margin: 18px 0 6px;">
+      <a class="p4-btn" href="https://pitagoraslg.github.io/excelavanzado/Conceptos-Dashboards-Modulo4.pdf" target="_blank" rel="noopener" style="display: inline-block; background-color: #1F3D33; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px;">📘 Abrir el documento de estudio</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #5F6B64;">Se abre en una pestaña nueva. Desde ahí puedes leerlo, guardarlo o imprimirlo.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #5F6B64;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>

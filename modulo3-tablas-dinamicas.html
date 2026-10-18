@@ -77,6 +77,7 @@ code,.code{font-family:var(--mono)}
 .cover .fx .caret{border-left:2px solid var(--xl);animation:blink 1s steps(1) infinite;padding:0;margin:8px 0}
 @keyframes blink{50%{opacity:0}}
 .cover .hint{font-family:var(--mono);font-size:14px;color:var(--muted)}
+.cover-logo{position:absolute;top:54px;right:72px;height:96px;width:auto;mix-blend-mode:multiply}
 
 /* index */
 .idx{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink)}
@@ -344,6 +345,7 @@ const CON_PRACTICA = 4;   // del tema 5 en adelante solo teoría (concepto y uti
 const INICIO = []; TOPICS.reduce((ix,t,i)=>{ INICIO[i]=ix; return ix+(i<CON_PRACTICA?3:2); }, 2);
 const S = [];
 S.push({topic:-1, html:`<div class="slide cover">
+  <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
   <div class="mod">Módulo 3</div>
   <h1>Tablas dinámicas avanzadas</h1>
   <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
