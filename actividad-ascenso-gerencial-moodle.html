@@ -1,0 +1,77 @@
+<!-- Introducción a la actividad «Ascenso gerencial» (Módulo 4) para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la introducción se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes ag-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes ag-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(201,87,63,.45); } 50% { box-shadow: 0 0 0 12px rgba(201,87,63,0); } }
+  @keyframes ag-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(-4deg); } }
+  @keyframes ag-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  .ag-in { animation: ag-in .7s ease-out both; }
+  .ag-d1 { animation-delay: .1s; } .ag-d2 { animation-delay: .25s; } .ag-d3 { animation-delay: .4s; } .ag-d4 { animation-delay: .55s; }
+  .ag-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .ag-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(31,61,51,.14); }
+  .ag-float { display: inline-block; animation: ag-float 3s ease-in-out infinite; }
+  .ag-btn { animation: ag-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .ag-btn:hover { transform: scale(1.04); background-color: #163027 !important; }
+  .ag-bar { background: linear-gradient(90deg, #E4EFE8 0%, #1F3D33 30%, #C9573F 55%, #E4EFE8 80%, #1F3D33 100%); background-size: 200% 100%; animation: ag-shine 7s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .ag-in, .ag-btn, .ag-float, .ag-bar { animation: none !important; } }
+</style>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #1F2A26; line-height: 1.55; background-color: #F7F4EE; border-radius: 10px; overflow: hidden; border: 1px solid #E2DDD2;">
+
+  <div class="ag-bar" style="height: 6px; background-color: #1F3D33;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #1F3D33;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="ag-float">🏆</span></td>
+      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
+        <p class="ag-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #F3B9A8;">Actividad · Módulo 4</p>
+        <h2 class="ag-in ag-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 27px; font-weight: normal; line-height: 1.2; color: #FFFFFF;">Ascenso gerencial: la misión de los datos.</h2>
+        <p class="ag-in ag-d2" style="margin: 0; font-size: 15px; color: #DCE9E2;">La dirección general te ha <strong style="color: #FFFFFF;">promovido a gerente</strong>. Tu misión: demostrar con un <strong style="color: #FFFFFF;">dashboard</strong> que dominas los datos de tu área.</p>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 6px 24px 26px;">
+
+    <!-- Cómo funciona -->
+    <p class="ag-in ag-d2" style="margin: 18px 0 8px; font-weight: bold; color: #1F3D33; font-size: 16px;">🎮 ¿Cómo funciona?</p>
+    <table class="ag-in ag-d2" style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 8px; margin: 0 -8px;" role="presentation">
+      <tr>
+        <td class="ag-card" style="background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #1F3D33; border-radius: 6px; padding: 12px; vertical-align: top; text-align: center;">
+          <span style="font-size: 26px;">🎡</span><br><strong style="color: #1F3D33;">1. El sorteo</strong><br><span style="font-size: 13px; color: #5F6B64;">En clase, una ruleta asigna a cada uno una de las 5 gerencias.</span>
+        </td>
+        <td class="ag-card" style="background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #C9573F; border-radius: 6px; padding: 12px; vertical-align: top; text-align: center;">
+          <span style="font-size: 26px;">📂</span><br><strong style="color: #1F3D33;">2. Tu misión</strong><br><span style="font-size: 13px; color: #5F6B64;">Recibes la ficha de tu gerencia y su propia base de datos.</span>
+        </td>
+        <td class="ag-card" style="background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #2F6B52; border-radius: 6px; padding: 12px; vertical-align: top; text-align: center;">
+          <span style="font-size: 26px;">🎤</span><br><strong style="color: #1F3D33;">3. Presentas</strong><br><span style="font-size: 13px; color: #5F6B64;">Muestras tu dashboard ante la dirección, en vivo.</span>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Las 5 gerencias -->
+    <p class="ag-in ag-d3" style="margin: 16px 0 8px; font-weight: bold; color: #1F3D33; font-size: 16px;">🏢 Las cinco gerencias</p>
+    <p class="ag-in ag-d3" style="margin: 0; font-size: 15px;">📋 Reclamaciones · 💰 Finanzas · 🎧 Servicio al cliente · 🏥 Red de prestadores · 🩺 Auditoría médica</p>
+
+    <!-- Lo que debes entregar -->
+    <div class="ag-in ag-d3" style="margin: 16px 0 0; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-left: 5px solid #C9573F; border-radius: 6px; padding: 12px 16px; font-size: 14.5px;">
+      <strong style="color: #1F3D33;">🎯 Tu dashboard debe tener como mínimo:</strong>
+      <span style="display: block; margin-top: 4px;"><strong>3 KPI</strong> en tarjetas · <strong>4 gráficos dinámicos</strong> · <strong>1 segmentación</strong> que filtre todo · un título claro. El trabajo es <strong>individual</strong>.</span>
+    </div>
+
+    <!-- Control del facilitador -->
+    <div class="ag-in ag-d4" style="margin: 14px 0 0; background-color: #E4EFE8; border-left: 5px solid #2F6B52; border-radius: 6px; padding: 12px 16px; font-size: 14.5px;">
+      🕹️ <strong style="color: #1F3D33;">Importante:</strong> el juego lo controlo yo desde la clase: el sorteo de las gerencias, la entrega de las misiones y el turno de cada presentación. Puedes abrir la página para conocerla, pero <strong>no hace falta que toques nada</strong>: después del sorteo te compartiré el enlace de la ficha de tu gerencia.
+    </div>
+
+    <!-- Llamado a la acción -->
+    <div class="ag-in ag-d4" style="text-align: center; margin: 22px 0 6px;">
+      <a class="ag-btn" href="https://pitagoraslg.github.io/excelavanzado/juego-gerencias-modulo4.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #1F3D33; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px; margin: 4px 6px;">🏆 Ver el juego</a>
+      <a href="https://pitagoraslg.github.io/excelavanzado/gerencias-modulo4.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #FFFFFF; color: #C9573F; border: 2px solid #C9573F; text-decoration: none; font-weight: bold; font-size: 17px; padding: 13px 28px; border-radius: 30px; margin: 4px 6px;">🏢 Conocer las gerencias</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #5F6B64;">Se abren en una pestaña nueva.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #5F6B64;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
