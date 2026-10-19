@@ -159,6 +159,41 @@ button{font-family:inherit}
 .mis .acts .main{background:var(--c);border-color:var(--c);color:#fff;font-weight:700}
 .x{background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:999px;width:40px;height:40px;font-size:18px;cursor:pointer}
 
+/* Presentaciones */
+.pgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;max-width:1500px;margin:0 auto}
+.pcard{position:relative;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 24%,var(--panel)),var(--panel) 50%);border:1px solid var(--line);border-top:6px solid var(--c);border-radius:16px;padding:18px 14px;cursor:pointer;color:var(--ink);text-align:center;display:flex;flex-direction:column;gap:10px;transition:transform .18s,box-shadow .18s}
+.pcard:hover:not(.done){transform:translateY(-6px) scale(1.02);box-shadow:0 16px 40px color-mix(in srgb,var(--c) 40%,transparent)}
+.pcard .ic{font-size:56px}
+.pcard h3{font-family:Orbitron,sans-serif;font-size:15px;margin:0;min-height:2.5em}
+.pcard ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.pcard li{background:rgba(0,0,0,.25);border-radius:9px;padding:7px 8px;font-weight:600;font-size:14.5px}
+.pcard .st{font-family:Orbitron,sans-serif;font-weight:800;font-size:13px;letter-spacing:.08em;padding:9px;border-radius:10px;background:var(--c);color:#fff}
+.pcard.done{cursor:default;opacity:.62;filter:saturate(.6)}
+.pcard.done .st{background:#1f7a55}
+.pcard.done::after{content:"✔";position:absolute;top:10px;right:12px;width:38px;height:38px;border-radius:50%;background:#1f7a55;color:#fff;display:grid;place-items:center;font-size:22px;font-weight:900;box-shadow:0 0 0 4px rgba(31,122,85,.35)}
+.ov.live{background:radial-gradient(900px 600px at 50% 30%,color-mix(in srgb,var(--c,#e4572e) 35%,#07111f),#03080f 75%)}
+.stage{width:min(1300px,100%);text-align:center}
+.onair{display:inline-flex;align-items:center;gap:12px;font-family:Orbitron,sans-serif;font-weight:900;letter-spacing:.2em;font-size:clamp(16px,2vw,24px);color:#fff;background:#d7263d;padding:10px 22px;border-radius:999px;box-shadow:0 0 30px rgba(215,38,61,.7);animation:air 1.4s ease-in-out infinite}
+.onair i{width:16px;height:16px;border-radius:50%;background:#fff;animation:blink 1s steps(1) infinite}
+@keyframes air{50%{box-shadow:0 0 60px rgba(215,38,61,.95)}}
+.stage .now{font-family:"IBM Plex Mono",monospace;letter-spacing:.35em;color:var(--gold);margin:22px 0 4px;font-size:clamp(14px,1.5vw,18px)}
+.stage .gname{font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(34px,5.4vw,74px);line-height:1.05;margin:4px 0 6px;display:flex;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap}
+.stage .gname span{font-size:1.2em;animation:flo 3s ease-in-out infinite}
+@keyframes flo{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.stage .clock{font-family:Orbitron,sans-serif;font-size:clamp(22px,2.6vw,34px);color:#cfe0f5;margin-bottom:18px}
+.gerentes{display:flex;justify-content:center;flex-wrap:wrap;gap:16px;margin:10px 0 26px}
+.gerente{background:rgba(255,255,255,.08);border:2px solid var(--c);border-radius:20px;padding:20px 28px;min-width:260px;opacity:0;transform:scale(.7)}
+.gerente.in{animation:pop .5s cubic-bezier(.2,1.5,.4,1) forwards}
+.gerente .av{width:74px;height:74px;border-radius:50%;margin:0 auto 10px;background:var(--c);display:grid;place-items:center;font-family:Orbitron,sans-serif;font-weight:900;font-size:26px;box-shadow:0 0 30px var(--c)}
+.gerente b{display:block;font-size:clamp(20px,2.2vw,28px)}
+.gerente small{font-family:"IBM Plex Mono",monospace;letter-spacing:.2em;color:var(--gold);font-size:12px}
+.stage .acts{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.okbtn{font-family:Orbitron,sans-serif;font-weight:800;letter-spacing:.1em;font-size:20px;padding:16px 40px;border-radius:999px;border:0;cursor:pointer;color:#fff;background:linear-gradient(180deg,#2bb673,#1f7a55);box-shadow:0 0 30px rgba(43,182,115,.5)}
+.okbtn:hover{transform:scale(1.04)}
+.ghost{font-family:inherit;font-size:15px;padding:14px 22px;border-radius:999px;cursor:pointer;color:var(--ink);background:transparent;border:1px solid var(--line)}
+.alldone{max-width:900px;margin:20px auto 0;text-align:center;font-family:Orbitron,sans-serif;font-size:clamp(20px,2.4vw,30px);color:var(--gold);display:none}
+.alldone.on{display:block;animation:enter .6s ease}
+@media (max-width:1100px){ .pgrid{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))} }
 .confetti{position:fixed;top:-20px;width:10px;height:16px;z-index:90;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--gold);color:#1b1300;font-weight:700;padding:10px 18px;border-radius:999px;z-index:95;opacity:0;transition:opacity .2s;pointer-events:none}
@@ -202,6 +237,7 @@ button{font-family:inherit}
     <button data-go="s-comunicado">Comunicado</button>
     <button data-go="s-asignacion">Ruleta</button>
     <button data-go="s-equipo" id="navEquipo">Equipo gerencial</button>
+    <button data-go="s-pres" id="navPres">Presentaciones</button>
     <button id="snd" title="Música y sonidos (M)">🔊</button>
     <button id="fs" title="Pantalla completa (F)">⛶</button>
   </nav>
@@ -240,7 +276,7 @@ button{font-family:inherit}
       <div class="turn" id="turn">Elige un candidato de la lista.</div>
       <div class="wheelbox"><div class="pointer"></div><svg viewBox="0 0 500 500" id="wheel"><g id="wheelRot"></g></svg><div class="hub">GIRA</div></div>
       <button class="big spin" id="spin" disabled>🎡 GIRAR</button>
-      <div class="tools"><button id="undo">↶ Deshacer el último</button><button id="reset">⟲ Reiniciar el sorteo</button></div>
+      <div class="tools"><button id="undo">↶ Deshacer el último</button><button class="fmt">🗑 Formatear: borrar todo</button></div>
     </div>
     <div class="panel"><h3>GERENCIAS · 2 A 3 GERENTES</h3><div class="board" id="board"></div>
       <div class="cta" style="margin-top:14px"><button class="big" id="toTeam" disabled>🏆 VER EL EQUIPO</button></div></div>
@@ -253,10 +289,26 @@ button{font-family:inherit}
     <div class="kick" style="font-family:'IBM Plex Mono',monospace;letter-spacing:.3em;color:var(--gold)">NOMBRAMIENTOS OFICIALES</div>
     <h2>EL NUEVO EQUIPO GERENCIAL</h2>
     <p>Toca <b>Ver misión</b> en cada gerencia para revelar su mandato.</p>
-    <div class="tools" style="margin-bottom:16px"><button id="pdf" style="color:var(--gold);border-color:var(--gold)">🖨 Guardar en PDF</button><button id="fichas">🏢 Abrir las cinco fichas</button></div>
+    <div class="tools" style="margin-bottom:16px"><button id="pdf" style="color:var(--gold);border-color:var(--gold)">🖨 Guardar en PDF</button><button id="fichas">🏢 Abrir las cinco fichas</button><button class="fmt">🗑 Formatear: borrar todo</button></div>
   </div>
   <div class="team" id="team"></div>
+  <div class="cta"><button class="big" id="toPres">🎤 IR A LAS PRESENTACIONES</button></div>
 </section>
+
+<!-- PRESENTACIONES -->
+<section class="screen" id="s-pres">
+  <div class="teamhead">
+    <div class="kick" style="font-family:'IBM Plex Mono',monospace;letter-spacing:.3em;color:var(--gold)">SALA DE JUNTAS</div>
+    <h2>PRESENTACIONES ANTE LA DIRECCIÓN</h2>
+    <p id="presInfo">Elige la gerencia que presenta ahora.</p>
+    <div class="tools" style="margin-bottom:16px"><button id="pdf2" style="color:var(--gold);border-color:var(--gold)">🖨 Guardar en PDF</button><button class="fmt">🗑 Formatear: borrar todo</button></div>
+  </div>
+  <div class="pgrid" id="pgrid"></div>
+  <div class="alldone" id="allDone">🏆 ¡Las cinco gerencias presentaron! Misión cumplida.</div>
+</section>
+
+<!-- En vivo -->
+<div class="ov live" id="ovLive"><div class="stage" id="stage"></div></div>
 
 <!-- Resultado del giro -->
 <div class="ov" id="ovWin"><div class="win" id="win"></div></div>
@@ -281,8 +333,9 @@ const ini = n => n.split(" ").filter(Boolean).slice(0, 2).map(w => w[0]).join(""
 const corto = n => { const p = n.split(" "); return p.length > 2 ? p[0] + " " + p[p.length - 2] : n; };
 const $ = id => document.getElementById(id);
 
-let st = { asig: {}, orden: [] };
+let st = { asig: {}, orden: [], pres: {} };
 try { const s = JSON.parse(localStorage.getItem(LS)); if (s && s.asig) st = s; } catch (e) {}
+st.pres = st.pres || {};
 const save = () => { try { localStorage.setItem(LS, JSON.stringify(st)); } catch (e) {} };
 const miembros = k => st.orden.filter(n => st.asig[n] === k);
 const MIN = 2;
@@ -332,13 +385,14 @@ pintarSnd();
 /* ================== Navegación ================== */
 let cur = "s-portada";
 function go(id){
-  if (id === "s-equipo" && !completo()) { toast("Primero asigna una gerencia a los 11 candidatos."); return; }
+  if ((id === "s-equipo" || id === "s-pres") && !completo()) { toast("Primero asigna una gerencia a los 11 candidatos."); return; }
   document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", s.id === id));
   document.querySelectorAll(".hud [data-go]").forEach(b => b.classList.toggle("on", b.dataset.go === id));
   if (id !== cur) sfx("whoosh"); cur = id; window.scrollTo(0, 0);
   if (id === "s-comunicado") memo();
   if (id === "s-asignacion") renderArena();
   if (id === "s-equipo") renderTeam();
+  if (id === "s-pres") renderPres();
 }
 document.querySelectorAll(".hud [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
 $("fs").onclick = () => { try { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); } catch (e) {} };
@@ -370,7 +424,7 @@ function renderArena(){
   $("board").innerHTML = G.map(g => { const m = miembros(g.key); return `<div class="slot ${m.length >= MAX ? "full" : ""}" style="--c:${g.color}"><div class="top"><span>${g.icon} ${esc(g.corto)}</span><span class="cnt">${m.length >= MAX ? "COMPLETA" : m.length + "/" + MAX}</span></div><div class="seats">${[0, 1, 2].map(i => `<div class="seat ${m[i] ? "on" : ""}">${m[i] ? esc(corto(m[i])) : "· · ·"}</div>`).join("")}</div></div>`; }).join("");
   const done = completo();
   $("turn").innerHTML = done ? "🏆 <b>¡Todas las gerencias asignadas!</b>" : sel ? `Candidato en turno: <b>${esc(sel)}</b>` : "Elige un candidato de la lista.";
-  $("spin").disabled = !sel || girando || done; $("toTeam").disabled = !done; $("navEquipo").disabled = !done;
+  $("spin").disabled = !sel || girando || done; $("toTeam").disabled = !done; $("navEquipo").disabled = !done; $("navPres").disabled = !done;
   if (!girando) drawWheel();
 }
 function drawWheel(){
@@ -405,7 +459,15 @@ function showWin(quien, g){
 }
 $("ovWin").onclick = () => { $("ovWin").classList.remove("on"); sfx("click"); renderArena(); if (completo()) { toast("¡Equipo completo! Ve al equipo gerencial."); } };
 $("undo").onclick = () => { if (girando || !st.orden.length) return; const n = st.orden.pop(); delete st.asig[n]; save(); toast("Se deshizo la asignación de " + corto(n) + "."); renderArena(); };
-$("reset").onclick = () => { if (girando) return; if (!confirm("¿Reiniciar el sorteo? Se borrarán todas las asignaciones.")) return; st = { asig: {}, orden: [] }; save(); sel = null; renderArena(); };
+/* Formatear: borra el sorteo y las presentaciones y vuelve a la portada */
+document.querySelectorAll(".fmt").forEach(b => b.onclick = () => {
+  if (girando) return;
+  if (!confirm("¿Formatear el juego?\n\nSe borrarán el sorteo, los nombres asignados y las presentaciones completadas, y el juego volverá a la portada.")) return;
+  st = { asig: {}, orden: [], pres: {} }; save(); sel = null; rot = 0;
+  $("wheelRot").style.transition = "none"; $("wheelRot").style.transform = "rotate(0deg)"; void $("wheelRot").offsetWidth; $("wheelRot").style.transition = "";
+  ["ovWin", "ovMis", "ovLive"].forEach(id => $(id).classList.remove("on")); clearInterval(liveT);
+  renderArena(); toast("Juego formateado. Todo está en blanco."); go("s-portada");
+});
 $("toTeam").onclick = () => go("s-equipo");
 
 /* ================== Equipo gerencial ================== */
@@ -448,6 +510,41 @@ function mision(k){
 }
 $("ovMis").onclick = e => { if (e.target.id === "ovMis") { $("ovMis").classList.remove("on"); clearInterval(misT); } };
 
+/* ================== Presentaciones en vivo ================== */
+let liveT = null;
+$("toPres").onclick = () => go("s-pres");
+$("pdf2").onclick = () => $("pdf").click();
+function renderPres(){
+  const hechas = G.filter(g => st.pres[g.key]).length;
+  $("presInfo").textContent = hechas === G.length ? "Todas las gerencias presentaron." : `Elige la gerencia que presenta ahora. Completadas: ${hechas} de ${G.length}.`;
+  $("pgrid").innerHTML = G.map(g => { const d = !!st.pres[g.key];
+    return `<button class="pcard ${d ? "done" : ""}" style="--c:${g.color}" data-p="${g.key}"><div class="ic">${g.icon}</div><h3>${esc(g.nombre).toUpperCase()}</h3><ul>${miembros(g.key).map(n => `<li>${esc(n)}</li>`).join("")}</ul><div class="st">${d ? "✔ COMPLETADO" : "▶ PRESENTAR"}</div></button>`; }).join("");
+  document.querySelectorAll("[data-p]").forEach(b => b.onclick = () => { const k = b.dataset.p; if (st.pres[k]) { if (confirm("Esta gerencia ya presentó. ¿Abrirla de nuevo?")) openLive(k); return; } openLive(k); });
+  $("allDone").classList.toggle("on", hechas === G.length);
+}
+function openLive(k){
+  const g = GK[k], m = miembros(k), t0 = Date.now();
+  $("ovLive").style.setProperty("--c", g.color);
+  $("stage").style.setProperty("--c", g.color);
+  $("stage").innerHTML = `<div class="onair"><i></i>EN VIVO</div>
+    <div class="now">PRESENTANDO AHORA</div>
+    <div class="gname"><span>${g.icon}</span>${esc(g.nombre)}</div>
+    <div class="clock" id="clock">⏱ 00:00</div>
+    <div class="gerentes">${m.map(n => `<div class="gerente"><div class="av">${ini(n)}</div><small>GERENTE</small><b>${esc(n)}</b></div>`).join("")}</div>
+    <div class="acts"><button class="okbtn" id="liveOk">✅ COMPLETADO</button><button class="ghost" id="liveMis">🎯 Ver misión</button><button class="ghost" id="liveBack">← Volver sin completar</button></div>`;
+  $("ovLive").classList.add("on"); sfx("fanfare");
+  document.querySelectorAll(".gerente").forEach((e, i) => setTimeout(() => { e.classList.add("in"); sfx("click"); }, 400 + i * 300));
+  clearInterval(liveT); liveT = setInterval(() => { const s = Math.floor((Date.now() - t0) / 1000); $("clock").textContent = "⏱ " + String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); }, 500);
+  $("liveBack").onclick = () => { clearInterval(liveT); $("ovLive").classList.remove("on"); sfx("click"); };
+  $("liveMis").onclick = () => mision(k);
+  $("liveOk").onclick = () => {
+    clearInterval(liveT); st.pres[k] = true; save(); $("ovLive").classList.remove("on");
+    sfx("win"); confetti(g.color); renderPres();
+    if (G.every(x => st.pres[x.key])) setTimeout(() => { sfx("fanfare"); confetti(); }, 700);
+    else toast("✔ " + g.corto + " completada. Elige la siguiente gerencia.");
+  };
+}
+
 /* ================== Confeti ================== */
 function confetti(color){
   const cols = color ? [color, "#f2c14e", "#ffffff"] : G.map(g => g.color).concat("#f2c14e");
@@ -462,7 +559,7 @@ $("pdf").onclick = () => {
   $("print").innerHTML = `<div class="h"><img src="img/icadep-isologo.png" alt="ICADEP-XXI"><div style="text-align:right;font-size:9pt;color:#5d6676">Excel Avanzado · Módulo 4<br>${f}</div></div>
     <h1>Ascenso gerencial · Asignación de gerencias.</h1><p class="sub">Resultado del sorteo de la ruleta. Cada gerente presenta un dashboard con su base de datos.</p>
     <table><thead><tr><th>Gerencia</th><th>Gerentes</th><th>Base de datos y ficha</th></tr></thead><tbody>
-    ${G.map(g => `<tr><td class="g" style="border-left-color:${g.color}">${g.icon} ${esc(g.nombre)}</td><td>${miembros(g.key).map(esc).join("<br>") || "—"}</td><td>${esc(g.archivo)}<div class="url">${esc(fichaURL(g.key))}</div></td></tr>`).join("")}
+    ${G.map(g => `<tr><td class="g" style="border-left-color:${g.color}">${g.icon} ${esc(g.nombre)}${st.pres[g.key] ? '<div style="font-weight:600;color:#1f7a55;font-size:9pt;margin-top:4px">✔ Presentación completada</div>' : ""}</td><td>${miembros(g.key).map(esc).join("<br>") || "—"}</td><td>${esc(g.archivo)}<div class="url">${esc(fichaURL(g.key))}</div></td></tr>`).join("")}
     </tbody></table><div class="foot">Ascenso gerencial · Juego realizado por: Jarlin Figueroa MA.</div>`;
   toast("En «Destino», elige «Guardar como PDF».");
   setTimeout(() => window.print(), 300);
