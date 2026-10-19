@@ -325,18 +325,33 @@ input:checked+.toggle-slider:before{transform:translateX(22px);background:#000;}
   <h1 id="vsTitle" style="font-size:3.4rem;margin-bottom:10px;"></h1>
   <div class="mode-selector">
     <h3 style="color:var(--neon);margin-top:0;text-align:center;">MODO DE JUEGO</h3>
-    <label><input type="radio" name="gmode" value="victories" checked onchange="toggleWinMode()"> 🏆 Por puntos</label>
+    <label><input type="radio" name="gmode" value="victories" onchange="toggleWinMode()"> 🏆 Por puntos</label>
     <label><input type="radio" name="gmode" value="round" onchange="toggleWinMode()"> ⚔️ Por rounds</label>
+    <div id="pointsSelector" class="round-selector">
+      <label style="color:#ccc;font-size:0.9rem;">¿Hasta cuántos puntos? (de 1 a 20)</label>
+      <div class="round-option-btns" style="align-items:center;">
+        <button class="qty-btn" onclick="setPoints(cfg.targetPoints-1)">−</button>
+        <div class="qty-val" id="vs-points" style="font-size:2rem;min-width:56px;color:var(--warning);">10</div>
+        <button class="qty-btn" onclick="setPoints(cfg.targetPoints+1)">+</button>
+      </div>
+      <div class="round-option-btns" style="margin-top:10px;" id="pointsQuick">
+        <button class="round-opt-btn" onclick="setPoints(5)">5</button>
+        <button class="round-opt-btn" onclick="setPoints(10)">10</button>
+        <button class="round-opt-btn" onclick="setPoints(15)">15</button>
+        <button class="round-opt-btn" onclick="setPoints(20)">20</button>
+      </div>
+    </div>
     <div id="roundSelector" class="round-selector">
       <label style="color:#ccc;font-size:0.9rem;">Número de rounds (3 preguntas por equipo en cada uno):</label>
       <div class="round-option-btns">
         <button class="round-opt-btn" onclick="selectRounds(1,this)">1</button>
-        <button class="round-opt-btn active" onclick="selectRounds(3,this)">3</button>
+        <button class="round-opt-btn" onclick="selectRounds(3,this)">3</button>
         <button class="round-opt-btn" onclick="selectRounds(5,this)">5</button>
       </div>
     </div>
   </div>
-  <button onclick="startGame()" style="margin-top:20px;">¡A LA BATALLA!</button>
+  <p id="modeHint" style="color:#888;font-size:13px;margin:12px 0 0;">Elige el modo de juego para continuar.</p>
+  <button id="startBtn" onclick="startGame()" style="margin-top:12px;" disabled>¡A LA BATALLA!</button>
 </div>
 
 <!-- ═════════ PARTIDA ═════════ -->
@@ -558,9 +573,29 @@ function nav(id){
 let gameMode='victories', targetWins=10, team1, team2, points={}, turn=1, index=0;
 let pi1=0,pi2=0,tInt,aQs=[],timeLeft=30,wins1=0,wins2=0,isPaused=false;
 let habs1={},habs2={},activeHab=null,shieldUsed=false;
-let totalRounds=3,currentRound=1,roundTurnsLeft=6,roundCorrect1=0,roundCorrect2=0,roundWins1=0,roundWins2=0,selectedRounds=3;
-function toggleWinMode(){ gameMode=document.querySelector('input[name="gmode"]:checked').value; document.getElementById('roundSelector').style.display=gameMode==='round'?'block':'none'; }
-function selectRounds(n,btn){ selectedRounds=n; document.querySelectorAll('.round-opt-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+let totalRounds=3,currentRound=1,roundTurnsLeft=6,roundCorrect1=0,roundCorrect2=0,roundWins1=0,roundWins2=0,selectedRounds=null;
+function toggleWinMode(){
+  const c=document.querySelector('input[name="gmode"]:checked'); gameMode=c?c.value:null;
+  document.getElementById('pointsSelector').style.display=gameMode==='victories'?'block':'none';
+  document.getElementById('roundSelector').style.display=gameMode==='round'?'block':'none';
+  if(gameMode==='victories') setPoints(cfg.targetPoints);
+  updateStartBtn();
+}
+function updateStartBtn(){
+  const ok=gameMode==='victories'||(gameMode==='round'&&!!selectedRounds);
+  document.getElementById('startBtn').disabled=!ok;
+  document.getElementById('modeHint').textContent=!gameMode?'Elige el modo de juego para continuar.'
+    :gameMode==='round'&&!selectedRounds?'Elige el número de rounds.'
+    :gameMode==='victories'?'Gana el primer equipo que llegue a '+cfg.targetPoints+(cfg.targetPoints===1?' punto.':' puntos.')
+    :'Se jugarán '+selectedRounds+(selectedRounds===1?' round.':' rounds.');
+}
+function setPoints(n){
+  cfg.targetPoints=Math.max(1,Math.min(20,n)); soundSettings();
+  document.getElementById('vs-points').innerText=cfg.targetPoints; document.getElementById('qty-targetPoints').innerText=cfg.targetPoints;
+  document.querySelectorAll('#pointsQuick .round-opt-btn').forEach(b=>b.classList.toggle('active',+b.innerText===cfg.targetPoints));
+  updateStartBtn();
+}
+function selectRounds(n,btn){ selectedRounds=n; document.querySelectorAll('#roundSelector .round-opt-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); soundSettings(); updateStartBtn(); }
 function setup(){
   team1=document.getElementById('t1').value.trim()||'EQUIPO PIVOT'; team2=document.getElementById('t2').value.trim()||'EQUIPO DASHBOARD';
   if(p1.length<1||p2.length<1) return alert('Cada equipo necesita al menos un analista.');
@@ -569,7 +604,8 @@ function setup(){
 }
 const shuffle=a=>{ a=[...a]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
 function startGame(){
-  gameMode=document.querySelector('input[name="gmode"]:checked').value;
+  const gm=document.querySelector('input[name="gmode"]:checked'); if(!gm) return; gameMode=gm.value;
+  if(gameMode==='round'&&!selectedRounds) return;
   targetWins=cfg.targetPoints;
   if(gameMode==='round'){ totalRounds=selectedRounds; currentRound=1; roundWins1=0; roundWins2=0; roundCorrect1=0; roundCorrect2=0; roundTurnsLeft=6; }
   habs1={freeze:cfg.freeze,shield:cfg.shield,skip:cfg.skip}; habs2={freeze:cfg.freeze,shield:cfg.shield,skip:cfg.skip};
@@ -605,7 +641,7 @@ function loadQ(){
   document.getElementById('q').style.display='block';
   const od=document.getElementById('options'); od.style.display='flex'; od.style.flexDirection='column';
   document.getElementById('inter-turn-msg').style.display='none';
-  if(index>=aQs.length){ aQs=shuffle(QUESTIONS); index=0; }
+  if(index>=aQs.length){ const last=aQs[aQs.length-1]; aQs=shuffle(QUESTIONS); if(aQs[0]===last) aQs.push(aQs.shift()); index=0; toast('🔁 Se usaron las '+QUESTIONS.length+' preguntas: el banco vuelve a empezar',3500); }
   const q=aQs[index];
   document.getElementById('turnText').innerText=`TURNO DE: ${turn===1?team1:team2}`;
   document.getElementById('playerText').innerText=currentPlayer();
