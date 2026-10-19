@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>DataBattle · Dashboards y tablas dinámicas</title>
+<style>
+/* DataBattle: adaptación de CyberBattle (Jarlin Figueroa) al tema de Excel. Modo dirigido, moderado por el facilitador. */
+:root{--neon:#2ee59d;--bg:#030503;--card:#0f1311;--error:#ff4d5e;--warning:#ffd400;--shield:#00bcd4;--skip:#9c27b0;--oxford:#16201b;--xl:#21a366}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--bg);color:#fff;overflow:hidden;user-select:none;}
+.screen{display:none;padding:15px;text-align:center;height:100vh;width:100vw;overflow:hidden;}
+.active{display:flex;flex-direction:column;align-items:center;justify-content:center;}
+
+/* HUD superior */
+#ui-top{position:fixed;top:0;left:0;right:0;background:rgba(5,8,6,0.92);padding:10px 20px;z-index:10;border-bottom:2px solid var(--neon);display:flex;justify-content:space-between;align-items:center;}
+.team-hud{width:45%;display:flex;flex-direction:column;align-items:flex-start;}
+.team-hud.right{align-items:flex-end;}
+.team-name{font-size:1.2rem;font-weight:bold;color:var(--neon);text-transform:uppercase;letter-spacing:1px;}
+.energy-bar-bg{width:100%;height:12px;background:#1b221e;border-radius:10px;border:1px solid #3a463f;margin-top:5px;position:relative;}
+.energy-bar-fill{height:100%;width:0%;border-radius:10px;background:linear-gradient(90deg,#1e7f4f 0%,#2ee59d 100%);transition:width 0.5s ease-out;}
+.win-counter{font-size:18px;font-weight:900;color:var(--warning);font-family:monospace;margin-top:6px;letter-spacing:2px;text-shadow:0 0 10px var(--warning);line-height:1.2;}
+
+/* Lluvia de datos lateral */
+canvas.matrix{position:absolute;top:0;width:150px;height:100%;opacity:.15;z-index:0}
+#matrixL{left:0}#matrixR{right:0}
+
+.footer-bar{position:fixed;bottom:0;left:0;width:100%;background:var(--oxford);color:var(--neon);padding:10px 0;border-top:1px solid #2a352f;z-index:100;font-family:monospace;font-size:13px;text-transform:uppercase;border-bottom:3px solid var(--neon);}
+.ticker-move{display:inline-block;white-space:nowrap;padding-left:100%;animation:tickerMove 30s linear infinite;}
+@keyframes tickerMove{0%{transform:translate(0,0);}100%{transform:translate(-100%,0);}}
+
+/* Botones */
+button{padding:12px 28px;margin:10px;border:none;border-radius:10px;background:var(--neon);color:#000;font-size:16px;font-weight:800;cursor:pointer;transition:0.3s;text-transform:uppercase;z-index:10;}
+button:hover{transform:scale(1.05);box-shadow:0 0 20px var(--neon)}
+button.secondary{background:#2b332e;color:#fff}
+button.btn-back{background:transparent;color:#888;border:1px solid #444;font-size:13px;padding:8px 18px;margin-bottom:10px;}
+button.btn-back:hover{color:#fff;border-color:#fff;box-shadow:none;transform:scale(1.02);}
+button:disabled{opacity:0.25!important;cursor:not-allowed!important;transform:none!important;box-shadow:none!important;}
+.btn-main{animation:pulseNeon 2s infinite;border:2px solid #fff;}
+@keyframes pulseNeon{0%{box-shadow:0 0 5px var(--neon);transform:scale(1);}50%{box-shadow:0 0 25px var(--neon);transform:scale(1.05);}100%{box-shadow:0 0 5px var(--neon);transform:scale(1);}}
+@keyframes pulseWarn{0%{opacity:0.5;}50%{opacity:1;text-shadow:0 0 10px var(--warning);}100%{opacity:0.5;}}
+
+/* Combate */
+#game-content{width:95%;max-width:880px;display:flex;flex-direction:column;justify-content:space-between;height:80vh;margin-top:40px;}
+#q{font-size:1.55rem;font-weight:bold;margin:10px 0;min-height:60px;line-height:1.25;}
+.option{margin:5px auto;padding:12px;border:1px solid #3a463f;font-size:1.2rem;border-radius:8px;width:90%;background:rgba(255,255,255,0.02);cursor:pointer;transition:0.2s;}
+.option:hover{border-color:var(--neon);background:rgba(46,229,157,0.06);}
+.option.chosen-correct{border-color:var(--neon)!important;background:rgba(46,229,157,0.18)!important;color:var(--neon)!important;}
+.option.chosen-wrong{border-color:var(--error)!important;background:rgba(255,77,94,0.18)!important;color:var(--error)!important;}
+#inter-turn-msg{display:none;font-size:1.8rem;font-weight:bold;color:var(--warning);margin:60px 0;animation:pulseWarn 1.5s infinite;letter-spacing:2px;}
+
+/* Pausa */
+.pause-btn{position:fixed;bottom:70px;right:20px;background:transparent;border:2px solid var(--warning);color:var(--warning);padding:8px 12px;border-radius:5px;cursor:pointer;z-index:200;font-family:monospace;font-size:12px;}
+.paused-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:none;align-items:center;justify-content:center;flex-direction:column;}
+
+/* Tabla final */
+.rank-table{width:85%;max-width:680px;margin:8px auto;border-collapse:separate;border-spacing:0 4px;}
+.rank-table th{background:#1b221e;color:var(--neon);padding:10px;text-transform:uppercase;font-size:13px;letter-spacing:1px;}
+.rank-table td{background:rgba(255,255,255,0.05);padding:9px;font-size:0.95rem;border-top:1px solid #2a352f;border-bottom:1px solid #2a352f;}
+#winner{font-size:3.6rem;text-shadow:0 0 20px var(--neon);margin:4px 0;color:#fff;text-transform:uppercase;}
+.rank-scroll{overflow-y:auto;max-height:32vh;width:85%;max-width:680px;margin:0 auto;border-radius:8px;}
+#mvp-card{background:linear-gradient(135deg,rgba(255,212,0,0.15),rgba(255,140,0,0.08));border:2px solid var(--warning);border-radius:14px;padding:14px 28px;margin:8px auto;max-width:500px;width:90%;position:relative;overflow:hidden;}
+#mvp-card::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,212,0,0.08),transparent);animation:mvpShine 2s infinite;}
+@keyframes mvpShine{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+#mvp-name{font-size:1.6rem;font-weight:900;color:var(--warning);text-shadow:0 0 15px var(--warning);letter-spacing:2px;}
+#mvp-pts{font-size:0.9rem;color:#aaa;margin-top:2px;}
+#mvp-badge{font-size:2.2rem;margin-bottom:4px;}
+#fireworksCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+
+/* Configuración de equipos */
+.team-box{background:var(--card);padding:18px;border-radius:15px;border:1px solid #2a352f;min-width:250px;max-width:340px;flex:1;}
+.team-box input.tname{background:#000;color:var(--neon);border:1px solid #3a463f;padding:10px;width:100%;border-radius:6px;font-weight:700;text-align:center;letter-spacing:1px;}
+.player-input-row{display:flex;gap:8px;margin-top:10px;}
+.player-input-row input{flex:1;background:#000;color:var(--neon);border:1px solid #3a463f;padding:8px;border-radius:6px;font-size:14px;}
+.player-input-row button{padding:8px 12px;margin:0;font-size:12px;}
+.player-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:36px;}
+.player-tag{background:rgba(46,229,157,0.1);border:1px solid var(--neon);color:var(--neon);padding:4px 10px;border-radius:20px;font-size:13px;display:flex;align-items:center;gap:6px;}
+.player-tag span.remove{cursor:pointer;color:var(--error);font-weight:bold;font-size:15px;line-height:1;}
+.pool{background:rgba(255,212,0,0.05);border:1px dashed rgba(255,212,0,0.4);border-radius:14px;padding:12px 14px;max-width:1000px;width:96%;margin-top:14px;}
+.pool h4{margin:0 0 8px;color:var(--warning);letter-spacing:2px;font-size:0.85rem;}
+.pool-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+.pchip{display:flex;align-items:center;gap:4px;background:#14110a;border:1px solid rgba(255,212,0,0.45);border-radius:30px;padding:3px 4px;font-size:13px;color:#fff;}
+.pchip b{padding:0 6px;font-weight:600;}
+.pchip button{margin:0;padding:4px 9px;font-size:11px;border-radius:20px;background:#22301f;color:var(--neon);border:1px solid #2f4a37;}
+.pchip button:hover{background:var(--neon);color:#000;transform:none;box-shadow:none;}
+.pool-empty{color:#666;font-size:13px;}
+
+/* Ajustes */
+.settings-box{background:var(--card);padding:18px 24px;border-radius:15px;border:1px solid #3a463f;max-width:520px;width:93%;text-align:left;}
+.settings-box h3{color:var(--neon);margin:0 0 14px 0;text-align:center;letter-spacing:2px;font-size:0.9rem;}
+.setting-row{display:flex;justify-content:space-between;align-items:center;margin:11px 0;border-bottom:1px solid #1c231f;padding-bottom:11px;}
+.setting-row:last-child{border-bottom:none;padding-bottom:0;}
+.setting-label{color:#ccc;font-size:13px;}
+.setting-label span{display:block;font-size:10px;color:#666;margin-top:2px;}
+.qty-control{display:flex;align-items:center;gap:10px;}
+.qty-btn{background:#1b221e;color:var(--neon);border:1px solid #3a463f;border-radius:6px;width:32px;height:32px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;}
+.qty-btn:hover{background:#26302a;box-shadow:none;transform:none;}
+.qty-val{font-size:20px;font-weight:bold;color:#fff;min-width:24px;text-align:center;}
+.toggle-switch{position:relative;width:48px;height:26px;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:#333;border-radius:26px;transition:0.3s;border:1px solid #555;}
+.toggle-slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:#666;border-radius:50%;transition:0.3s;}
+input:checked+.toggle-slider{background:var(--neon);}
+input:checked+.toggle-slider:before{transform:translateX(22px);background:#000;}
+#muteFloatBtn{position:fixed;bottom:70px;left:20px;background:transparent;border:2px solid #555;color:#888;padding:7px 12px;border-radius:5px;cursor:pointer;z-index:200;font-size:18px;}
+#muteFloatBtn:hover{border-color:var(--neon);color:var(--neon);transform:scale(1.1);box-shadow:none;}
+.scroll-panel{overflow-y:auto;max-height:65vh;padding-right:6px;}
+.proto-card{background:rgba(46,229,157,0.04);border:1px solid #26302a;border-left:3px solid var(--neon);border-radius:10px;padding:14px 18px;margin-bottom:12px;text-align:left;}
+.proto-card h4{color:var(--neon);margin:0 0 6px 0;font-size:1rem;letter-spacing:1px;}
+.proto-card p{color:#bbb;font-size:0.88rem;margin:0;line-height:1.5;}
+.proto-card.yellow{border-left-color:var(--warning);}.proto-card.yellow h4{color:var(--warning);}
+.proto-card.blue{border-left-color:var(--shield);}.proto-card.blue h4{color:var(--shield);}
+.proto-card.purple{border-left-color:var(--skip);}.proto-card.purple h4{color:var(--skip);}
+
+/* Overlays */
+#resultOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column;pointer-events:none;}
+#resultBigText{font-size:clamp(3.5rem,14vw,9rem);font-weight:900;letter-spacing:6px;text-transform:uppercase;text-align:center;line-height:1.1;}
+@keyframes resultPop{0%{transform:scale(0.5);opacity:0;}55%{transform:scale(1.08);opacity:1;}80%{transform:scale(0.97);}100%{transform:scale(1);opacity:1;}}
+.resultAnim{animation:resultPop 0.45s ease-out forwards;}
+#winner-announcement{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:999;align-items:center;justify-content:center;flex-direction:column;text-align:center;}
+#winner-text{font-size:clamp(3rem,8vw,6rem);font-weight:900;color:var(--neon);letter-spacing:5px;text-transform:uppercase;text-shadow:0 0 25px var(--neon),0 0 50px var(--neon);animation:resultPop 0.6s ease-out forwards;}
+#winner-sub{color:#fff;font-size:1.5rem;margin-top:20px;letter-spacing:3px;}
+#roundIntroOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:800;display:none;align-items:center;justify-content:center;flex-direction:column;pointer-events:none;}
+#roundIntroText{font-size:clamp(4rem,18vw,11rem);font-weight:900;letter-spacing:8px;text-transform:uppercase;text-align:center;line-height:1;}
+#roundIntroSub{font-size:clamp(1.2rem,4vw,2rem);letter-spacing:6px;margin-top:20px;opacity:0.8;text-transform:uppercase;}
+@keyframes roundPop{0%{transform:scale(0.3) rotate(-8deg);opacity:0;}50%{transform:scale(1.12) rotate(2deg);opacity:1;}75%{transform:scale(0.96);}100%{transform:scale(1);opacity:1;}}
+.roundAnim{animation:roundPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards;}
+@keyframes fightFlash{0%{opacity:0;transform:scale(0.6);}30%{opacity:1;transform:scale(1.2);}60%{transform:scale(0.95);}100%{transform:scale(1);opacity:1;}}
+.fightAnim{animation:fightFlash 0.4s ease-out forwards;}
+#freezeEffect{position:fixed;inset:0;pointer-events:none;z-index:700;display:none;align-items:center;justify-content:center;}
+#freezeRipple{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(33,150,243,0.35) 0%,rgba(0,188,212,0.15) 50%,transparent 70%);animation:freezeRippleAnim 0.8s ease-out forwards;}
+#freezeLabel{font-size:clamp(3rem,12vw,7rem);font-weight:900;color:#2196f3;letter-spacing:6px;text-shadow:0 0 30px #2196f3,0 0 60px #00bcd4;animation:freezeLabelPop 1.2s ease-out forwards;position:relative;z-index:1;}
+@keyframes freezeRippleAnim{0%{opacity:0;transform:scale(0.5);}30%{opacity:1;}100%{opacity:0;transform:scale(1.5);}}
+@keyframes freezeLabelPop{0%{transform:scale(0.3);opacity:0;}25%{transform:scale(1.15);opacity:1;}60%{transform:scale(0.95);opacity:1;}85%{opacity:1;}100%{transform:scale(1);opacity:0;}}
+@keyframes timerFreeze{0%{transform:scale(1);}15%{transform:scale(1.4);color:#2196f3;text-shadow:0 0 20px #2196f3,0 0 40px #00bcd4;}50%{transform:scale(1.1);color:#2196f3;}100%{transform:scale(1);}}
+.timer-freeze-anim{animation:timerFreeze 0.8s ease-out forwards!important;}
+.mode-selector{background:var(--card);padding:20px;border-radius:15px;border:1px solid #3a463f;margin:15px;display:inline-block;text-align:left;}
+.mode-selector label{font-size:1.1rem;cursor:pointer;display:block;margin:8px 0;color:#ccc;}
+.mode-selector input[type="radio"]{accent-color:var(--neon);transform:scale(1.3);margin-right:8px;}
+.round-selector{margin-top:14px;padding-top:12px;border-top:1px dashed #333;display:none;text-align:center;}
+.round-option-btns{display:flex;gap:10px;justify-content:center;margin-top:6px;}
+.round-opt-btn{padding:8px 22px;margin:0;font-size:1.1rem;font-weight:900;border-radius:8px;border:2px solid #444;background:#111;color:#888;}
+.round-opt-btn.active{border-color:var(--warning);color:var(--warning);background:rgba(255,212,0,0.1);}
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(46,229,157,0.12);border:1px solid var(--neon);border-radius:10px;padding:10px 24px;font-size:14px;color:var(--neon);font-family:monospace;letter-spacing:1px;z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<button id="muteFloatBtn" onclick="toggleMuteFloat()" title="Sonido">🔊</button>
+<div id="toast"></div>
+
+<div id="freezeEffect"><div id="freezeRipple"></div><div id="freezeLabel">+1:00 ⏱️</div></div>
+<div id="roundIntroOverlay"><div id="roundIntroText"></div><div id="roundIntroSub"></div></div>
+<div id="resultOverlay"><div id="resultBigText"></div></div>
+<div id="winner-announcement"><div id="winner-text">¡TENEMOS EQUIPO GANADOR!</div><div id="winner-sub">Calculando el informe final...</div></div>
+
+<div id="ui-top" style="display:none">
+  <div class="team-hud"><div class="team-name" id="t1-hud"></div><div class="energy-bar-bg"><div class="energy-bar-fill" id="t1-bar"></div></div><div class="win-counter" id="t1-wins"></div></div>
+  <div style="font-size:11px;color:#666;text-align:center;font-family:monospace;" id="center-hud-label">PUNTOS</div>
+  <div class="team-hud right"><div class="team-name" id="t2-hud"></div><div class="energy-bar-bg"><div class="energy-bar-fill" id="t2-bar"></div></div><div class="win-counter" id="t2-wins"></div></div>
+</div>
+
+<div id="pauseOverlay" class="paused-overlay">
+  <div id="pauseMain" style="display:flex;flex-direction:column;align-items:center;">
+    <h1 style="color:var(--warning);font-size:50px;letter-spacing:10px;">PAUSA</h1>
+    <button onclick="togglePause()">▶ REANUDAR</button>
+    <button onclick="showExitConfirm()" style="background:var(--error);color:#fff;margin-top:6px;">🚪 SALIR AL INICIO</button>
+  </div>
+  <div id="pauseExitConfirm" style="display:none;text-align:center;">
+    <p style="color:#fff;font-size:1.3rem;margin-bottom:20px;">¿Seguro que quieres<br>abandonar la partida?</p>
+    <button onclick="confirmExit()" style="background:var(--error);color:#fff;margin:6px;">✅ SÍ, SALIR</button>
+    <button onclick="cancelExit()" style="background:#333;color:#fff;margin:6px;">✖ CANCELAR</button>
+  </div>
+</div>
+
+<!-- ═════════ INICIO ═════════ -->
+<div id="home" class="screen active">
+  <canvas id="matrixL" class="matrix"></canvas>
+  <canvas id="matrixR" class="matrix"></canvas>
+
+  <div style="display:flex;gap:28px;align-items:flex-end;justify-content:center;margin-bottom:10px;z-index:10;">
+    <!-- Hoja de cálculo con columnas que suben -->
+    <svg width="130" height="130" viewBox="0 0 130 130" style="filter:drop-shadow(0 0 12px #2ee59d);overflow:visible;">
+      <rect x="2" y="2" width="126" height="126" rx="16" fill="none" stroke="#2ee59d" stroke-width="1.5" opacity="0.5"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="2.5s" repeatCount="indefinite"/></rect>
+      <rect x="5" y="5" width="120" height="120" rx="14" fill="#04140c"/>
+      <g stroke="#2ee59d" stroke-width="0.6" opacity="0.25"><line x1="5" y1="30" x2="125" y2="30"/><line x1="5" y1="55" x2="125" y2="55"/><line x1="5" y1="80" x2="125" y2="80"/><line x1="5" y1="105" x2="125" y2="105"/><line x1="35" y1="5" x2="35" y2="125"/><line x1="65" y1="5" x2="65" y2="125"/><line x1="95" y1="5" x2="95" y2="125"/></g>
+      <text x="12" y="23" font-family="monospace" font-size="9" fill="#2ee59d">fx =SUMA(</text>
+      <rect x="18" y="80" width="16" height="30" fill="#2ee59d" opacity="0.85"><animate attributeName="height" values="20;38;20" dur="2.2s" repeatCount="indefinite"/><animate attributeName="y" values="90;72;90" dur="2.2s" repeatCount="indefinite"/></rect>
+      <rect x="42" y="65" width="16" height="45" fill="#21a366"><animate attributeName="height" values="45;30;45" dur="2.6s" repeatCount="indefinite"/><animate attributeName="y" values="65;80;65" dur="2.6s" repeatCount="indefinite"/></rect>
+      <rect x="66" y="50" width="16" height="60" fill="#2ee59d" opacity="0.85"><animate attributeName="height" values="60;42;60" dur="3s" repeatCount="indefinite"/><animate attributeName="y" values="50;68;50" dur="3s" repeatCount="indefinite"/></rect>
+      <rect x="90" y="40" width="16" height="70" fill="#ffd400"><animate attributeName="height" values="70;52;70" dur="2.4s" repeatCount="indefinite"/><animate attributeName="y" values="40;58;40" dur="2.4s" repeatCount="indefinite"/></rect>
+      <path d="M5 18 L5 5 L18 5" fill="none" stroke="#2ee59d" stroke-width="2"/><path d="M112 5 L125 5 L125 18" fill="none" stroke="#2ee59d" stroke-width="2"/><path d="M5 112 L5 125 L18 125" fill="none" stroke="#2ee59d" stroke-width="2"/><path d="M112 125 L125 125 L125 112" fill="none" stroke="#2ee59d" stroke-width="2"/>
+    </svg>
+    <!-- Tablero con KPI y gráfico circular -->
+    <svg width="130" height="130" viewBox="0 0 130 130" style="filter:drop-shadow(0 0 12px #ffd400);overflow:visible;">
+      <rect x="2" y="2" width="126" height="126" rx="16" fill="none" stroke="#ffd400" stroke-width="1.5" opacity="0.5"><animate attributeName="opacity" values="0.3;0.9;0.3" dur="2s" repeatCount="indefinite"/></rect>
+      <rect x="5" y="5" width="120" height="120" rx="14" fill="#141005"/>
+      <rect x="14" y="14" width="46" height="26" rx="4" fill="none" stroke="#ffd400" stroke-width="1"/><text x="37" y="25" text-anchor="middle" font-family="monospace" font-size="6" fill="#ffd400">KPI</text><text x="37" y="35" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">360<animate attributeName="opacity" values="0.4;1;0.4" dur="1.6s" repeatCount="indefinite"/></text>
+      <rect x="70" y="14" width="46" height="26" rx="4" fill="none" stroke="#2ee59d" stroke-width="1"/><text x="93" y="25" text-anchor="middle" font-family="monospace" font-size="6" fill="#2ee59d">+40 %</text><text x="93" y="35" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#fff">210</text>
+      <g transform="translate(65 82)"><circle r="30" fill="#2ee59d"/><path d="M0 0 L0 -30 A30 30 0 0 1 28.5 9.3 Z" fill="#ffd400"/><path d="M0 0 L28.5 9.3 A30 30 0 0 1 -12 27.5 Z" fill="#21a366"/><circle r="12" fill="#141005"/><animateTransform attributeName="transform" type="rotate" values="0 65 82;360 65 82" dur="14s" repeatCount="indefinite" additive="sum"/></g>
+      <path d="M5 18 L5 5 L18 5" fill="none" stroke="#ffd400" stroke-width="2"/><path d="M112 5 L125 5 L125 18" fill="none" stroke="#ffd400" stroke-width="2"/><path d="M5 112 L5 125 L18 125" fill="none" stroke="#ffd400" stroke-width="2"/><path d="M112 125 L125 125 L125 112" fill="none" stroke="#ffd400" stroke-width="2"/>
+    </svg>
+  </div>
+
+  <div style="position:fixed;top:14px;left:14px;z-index:50;display:flex;gap:8px;">
+    <button title="Historia" onclick="nav('story')" style="background:rgba(15,15,15,0.6);border:1px solid #333;color:#777;width:38px;height:38px;border-radius:50%;padding:0;margin:0;font-size:15px;">📖</button>
+    <button title="Reglas" onclick="nav('help')" style="background:rgba(15,15,15,0.6);border:1px solid #333;color:#777;width:38px;height:38px;border-radius:50%;padding:0;margin:0;font-size:15px;">📋</button>
+  </div>
+
+  <h1 style="font-size:4.5rem;color:var(--neon);letter-spacing:10px;margin:0;">DATABATTLE</h1>
+  <p style="color:#999;letter-spacing:3px;margin-bottom:8px;">DASHBOARDS · TABLAS DINÁMICAS · PRESENTACIÓN DE DATOS</p>
+  <div style="text-align:center;max-width:700px;margin-bottom:16px;">
+    <h3 style="color:var(--warning);margin-bottom:8px;font-size:1rem;letter-spacing:2px;">⚠️ ALERTA EN LA DIRECCIÓN GENERAL — LOS DATOS ESTÁN EN CAOS</h3>
+    <p style="font-size:0.95rem;color:#aaa;line-height:1.6;margin:0;">
+      El virus <strong style="color:var(--error)">CAOS-X</strong> revolvió los reportes de la red de ARS: miles de filas sin resumir, gráficos sin sentido y gerentes sin poder decidir.<br><br>
+      La dirección convocó a <strong style="color:var(--neon)">dos equipos de analistas</strong> expertos en <strong style="color:var(--warning)">tablas dinámicas y dashboards</strong>. Gana quien demuestre que domina los datos.
+    </p>
+  </div>
+  <div style="z-index:10;display:flex;flex-wrap:wrap;justify-content:center;">
+    <button class="btn-main" onclick="nav('config')">⚡ INICIAR BATALLA</button>
+    <button class="secondary" onclick="nav('settings')">⚙️ CONFIGURACIÓN</button>
+  </div>
+  <div class="footer-bar"><div style="text-align:center;width:100%">Creado por: Jarlin Figueroa | DataBattle · Excel | Info: 809-958-9611 | 2026</div></div>
+</div>
+
+<!-- ═════════ HISTORIA ═════════ -->
+<div id="story" class="screen">
+  <button class="btn-back" onclick="nav('home')">← VOLVER</button>
+  <div class="scroll-panel" style="max-width:800px;width:95%;">
+    <div style="background:rgba(16,22,18,0.95);padding:28px 32px;border-radius:20px;border:1px solid var(--neon);text-align:left;">
+      <h2 style="color:var(--neon);text-align:center;letter-spacing:4px;margin-top:0;">📊 LA CRISIS DE LOS DATOS</h2>
+      <p style="color:#ffd400;font-size:0.85rem;letter-spacing:2px;text-align:center;margin-top:-10px;">— INFORME CONFIDENCIAL DE LA DIRECCIÓN —</p>
+      <p style="color:#ccc;line-height:1.7;">Lunes, 8:00 a. m. La dirección general de la red de ARS abre su reporte semanal y encuentra el desastre: el virus <strong style="color:var(--error)">CAOS-X</strong> mezcló reclamaciones, pagos y servicios en una sola hoja de miles de filas.</p>
+      <p style="color:#ccc;line-height:1.7;">Nadie sabe qué ARS lidera el monto, cuántos servicios hubo ni si el gasto sube o baja. La reunión con la junta es en una hora.</p>
+      <p style="color:#ccc;line-height:1.7;">Se activa el <strong style="color:var(--neon)">Protocolo Dashboard</strong>: dos equipos de analistas competirán respondiendo sobre tablas dinámicas, KPI, gráficos dinámicos, segmentaciones y diseño de tableros.</p>
+      <div style="display:flex;gap:16px;margin:16px 0;flex-wrap:wrap;">
+        <div style="flex:1;min-width:180px;background:rgba(46,229,157,0.06);border:1px solid var(--neon);border-radius:10px;padding:14px;"><p style="color:var(--neon);font-weight:bold;margin:0 0 6px 0;">📈 EQUIPO PIVOT</p><p style="color:#aaa;font-size:0.85rem;margin:0;line-height:1.5;">Maestros de las tablas dinámicas. Su lema: <em>«Ninguna base es demasiado grande para resumirla.»</em></p></div>
+        <div style="flex:1;min-width:180px;background:rgba(255,212,0,0.06);border:1px solid var(--warning);border-radius:10px;padding:14px;"><p style="color:var(--warning);font-weight:bold;margin:0 0 6px 0;">📊 EQUIPO DASHBOARD</p><p style="color:#aaa;font-size:0.85rem;margin:0;line-height:1.5;">Expertos en presentar datos. Su lema: <em>«Un buen tablero se entiende en cinco segundos.»</em></p></div>
+      </div>
+      <p style="color:#ccc;line-height:1.7;">Solo el equipo con más conocimiento devolverá el orden a los datos.</p>
+      <p style="color:#666;font-size:0.82rem;text-align:center;margin-bottom:0;letter-spacing:1px;">— FIN DEL INFORME —</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═════════ REGLAS ═════════ -->
+<div id="help" class="screen">
+  <button class="btn-back" onclick="nav('home')">← VOLVER</button>
+  <h2 style="color:var(--neon);margin:0 0 10px 0;letter-spacing:3px;">📋 REGLAS DEL JUEGO</h2>
+  <div class="scroll-panel" style="max-width:780px;width:95%;">
+    <div class="proto-card"><h4>🎯 OBJETIVO</h4><p>Dos equipos compiten respondiendo preguntas sobre dashboards, presentación de datos y tablas dinámicas. Se juega por puntos (gana quien llegue primero a la meta) o por rounds.</p></div>
+    <div class="proto-card yellow"><h4>🎤 MODERACIÓN</h4><p>El facilitador conduce la partida desde una sola pantalla. En cada turno responde el analista indicado; el facilitador marca la opción que el equipo elija.</p></div>
+    <div class="proto-card"><h4>⏱️ TEMPORIZADOR</h4><p>Hay un tiempo límite para responder. A los 5 segundos finales suena la alerta; si el tiempo llega a cero, la respuesta cuenta como incorrecta.</p></div>
+    <div class="proto-card blue"><h4>🛡️ ESCUDO</h4><p>Se activa antes de responder. Si la primera respuesta es incorrecta, el escudo la absorbe y el equipo puede intentarlo de nuevo.</p></div>
+    <div class="proto-card blue"><h4>⏱️ MÁS TIEMPO</h4><p>Añade un minuto al temporizador para analizar mejor la pregunta.</p></div>
+    <div class="proto-card purple"><h4>⏩ SALTAR</h4><p>Cambia la pregunta sin penalización y sin cambiar de turno.</p></div>
+  </div>
+</div>
+
+<!-- ═════════ CONFIGURACIÓN ═════════ -->
+<div id="settings" class="screen">
+  <button class="btn-back" onclick="nav('home')">← VOLVER</button>
+  <h2 style="color:var(--neon);margin-bottom:14px;">⚙️ CONFIGURACIÓN</h2>
+  <div class="settings-box">
+    <h3>PARÁMETROS DE LA PARTIDA</h3>
+    <div class="setting-row"><div class="setting-label">🔊 SONIDO<span>Activar o silenciar todo el audio</span></div><label class="toggle-switch"><input type="checkbox" id="soundToggle" checked onchange="toggleMuteSettings()"><span class="toggle-slider"></span></label></div>
+    <div class="setting-row"><div class="setting-label">🏆 META DE PUNTOS<span>Puntos para ganar en modo Por Puntos (1–20)</span></div><div class="qty-control"><button class="qty-btn" onclick="changeTargetPoints(-1)">−</button><div class="qty-val" id="qty-targetPoints">10</div><button class="qty-btn" onclick="changeTargetPoints(1)">+</button></div></div>
+    <div class="setting-row"><div class="setting-label">⏱️ PODER: MÁS TIEMPO<span>Usos por equipo</span></div><div class="qty-control"><button class="qty-btn" onclick="changeQty('freeze',-1)">−</button><div class="qty-val" id="qty-freeze">3</div><button class="qty-btn" onclick="changeQty('freeze',1)">+</button></div></div>
+    <div class="setting-row"><div class="setting-label">🛡️ PODER: ESCUDO<span>Usos por equipo</span></div><div class="qty-control"><button class="qty-btn" onclick="changeQty('shield',-1)">−</button><div class="qty-val" id="qty-shield">3</div><button class="qty-btn" onclick="changeQty('shield',1)">+</button></div></div>
+    <div class="setting-row"><div class="setting-label">⏩ PODER: SALTAR<span>Usos por equipo</span></div><div class="qty-control"><button class="qty-btn" onclick="changeQty('skip',-1)">−</button><div class="qty-val" id="qty-skip">3</div><button class="qty-btn" onclick="changeQty('skip',1)">+</button></div></div>
+    <div class="setting-row"><div class="setting-label">⏱️ TIEMPO POR RESPUESTA<span>Segundos para contestar (10–90 s)</span></div><div class="qty-control"><button class="qty-btn" onclick="changeTime(-5)">−</button><div class="qty-val" id="qty-timeAnswer" style="min-width:44px;">30s</div><button class="qty-btn" onclick="changeTime(5)">+</button></div></div>
+  </div>
+  <button onclick="nav('home')" style="margin-top:16px;">💾 GUARDAR Y VOLVER</button>
+</div>
+
+<!-- ═════════ EQUIPOS ═════════ -->
+<div id="config" class="screen" style="justify-content:flex-start;padding-top:22px;overflow-y:auto;">
+  <button class="btn-back" onclick="nav('home')">← VOLVER</button>
+  <h2 style="color:var(--neon);margin:4px 0 12px;">FORMACIÓN DE EQUIPOS</h2>
+  <div style="display:flex;gap:18px;z-index:10;flex-wrap:wrap;justify-content:center;width:100%;max-width:1000px;">
+    <div class="team-box">
+      <input id="t1" class="tname" value="EQUIPO PIVOT">
+      <div class="player-tags" id="tags1"></div>
+      <div class="player-input-row"><input id="p1input" placeholder="Agregar otro nombre..." onkeydown="if(event.key==='Enter') addPlayer(1)"><button onclick="addPlayer(1)">+ AGREGAR</button></div>
+    </div>
+    <div class="team-box">
+      <input id="t2" class="tname" value="EQUIPO DASHBOARD">
+      <div class="player-tags" id="tags2"></div>
+      <div class="player-input-row"><input id="p2input" placeholder="Agregar otro nombre..." onkeydown="if(event.key==='Enter') addPlayer(2)"><button onclick="addPlayer(2)">+ AGREGAR</button></div>
+    </div>
+  </div>
+  <div class="pool">
+    <h4>👥 PARTICIPANTES · TOCA ◀ PARA EL EQUIPO 1 O ▶ PARA EL EQUIPO 2</h4>
+    <div class="pool-list" id="pool"></div>
+    <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <button class="secondary" style="font-size:12px;padding:8px 16px;margin:0;" onclick="randomTeams()">🎲 REPARTIR AL AZAR</button>
+      <button class="secondary" style="font-size:12px;padding:8px 16px;margin:0;" onclick="resetTeams()">↺ DEVOLVER TODOS A LA LISTA</button>
+    </div>
+  </div>
+  <button onclick="setup()" style="margin-top:14px;">✅ CONFIRMAR EQUIPOS</button>
+</div>
+
+<!-- ═════════ MODO ═════════ -->
+<div id="vs" class="screen">
+  <button class="btn-back" onclick="nav('config')">← VOLVER</button>
+  <h1 id="vsTitle" style="font-size:3.4rem;margin-bottom:10px;"></h1>
+  <div class="mode-selector">
+    <h3 style="color:var(--neon);margin-top:0;text-align:center;">MODO DE JUEGO</h3>
+    <label><input type="radio" name="gmode" value="victories" checked onchange="toggleWinMode()"> 🏆 Por puntos</label>
+    <label><input type="radio" name="gmode" value="round" onchange="toggleWinMode()"> ⚔️ Por rounds</label>
+    <div id="roundSelector" class="round-selector">
+      <label style="color:#ccc;font-size:0.9rem;">Número de rounds (3 preguntas por equipo en cada uno):</label>
+      <div class="round-option-btns">
+        <button class="round-opt-btn" onclick="selectRounds(1,this)">1</button>
+        <button class="round-opt-btn active" onclick="selectRounds(3,this)">3</button>
+        <button class="round-opt-btn" onclick="selectRounds(5,this)">5</button>
+      </div>
+    </div>
+  </div>
+  <button onclick="startGame()" style="margin-top:20px;">¡A LA BATALLA!</button>
+</div>
+
+<!-- ═════════ PARTIDA ═════════ -->
+<div id="game" class="screen">
+  <div id="game-content">
+    <div>
+      <h2 id="turnText" style="margin:0;font-size:1rem;color:#777;"></h2>
+      <h3 id="playerText" style="color:var(--neon);font-size:2rem;margin:5px 0;"></h3>
+      <div id="timer" style="font-size:3.5rem;font-weight:bold;color:#ff4d5e;"></div>
+    </div>
+    <div id="q"></div>
+    <div id="options"></div>
+    <div id="inter-turn-msg">⏳ PREPARANDO LA SIGUIENTE PREGUNTA...</div>
+    <div id="result" style="height:30px;font-size:1.5rem;font-weight:bold;"></div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="btn-freeze" onclick="useAbility('freeze')" style="background:#2196f3;font-size:12px;">⏱️ MÁS TIEMPO (<span id="count-freeze">0</span>)</button>
+      <button id="btn-shield" onclick="useAbility('shield')" style="background:var(--shield);color:#000;font-size:12px;">🛡️ ESCUDO (<span id="count-shield">0</span>)</button>
+      <button id="btn-skip" onclick="useAbility('skip')" style="background:var(--skip);color:#fff;font-size:12px;">⏩ SALTAR (<span id="count-skip">0</span>)</button>
+    </div>
+  </div>
+  <button class="pause-btn" id="pause-btn-game" onclick="togglePause()">⏸ PAUSA</button>
+</div>
+
+<!-- ═════════ FINAL ═════════ -->
+<div id="end" class="screen" style="overflow:hidden;position:relative;">
+  <canvas id="fireworksCanvas"></canvas>
+  <div style="position:relative;z-index:10;width:100%;display:flex;flex-direction:column;align-items:center;">
+    <h2 style="color:var(--warning);letter-spacing:5px;margin:0;font-size:1.1rem;">🏆 ORDEN RESTAURADO EN LOS DATOS</h2>
+    <div id="winner"></div>
+    <div id="mvp-card"><div id="mvp-badge">🥇</div><div style="font-size:0.7rem;color:#888;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">MEJOR ANALISTA — MVP</div><div id="mvp-name">—</div><div id="mvp-pts"></div></div>
+    <div class="rank-scroll"><table class="rank-table" style="width:100%;margin:0;"><thead><tr><th>POS.</th><th>ANALISTA</th><th>ACIERTOS</th></tr></thead><tbody id="rankTable"></tbody></table></div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-top:8px;"><button onclick="location.reload()">🔄 NUEVA PARTIDA</button></div>
+  </div>
+  <div class="footer-bar"><div class="ticker-move">Creado por: Jarlin Figueroa | DataBattle · Excel | Info: 809-958-9611 | Fin de la batalla</div></div>
+</div>
+
+<script>
+/* ══════════ BANCO DE PREGUNTAS (80) · Dashboards y presentación de datos + tablas dinámicas ══════════ */
+const QUESTIONS = [
+  {"q":"¿Qué es un dashboard?","o":["Una pantalla que resume indicadores clave para decidir","Un informe que muestra todas las filas de la base de datos","Una tabla dinámica con formato condicional en cada celda","Un gráfico que reemplaza a la tabla de datos original"],"a":0},
+  {"q":"¿Cuál es el propósito principal de un dashboard?","o":["Apoyar la toma de decisiones con datos","Guardar copias de la base","Reemplazar los informes detallados de cada área","Mostrar la mayor cantidad posible de gráficos"],"a":0},
+  {"q":"¿Cuáles son las cuatro piezas básicas de un dashboard?","o":["Título, indicadores, gráficos y filtros","Tablas, fórmulas y macros","Encabezado, pie de página, tablas y notas","Filas, columnas, valores y filtros de la tabla"],"a":0},
+  {"q":"¿Qué diferencia a un dashboard de un reporte?","o":["El dashboard resume en una pantalla; el reporte detalla","El reporte es interactivo y el dashboard es siempre fijo","El dashboard usa más filas y más páginas que el reporte","No hay diferencia: son dos nombres para lo mismo"],"a":0},
+  {"q":"Si un elemento del dashboard no responde ninguna pregunta, ¿qué conviene hacer?","o":["Quitarlo","Ponerlo más pequeño en una esquina","Moverlo a la parte superior del tablero","Cambiarle el color para que destaque"],"a":0},
+  {"q":"¿Qué significa KPI?","o":["Indicador clave de desempeño","Índice de precios","Informe clave de procesos internos","Indicador de posición del informe"],"a":0},
+  {"q":"¿Cuál de estos es un buen KPI?","o":["Monto promedio por servicio","La opinión del gerente sobre el mes","Una lista completa con los 360 servicios","El color corporativo del tablero"],"a":0},
+  {"q":"¿Cuál de estas condiciones NO es propia de un buen KPI?","o":["Que sea una opinión","Que sea medible","Que se pueda comparar con una meta","Que esté ligado a un objetivo"],"a":0},
+  {"q":"En un dashboard, ¿cómo se muestra normalmente un KPI?","o":["En una tarjeta con un número grande","En una tabla con todas las filas de la base","En un gráfico circular de diez porciones","En una nota al pie del tablero"],"a":0},
+  {"q":"¿Por qué un KPI debe ser comparable?","o":["Porque un número solo cobra sentido frente a algo","Porque Excel no permite crear tarjetas si el número no tiene comparación","Porque así ocupa menos espacio dentro de la hoja","Porque los gráficos dinámicos lo exigen"],"a":0},
+  {"q":"«Participación de SeNaSa: 26.92 %» es un KPI de tipo:","o":["Porcentaje","Promedio por servicio","Variación respecto al año anterior","Cantidad"],"a":0},
+  {"q":"«Los servicios pasaron de 150 a 210 (+40 %)» es un KPI de tipo:","o":["Variación","Cantidad absoluta del periodo","Promedio por servicio","Participación sobre el total"],"a":0},
+  {"q":"¿Qué gráfico conviene para comparar categorías, como el monto por ARS?","o":["Columnas","Líneas con marcadores","Circular con muchas porciones","Dispersión de puntos"],"a":0},
+  {"q":"¿Qué gráfico conviene para mostrar cómo cambia algo mes a mes?","o":["Líneas","Columnas apiladas al 100 %","Circular","Anillo con leyenda"],"a":0},
+  {"q":"¿Cuándo es apropiado un gráfico circular?","o":["Para partes de un total con pocas porciones","Para ver la tendencia de los últimos 24 meses","Para comparar más de diez categorías a la vez","Para mostrar un solo número grande"],"a":0},
+  {"q":"¿Cuántas porciones, como máximo, se recomiendan en un gráfico circular?","o":["Alrededor de 5 o 6","Entre 10 y 12 porciones","No tiene límite","Solo 2"],"a":0},
+  {"q":"¿Cuándo conviene usar barras horizontales en vez de columnas?","o":["Cuando los nombres de las categorías son largos","Cuando se quiere mostrar la evolución de los datos en el tiempo","Cuando hay que mostrar partes de un total","Cuando solo hay un número que mostrar"],"a":0},
+  {"q":"¿Qué muestra un gráfico combinado?","o":["Dos medidas a la vez, como monto y cantidad","Dos tablas dinámicas en una sola hoja","Un gráfico circular y uno de columnas superpuestos en la misma área","Varios años en un mismo gráfico de líneas"],"a":0},
+  {"q":"¿Por qué el eje de un gráfico de columnas debe empezar en 0?","o":["Para no exagerar las diferencias","Porque Excel no permite otro valor mínimo","Por estética","Para que el gráfico ocupe menos espacio"],"a":0},
+  {"q":"¿Qué efecto tiene usar 3D o sombras en un gráfico?","o":["Deforma los tamaños y distrae","Lo hace más preciso","Mejora la lectura en el proyector","Permite mostrar más categorías"],"a":0},
+  {"q":"¿Cuál es el mejor título para un gráfico de un dashboard?","o":["SeNaSa lidera el monto","Gráfico 1","Monto por ARS en la hoja Dashboard del archivo","Tabla dinámica de ARS"],"a":0},
+  {"q":"¿Qué es un gráfico dinámico?","o":["Un gráfico conectado a una tabla dinámica","Un gráfico animado","Un gráfico creado desde un rango de celdas fijo","Un gráfico que cambia de tipo automáticamente"],"a":0},
+  {"q":"Si se filtra la tabla dinámica de origen, ¿qué pasa con su gráfico dinámico?","o":["Cambia junto con la tabla","Se mantiene igual hasta actualizarlo a mano","Se borra","Pierde la conexión con la tabla"],"a":0},
+  {"q":"En un gráfico dinámico, el campo colocado en Filas se convierte en:","o":["El eje de categorías","La leyenda","La altura de las columnas","El título del gráfico"],"a":0},
+  {"q":"En un gráfico dinámico, el campo colocado en Columnas se convierte en:","o":["La leyenda","El eje de categorías","El filtro del informe","El título del eje vertical"],"a":0},
+  {"q":"En un gráfico dinámico, ¿qué determina la altura de las columnas?","o":["El campo del área Valores","El campo del área Filas","El campo del área Filtros","El campo de la segmentación conectada"],"a":0},
+  {"q":"¿Qué tipo de gráfico NO se puede crear como gráfico dinámico?","o":["Dispersión","Columnas agrupadas","Líneas con marcadores","Circular"],"a":0},
+  {"q":"¿Para qué sirve «Botones de campo › Ocultar todo» en un gráfico dinámico?","o":["Para quitar los botones grises del gráfico","Para ocultar la tabla dinámica de origen y dejar solo el gráfico","Para esconder la leyenda y los títulos","Para bloquear el gráfico contra cambios"],"a":0},
+  {"q":"Si llegan datos nuevos a la tabla de origen, ¿qué se hace para que el gráfico dinámico los muestre?","o":["Actualizar todo","Volver a crear el gráfico","Copiar y pegar los datos dentro del gráfico","Cambiar el tipo de gráfico"],"a":0},
+  {"q":"¿Qué ventaja tiene un gráfico dinámico sobre un gráfico normal?","o":["Responde a filtros y segmentaciones","Admite todos los tipos de gráfico de Excel","No necesita una tabla de origen","Se actualiza con datos nuevos sin pulsar nada"],"a":0},
+  {"q":"¿Qué es una segmentación de datos?","o":["Un panel de botones que filtra tablas dinámicas","Una división de la hoja de cálculo en varias secciones independientes","Un tipo de gráfico que separa categorías","Una fórmula que agrupa los datos por año"],"a":0},
+  {"q":"¿Cómo se logra que una segmentación filtre varias tablas dinámicas a la vez?","o":["Con Conexiones de informe","Copiando la segmentación en cada tabla","Creando una segmentación por cada gráfico","Agrupando las tablas"],"a":0},
+  {"q":"Una segmentación solo puede conectarse a tablas dinámicas que:","o":["Salen de la misma tabla de datos","Están ubicadas en la misma hoja","Tienen el mismo nombre de tabla","Usan el mismo tipo de gráfico dinámico"],"a":0},
+  {"q":"¿Cómo se eligen varios botones a la vez en una segmentación?","o":["Con Ctrl + clic","Con doble clic en cada botón","Arrastrando la segmentación al área Filtros","Con Mayús + F2"],"a":0},
+  {"q":"¿Qué hace el embudo con ✕ de una segmentación?","o":["Borra el filtro","Elimina la segmentación","Oculta la tabla dinámica","Cierra el panel de campos"],"a":0},
+  {"q":"¿Qué herramienta filtra solo fechas con una barra de tiempo?","o":["La escala de tiempo","La segmentación de texto","El filtro de etiqueta","La validación de datos"],"a":0},
+  {"q":"¿Qué ventaja tiene una segmentación frente al filtro de la tabla dinámica?","o":["Se ve qué está filtrado","Es más rápida","Funciona aunque no exista tabla dinámica","Cambia los datos de la base de origen"],"a":0},
+  {"q":"¿Filtrar con una segmentación modifica la base de datos original?","o":["No, solo cambia lo que se ve","Sí, borra las filas no elegidas","Sí, pero se recupera con Ctrl + Z","Solo si la base es una tabla de Excel"],"a":0},
+  {"q":"Una segmentación recién insertada, ¿qué filtra?","o":["Solo la tabla dinámica donde se creó","Todas las tablas dinámicas del libro, sin excepción","Todas las tablas de la misma hoja","Ninguna tabla hasta que se conecte"],"a":0},
+  {"q":"En un dashboard bien diseñado, ¿dónde van las tarjetas de KPI?","o":["Arriba","Abajo, junto a la fuente de datos","En una hoja aparte","Al final, después de los gráficos"],"a":0},
+  {"q":"¿Qué principio de diseño dice que lo más importante va arriba a la izquierda?","o":["Jerarquía","Alineación","Espacio en blanco","Color con significado"],"a":0},
+  {"q":"¿Qué significa usar el color «con significado» en un dashboard?","o":["Cada color representa siempre lo mismo","Usar un color distinto en cada gráfico","Usar colores llamativos para decorar el tablero","Pintar cada tarjeta de un color diferente"],"a":0},
+  {"q":"¿Para qué se recomienda reservar el color rojo en un dashboard?","o":["Para alertas","Para los títulos principales","Para el fondo de las tarjetas","Para todos los gráficos de columnas"],"a":0},
+  {"q":"¿Por qué conviene ordenar las categorías de mayor a menor?","o":["Para leer el ranking de un vistazo","Porque Excel lo exige en los gráficos dinámicos","Por estética","Para que el gráfico tenga menos colores"],"a":0},
+  {"q":"¿Qué se logra al quitar las líneas de cuadrícula de la hoja del dashboard?","o":["Un tablero más limpio","Más velocidad","Proteger las tablas dinámicas","Ocultar las fórmulas de las tarjetas"],"a":0},
+  {"q":"¿Qué beneficio aporta un dashboard al equipo de trabajo?","o":["Todos miran los mismos números","Elimina la necesidad de guardar los datos","Reemplaza a las personas que toman decisiones","Menos trabajo"],"a":0},
+  {"q":"«Un dashboard no reemplaza los datos, los resume para…»","o":["que alguien pueda actuar","que no haga falta guardarlos","que ocupen menos","que nadie tenga que revisarlos"],"a":0},
+  {"q":"La tarjeta del monto total muestra =IMPORTARDATOSDINAMICOS(...). ¿Qué significa?","o":["Que toma el valor de la tabla dinámica","Que la fórmula tiene un error de sintaxis","Que el valor quedó fijo y ya no cambia","Que se importaron datos de otro archivo"],"a":0},
+  {"q":"¿Qué organización de hojas conviene para un dashboard?","o":["Tablas dinámicas en una hoja y el tablero en otra","La base, las tablas dinámicas y los gráficos juntos en la misma hoja","Una hoja distinta por cada gráfico","Los datos y las tablas dentro del gráfico"],"a":0},
+  {"q":"¿Qué opción se usa para llevar un gráfico dinámico a otra hoja?","o":["Mover gráfico","Ocultar todo","Conexiones de informe","Botones de campo"],"a":0},
+  {"q":"¿Qué es una tabla dinámica?","o":["Un resumen interactivo de datos sin fórmulas","Una tabla con formato que crece sola al escribir","Una tabla que se mueve al desplazar la hoja","Un rango con validación de datos"],"a":0},
+  {"q":"¿Cuáles son las cuatro áreas de una tabla dinámica?","o":["Filtros, Columnas, Filas y Valores","Título, indicadores (KPI), gráficos y filtros","Datos, Fórmulas, Formato y Diseño","Encabezado, Cuerpo, Total y Pie"],"a":0},
+  {"q":"¿En qué área se coloca el campo que se quiere sumar o contar?","o":["Valores","Filas","Columnas","Filtros"],"a":0},
+  {"q":"Si arrastras un campo de texto al área Valores, ¿qué calcula Excel por defecto?","o":["Cuenta","Suma","Promedio","Máximo"],"a":0},
+  {"q":"Si arrastras un campo numérico completo al área Valores, ¿qué calcula Excel por defecto?","o":["Suma","Cuenta","Promedio","Producto"],"a":0},
+  {"q":"¿Dónde se cambia Suma por Promedio en una tabla dinámica?","o":["Configuración de campo de valor","Formato condicional","Opciones de tabla dinámica › Totales y filtros","Diseño de informe"],"a":0},
+  {"q":"¿Qué hace «Mostrar valores como › % del total general»?","o":["Muestra cada valor como parte del total","Suma todos los valores dos veces","Convierte el monto a formato de moneda con dos decimales","Ordena los valores de mayor a menor"],"a":0},
+  {"q":"¿Qué diferencia hay entre «Resumir valores por» y «Mostrar valores como»?","o":["El primero calcula; el segundo presenta el cálculo","Son la misma opción con dos nombres distintos","El primero ordena y el segundo filtra","El primero solo funciona con texto y el segundo solo con números y fechas"],"a":0},
+  {"q":"Para que la tabla dinámica incluya filas nuevas al actualizar, la base debe ser:","o":["Una tabla de Excel","Un rango","Un rango con bordes en todas las celdas","Una hoja protegida con contraseña"],"a":0},
+  {"q":"¿Qué hay que hacer después de agregar datos nuevos a la tabla de origen?","o":["Actualizar la tabla dinámica","Crear otra tabla dinámica desde cero","Guardar y cerrar el archivo","Ordenar la base de datos"],"a":0},
+  {"q":"¿Para qué sirve el área Filtros de una tabla dinámica?","o":["Filtrar todo el informe por un campo","Ordenar las filas del informe de mayor a menor valor","Eliminar datos de la base original","Crear columnas calculadas nuevas"],"a":0},
+  {"q":"Para ver las 3 ARS con más monto en una tabla dinámica, conviene:","o":["Ordenar de mayor a menor","Borrar de la base las ARS con menos monto para que no aparezcan","Crear una tabla dinámica para cada ARS","Cambiar Suma por Cuenta"],"a":0},
+  {"q":"¿Qué se obtiene al poner Año en Columnas y Mes en Filas?","o":["Una comparación de los meses por año","Un gráfico de líneas que se crea de forma automática","Un total por año sin ningún detalle","Una lista de fechas repetidas"],"a":0},
+  {"q":"¿Para qué sirve la columna auxiliar =AÑO([@Fecha]) en la tabla de origen?","o":["Para agrupar los datos por año","Para dar formato","Para calcular la edad de cada registro","Para ordenar las fechas de forma ascendente"],"a":0},
+  {"q":"En la tabla de origen, ¿qué fórmula devuelve el número del mes?","o":["=MES([@Fecha])","=AÑO([@Fecha])","=TEXTO([@Fecha])","=DIA([@Fecha])"],"a":0},
+  {"q":"¿Qué indica el «Total general» de una tabla dinámica?","o":["El resumen de lo que está a la vista","El valor más alto de la columna","El número de campos utilizados","El promedio de todos los registros de la base"],"a":0},
+  {"q":"¿Qué es un campo en una tabla dinámica?","o":["Una columna de la tabla de origen","Una celda cualquiera dentro de la tabla dinámica","Un filtro aplicado a los datos","Una fila con los totales"],"a":0},
+  {"q":"Antes de insertar una tabla dinámica, ¿dónde conviene hacer clic?","o":["Dentro de la tabla de datos","En una celda vacía de otra hoja","En el encabezado de la columna Monto","En la barra de fórmulas"],"a":0},
+  {"q":"¿Qué ocurre al hacer doble clic sobre un valor de la tabla dinámica?","o":["Muestra las filas que forman ese valor","Permite editar el número directamente en la tabla dinámica","Borra el valor de la base de origen","Cambia el tipo de cálculo del campo"],"a":0},
+  {"q":"Para contar servicios, ¿qué campo conviene llevar a Valores?","o":["Uno que nunca esté vacío, como el ID","El campo Monto con Suma","El campo Fecha con Máximo","Cualquier campo, colocado en el área Filtros en lugar de Valores"],"a":0},
+  {"q":"¿Qué ocurre si cambias un campo de Filas a Columnas?","o":["Cambia la forma del resumen","Se borra todo","Se modifica la base de datos de origen","Se crea una tabla dinámica nueva"],"a":0},
+  {"q":"¿Qué muestra «% del total de columnas»?","o":["El peso de cada valor dentro de su columna","El peso de cada valor dentro de su fila","El total de cada columna en moneda","La diferencia porcentual entre cada columna y la anterior"],"a":0},
+  {"q":"¿Qué hace «Diseño de informe › Mostrar en forma tabular»?","o":["Pone cada campo de Filas en su propia columna","Aplica un estilo de tabla con colores","Muestra solo los totales generales","Convierte la tabla dinámica en un rango normal de celdas sin conexión"],"a":0},
+  {"q":"Si en Valores aparece «Cuenta de Monto» en vez de «Suma de Monto», ¿qué puede estar pasando?","o":["Que Monto tenga texto o celdas vacías","Que la tabla dinámica esté dañada","Que falte actualizar el gráfico","Que la tabla dinámica se haya creado en una hoja distinta a la base"],"a":0},
+  {"q":"¿Qué es un gráfico de tabla dinámica respecto a su tabla?","o":["Su representación visual conectada","Una copia independiente de los datos","Un resumen de otra base distinta","Un filtro aplicado sobre el informe"],"a":0},
+  {"q":"¿Qué hace un filtro de etiqueta en el área Filas?","o":["Filtra por el texto de las categorías","Filtra por el valor numérico calculado","Elimina las etiquetas vacías de la base","Cambia el nombre de los campos"],"a":0},
+  {"q":"¿Qué hace un filtro de valor como «10 mejores»?","o":["Muestra las categorías con mayores valores","Muestra las 10 primeras filas tal como aparecen en la base original","Ordena alfabéticamente las categorías","Suma los 10 valores más altos"],"a":0},
+  {"q":"La base tiene 360 servicios, pero la tabla dinámica cuenta 350. ¿Qué es lo más probable?","o":["Hay un filtro activo","Falta guardar","El gráfico no está conectado","La fórmula AÑO tiene un error"],"a":0},
+  {"q":"¿Qué opción permite llevar una tabla dinámica a otro lugar del libro?","o":["Mover tabla dinámica","Copiar formato","Conexiones de informe","Cambiar origen de datos"],"a":0},
+  {"q":"¿Qué hace «Cambiar origen de datos» en una tabla dinámica?","o":["Indica de qué rango salen los datos","Cambia el tipo de cálculo de Valores","Mueve la tabla dinámica, con su formato, a otra hoja del libro","Convierte el resumen en un gráfico"],"a":0}
+];
+
+/* ══════════ PARTICIPANTES PRECARGADOS ══════════ */
+const PARTICIPANTES = ["Alenny Tejeda Montero","Crispatri Albenia Borbón Silva","Adriana García Hidalgo","Ángel Rodolfo Mariano Ventura","Hector José Donastorg Vásquez","Jorge Antonio Suazo Bello","Katherinne Liliana Paulino Rosario","Rachell Gómez","Winnifer Valdez Medina","Yasmiry Mejía Núñez","Katherine Suriel"];
+
+/* ══════════ AUDIO (sintetizado) ══════════ */
+let audioCtx=null, globalMuted=false, bgNodes=[], bgActive=null, gameBeatTimer=null, endMusicTimer=null;
+function getAC(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended') audioCtx.resume(); return audioCtx; }
+function playTone(freq,type='sine',dur=0.15,vol=0.1,delay=0){
+  if(globalMuted) return;
+  try{ const c=getAC(),o=c.createOscillator(),g=c.createGain(); o.connect(g); g.connect(c.destination);
+    o.type=type; o.frequency.setValueAtTime(freq,c.currentTime+delay);
+    g.gain.setValueAtTime(0,c.currentTime+delay); g.gain.linearRampToValueAtTime(vol,c.currentTime+delay+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+dur); o.start(c.currentTime+delay); o.stop(c.currentTime+delay+dur+0.05); }catch(e){}
+}
+function stopBgMusic(){ bgNodes.forEach(n=>{try{n.stop();}catch(e){}}); bgNodes=[]; bgActive=null;
+  if(gameBeatTimer){clearInterval(gameBeatTimer);gameBeatTimer=null;} if(endMusicTimer){clearTimeout(endMusicTimer);endMusicTimer=null;} }
+function startMusicHome(){
+  if(globalMuted||bgActive==='home') return; stopBgMusic(); bgActive='home'; const c=getAC();
+  const step=Math.round(60/130*1000), bass=[110,87.31,130.81,98.00];
+  const arps=[[220,261.63,329.63,440],[174.61,220,261.63,349.23],[261.63,329.63,392,523.25],[196,246.94,293.66,392]];
+  let beat=0,tick=0;
+  const t=setInterval(()=>{ if(globalMuted||bgActive!=='home'){clearInterval(t);return;}
+    try{ const now=c.currentTime, ci=Math.floor(beat/16)%4, arp=arps[ci];
+      if(tick%8===0){ const bo=c.createOscillator(),bg=c.createGain(); bo.type='triangle'; bo.frequency.value=bass[ci]; bo.connect(bg); bg.connect(c.destination); bg.gain.setValueAtTime(0.06,now); bg.gain.exponentialRampToValueAtTime(0.001,now+0.5); bo.start(now); bo.stop(now+0.6); }
+      if(tick%2===0){ const ao=c.createOscillator(),ag=c.createGain(); ao.type='square'; ao.frequency.value=arp[(tick/2)%4]; ao.connect(ag); ag.connect(c.destination); ag.gain.setValueAtTime(0.02,now); ag.gain.exponentialRampToValueAtTime(0.001,now+0.15); ao.start(now); ao.stop(now+0.2); }
+      tick++; if(tick>=64) tick=0; }catch(e){}
+    beat++; }, Math.round(step/4));
+  bgNodes.push({stop:()=>clearInterval(t)});
+}
+function startMusicGame(){
+  if(globalMuted||bgActive==='game') return; stopBgMusic(); bgActive='game'; const c=getAC();
+  const pad=c.createOscillator(),pg=c.createGain(); pad.type='sine'; pad.frequency.value=110; pad.connect(pg); pg.connect(c.destination); pg.gain.value=0.02; pad.start(); bgNodes.push(pad);
+  const step=Math.round(60/120*1000), seq=[220,293,329,293,440,329,293,220]; let beat=0;
+  gameBeatTimer=setInterval(()=>{ if(globalMuted||bgActive!=='game') return;
+    try{ const now=c.currentTime; if(beat%4===0) playTone(100,'triangle',0.1,0.05);
+      const ao=c.createOscillator(),aog=c.createGain(); ao.type='square'; ao.frequency.value=seq[beat%seq.length]; ao.connect(aog); aog.connect(c.destination);
+      aog.gain.setValueAtTime(0.015,now); aog.gain.exponentialRampToValueAtTime(0.001,now+0.2); ao.start(now); ao.stop(now+0.25); }catch(e){}
+    beat++; }, Math.round(step/2));
+}
+function startMusicEnd(){
+  if(globalMuted) return; stopBgMusic(); bgActive='end'; const c=getAC();
+  const melody=[523,659,784,880,1047,880,784,659,523,659,784,1047];
+  melody.forEach((f,i)=>playTone(f,'triangle',0.28,0.15,i*0.16));
+  endMusicTimer=setTimeout(()=>{ if(bgActive!=='end') return; const p=c.createOscillator(),g=c.createGain(); p.type='sine'; p.frequency.value=523; p.connect(g); g.connect(c.destination); g.gain.value=0.03; p.start(); bgNodes.push(p); setTimeout(()=>stopBgMusic(),10000); }, melody.length*160+100);
+}
+function soundStory(){[440,494,523,587].forEach((f,i)=>playTone(f,'triangle',0.25,0.08,i*0.12));}
+function soundHelp(){[600,500,400].forEach((f,i)=>playTone(f,'sine',0.1,0.05,i*0.1));}
+function soundSettings(){playTone(880,'sine',0.05,0.05);playTone(1100,'sine',0.05,0.05,0.07);}
+function soundConfig(){[300,600,900].forEach((f,i)=>playTone(f,'triangle',0.08,0.08,i*0.08));}
+function soundAddPlayer(){playTone(880,'triangle',0.06,0.1);playTone(1200,'sine',0.06,0.08,0.08);}
+function soundVS(){playTone(400,'square',0.15,0.08);playTone(600,'square',0.3,0.08,0.2);}
+function soundCorrect(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',0.15,0.1,i*0.08));}
+function soundWrong(){playTone(220,'triangle',0.3,0.15);playTone(180,'triangle',0.3,0.15,0.15);}
+function soundTick(){playTone(1200,'sine',0.04,0.1);}
+function soundShield(){playTone(600,'sine',0.2,0.1);playTone(800,'sine',0.2,0.1,0.1);}
+function applyMuteState(){
+  document.getElementById('muteFloatBtn').innerText=globalMuted?'🔇':'🔊';
+  const tog=document.getElementById('soundToggle'); if(tog) tog.checked=!globalMuted;
+  if(globalMuted) stopBgMusic(); else { const cur=document.querySelector('.screen.active'); if(cur) handleScreenMusic(cur.id); }
+}
+function toggleMuteSettings(){ globalMuted=!document.getElementById('soundToggle').checked; applyMuteState(); }
+function toggleMuteFloat(){ globalMuted=!globalMuted; applyMuteState(); }
+function toast(msg,dur=2600){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove('show'),dur); }
+
+/* ══════════ CONFIGURACIÓN ══════════ */
+let cfg={freeze:3,shield:3,skip:3,targetPoints:10,timeAnswer:30};
+function changeTargetPoints(d){ soundSettings(); cfg.targetPoints=Math.max(1,Math.min(20,cfg.targetPoints+d)); document.getElementById('qty-targetPoints').innerText=cfg.targetPoints; }
+function changeQty(type,d){ soundSettings(); cfg[type]=Math.max(0,Math.min(5,cfg[type]+d)); document.getElementById('qty-'+type).innerText=cfg[type]; }
+function changeTime(d){ soundSettings(); cfg.timeAnswer=Math.max(10,Math.min(90,cfg.timeAnswer+d)); document.getElementById('qty-timeAnswer').innerText=cfg.timeAnswer+'s'; }
+
+/* ══════════ EQUIPOS ══════════ */
+let p1=[],p2=[];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function pool(){ return PARTICIPANTES.filter(n=>!p1.includes(n)&&!p2.includes(n)); }
+function renderTeams(){
+  [1,2].forEach(team=>{ const arr=team===1?p1:p2;
+    document.getElementById('tags'+team).innerHTML=arr.length?arr.map((n,i)=>`<div class="player-tag">${esc(n)}<span class="remove" title="Devolver a la lista" onclick="removePlayer(${team},${i})">✕</span></div>`).join(''):'<span style="color:#555;font-size:13px;">Sin analistas aún…</span>'; });
+  const pl=pool();
+  document.getElementById('pool').innerHTML=pl.length?pl.map(n=>`<div class="pchip"><button title="Al equipo 1" onclick="assign('${esc(n).replace(/'/g,"\\'")}',1)">◀</button><b>${esc(n)}</b><button title="Al equipo 2" onclick="assign('${esc(n).replace(/'/g,"\\'")}',2)">▶</button></div>`).join(''):'<span class="pool-empty">✔ Todos los participantes tienen equipo.</span>';
+}
+function assign(name,team){ (team===1?p1:p2).push(name); soundAddPlayer(); renderTeams(); }
+function addPlayer(team){ const id=team===1?'p1input':'p2input', val=document.getElementById(id).value.trim(); if(!val) return; (team===1?p1:p2).push(val); soundAddPlayer(); document.getElementById(id).value=''; renderTeams(); }
+function removePlayer(team,idx){ (team===1?p1:p2).splice(idx,1); renderTeams(); }
+function randomTeams(){ const all=[...pool(),...p1,...p2].filter((n,i,a)=>a.indexOf(n)===i).sort(()=>Math.random()-0.5); p1=[];p2=[]; all.forEach((n,i)=>(i%2?p2:p1).push(n)); soundConfig(); renderTeams(); }
+function resetTeams(){ p1=[];p2=[]; renderTeams(); }
+
+/* ══════════ NAVEGACIÓN ══════════ */
+function handleScreenMusic(id){ if(id==='home') startMusicHome(); else if(id==='game') startMusicGame(); else if(id==='end') startMusicEnd(); else stopBgMusic(); }
+const sfxMap={story:soundStory,help:soundHelp,settings:soundSettings,config:soundConfig,vs:soundVS};
+function nav(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  handleScreenMusic(id); if(sfxMap[id]) setTimeout(()=>sfxMap[id](),80);
+  document.getElementById('muteFloatBtn').style.display=['game','end'].includes(id)?'block':'none';
+  if(id==='config') renderTeams();
+}
+
+/* ══════════ PARTIDA ══════════ */
+let gameMode='victories', targetWins=10, team1, team2, points={}, turn=1, index=0;
+let pi1=0,pi2=0,tInt,aQs=[],timeLeft=30,wins1=0,wins2=0,isPaused=false;
+let habs1={},habs2={},activeHab=null,shieldUsed=false;
+let totalRounds=3,currentRound=1,roundTurnsLeft=6,roundCorrect1=0,roundCorrect2=0,roundWins1=0,roundWins2=0,selectedRounds=3;
+function toggleWinMode(){ gameMode=document.querySelector('input[name="gmode"]:checked').value; document.getElementById('roundSelector').style.display=gameMode==='round'?'block':'none'; }
+function selectRounds(n,btn){ selectedRounds=n; document.querySelectorAll('.round-opt-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+function setup(){
+  team1=document.getElementById('t1').value.trim()||'EQUIPO PIVOT'; team2=document.getElementById('t2').value.trim()||'EQUIPO DASHBOARD';
+  if(p1.length<1||p2.length<1) return alert('Cada equipo necesita al menos un analista.');
+  document.getElementById('vsTitle').innerHTML=`📈 ${esc(team1)} <span style="color:var(--neon)">VS</span> ${esc(team2)} 📊`;
+  nav('vs');
+}
+const shuffle=a=>{ a=[...a]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+function startGame(){
+  gameMode=document.querySelector('input[name="gmode"]:checked').value;
+  targetWins=cfg.targetPoints;
+  if(gameMode==='round'){ totalRounds=selectedRounds; currentRound=1; roundWins1=0; roundWins2=0; roundCorrect1=0; roundCorrect2=0; roundTurnsLeft=6; }
+  habs1={freeze:cfg.freeze,shield:cfg.shield,skip:cfg.skip}; habs2={freeze:cfg.freeze,shield:cfg.shield,skip:cfg.skip};
+  aQs=shuffle(QUESTIONS); points={}; [...p1,...p2].forEach(p=>points[p]=0);
+  document.getElementById('ui-top').style.display='flex';
+  document.getElementById('t1-hud').innerText=team1; document.getElementById('t2-hud').innerText=team2;
+  wins1=0; wins2=0; index=0; pi1=0; pi2=0; turn=1;
+  document.getElementById('center-hud-label').innerText=gameMode==='round'?`ROUND 1/${totalRounds}`:`META: ${targetWins}`;
+  updateBars(); nav('game');
+  if(gameMode==='round') setTimeout(()=>showRoundIntro(currentRound,()=>loadQ()),400); else setTimeout(loadQ,300);
+}
+function togglePause(){ isPaused=!isPaused; document.getElementById('pauseOverlay').style.display=isPaused?'flex':'none'; document.getElementById('pauseMain').style.display='flex'; document.getElementById('pauseExitConfirm').style.display='none'; if(!isPaused) startTimer(); else clearInterval(tInt); }
+function showExitConfirm(){ document.getElementById('pauseMain').style.display='none'; document.getElementById('pauseExitConfirm').style.display='block'; }
+function cancelExit(){ document.getElementById('pauseMain').style.display='flex'; document.getElementById('pauseExitConfirm').style.display='none'; }
+function confirmExit(){ clearInterval(tInt); isPaused=false; document.getElementById('pauseOverlay').style.display='none'; document.getElementById('ui-top').style.display='none'; nav('home'); }
+function updateBars(){
+  const b1=document.getElementById('t1-bar'), b2=document.getElementById('t2-bar');
+  if(gameMode==='victories'){
+    b1.style.width=Math.min(100,wins1/targetWins*100)+'%'; b2.style.width=Math.min(100,wins2/targetWins*100)+'%';
+    document.getElementById('t1-wins').innerHTML=`⚡ ${wins1} <span style="font-size:12px;opacity:0.6">/ ${targetWins}</span>`;
+    document.getElementById('t2-wins').innerHTML=`⚡ ${wins2} <span style="font-size:12px;opacity:0.6">/ ${targetWins}</span>`;
+  } else {
+    b1.style.width=Math.min(100,roundWins1/totalRounds*100)+'%'; b2.style.width=Math.min(100,roundWins2/totalRounds*100)+'%';
+    document.getElementById('t1-wins').innerHTML=`${'🏆'.repeat(roundWins1)||'—'} <span style="font-size:13px">${roundWins1}/${totalRounds}</span>`;
+    document.getElementById('t2-wins').innerHTML=`${'🏆'.repeat(roundWins2)||'—'} <span style="font-size:13px">${roundWins2}/${totalRounds}</span>`;
+    document.getElementById('center-hud-label').innerText=`ROUND ${currentRound}/${totalRounds}`;
+  }
+}
+function currentPlayer(){ return turn===1?p1[pi1%p1.length]:p2[pi2%p2.length]; }
+function loadQ(){
+  clearInterval(tInt); timeLeft=cfg.timeAnswer; activeHab=null; shieldUsed=false;
+  const tm=document.getElementById('timer'); tm.style.color='#ff4d5e'; tm.innerText=timeLeft;
+  document.getElementById('q').style.display='block';
+  const od=document.getElementById('options'); od.style.display='flex'; od.style.flexDirection='column';
+  document.getElementById('inter-turn-msg').style.display='none';
+  if(index>=aQs.length){ aQs=shuffle(QUESTIONS); index=0; }
+  const q=aQs[index];
+  document.getElementById('turnText').innerText=`TURNO DE: ${turn===1?team1:team2}`;
+  document.getElementById('playerText').innerText=currentPlayer();
+  document.getElementById('q').innerText=q.q;
+  document.getElementById('result').innerText='';
+  od.innerHTML='';
+  shuffle(q.o.map((t,i)=>({texto:t,correcta:i===q.a}))).forEach(op=>{
+    const d=document.createElement('div'); d.className='option'; d.innerText=op.texto; d.onclick=e=>check(op.correcta,e.currentTarget); od.appendChild(d); });
+  updHabsUI(); startTimer();
+}
+function startTimer(){ clearInterval(tInt); tInt=setInterval(()=>{ if(isPaused) return; timeLeft--; document.getElementById('timer').innerText=timeLeft; if(timeLeft<=5&&timeLeft>0) soundTick(); if(timeLeft<=0) check(false); },1000); }
+function showResultOverlay(ok,cb){
+  clearInterval(tInt); document.getElementById('timer').innerText='';
+  const ov=document.getElementById('resultOverlay'), big=document.getElementById('resultBigText');
+  big.style.color=ok?'var(--neon)':'var(--error)'; big.style.textShadow=ok?'0 0 40px var(--neon),0 0 80px var(--neon)':'0 0 40px var(--error),0 0 80px var(--error)';
+  big.innerText=ok?'✅ CORRECTO':'❌ INCORRECTO'; big.className=''; void big.offsetWidth; big.className='resultAnim'; ov.style.display='flex';
+  setTimeout(()=>{ ov.style.display='none'; ['q','options'].forEach(id=>document.getElementById(id).style.display='none');
+    document.getElementById('turnText').innerText=''; document.getElementById('playerText').innerText=''; cb(); },1500);
+}
+function check(isC,el){
+  clearInterval(tInt);
+  document.querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');
+  if(isC){
+    soundCorrect(); if(el) el.classList.add('chosen-correct');
+    points[currentPlayer()]++;
+    if(gameMode==='victories'){ if(turn===1) wins1++; else wins2++; } else { if(turn===1) roundCorrect1++; else roundCorrect2++; }
+    updateBars(); setTimeout(()=>showResultOverlay(true,nextTurn),500);
+  } else {
+    if(activeHab==='shield'&&!shieldUsed&&el){
+      soundShield(); shieldUsed=true; activeHab=null; el.style.opacity='0.3'; el.style.pointerEvents='none';
+      document.getElementById('result').innerHTML="<span style='color:var(--shield)'>🛡️ ESCUDO ACTIVO — INTENTEN DE NUEVO</span>";
+      document.querySelectorAll('.option').forEach(o=>{ if(o!==el) o.style.pointerEvents='auto'; }); startTimer(); return;
+    }
+    soundWrong(); if(el) el.classList.add('chosen-wrong');
+    updateBars(); setTimeout(()=>showResultOverlay(false,nextTurn),500);
+  }
+}
+function showWinnerAnnouncement(){
+  clearInterval(tInt); stopBgMusic();
+  playTone(440,'square',0.2,0.1); playTone(554,'square',0.2,0.1,0.2); playTone(659,'square',0.2,0.1,0.4); playTone(880,'square',0.6,0.1,0.6);
+  const wa=document.getElementById('winner-announcement'); wa.style.display='flex';
+  setTimeout(()=>{ wa.style.display='none'; end(); },4000);
+}
+function nextTurn(){
+  index++; turn=turn===1?2:1; if(turn===1) pi1++; else pi2++;
+  if(gameMode==='victories'){ if(wins1>=targetWins||wins2>=targetWins){ showWinnerAnnouncement(); return; } }
+  else { roundTurnsLeft--; if(roundTurnsLeft<=0){ endRound(); return; } }
+  loadQ();
+}
+function showRoundIntro(n,cb){
+  const ov=document.getElementById('roundIntroOverlay'), txt=document.getElementById('roundIntroText'), sub=document.getElementById('roundIntroSub');
+  ov.style.display='flex'; txt.innerText=`ROUND ${n}`; txt.style.color='var(--warning)'; txt.style.textShadow='0 0 50px var(--warning),0 0 100px var(--warning)'; sub.style.display='none';
+  txt.className=''; void txt.offsetWidth; txt.className='roundAnim'; [220,330,440,550].forEach((f,i)=>playTone(f,'square',0.12,0.18,i*0.1));
+  setTimeout(()=>{ txt.innerText='⚔️ ¡A ANALIZAR!'; txt.style.color='var(--error)'; txt.style.textShadow='0 0 60px var(--error),0 0 120px var(--error)';
+    txt.className=''; void txt.offsetWidth; txt.className='fightAnim';
+    playTone(880,'sawtooth',0.15,0.35); playTone(660,'square',0.2,0.3,0.08); playTone(440,'triangle',0.25,0.25,0.18);
+    setTimeout(()=>{ ov.style.display='none'; cb(); },1300); },1600);
+}
+function endRound(){
+  let w=0; if(roundCorrect1>roundCorrect2){ roundWins1++; w=1; } else if(roundCorrect2>roundCorrect1){ roundWins2++; w=2; }
+  updateBars();
+  showRoundResult(w,()=>{ if(currentRound>=totalRounds) showWinnerAnnouncement(); else { currentRound++; roundCorrect1=0; roundCorrect2=0; roundTurnsLeft=6; updateBars(); showRoundIntro(currentRound,()=>loadQ()); } });
+}
+function showRoundResult(w,cb){
+  const ov=document.getElementById('roundIntroOverlay'), txt=document.getElementById('roundIntroText'), sub=document.getElementById('roundIntroSub');
+  ov.style.display='flex';
+  if(w){ txt.innerText='🏆 '+(w===1?team1:team2); txt.style.color='var(--neon)'; txt.style.textShadow='0 0 50px var(--neon),0 0 100px var(--neon)'; sub.style.display='block'; sub.style.color='var(--neon)'; sub.innerText=`GANA EL ROUND ${currentRound}`; [523,659,784,1047].forEach((f,i)=>playTone(f,'sine',0.2,0.15,i*0.1)); }
+  else { txt.innerText='⚖️ EMPATE'; txt.style.color='var(--warning)'; txt.style.textShadow='0 0 40px var(--warning)'; sub.style.display='block'; sub.style.color='var(--warning)'; sub.innerText=`ROUND ${currentRound} — SIN GANADOR`; playTone(330,'triangle',0.3,0.15); playTone(220,'triangle',0.3,0.12,0.2); }
+  txt.className=''; void txt.offsetWidth; txt.className='roundAnim';
+  setTimeout(()=>{ ov.style.display='none'; cb(); },3000);
+}
+function showFreezeEffect(){
+  const el=document.getElementById('freezeEffect'), t=document.getElementById('timer'); el.style.display='flex';
+  t.classList.remove('timer-freeze-anim'); void t.offsetWidth; t.classList.add('timer-freeze-anim');
+  [1200,1000,1400,800].forEach((f,i)=>playTone(f,'sine',0.15,0.12,i*0.08));
+  setTimeout(()=>{ el.style.display='none'; t.classList.remove('timer-freeze-anim'); },1400);
+}
+function useAbility(type){
+  const h=turn===1?habs1:habs2; if((h[type]||0)<=0) return;
+  if(type==='shield'&&activeHab==='shield') return;
+  h[type]--; updHabsUI();
+  if(type==='freeze'){ timeLeft+=60; const t=document.getElementById('timer'); t.innerText=timeLeft; t.style.color='#00bcd4'; showFreezeEffect(); toast('⏱️ +60 segundos'); }
+  if(type==='shield'){ activeHab='shield'; shieldUsed=false; soundShield(); toast('🛡️ Escudo activo: la próxima incorrecta no cuenta'); }
+  if(type==='skip'){ clearInterval(tInt); index++; activeHab=null; toast('⏩ Pregunta saltada'); loadQ(); }
+}
+function updHabsUI(){
+  const h=turn===1?habs1:habs2;
+  ['freeze','shield','skip'].forEach(type=>{ const v=h[type]||0, b=document.getElementById('btn-'+type);
+    document.getElementById('count-'+type).innerText=v; b.disabled=v<=0; b.style.textDecoration=v<=0?'line-through':'none'; });
+}
+function end(){
+  clearInterval(tInt); nav('end'); document.getElementById('ui-top').style.display='none';
+  let winner='¡EMPATE!';
+  if(gameMode==='victories') winner=wins1>wins2?team1:(wins2>wins1?team2:'¡EMPATE!');
+  else winner=roundWins1>roundWins2?team1:(roundWins2>roundWins1?team2:'¡EMPATE!');
+  document.getElementById('winner').innerText=winner;
+  const rank=Object.entries(points).sort((a,b)=>b[1]-a[1]);
+  if(rank.length){ document.getElementById('mvp-name').innerText=rank[0][0]; document.getElementById('mvp-pts').innerText=rank[0][1]+(rank[0][1]===1?' respuesta correcta':' respuestas correctas');
+    document.getElementById('rankTable').innerHTML=rank.map((r,i)=>`<tr><td>#${i+1}</td><td>${esc(r[0])}</td><td>${r[1]}</td></tr>`).join(''); }
+  setTimeout(startFireworks,400);
+}
+
+/* ══════════ LLUVIA DE DATOS Y FUEGOS ══════════ */
+function matrix(c){
+  const ctx=c.getContext('2d'); c.width=150; c.height=window.innerHeight; const drops=Array(15).fill(1), chars='0123456789%$Σ';
+  setInterval(()=>{ ctx.fillStyle='rgba(0,0,0,0.08)'; ctx.fillRect(0,0,c.width,c.height); ctx.fillStyle='#2ee59d'; ctx.font='15px monospace';
+    drops.forEach((y,i)=>{ ctx.fillText(chars[Math.floor(Math.random()*chars.length)],i*12,y*12); if(y*12>c.height&&Math.random()>0.975) drops[i]=0; drops[i]++; }); },70);
+}
+matrix(document.getElementById('matrixL')); matrix(document.getElementById('matrixR'));
+function startFireworks(){
+  const canvas=document.getElementById('fireworksCanvas'); canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  const ctx=canvas.getContext('2d'), parts=[], COLORS=['#2ee59d','#ffd400','#ff4d5e','#00bcd4','#21a366','#ffffff','#ff9800'];
+  function burst(){ const x=Math.random()*canvas.width, y=Math.random()*canvas.height*0.65, color=COLORS[Math.floor(Math.random()*COLORS.length)], n=60+Math.floor(Math.random()*40);
+    for(let i=0;i<n;i++){ const a=(Math.PI*2/n)*i+Math.random()*0.2, s=2+Math.random()*5; parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,alpha:1,color,r:1.5+Math.random()*2,decay:0.012+Math.random()*0.01}); } }
+  (function anim(){ ctx.fillStyle='rgba(3,5,3,0.18)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    for(let i=parts.length-1;i>=0;i--){ const p=parts[i]; p.x+=p.vx; p.y+=p.vy; p.vy+=0.06; p.vx*=0.98; p.alpha-=p.decay; if(p.alpha<=0){ parts.splice(i,1); continue; }
+      ctx.globalAlpha=p.alpha; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); }
+    ctx.globalAlpha=1; requestAnimationFrame(anim); })();
+  burst(); const fw=setInterval(burst,700); setTimeout(()=>clearInterval(fw),12000);
+}
+
+/* ══════════ INICIO ══════════ */
+document.getElementById('muteFloatBtn').style.display='none';
+document.addEventListener('click',function first(){ startMusicHome(); document.removeEventListener('click',first,true); },{capture:true});
+renderTeams();
+</script>
+</body>
+</html>
