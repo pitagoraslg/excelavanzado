@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>Módulo 5 · Guía paso a paso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Guía paso a paso del Módulo 5 · se usa junto a Excel. Misma paleta que la presentación (azul petróleo + ámbar). */
+:root{--bg:#f7f5f0;--card:#fff;--ink:#0f4c5c;--text:#1d2b30;--muted:#5e6b6f;--line:#e3ded3;--grid:#cfc8ba;--acc:#e09f3e;--acc-soft:#fbf0dd;--pos:#2a9d8f;--pos-soft:#e2f3f0;--neg:#c8553d;--neg-soft:#f8e4df;--ink-soft:#e3eef0;
+  --serif:"Source Serif 4",Georgia,serif;--sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif;--mono:"IBM Plex Mono",Consolas,monospace;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.55;font-size:16.5px}
+.wrap{max-width:1000px;margin:0 auto;padding:0 18px 56px}
+header{background:var(--ink);color:#fff;padding:26px 0 30px;position:relative;overflow:hidden}
+header::after{content:"";position:absolute;right:-80px;top:-80px;width:300px;height:300px;border-radius:50%;background:var(--acc);opacity:.16}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.top .k{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#f3c98a}
+.logo{height:46px;background:#fff;border-radius:8px;padding:4px 8px}
+header h1{font-family:var(--serif);font-weight:600;font-size:clamp(28px,5vw,44px);line-height:1.1;margin:18px 0 10px}
+header p{margin:0;max-width:720px;color:#dcebee;font-size:17px}
+.dl{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--acc);color:#2b1c00;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:999px;border:0;cursor:pointer;font-size:15.5px}
+.btn.ghost{background:transparent;color:#fff;border:2px solid #ffffff66}
+.req{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:20px 0 6px}
+.req div{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--acc);border-radius:10px;padding:12px 14px;font-size:15px}
+.req b{display:block;color:var(--ink)}
+nav.toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:18px 0}
+nav.toc ol{margin:6px 0 0;padding-left:22px;columns:2 260px;column-gap:28px}
+nav.toc a{color:var(--ink);text-decoration:none} nav.toc a:hover{text-decoration:underline}
+section.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 22px;margin-top:18px;scroll-margin-top:12px}
+.sh{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.num{width:38px;height:38px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-family:var(--serif);font-size:20px;font-weight:600;flex:none}
+.sh h2{font-family:var(--serif);font-weight:600;font-size:clamp(21px,3vw,26px);color:var(--ink);margin:0;line-height:1.2}
+.why{font-family:var(--serif);font-style:italic;color:var(--ink);border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:10px 0 14px}
+ol.do{margin:0;padding-left:24px;display:flex;flex-direction:column;gap:8px}
+ol.do li::marker{font-weight:700;color:var(--acc)}
+.path{font-family:var(--mono);font-size:14px;background:var(--ink-soft);color:var(--ink);padding:1px 7px;border-radius:4px;white-space:nowrap}
+code{font-family:var(--mono);font-size:14px;background:#f1eee7;border:1px solid var(--line);border-radius:4px;padding:0 5px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;margin-top:14px}
+.ok{background:var(--pos-soft);border:1px solid #bfe3dd;border-left:5px solid var(--pos);border-radius:10px;padding:12px 16px;margin-top:14px}
+.ok b.t{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--pos);margin-bottom:4px}
+.tip{background:var(--acc-soft);border-left:5px solid var(--acc);border-radius:10px;padding:10px 16px;margin-top:12px;font-size:15px}
+.warn{background:var(--neg-soft);border-left:5px solid var(--neg);border-radius:10px;padding:10px 16px;margin-top:12px;font-size:15px}
+table.r{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums;margin-top:6px}
+table.r th{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:right;padding:6px 8px;border-bottom:2px solid var(--ink)}
+table.r th:first-child,table.r td:first-child{text-align:left}
+table.r td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}
+.neg{color:var(--neg);font-weight:700}.pos{color:var(--pos);font-weight:700}
+/* Hoja de Excel simulada */
+.sheet{border:1px solid #b8b8b8;font-family:"Segoe UI",Arial,sans-serif;font-size:13px;background:#fff;overflow-x:auto}
+.sheet table{border-collapse:collapse;width:100%;min-width:430px}
+.sheet td,.sheet th{border:1px solid #dadada;padding:3px 7px;white-space:nowrap}
+.sheet th{background:#f2f2f2;color:#555;font-weight:400;text-align:center;font-size:12px}
+.sheet td.rn{background:#f2f2f2;color:#555;text-align:center;width:28px}
+.sheet .h{background:var(--acc);color:#fff;font-weight:700}
+.sheet .hi{background:#fff2cc;font-weight:700;text-align:right}
+.sheet .ou{background:#e2efda;text-align:right}
+.sheet .sel{outline:2px solid #217346;outline-offset:-2px}
+.sheet .nr{text-align:right}
+/* Cuadro de diálogo simulado */
+.dlg{border:1px solid #9aa3a6;background:#f3f3f3;font-family:"Segoe UI",Arial,sans-serif;font-size:13.5px;box-shadow:0 8px 22px rgba(0,0,0,.12);max-width:440px}
+.dlg .t{background:#fff;padding:7px 12px;border-bottom:1px solid #d0d0d0;font-weight:600;display:flex;justify-content:space-between}
+.dlg .b{padding:12px 14px;display:flex;flex-direction:column;gap:9px}
+.dlg .r{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:8px}
+.dlg .f{background:#fff;border:1px solid #9aa3a6;padding:4px 8px;font-family:var(--mono);font-size:13px}
+.dlg .k{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}.dlg .k span{border:1px solid #9aa3a6;background:#fff;padding:3px 14px}
+.dlg .k span.on{border-color:#217346;box-shadow:inset 0 0 0 1px #217346}
+.dlg .list{background:#fff;border:1px solid #9aa3a6;min-height:64px;padding:4px 8px}
+.dlg .list div.sel{background:#cce4f7}
+.cap{font-size:13px;color:var(--muted);margin-top:6px}
+.check{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:8px}
+.check li{position:relative;padding-left:30px}
+.check li::before{content:"☐";position:absolute;left:0;top:-1px;color:var(--pos);font-size:20px;line-height:1.2}
+footer{text-align:center;color:var(--muted);font-size:13px;margin-top:30px}
+@media (max-width:760px){ .path,code{white-space:normal;word-break:break-word} table.r{font-size:13.5px} .two{grid-template-columns:1fr} section.step{padding:18px 15px} .dlg .r{grid-template-columns:1fr} .btn{width:100%;justify-content:center} }
+</style>
+</head>
+<body>
+<header><div class="wrap" style="padding-bottom:0">
+  <div class="top"><span class="k">Excel Avanzado · Módulo 5 · Guía paso a paso</span><img class="logo" src="img/icadep-isologo.png" alt="ICADEP-XXI"></div>
+  <h1>Escenarios en Excel, paso a paso.</h1>
+  <p>Con el modelo del <b>Centro Médico Horizonte</b> (entidad ficticia) creará tres escenarios, los comparará, calculará el punto de equilibrio y descubrirá qué variable pesa más. Cada paso indica el resultado exacto que debe obtener.</p>
+  <div class="dl"><a class="btn" href="Modulo5-Base-Modelo-Financiero.xlsx" download>⬇ Descargar la base de Excel</a><a class="btn ghost" href="modulo5-modelado-financiero.html" target="_blank" rel="noopener">📘 Ver la teoría</a></div>
+</div></header>
+
+<main class="wrap">
+  <div class="req">
+    <div><b>💻 Excel de escritorio</b>Versión 2016 o posterior. Estas herramientas no están en Excel para la web.</div>
+    <div><b>📄 La base</b><code>Modulo5-Base-Modelo-Financiero.xlsx</code>, hoja <b>Modelo</b>.</div>
+    <div><b>👤 Actividad individual</b>Al final se indica qué debe entregar.</div>
+  </div>
+
+  <nav class="toc"><b style="color:var(--ink)">Contenido</b>
+    <ol><li><a href="#p1">Conozca el modelo</a></li><li><a href="#p2">Pruebe un supuesto</a></li><li><a href="#p3">Cree el escenario Esperado</a></li><li><a href="#p4">Cree los otros dos escenarios</a></li><li><a href="#p5">Muestre cada escenario</a></li><li><a href="#p6">Genere el Resumen del escenario</a></li><li><a href="#p7">Punto de equilibrio con Buscar objetivo</a></li><li><a href="#p8">¿Qué variable pesa más?</a></li><li><a href="#p9">Escriba la recomendación</a></li><li><a href="#entrega">Entrega</a></li></ol>
+  </nav>
+
+  <section class="step" id="p1"><div class="sh"><span class="num">1</span><h2>Conozca el modelo.</h2></div>
+    <p class="why">Para qué: saber qué celdas se cambian y cuáles se calculan solas.</p>
+    <div class="two"><div><ol class="do">
+      <li>Abra la base. Si aparece la barra amarilla, pulse <b>Habilitar edición</b>.</li>
+      <li>En la hoja <b>Modelo</b>, las celdas <b>amarillas</b> (<code>B4:B7</code>) son los <b>supuestos</b>: se pueden cambiar.</li>
+      <li>Las celdas <b>verdes</b> (<code>B10:B14</code>) son <b>fórmulas</b>. Haga clic en <code>B13</code> y mire la barra de fórmulas: dice <code>=B10-B11-B12</code>.</li>
+      <li>A la derecha, en <code>D4:G7</code>, están los valores de los tres escenarios. Los usará en el paso 3.</li></ol></div>
+    <div class="sheet"><table><tr><th></th><th>A</th><th>B</th></tr>
+      <tr><td class="rn">3</td><td class="h" colspan="2">SUPUESTOS (se pueden cambiar)</td></tr>
+      <tr><td class="rn">4</td><td>Servicios al mes</td><td class="hi">1,200</td></tr>
+      <tr><td class="rn">5</td><td>Tarifa promedio por servicio</td><td class="hi">RD$ 2,500.00</td></tr>
+      <tr><td class="rn">6</td><td>Costo variable por servicio</td><td class="hi">RD$ 1,400.00</td></tr>
+      <tr><td class="rn">7</td><td>Gastos fijos mensuales</td><td class="hi">RD$ 900,000.00</td></tr>
+      <tr><td class="rn">9</td><td class="h" colspan="2">RESULTADOS (fórmulas)</td></tr>
+      <tr><td class="rn">10</td><td>Ingresos</td><td class="ou">RD$ 3,000,000.00</td></tr>
+      <tr><td class="rn">11</td><td>Costos variables</td><td class="ou">RD$ 1,680,000.00</td></tr>
+      <tr><td class="rn">12</td><td>Gastos fijos</td><td class="ou">RD$ 900,000.00</td></tr>
+      <tr><td class="rn">13</td><td><b>Resultado (ganancia o pérdida)</b></td><td class="ou sel"><b>RD$ 420,000.00</b></td></tr>
+      <tr><td class="rn">14</td><td>Margen sobre los ingresos</td><td class="ou">14.00%</td></tr></table></div></div>
+    <div class="ok"><b class="t">✓ Compruebe</b><code>B13</code> = <b>RD$ 420,000.00</b> y <code>B14</code> = <b>14.00 %</b>.</div>
+  </section>
+
+  <section class="step" id="p2"><div class="sh"><span class="num">2</span><h2>Pruebe un supuesto.</h2></div>
+    <p class="why">Para qué: ver con sus propios ojos que el resultado se recalcula solo.</p>
+    <ol class="do"><li>En <code>B4</code> escriba <code>1000</code> y pulse Enter.</li><li>Mire cómo cambian <code>B10</code>, <code>B11</code> y <code>B13</code> sin tocar ninguna fórmula.</li><li>Vuelva a escribir <code>1200</code> en <code>B4</code>.</li></ol>
+    <div class="ok"><b class="t">✓ Compruebe</b>Con 1,000 servicios, el resultado baja a <b>RD$ 200,000.00</b>. Al volver a 1,200, regresa a <b>RD$ 420,000.00</b>.</div>
+  </section>
+
+  <section class="step" id="p3"><div class="sh"><span class="num">3</span><h2>Cree el escenario «Esperado».</h2></div>
+    <p class="why">Para qué: guardar con un nombre la situación más probable.</p>
+    <div class="two"><div><ol class="do">
+      <li>Seleccione <code>B4:B6</code> (servicios, tarifa y costo variable).</li>
+      <li>Vaya a <span class="path">Datos › Análisis de hipótesis › Administrador de escenarios</span>.</li>
+      <li>Pulse <b>Agregar</b>.</li>
+      <li>En <b>Nombre del escenario</b> escriba <code>Esperado</code>. En <b>Celdas cambiantes</b> debe decir <code>B4:B6</code>. Pulse <b>Aceptar</b>.</li>
+      <li>En <b>Valores del escenario</b> escriba <code>1200</code>, <code>2500</code> y <code>1400</code>. Pulse <b>Aceptar</b>.</li></ol>
+      <div class="tip">💡 En el cuadro «Agregar escenario» también aparecen las casillas <b>Evitar cambios</b> y <b>Ocultar</b>: déjelas como están; no afectan el ejercicio.</div></div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="dlg"><div class="t">Agregar escenario <span>✕</span></div><div class="b"><div class="r"><span>Nombre del escenario:</span><span class="f">Esperado</span></div><div class="r"><span>Celdas cambiantes:</span><span class="f">B4:B6</span></div><div class="k"><span class="on">Aceptar</span><span>Cancelar</span></div></div></div>
+      <div class="dlg"><div class="t">Valores del escenario <span>✕</span></div><div class="b"><div class="r"><span>1: Servicios_al_mes</span><span class="f">1200</span></div><div class="r"><span>2: Tarifa_promedio</span><span class="f">2500</span></div><div class="r"><span>3: Costo_variable</span><span class="f">1400</span></div><div class="k"><span>Agregar</span><span class="on">Aceptar</span><span>Cancelar</span></div></div></div>
+    </div></div>
+    <div class="ok"><b class="t">✓ Compruebe</b>En la lista del Administrador de escenarios aparece <b>Esperado</b>.</div>
+  </section>
+
+  <section class="step" id="p4"><div class="sh"><span class="num">4</span><h2>Cree los otros dos escenarios.</h2></div>
+    <p class="why">Para qué: tener la situación peor y la mejor para compararlas.</p>
+    <ol class="do"><li>En el Administrador de escenarios pulse <b>Agregar</b> otra vez.</li><li>Cree <code>Conservador</code> con celdas <code>B4:B6</code> y valores <code>1000</code>, <code>2400</code> y <code>1550</code>.</li><li>Cree <code>Favorable</code> con valores <code>1400</code>, <code>2600</code> y <code>1350</code>.</li></ol>
+    <table class="r" style="max-width:620px"><tr><th>Escenario</th><th>Servicios</th><th>Tarifa</th><th>Costo variable</th></tr>
+      <tr><td>Conservador</td><td>1,000</td><td>RD$ 2,400.00</td><td>RD$ 1,550.00</td></tr><tr><td>Esperado</td><td>1,200</td><td>RD$ 2,500.00</td><td>RD$ 1,400.00</td></tr><tr><td>Favorable</td><td>1,400</td><td>RD$ 2,600.00</td><td>RD$ 1,350.00</td></tr></table>
+    <div class="ok"><b class="t">✓ Compruebe</b>La lista muestra tres escenarios: <b>Esperado</b>, <b>Conservador</b> y <b>Favorable</b>.</div>
+  </section>
+
+  <section class="step" id="p5"><div class="sh"><span class="num">5</span><h2>Muestre cada escenario.</h2></div>
+    <p class="why">Para qué: ver cómo cambia la ganancia en cada situación.</p>
+    <ol class="do"><li>En la lista, seleccione <b>Conservador</b> y pulse <b>Mostrar</b>. Mire <code>B13</code>.</li><li>Haga lo mismo con <b>Favorable</b>.</li><li>Termine mostrando <b>Esperado</b>, para que el modelo quede con sus valores originales.</li></ol>
+    <div class="ok"><b class="t">✓ Compruebe</b>
+      <table class="r"><tr><th>Escenario</th><th>Resultado (B13)</th><th>Margen (B14)</th></tr><tr><td>Conservador</td><td class="neg">−RD$ 50,000.00</td><td class="neg">−2.08 %</td></tr><tr><td>Esperado</td><td>RD$ 420,000.00</td><td>14.00 %</td></tr><tr><td>Favorable</td><td class="pos">RD$ 850,000.00</td><td class="pos">23.35 %</td></tr></table></div>
+  </section>
+
+  <section class="step" id="p6"><div class="sh"><span class="num">6</span><h2>Genere el Resumen del escenario.</h2></div>
+    <p class="why">Para qué: obtener en una hoja nueva la tabla que compara los tres escenarios.</p>
+    <div class="two" style="grid-template-columns:1fr"><div><ol class="do"><li>En el Administrador de escenarios pulse <b>Resumen</b>.</li><li>Deje marcado <b>Resumen</b> (no el informe de tabla dinámica).</li><li>En <b>Celdas de resultado</b> escriba <code>B13:B14</code>. Pulse <b>Aceptar</b>.</li><li>Excel crea una hoja nueva llamada <b>Resumen del escenario</b>. No la borre: forma parte de la entrega.</li></ol>
+      <div class="tip">💡 La columna «Valores actuales» muestra lo que había en la hoja al crear el resumen. Por eso conviene dejar visible el escenario Esperado (paso 5).</div></div>
+    <div class="sheet"><table><tr><th></th><th style="text-align:left">Resumen del escenario</th><th>Valores actuales</th><th>Esperado</th><th>Conservador</th><th>Favorable</th></tr>
+      <tr><td class="rn">5</td><td colspan="5"><b>Celdas cambiantes:</b></td></tr>
+      <tr><td class="rn">6</td><td>Servicios_al_mes</td><td class="nr">1,200</td><td class="nr">1,200</td><td class="nr">1,000</td><td class="nr">1,400</td></tr>
+      <tr><td class="rn">7</td><td>Tarifa_promedio</td><td class="nr">RD$ 2,500.00</td><td class="nr">RD$ 2,500.00</td><td class="nr">RD$ 2,400.00</td><td class="nr">RD$ 2,600.00</td></tr>
+      <tr><td class="rn">8</td><td>Costo_variable</td><td class="nr">RD$ 1,400.00</td><td class="nr">RD$ 1,400.00</td><td class="nr">RD$ 1,550.00</td><td class="nr">RD$ 1,350.00</td></tr>
+      <tr><td class="rn">9</td><td colspan="5"><b>Celdas de resultado:</b></td></tr>
+      <tr><td class="rn">10</td><td>Resultado</td><td class="nr">RD$ 420,000.00</td><td class="nr">RD$ 420,000.00</td><td class="nr neg">-RD$ 50,000.00</td><td class="nr">RD$ 850,000.00</td></tr>
+      <tr><td class="rn">11</td><td>Margen</td><td class="nr">14.00%</td><td class="nr">14.00%</td><td class="nr neg">-2.08%</td><td class="nr">23.35%</td></tr></table></div></div>
+    <div class="ok"><b class="t">✓ Compruebe</b>La hoja <b>Resumen del escenario</b> muestra el resultado <b>-RD$ 50,000.00</b>, <b>RD$ 420,000.00</b> y <b>RD$ 850,000.00</b>. Los nombres (Servicios_al_mes, Resultado…) aparecen porque la base ya trae nombres definidos.</div>
+  </section>
+
+  <section class="step" id="p7"><div class="sh"><span class="num">7</span><h2>Calcule el punto de equilibrio con Buscar objetivo.</h2></div>
+    <p class="why">Para qué: saber cuántos servicios al mes necesita el centro para no perder dinero.</p>
+    <div class="two"><div><ol class="do"><li>Vuelva a la hoja <b>Modelo</b> (con el escenario Esperado visible).</li><li>Vaya a <span class="path">Datos › Análisis de hipótesis › Buscar objetivo</span>.</li><li><b>Definir la celda:</b> <code>B13</code> · <b>Con el valor:</b> <code>0</code> · <b>Para cambiar la celda:</b> <code>B4</code>. Pulse <b>Aceptar</b>.</li><li>Anote el valor que aparece en <code>B4</code> en la celda <code>F16</code> (Punto de equilibrio).</li><li>En el cuadro <b>Estado de la búsqueda de objetivo</b> pulse <b>Cancelar</b>: así <code>B4</code> vuelve a 1,200.</li></ol></div>
+    <div class="dlg"><div class="t">Buscar objetivo <span>✕</span></div><div class="b"><div class="r"><span>Definir la celda:</span><span class="f">B13</span></div><div class="r"><span>Con el valor:</span><span class="f">0</span></div><div class="r"><span>Para cambiar la celda:</span><span class="f">B4</span></div><div class="k"><span class="on">Aceptar</span><span>Cancelar</span></div></div></div></div>
+    <div class="ok"><b class="t">✓ Compruebe</b><code>B4</code> muestra <b>818</b> porque la celda no tiene decimales; el valor real es <b>818.18</b>. Como no existen fracciones de servicio, el centro necesita <b>819 servicios al mes</b> para no perder. Escriba <code>819</code> en <code>F16</code>.</div>
+    <div class="warn">⚠️ Si pulsó <b>Aceptar</b> en lugar de Cancelar, escriba de nuevo <code>1200</code> en <code>B4</code>.</div>
+  </section>
+
+  <section class="step" id="p8"><div class="sh"><span class="num">8</span><h2>¿Qué variable pesa más?</h2></div>
+    <p class="why">Para qué: descubrir en qué variable conviene poner más atención.</p>
+    <ol class="do"><li>Cambie <b>un solo</b> supuesto a su valor con +10 % (columna <code>E12:E15</code>). Por ejemplo, escriba <code>1320</code> en <code>B4</code>.</li><li><b>Escriba</b> en la columna <b>Resultado obtenido</b> (<code>F12</code>) el número que muestra <code>B13</code>. No copie la celda: se llevaría la fórmula.</li><li>Devuelva el supuesto a su valor original antes de probar el siguiente.</li><li>Repita con la tarifa, el costo variable y los gastos fijos.</li><li>En la columna <b>Cambio</b> (<code>G12:G15</code>) escriba la fórmula <code>=F12-420000</code> y cópiela hacia abajo.</li></ol>
+    <div class="ok"><b class="t">✓ Compruebe</b>
+      <table class="r"><tr><th>Variable (+10 %)</th><th>Resultado obtenido</th><th>Cambio</th></tr>
+      <tr><td>Servicios (1,320)</td><td>RD$ 552,000.00</td><td class="pos">+RD$ 132,000.00</td></tr><tr><td>Tarifa (RD$ 2,750.00)</td><td>RD$ 720,000.00</td><td class="pos">+RD$ 300,000.00</td></tr>
+      <tr><td>Costo variable (RD$ 1,540.00)</td><td>RD$ 252,000.00</td><td class="neg">−RD$ 168,000.00</td></tr><tr><td>Gastos fijos (RD$ 990,000.00)</td><td>RD$ 330,000.00</td><td class="neg">−RD$ 90,000.00</td></tr></table>
+      <p style="margin:8px 0 0">La variable con mayor impacto es la <b>tarifa</b>; le sigue el <b>costo variable por servicio</b>.</p></div>
+    <div class="warn">⚠️ Al terminar, revise que los supuestos estén otra vez en 1,200 · RD$ 2,500.00 · RD$ 1,400.00 · RD$ 900,000.00, y que <code>B13</code> diga RD$ 420,000.00.</div>
+  </section>
+
+  <section class="step" id="p9"><div class="sh"><span class="num">9</span><h2>Escriba la recomendación.</h2></div>
+    <p class="why">Para qué: convertir los números en una decisión para la administración.</p>
+    <ol class="do"><li>En la hoja <b>Modelo</b>, haga clic en la celda <code>A18</code> (cuadro de recomendación).</li><li>Escriba 2 o 3 líneas que respondan a tres preguntas:</li></ol>
+    <table class="r" style="margin-top:10px"><tr><th>Pregunta</th><th style="text-align:left">Ejemplo de cómo empezar</th></tr>
+      <tr><td><b>¿Qué escenario representa mayor riesgo?</b></td><td style="text-align:left">«El escenario … es el de mayor riesgo porque…»</td></tr>
+      <tr><td><b>¿Con qué números lo demuestra?</b></td><td style="text-align:left">«…el resultado pasa a … y el margen a …»</td></tr>
+      <tr><td><b>¿Qué medida concreta propone?</b></td><td style="text-align:left">«Se recomienda … porque la variable que más pesa es…»</td></tr></table>
+    <div class="tip">💡 Use sus propios resultados de los pasos 5, 7 y 8. Una recomendación sin números no es una recomendación.</div>
+  </section>
+
+  <section class="step" id="entrega" style="border:2px solid var(--ink)"><div class="sh"><span class="num">✓</span><h2>Entrega (actividad individual).</h2></div>
+    <p>Guarde el archivo como <code>Modulo5_Apellido_Nombre.xlsx</code> y súbalo en la tarea del Módulo 5. Antes de entregar, revise que tenga:</p>
+    <ul class="check">
+      <li>Los tres escenarios creados en el Administrador de escenarios.</li>
+      <li>La hoja <b>Resumen del escenario</b> con el resultado y el margen.</li>
+      <li>El punto de equilibrio anotado en <code>F16</code>.</li>
+      <li>La tabla «¿Qué variable pesa más?» completa (<code>F12:G15</code>).</li>
+      <li>La recomendación escrita en <code>A18</code>.</li>
+      <li>El modelo con sus valores originales: <code>B13</code> = RD$ 420,000.00.</li>
+    </ul>
+  </section>
+  <footer>Excel Avanzado · Módulo 5 · Jarlin Figueroa, MA · Instituto ICADEP-XXI · Datos ficticios con fines didácticos.</footer>
+</main>
+</body>
+</html>

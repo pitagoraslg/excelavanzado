@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>Módulo 5 · Modelado financiero y análisis de escenarios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Escenario fijo 1280×720 escalado a la pantalla. Solo teoría. Paleta: azul petróleo + ámbar. */
+:root{
+  --bg:#e7e3da; --paper:#f7f5f0; --card:#ffffff; --ink:#0f4c5c; --text:#1d2b30; --muted:#5e6b6f; --line:#e3ded3; --grid:#cfc8ba;
+  --acc:#e09f3e; --acc-soft:#fbf0dd; --pos:#2a9d8f; --pos-soft:#e2f3f0; --neg:#c8553d; --neg-soft:#f8e4df; --ink-soft:#e3eef0;
+  --serif:"Source Serif 4",Georgia,serif; --sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif; --mono:"IBM Plex Mono",Consolas,monospace;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;background:var(--paper);transform-origin:center;transform:translate(-50%,-50%);box-shadow:0 10px 40px rgba(15,76,92,.18);border-top:4px solid var(--ink)}
+.slide{position:absolute;inset:0;padding:64px 72px 72px;display:none;flex-direction:column;gap:20px}
+.slide.on{display:flex;animation:in .4s ease}
+@keyframes in{from{opacity:.3;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.slide.on{animation:none}}
+.top{position:absolute;top:20px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;z-index:3}
+.dots{display:flex;gap:6px}.dots button{width:28px;height:6px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dots button.done{background:var(--grid)}.dots button.cur{background:var(--acc)}
+.bottom{position:absolute;bottom:18px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);z-index:3}
+.navb{display:flex;gap:8px;align-items:center}
+.btn{font-family:var(--mono);font-size:13px;border:1px solid var(--grid);background:var(--card);color:var(--ink);padding:7px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink)} .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.eyebrow{font-family:var(--mono);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);display:flex;gap:14px;align-items:center}
+.eyebrow .n{font-family:var(--serif);font-size:30px;letter-spacing:0;color:var(--acc)}
+.eyebrow .tag{border:1px solid var(--ink);padding:2px 8px;font-size:12px}
+h1{font-family:var(--serif);font-weight:600;margin:0;color:var(--ink);line-height:1.02}
+h2{font-family:var(--serif);font-weight:600;font-size:42px;line-height:1.08;margin:0;color:var(--ink)}
+p{margin:0}
+.lead{font-size:20px;line-height:1.5}
+.analogy{border-left:3px solid var(--acc);padding:4px 0 4px 16px;font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.45;color:var(--ink)}
+.exl{font-size:15px;color:var(--muted);line-height:1.5;border-top:1px solid var(--line);padding-top:12px}
+.exl b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);margin-bottom:3px}
+.exl .path{font-family:var(--mono);font-size:13.5px;background:var(--ink-soft);color:var(--ink);padding:1px 6px}
+.cols{display:grid;grid-template-columns:1fr 1.05fr;gap:40px;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;gap:18px;min-width:0}
+.ex{background:var(--card);border:1px solid var(--grid);display:flex;flex-direction:column;min-height:0}
+.ex-h{display:flex;justify-content:space-between;gap:12px;padding:9px 14px;border-bottom:1px solid var(--grid);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--paper)}
+.ex-h span:first-child{color:var(--ink);font-weight:600}
+.ex-b{padding:16px;display:flex;flex-direction:column;gap:12px;flex:1;min-height:0}
+.ex-c{padding:0 16px 14px;font-size:15px;line-height:1.45}
+table.m{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+table.m th{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:right;padding:6px 10px;border-bottom:2px solid var(--ink)}
+table.m th:first-child,table.m td:first-child{text-align:left}
+table.m td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right}
+td.in{background:#fff6d6;font-weight:600} td.out{background:var(--pos-soft)} tr.tot td{font-weight:700;border-top:2px solid var(--ink)}
+.neg{color:var(--neg);font-weight:700}.pos{color:var(--pos);font-weight:700}
+.chips{display:flex;flex-direction:column;gap:10px}
+.chip{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--acc);padding:12px 16px;font-size:18px}
+.chip i{font-style:normal;font-size:26px}
+.flow{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;align-items:center;gap:6px}
+.flow div{background:var(--paper);border:1.5px solid var(--grid);padding:14px 10px;text-align:center;font-size:14px;line-height:1.35}
+.flow div b{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.flow .a{color:var(--acc);font-size:26px;border:0;background:none;padding:0}
+.flow .s{border-color:#e8c25a;background:#fff6d6}.flow .f{border-color:var(--ink);background:var(--ink-soft)}.flow .r{border-color:var(--pos);background:var(--pos-soft)}
+.calc{display:flex;flex-direction:column;gap:8px;font-variant-numeric:tabular-nums}
+.calc div{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:10px 14px;background:var(--paper);border:1px solid var(--line);font-size:17px}
+.calc div b{font-family:var(--mono);font-size:22px;color:var(--muted)}
+.calc div span:last-child{font-weight:700}
+.calc .res{background:var(--pos-soft);border-color:var(--pos);font-size:20px}
+.dlg{border:1px solid #9aa3a6;background:#f3f3f3;font-family:"Segoe UI",Arial,sans-serif;font-size:14px;box-shadow:0 8px 22px rgba(0,0,0,.15)}
+.dlg .t{background:#fff;padding:7px 12px;border-bottom:1px solid #d0d0d0;font-weight:600}
+.dlg .b{padding:12px 14px;display:flex;flex-direction:column;gap:9px}
+.dlg .r{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:8px}
+.dlg .r span:last-child{background:#fff;border:1px solid #9aa3a6;padding:4px 8px;font-family:var(--mono);font-size:13px}
+.dlg .k{display:flex;justify-content:flex-end;gap:8px}.dlg .k span{border:1px solid #9aa3a6;background:#fff;padding:3px 16px}
+.sum{display:grid;grid-template-columns:repeat(2,1fr);border-top:2px solid var(--ink)}
+.sum>div{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:12px 10px;border-bottom:1px solid var(--line);align-items:baseline}
+.sum .n{font-family:var(--serif);font-size:26px;color:var(--acc)}
+.sum p{font-size:16px;color:var(--muted)} .sum code{font-family:var(--mono);font-size:14px;display:block;color:var(--ink);margin-top:3px;font-weight:500}
+.idx{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink)}
+.idx button{all:unset;cursor:pointer;padding:16px 18px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.idx button:nth-child(4n){border-right:0}
+.idx button:hover{background:var(--card)}
+.idx .n{font-family:var(--serif);font-size:38px;color:var(--acc);line-height:1}
+.idx .k{font-family:var(--mono);font-size:15px;color:var(--ink);font-weight:500}
+.idx .d{font-size:15px}
+.idx button.res{background:var(--ink);color:#fff}.idx button.res .k,.idx button.res .d,.idx button.res .n{color:#fff}
+.refs{list-style:none;margin:0;padding:12px 0 0;border-top:2px solid var(--ink);display:flex;flex-direction:column;gap:9px}
+.refs li{font-size:15px;line-height:1.45;padding-left:36px;text-indent:-36px}
+.refs a{color:var(--ink);word-break:break-all;text-decoration:none}
+.note{font-size:15px;color:var(--muted)}
+/* portada */
+.cover{justify-content:center;gap:22px}
+.cover-logo{position:absolute;top:54px;right:72px;height:96px;width:auto;mix-blend-mode:multiply}
+.cover .mod{font-family:var(--mono);font-size:18px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+.cover h1{font-size:62px;max-width:600px}
+.cover .by{font-size:22px;color:var(--muted)} .cover .by b{color:var(--ink);font-weight:600}
+.cover .hint{font-family:var(--mono);font-size:14px;color:var(--muted)}
+.cover-art{position:absolute;right:60px;top:186px;width:450px;height:388px}
+.grow{transform-origin:bottom;transform-box:fill-box;animation:grow 1.4s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.draw{stroke-dasharray:640;stroke-dashoffset:640;animation:draw 2s .8s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.bob{animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.cover-tags{display:flex;gap:10px;flex-wrap:wrap}
+.cover-tags span{font-family:var(--mono);font-size:13px;border:1px solid var(--ink);color:var(--ink);padding:5px 10px;background:var(--card)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="top"><span id="topL">MÓDULO 5 · MODELADO FINANCIERO Y ANÁLISIS DE ESCENARIOS.</span><div class="dots" id="dots"></div></div>
+  <div id="slides"></div>
+  <div class="bottom">
+    <span>Jarlin Figueroa, MA</span>
+    <div class="navb">
+      <button class="btn" id="snd" title="Sonido (M)">🔊 Sonido</button>
+      <button class="btn" id="fs" title="Pantalla completa (F)">Pantalla completa</button>
+      <button class="btn" id="prev">← Anterior</button>
+      <span id="count" style="min-width:70px;text-align:center"></span>
+      <button class="btn primary" id="next">Siguiente →</button>
+    </div>
+  </div>
+</div>
+<script>
+/* ---------- Datos del ejemplo (Centro Médico Horizonte, entidad ficticia) ---------- */
+const fmt = n => "RD$ " + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtS = n => (n<0?"−":"") + fmt(Math.abs(n));
+const modelo = (s,t,c,g=900000) => { const I=s*t, C=s*c, R=I-C-g; return {s,t,c,g,I,C,R,m:R/I}; };
+const E = { cons: modelo(1000,2400,1550), esp: modelo(1200,2500,1400), fav: modelo(1400,2600,1350) };
+const pct = x => (x*100).toFixed(2) + " %";
+
+/* Gráfico de columnas con valores negativos */
+function colChart(items, W=560, H=250){
+  const max = Math.max(...items.map(i=>Math.abs(i.v))), pad=36, zero=H*0.62, sc=(zero-pad)/max, bw=90, gap=(W-items.length*bw)/(items.length+1);
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Resultado por escenario"><line x1="10" x2="${W-10}" y1="${zero}" y2="${zero}" stroke="#9aa3a6"/>`;
+  items.forEach((it,i)=>{ const x=gap+i*(bw+gap), h=Math.abs(it.v)*sc, y=it.v>=0?zero-h:zero;
+    s += `<rect class="grow" x="${x}" y="${y}" width="${bw}" height="${Math.max(h,2)}" rx="4" fill="${it.c}" style="animation-delay:${i*.15}s"/>`
+      + `<text x="${x+bw/2}" y="${it.v>=0?y-8:y+h+18}" text-anchor="middle" font-size="14" font-weight="700" fill="${it.v<0?'#c8553d':'#0f4c5c'}">${fmtS(it.v)}</text>`
+      + `<text x="${x+bw/2}" y="${H-6}" text-anchor="middle" font-size="14" fill="#1d2b30">${it.k}</text>`; });
+  return s + "</svg>";
+}
+/* Barras horizontales de sensibilidad */
+function sensChart(items, W=560){
+  const H=items.length*64+10, max=Math.max(...items.map(i=>Math.abs(i.d))), mid=W*0.5, sc=(W*0.46)/max;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Impacto de cada variable"><line x1="${mid}" x2="${mid}" y1="0" y2="${H}" stroke="#9aa3a6"/>`;
+  items.forEach((it,i)=>{ const y=8+i*64, w=Math.abs(it.d)*sc, x=it.d>=0?mid:mid-w, col=it.d>=0?'#2a9d8f':'#c8553d';
+    s+=`<text x="10" y="${y+14}" font-size="14" fill="#1d2b30">${it.k} <tspan font-weight="700" fill="${col}">${it.d>=0?'+':'−'}${fmt(Math.abs(it.d))}</tspan></text>`
+      +`<rect class="grow" x="${x}" y="${y+24}" width="${w}" height="22" rx="3" fill="${col}" style="animation-delay:${i*.12}s"/>`; });
+  return s+"</svg>";
+}
+const exBox = (t, sub, body, cap) => `<div class="ex"><div class="ex-h"><span>Ejemplo · Centro Médico Horizonte.</span><span>${sub}</span></div><div class="ex-b">${body}</div>${cap?`<p class="ex-c">${cap}</p>`:""}</div>`;
+const modelTable = (e=E.esp) => `<table class="m"><tr><th>Supuesto</th><th>Valor</th></tr>
+  <tr><td>Servicios al mes</td><td class="in">${e.s.toLocaleString("en-US")}</td></tr><tr><td>Tarifa promedio</td><td class="in">${fmt(e.t)}</td></tr>
+  <tr><td>Costo variable por servicio</td><td class="in">${fmt(e.c)}</td></tr><tr><td>Gastos fijos</td><td class="in">${fmt(e.g)}</td></tr>
+  <tr><th>Resultado</th><th>Fórmula → valor</th></tr>
+  <tr><td>Ingresos</td><td class="out">${fmt(e.I)}</td></tr><tr><td>Costos variables</td><td class="out">${fmt(e.C)}</td></tr>
+  <tr class="tot"><td>Resultado</td><td class="out">${fmtS(e.R)}</td></tr><tr><td>Margen</td><td class="out">${pct(e.m)}</td></tr></table>`;
+
+/* ---------- Conceptos ---------- */
+const T = [
+{ k:"Modelo financiero", d:"El resultado se calcula solo.", q:"¿Qué es un modelo financiero?",
+  def:"Es una hoja de Excel que calcula un resultado, por ejemplo la ganancia del mes, a partir de unos datos de entrada llamados <b>supuestos</b>. Si cambia un supuesto, el resultado se recalcula solo.",
+  ana:"Es como una receta: si cambias la cantidad de ingredientes, cambia el plato que sale.",
+  xl:"Se arma con celdas de datos y fórmulas que hacen referencia a esas celdas.",
+  ex:()=>exBox("","De los datos al resultado.",`<div class="flow"><div class="s"><b>Supuestos</b>Servicios, tarifa, costos</div><div class="a">→</div><div class="f"><b>Fórmulas</b>Ingresos − costos − gastos</div><div class="a">→</div><div class="r"><b>Resultado</b>${fmt(E.esp.R)}</div></div>
+     <p style="font-size:16px;line-height:1.5">Con <b>1,200 servicios</b>, una tarifa de <b>${fmt(2500)}</b> y sus costos, el centro gana <b>${fmt(E.esp.R)}</b> al mes. Si se cambia cualquier supuesto, esa cifra cambia sola.</p>`,"El modelo no adivina el futuro: muestra qué pasaría <b>si</b> los supuestos se cumplen.") },
+{ k:"Supuestos y resultados", d:"Lo que se cambia y lo que se calcula.", q:"¿Qué son los supuestos y los resultados?",
+  def:"Los <b>supuestos</b> son los valores que se pueden cambiar: servicios, tarifa, costos. Los <b>resultados</b> son fórmulas que nunca se escriben a mano.",
+  ana:"En una calculadora, tú marcas los números (supuestos) y la pantalla muestra el total (resultado).",
+  xl:"Buena práctica: supuestos en celdas amarillas y resultados en verdes. Las fórmulas apuntan a las celdas de supuestos, nunca a números escritos dentro.",
+  ex:()=>exBox("","El modelo del centro.",modelTable(),"Amarillo: se cambia. Verde: se calcula.") },
+{ k:"Ingresos, costos y resultado", d:"Lo que entra menos lo que sale.", q:"¿Cómo se calcula el resultado?",
+  def:"<b>Ingresos</b> = servicios × tarifa. Los <b>costos variables</b> aumentan con cada servicio; los <b>gastos fijos</b> se pagan igual aunque haya pocos servicios (alquiler, salarios). <b>Resultado</b> = ingresos − costos variables − gastos fijos.",
+  ana:"Un taxi: la gasolina sube con cada viaje (variable); el seguro se paga igual cada mes (fijo).",
+  xl:"Ingresos: =B4*B5 · Costos variables: =B4*B6 · Resultado: =B10-B11-B12",
+  ex:()=>exBox("","El cálculo del mes.",`<div class="calc"><div><b> </b><span>Ingresos (1,200 × ${fmt(2500)})</span><span>${fmt(E.esp.I)}</span></div>
+     <div><b>−</b><span>Costos variables (1,200 × ${fmt(1400)})</span><span>${fmt(E.esp.C)}</span></div>
+     <div><b>−</b><span>Gastos fijos</span><span>${fmt(900000)}</span></div>
+     <div class="res"><b>=</b><span>Resultado</span><span class="pos">${fmt(E.esp.R)}</span></div></div>`,`Margen: ${fmt(E.esp.R)} ÷ ${fmt(E.esp.I)} = <b>${pct(E.esp.m)}</b>. De cada RD$ 100 que entran, quedan RD$ 14.`) },
+{ k:"Escenarios", d:"Peor, probable y mejor.", q:"¿Qué es un escenario?",
+  def:"Un escenario es un conjunto de valores para los supuestos que representa una situación posible. Se suelen comparar tres: <b>conservador</b> (las cosas salen peor), <b>esperado</b> (lo más probable) y <b>favorable</b> (salen mejor).",
+  ana:"Como planificar un viaje con el pronóstico del tiempo: lluvia, nublado o sol.",
+  xl:"Cada escenario se guarda con un nombre y se muestra en la hoja con un clic.",
+  ex:()=>exBox("","Tres situaciones posibles.",`<table class="m"><tr><th>Supuesto</th><th>Conservador</th><th>Esperado</th><th>Favorable</th></tr>
+     <tr><td>Servicios</td><td>1,000</td><td>1,200</td><td>1,400</td></tr><tr><td>Tarifa</td><td>${fmt(2400)}</td><td>${fmt(2500)}</td><td>${fmt(2600)}</td></tr>
+     <tr><td>Costo variable</td><td>${fmt(1550)}</td><td>${fmt(1400)}</td><td>${fmt(1350)}</td></tr>
+     <tr class="tot"><td>Resultado</td><td class="neg">${fmtS(E.cons.R)}</td><td class="pos">${fmt(E.esp.R)}</td><td class="pos">${fmt(E.fav.R)}</td></tr></table>`,"Los gastos fijos son los mismos en los tres: RD$ 900,000.00.") },
+{ k:"Administrador de escenarios", d:"Guarda y compara escenarios.", q:"¿Qué hace el Administrador de escenarios?",
+  def:"Es una herramienta de Excel que guarda varios escenarios en la misma hoja y crea un <b>Resumen del escenario</b>: una hoja nueva con una tabla que los compara lado a lado.",
+  ana:"Como guardar tres versiones del mismo presupuesto y luego verlas juntas en una sola hoja.",
+  xl:`<span class="path">Datos › Análisis de hipótesis › Administrador de escenarios</span>. Está en Excel 2016 y versiones posteriores de escritorio; no en Excel para la web.`,
+  ex:()=>exBox("","Así se ve el Resumen del escenario.",`<table class="m"><tr><th></th><th>Conservador</th><th>Esperado</th><th>Favorable</th></tr>
+     <tr><td colspan="4" style="text-align:left;font-family:var(--mono);font-size:11.5px;color:var(--muted)">CELDAS CAMBIANTES</td></tr>
+     <tr><td>Servicios_al_mes</td><td>1,000</td><td>1,200</td><td>1,400</td></tr><tr><td>Tarifa_promedio</td><td>2,400</td><td>2,500</td><td>2,600</td></tr><tr><td>Costo_variable</td><td>1,550</td><td>1,400</td><td>1,350</td></tr>
+     <tr><td colspan="4" style="text-align:left;font-family:var(--mono);font-size:11.5px;color:var(--muted)">CELDAS DE RESULTADO</td></tr>
+     <tr class="tot"><td>Resultado</td><td class="neg">−50,000</td><td>420,000</td><td>850,000</td></tr><tr><td>Margen</td><td class="neg">−2.08 %</td><td>14.00 %</td><td>23.35 %</td></tr></table>`,"Con nombres en las celdas (Servicios_al_mes, Resultado…), el resumen se lee mucho mejor.") },
+{ k:"Buscar objetivo", d:"Del resultado al dato.", q:"¿Qué hace Buscar objetivo?",
+  def:"Hace el camino al revés: usted indica el resultado que quiere y Excel calcula qué valor debe tener <b>un</b> supuesto para lograrlo. Con un resultado igual a 0 se obtiene el <b>punto de equilibrio</b>: ni gana ni pierde.",
+  ana:"Como preguntar: ¿a qué hora debo salir de casa para llegar a las 8:00?",
+  xl:`<span class="path">Datos › Análisis de hipótesis › Buscar objetivo</span>: Definir la celda (resultado), Con el valor (la meta) y Para cambiar la celda (un supuesto).`,
+  ex:()=>exBox("","¿Qué tarifa da RD$ 600,000.00?",`<div class="dlg"><div class="t">Buscar objetivo</div><div class="b"><div class="r"><span>Definir la celda:</span><span>$B$13</span></div><div class="r"><span>Con el valor:</span><span>600000</span></div><div class="r"><span>Para cambiar la celda:</span><span>$B$5</span></div><div class="k"><span>Aceptar</span><span>Cancelar</span></div></div></div>
+     <div class="calc"><div class="res"><b>=</b><span>Tarifa necesaria</span><span class="pos">${fmt(2650)}</span></div></div>`,"Para ganar RD$ 600,000.00 con 1,200 servicios, la tarifa debe subir a RD$ 2,650.00.") },
+{ k:"Sensibilidad", d:"¿Qué variable pesa más?", q:"¿Qué es el análisis de sensibilidad?",
+  def:"Mide cuánto cambia el resultado cuando se mueve <b>un solo</b> supuesto y los demás se quedan igual. Así se descubre qué variable tiene mayor impacto y merece más atención.",
+  ana:"Como probar qué ingrediente cambia más el sabor de una receta: se cambia uno a la vez.",
+  xl:"Suba un supuesto un 10 %, anote el resultado y devuélvalo a su valor original antes de probar el siguiente.",
+  ex:()=>exBox("","Si cada supuesto sube 10 %…",sensChart([{k:"Tarifa (+10 %)",d:300000},{k:"Costo variable (+10 %)",d:-168000},{k:"Servicios (+10 %)",d:132000},{k:"Gastos fijos (+10 %)",d:-90000}]),"Cambio sobre el resultado esperado de RD$ 420,000.00. La <b>tarifa</b> es la que más pesa; luego, el <b>costo por servicio</b>.") }
+];
+
+/* ---------- Diapositivas ---------- */
+const S = [], INI = [];
+S.push({t:-1, h:`<div class="slide cover">
+  <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
+  <div class="mod">Módulo 5.</div>
+  <h1>Modelado financiero y análisis de escenarios.</h1>
+  <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
+  <div class="cover-tags"><span>Supuestos</span><span>Escenarios</span><span>Buscar objetivo</span><span>Sensibilidad</span></div>
+  <div class="hint">Excel 2016 en adelante · use ← → para avanzar</div>
+  <svg class="cover-art" viewBox="0 0 500 430" aria-hidden="true">
+    <rect x="20" y="40" width="460" height="330" rx="22" fill="#0f4c5c"/>
+    <g stroke="#ffffff" stroke-opacity=".12">${[90,140,190,240,290].map(y=>`<line x1="50" x2="450" y1="${y}" y2="${y}"/>`).join("")}</g>
+    <line x1="50" x2="450" y1="290" y2="290" stroke="#ffffff" stroke-opacity=".5"/>
+    <rect class="grow" x="85" y="290" width="70" height="26" rx="4" fill="#c8553d" style="animation-delay:.1s"/>
+    <rect class="grow" x="215" y="180" width="70" height="110" rx="4" fill="#e09f3e" style="animation-delay:.3s"/>
+    <rect class="grow" x="345" y="100" width="70" height="190" rx="4" fill="#2a9d8f" style="animation-delay:.5s"/>
+    <text x="120" y="340" text-anchor="middle" font-size="14" fill="#fff" font-family="IBM Plex Sans">Conservador</text>
+    <text x="250" y="340" text-anchor="middle" font-size="14" fill="#fff" font-family="IBM Plex Sans">Esperado</text>
+    <text x="380" y="340" text-anchor="middle" font-size="14" fill="#fff" font-family="IBM Plex Sans">Favorable</text>
+    <path class="draw" d="M70 270 C140 262 170 205 250 190 S 360 110 440 78" fill="none" stroke="#fbf0dd" stroke-width="4" stroke-linecap="round"/>
+    <path d="M428 70 L446 76 L436 92" fill="none" stroke="#fbf0dd" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="draw"/>
+    <g class="bob"><rect x="360" y="10" width="92" height="118" rx="12" fill="#ffffff" stroke="#e3ded3"/><rect x="372" y="22" width="68" height="26" rx="4" fill="#e3eef0"/>
+      <text x="434" y="41" text-anchor="end" font-size="14" font-weight="700" fill="#0f4c5c" font-family="IBM Plex Mono">420,000</text>
+      ${[0,1,2].map(r=>[0,1,2].map(c=>`<rect x="${374+c*22}" y="${58+r*20}" width="16" height="14" rx="3" fill="${c===2&&r===2?'#e09f3e':'#cfc8ba'}"/>`).join("")).join("")}</g>
+    <g class="bob" style="animation-delay:.6s">${[0,1,2,3].map(i=>`<ellipse cx="70" cy="${400-i*12}" rx="34" ry="11" fill="#e09f3e" stroke="#b7791f"/>`).join("")}
+      <text x="70" y="368" text-anchor="middle" font-size="13" font-weight="700" fill="#7a4d0d" font-family="IBM Plex Mono">RD$</text></g>
+    <g class="bob" style="animation-delay:1.2s"><rect x="150" y="384" width="96" height="30" rx="15" fill="#e2f3f0" stroke="#2a9d8f"/><text x="198" y="404" text-anchor="middle" font-size="13" fill="#0f4c5c" font-family="IBM Plex Mono">¿Y si…?</text></g>
+  </svg>
+</div>`});
+
+S.push({t:-1, h:`<div class="slide" style="gap:18px">
+  <div class="eyebrow">Punto de partida.</div>
+  <h2>La pregunta de la administración.</h2>
+  <div class="cols"><div class="col">
+    <p class="lead">El <b>Centro Médico Horizonte</b> (entidad ficticia) planifica su próximo mes. Hoy atiende <b>1,200 servicios</b> y gana <b>${fmt(E.esp.R)}</b>. Pero la administración se pregunta:</p>
+    <div class="chips"><div class="chip"><i>📉</i>¿Y si bajan los servicios y suben los costos?</div><div class="chip"><i>⚖️</i>¿Cuántos servicios se necesitan para no perder dinero?</div><div class="chip"><i>🔍</i>¿Qué variable afecta más a la ganancia?</div></div>
+  </div><div class="col" style="justify-content:center">
+    <div class="ex"><div class="ex-h"><span>La respuesta.</span><span>Sin adivinar.</span></div><div class="ex-b"><p class="lead" style="font-size:22px">Para responder con números se usa un <b>modelo financiero</b> y las herramientas de <b>análisis de hipótesis</b> de Excel.</p><p class="note">En este módulo verá qué son y cómo leer sus resultados. En la guía paso a paso los aplicará en su propio archivo.</p></div></div>
+  </div></div></div>`});
+
+S.push({t:-1, h:`<div class="slide">
+  <div class="eyebrow">Contenido.</div>
+  <h2>Siete conceptos y un ejemplo.</h2>
+  <p class="lead">Cada concepto se explica con el mismo caso: el Centro Médico Horizonte.</p>
+  <div class="idx" data-idx></div>
+  <p class="note"><b style="color:var(--ink)">Objetivo:</b> proyectar resultados financieros en Excel y comparar escenarios para apoyar la toma de decisiones.</p>
+</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = T.map((t,i)=>`<button data-go="${INI[i]}"><span class="n">0${i+1}</span><span class="k">${t.k}.</span><span class="d">${t.d}</span></button>`).join("")+`<button class="res" data-go="${INI[T.length]}"><span class="n">★</span><span class="k">Ejemplo integrador.</span><span class="d">¿Qué escenario es más riesgoso?</span></button>`; }});
+
+T.forEach((t,i)=>{ INI[i]=S.length; S.push({t:i, h:`<div class="slide">
+  <div class="eyebrow"><span class="n">0${i+1}</span><span>${t.k}.</span><span class="tag">Concepto.</span></div>
+  <div class="cols"><div class="col"><h2>${t.q}</h2><p class="lead">${t.def}</p><p class="analogy">${t.ana}</p><p class="exl"><b>En Excel</b>${t.xl}</p></div>${t.ex()}</div></div>`}); });
+
+INI[T.length]=S.length;
+S.push({t:T.length, h:`<div class="slide" style="gap:16px">
+  <div class="eyebrow"><span class="n">★</span><span>Ejemplo integrador.</span><span class="tag">Todos los conceptos juntos.</span></div>
+  <h2>¿Qué escenario es más riesgoso?</h2>
+  <div class="cols" style="grid-template-columns:1.1fr 1fr"><div class="ex"><div class="ex-h"><span>Resultado por escenario.</span><span>Mensual.</span></div><div class="ex-b">${colChart([{k:"Conservador",v:E.cons.R,c:"#c8553d"},{k:"Esperado",v:E.esp.R,c:"#e09f3e"},{k:"Favorable",v:E.fav.R,c:"#2a9d8f"}])}
+    <table class="m"><tr><th></th><th>Conservador</th><th>Esperado</th><th>Favorable</th></tr><tr><td>Margen</td><td class="neg">${pct(E.cons.m)}</td><td>${pct(E.esp.m)}</td><td class="pos">${pct(E.fav.m)}</td></tr></table></div></div>
+  <div class="col"><div class="chips">
+    <div class="chip" style="border-left-color:var(--neg)"><i>⚠️</i><span>El <b>conservador</b> es el de mayor riesgo: pasa de ganar a <b class="neg">perder ${fmt(50000)}</b>.</span></div>
+    <div class="chip" style="border-left-color:var(--acc)"><i>⚖️</i><span>Buscar objetivo dice cuántos servicios hacen falta para <b>no perder</b>: el punto de equilibrio.</span></div>
+    <div class="chip" style="border-left-color:var(--pos)"><i>🎯</i><span>La <b>tarifa</b> y el <b>costo por servicio</b> son las variables que más mueven el resultado.</span></div></div>
+    <p class="analogy" style="font-size:17px">Una buena recomendación dice qué escenario preocupa, por qué (con números) y qué medida concreta tomar.</p></div></div>
+</div>`});
+
+S.push({t:-1, h:`<div class="slide">
+  <div class="eyebrow">Resumen.</div>
+  <h2>Lo que aprendimos hoy.</h2>
+  <div class="sum">${T.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${t.k}.</code></div></div>`).join("")}<div><span class="n">★</span><div><p>Un modelo no predice: muestra qué pasaría si…</p><code>Decidir con escenarios, no con corazonadas.</code></div></div></div>
+</div>`});
+
+const MS = (l,t,u) => `Microsoft. (s. f.-${l}). <i>${t}</i>. Microsoft Support. <a href="${u}" target="_blank" rel="noopener">${decodeURI(u)}</a>`;
+S.push({t:-1, h:`<div class="slide" style="gap:14px">
+  <div class="eyebrow">Bibliografía.</div>
+  <h2 style="font-size:40px">Referencias.</h2>
+  <ul class="refs">
+    <li>Alexander, M., Kusleika, R., &amp; Walkenbach, J. (2018). <i>Excel 2019 bible</i>. Wiley. <a href="https://doi.org/10.1002/9781119549376" target="_blank" rel="noopener">https://doi.org/10.1002/9781119549376</a></li>
+    <li>Benninga, S. (2014). <i>Financial modeling</i> (4.ª ed.). MIT Press.</li>
+    <li>Figueroa, J. (2026). <i>Modulo5-Base-Modelo-Financiero.xlsx</i> [Conjunto de datos ficticio con fines didácticos]. Instituto de Capacitación y Desarrollo Profesional Siglo XXI (ICADEP-XXI).</li>
+    <li>${MS("a","Introducción al Análisis de hipótesis","https://support.microsoft.com/es-es/office/introducci%C3%B3n-al-an%C3%A1lisis-de-hip%C3%B3tesis-22bffa5f-e891-4acc-bf7a-e4645c446fb4")}</li>
+    <li>${MS("b","Use la búsqueda de objetivo para encontrar el resultado que desea ajustando un valor de entrada","https://support.microsoft.com/es-es/office/usar-buscar-objetivo-para-encontrar-el-resultado-que-desea-ajustando-un-valor-de-entrada-320cb99e-f4a4-417f-b1c3-4f369d6e66c7")}</li>
+  </ul>
+</div>`});
+
+/* ---------- Motor ---------- */
+const wrap=document.getElementById("slides"); wrap.innerHTML=S.map(s=>s.h).join("");
+const els=[...wrap.children]; els.forEach((el,i)=>S[i].init&&S[i].init(el));
+wrap.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(+b.dataset.go));
+const dots=document.getElementById("dots");
+dots.innerHTML=T.map(t=>t.k).concat(["Ejemplo integrador"]).map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
+dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.t]));
+const SND={on:true,ctx:null,ready:false}; try{ SND.on=localStorage.getItem("m5sonido")!=="0"; }catch(e){}
+function sonar(dir){ if(!SND.on||!SND.ready) return; try{ const A=window.AudioContext||window.webkitAudioContext; if(!A) return; const c=SND.ctx||(SND.ctx=new A()); if(c.state==="suspended") c.resume();
+  const t=c.currentTime+.01, len=.22, b=c.createBuffer(1,Math.floor(c.sampleRate*len),c.sampleRate), d=b.getChannelData(0); for(let k=0;k<d.length;k++) d[k]=(Math.random()*2-1)*(1-k/d.length);
+  const s=c.createBufferSource(); s.buffer=b; const f=c.createBiquadFilter(); f.type="bandpass"; f.Q.value=1.4; f.frequency.setValueAtTime(dir>0?500:2600,t); f.frequency.exponentialRampToValueAtTime(dir>0?2600:500,t+len);
+  const g=c.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.2,t+.05); g.gain.exponentialRampToValueAtTime(.0001,t+len); s.connect(f); f.connect(g); g.connect(c.destination); s.start(t); s.stop(t+len);
+  const o=c.createOscillator(), og=c.createGain(); o.type="sine"; o.frequency.value=dir>0?880:587; og.gain.setValueAtTime(.0001,t+.06); og.gain.exponentialRampToValueAtTime(.06,t+.075); og.gain.exponentialRampToValueAtTime(.0001,t+.3); o.connect(og); og.connect(c.destination); o.start(t+.06); o.stop(t+.32); }catch(e){} }
+const pintarSnd=()=>{ document.getElementById("snd").textContent=SND.on?"🔊 Sonido":"🔇 Sin sonido"; };
+document.getElementById("snd").onclick=e=>{ SND.on=!SND.on; try{ localStorage.setItem("m5sonido",SND.on?"1":"0"); }catch(_){} pintarSnd(); e.currentTarget.blur(); }; pintarSnd();
+let cur=0;
+function go(i){ const prev=cur; cur=Math.max(0,Math.min(els.length-1,i)); if(cur!==prev) sonar(cur>prev?1:-1);
+  els.forEach((e,j)=>e.classList.toggle("on",j===cur)); const tp=S[cur].t;
+  dots.querySelectorAll("button").forEach((b,j)=>{ b.classList.toggle("cur",j===tp); b.classList.toggle("done",tp>j); });
+  document.getElementById("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
+  document.getElementById("topL").textContent=tp<0?"MÓDULO 5 · MODELADO FINANCIERO Y ANÁLISIS DE ESCENARIOS.":tp===T.length?"MÓDULO 5 · EJEMPLO INTEGRADOR.":`MÓDULO 5 · CONCEPTO 0${tp+1} DE 0${T.length} · ${T[tp].k.toUpperCase()}.`;
+  document.getElementById("prev").disabled=cur===0; document.getElementById("next").disabled=cur===els.length-1; }
+document.getElementById("prev").onclick=()=>go(cur-1); document.getElementById("next").onclick=()=>go(cur+1);
+document.getElementById("fs").onclick=e=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(_){} e.currentTarget.blur(); };
+document.addEventListener("keydown",e=>{ if(["ArrowRight","PageDown"].includes(e.key)||e.key===" "){e.preventDefault();go(cur+1);} else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==="Home") go(0); else if(e.key==="End") go(els.length-1); else if(e.key==="f"||e.key==="F") document.getElementById("fs").click(); else if(e.key==="m"||e.key==="M") document.getElementById("snd").click(); });
+function fit(){ const s=Math.min((innerWidth-16)/1280,(innerHeight-16)/720); document.getElementById("stage").style.transform=`translate(-50%,-50%) scale(${s})`; }
+addEventListener("resize",fit); fit(); go((parseInt(location.hash.slice(1),10)||1)-1); SND.ready=true;
+</script>
+</body>
+</html>
