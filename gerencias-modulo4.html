@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>Ascenso gerencial · Ficha de misión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Ficha de misión de cada gerencia (se comparte por enlace: ?g=clave&n=Nombre|Nombre) */
+:root{--bg:#f4f6f9;--card:#fff;--ink:#14213d;--muted:#5d6676;--line:#e2e6ee;--acc:#2F86D6;--acc-soft:#e8f1fb;--gold:#c99417;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans","Segoe UI",Arial,sans-serif;line-height:1.55}
+a{color:inherit}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 48px}
+header.hero{background:linear-gradient(135deg,#0b1626 0%,#14213d 55%,var(--acc) 160%);color:#fff;padding:26px 0 30px;position:relative;overflow:hidden}
+header.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:var(--acc);opacity:.18}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-family:Orbitron,sans-serif;font-weight:800;letter-spacing:.12em;font-size:13px;color:#f2c14e}
+.logo{height:46px;background:#fff;border-radius:8px;padding:4px 8px}
+.hero .icon{font-size:54px;line-height:1;margin-top:18px;display:inline-block;animation:flo 3s ease-in-out infinite}
+@keyframes flo{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.hero .kick{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#cfe0f5;margin-top:10px}
+.hero h1{font-family:Orbitron,sans-serif;font-size:clamp(24px,5vw,40px);line-height:1.15;margin:6px 0 10px;font-weight:800}
+.hero p{max-width:640px;margin:0;color:#e3ebf6;font-size:16px}
+.who{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.who span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:5px 12px;font-weight:600;font-size:14px}
+.who span::before{content:"👤 "}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 20px;margin-top:16px}
+section h2{font-family:Orbitron,sans-serif;font-size:17px;letter-spacing:.04em;margin:0 0 12px;color:var(--ink);display:flex;align-items:center;gap:10px}
+section h2 .n{background:var(--acc);color:#fff;border-radius:6px;padding:2px 8px;font-size:13px}
+.mision{border-left:5px solid var(--acc);background:var(--acc-soft);padding:14px 16px;border-radius:8px;font-size:16.5px}
+.req{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.req div{border:1px solid var(--line);border-top:4px solid var(--acc);border-radius:10px;padding:12px;text-align:center}
+.req b{display:block;font-family:Orbitron,sans-serif;font-size:30px;color:var(--acc)}
+.req span{font-size:14px;color:var(--muted)}
+.dl{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--acc);color:#fff;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:999px;border:0;cursor:pointer;font-size:15px}
+.btn.ghost{background:#fff;color:var(--acc);border:2px solid var(--acc)}
+.meta{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--ink);padding:8px}
+td{border-bottom:1px solid var(--line);padding:8px;vertical-align:top}
+td:first-child{font-weight:600;white-space:nowrap}
+.list{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.list li{border:1px solid var(--line);border-radius:10px;padding:10px 12px 10px 42px;position:relative}
+.list li::before{position:absolute;left:12px;top:9px;font-size:18px}
+.kpi li::before{content:"🔢"}
+.sit li::before{content:"🕵️"}
+.tip li::before{content:"💡"}
+.chart{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.chart div{border:1px solid var(--line);border-radius:10px;padding:12px;border-left:4px solid var(--acc)}
+.chart b{display:block;margin-bottom:3px}
+.chart span{font-size:13.5px;color:var(--muted)}
+.segs{display:flex;flex-wrap:wrap;gap:8px}
+.segs span{background:var(--ink);color:#fff;border-radius:6px;padding:6px 12px;font-size:14px}
+.index{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:18px}
+.index a{background:#fff;border:1px solid var(--line);border-top:5px solid;border-radius:12px;padding:16px;text-decoration:none}
+.index a b{display:block;font-size:17px;margin-top:6px}
+.index a:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(20,33,61,.12)}
+.index a{transition:transform .2s,box-shadow .2s}
+footer{text-align:center;color:var(--muted);font-size:13px;margin-top:28px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#14213d;color:#fff;padding:10px 16px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media (max-width:560px){ section{padding:16px 14px} td:first-child{white-space:normal} .btn{width:100%;justify-content:center} }
+@media (prefers-reduced-motion:reduce){ .hero .icon{animation:none} }
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap" id="hero"></div></header>
+<main class="wrap" id="main"></main>
+<footer class="wrap">Ascenso gerencial · Juego realizado por: Jarlin Figueroa MA. · Datos ficticios con fines didácticos.</footer>
+<div class="toast" id="toast"></div>
+<script src="gerencias-modulo4-data.js"></script>
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const qs = new URLSearchParams(location.search);
+const key = qs.get("g") || location.hash.slice(1);
+const nombres = (qs.get("n") || "").split("|").map(s => s.trim()).filter(Boolean);
+const g = GERENCIAS.find(x => x.key === key);
+const hero = document.getElementById("hero"), main = document.getElementById("main");
+const topBar = `<div class="topline"><span class="brand">ASCENSO GERENCIAL</span><img class="logo" src="img/icadep-isologo.png" alt="ICADEP-XXI"></div>`;
+
+if(!g){
+  hero.innerHTML = topBar + `<div class="icon">🏢</div><div class="kick">Fichas de misión</div><h1>Las cinco gerencias.</h1><p>Elige tu gerencia para ver tu misión, tu base de datos y las ideas para tu dashboard.</p>`;
+  main.innerHTML = `<div class="index">${GERENCIAS.map(x => `<a href="?g=${x.key}" style="border-top-color:${x.color}"><span style="font-size:32px">${x.icon}</span><b>${esc(x.nombre)}.</b><span class="meta">${x.registros} registros</span></a>`).join("")}</div>`;
+} else {
+  document.documentElement.style.setProperty("--acc", g.color);
+  document.documentElement.style.setProperty("--acc-soft", g.color + "1a");
+  document.title = g.nombre + " · Ascenso gerencial";
+  hero.innerHTML = topBar + `<div class="icon">${g.icon}</div><div class="kick">Ficha de misión</div><h1>${esc(g.nombre)}.</h1><p>${esc(g.rol)}</p>`
+    + (nombres.length ? `<div class="who">${nombres.map(n => `<span>${esc(n)}</span>`).join("")}</div>` : "");
+  main.innerHTML = `
+  <section><h2><span class="n">1</span>Tu misión.</h2><p class="mision">🎯 ${esc(g.mision)}</p></section>
+
+  <section><h2><span class="n">2</span>Lo mínimo que debe tener tu dashboard.</h2>
+    <div class="req"><div><b>${MINIMOS.kpi}</b><span>KPI en tarjetas (números grandes)</span></div><div><b>${MINIMOS.graficos}</b><span>gráficos dinámicos</span></div><div><b>${MINIMOS.segmentaciones}</b><span>segmentación que filtre todo</span></div><div><b>1</b><span>título que diga qué se mide</span></div></div>
+    <p class="meta" style="margin:12px 0 0">Trabajo individual. Al final presentarás tu archivo ante la dirección.</p></section>
+
+  <section><h2><span class="n">3</span>Tu base de datos.</h2>
+    <div class="dl"><div><b>${esc(g.archivo)}</b><div class="meta">Tabla ${esc(g.tabla)} · hoja ${esc(g.hoja)} · ${g.registros} registros · enero 2024 a diciembre 2025</div></div>
+    <a class="btn" href="${esc(g.archivo)}" download>⬇ Descargar la base</a></div>
+    <table style="margin-top:14px"><thead><tr><th>Campo</th><th>Qué contiene</th></tr></thead><tbody>${g.campos.map(c => `<tr><td>${esc(c[0])}</td><td>${esc(c[1])}</td></tr>`).join("")}</tbody></table>
+    <p class="meta" style="margin:10px 0 0">La hoja «Campos» del archivo trae esta misma explicación.</p></section>
+
+  <section><h2><span class="n">4</span>Ideas de KPI.</h2><p style="margin:0 0 10px">Elige al menos ${MINIMOS.kpi}:</p><ul class="list kpi">${g.kpis.map(k => `<li>${esc(k)}</li>`).join("")}</ul></section>
+
+  <section><h2><span class="n">5</span>Ideas de gráficos dinámicos.</h2><p style="margin:0 0 10px">Elige al menos ${MINIMOS.graficos}. Debajo de cada uno, cómo armar su tabla dinámica:</p>
+    <div class="chart">${g.graficos.map(c => `<div><b>${esc(c[0])}</b><span>${esc(c[1])}</span></div>`).join("")}</div></section>
+
+  <section><h2><span class="n">6</span>Segmentaciones sugeridas.</h2><div class="segs">${g.segs.map(s => `<span>🎛️ ${esc(s)}</span>`).join("")}</div>
+    <p class="meta" style="margin:10px 0 0">Conecta la segmentación a todas tus tablas dinámicas para que un clic cambie tarjetas y gráficos a la vez.</p></section>
+
+  <section><h2><span class="n">7</span>Situaciones que puedes explicar.</h2><p style="margin:0 0 10px">La dirección quiere respuestas. Investiga en tu base y usa tu dashboard para explicar:</p><ul class="list sit">${g.situaciones.map(s => `<li>${esc(s)}</li>`).join("")}</ul></section>
+
+  <section><h2><span class="n">8</span>Consejos del consejo directivo.</h2><ul class="list tip">${g.tips.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
+    <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:10px"><button class="btn ghost" id="copy">🔗 Copiar el enlace de esta ficha</button><a class="btn ghost" href="?">🏢 Ver las cinco gerencias</a></div></section>`;
+  document.getElementById("copy").onclick = () => {
+    const t = document.getElementById("toast");
+    const ok = () => { t.textContent = "Enlace copiado."; t.classList.add("on"); setTimeout(() => t.classList.remove("on"), 1800); };
+    try { navigator.clipboard.writeText(location.href).then(ok, () => prompt("Copia este enlace:", location.href)); } catch(e) { prompt("Copia este enlace:", location.href); }
+  };
+}
+</script>
+</body>
+</html>
