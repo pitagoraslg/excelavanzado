@@ -1,0 +1,83 @@
+<!-- Invitación al juego DataBattle (Módulos 3 y 4) para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes db-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes db-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(201,87,63,.45); } 50% { box-shadow: 0 0 0 12px rgba(201,87,63,0); } }
+  @keyframes db-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(-4deg); } }
+  @keyframes db-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  .db-in { animation: db-in .7s ease-out both; }
+  .db-d1 { animation-delay: .1s; } .db-d2 { animation-delay: .25s; } .db-d3 { animation-delay: .4s; } .db-d4 { animation-delay: .55s; }
+  .db-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .db-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(31,61,51,.14); }
+  .db-float { display: inline-block; animation: db-float 3s ease-in-out infinite; }
+  .db-btn { animation: db-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .db-btn:hover { transform: scale(1.04); background-color: #163027 !important; }
+  .db-bar { background: linear-gradient(90deg, #E4EFE8 0%, #1F3D33 30%, #C9573F 55%, #E4EFE8 80%, #1F3D33 100%); background-size: 200% 100%; animation: db-shine 7s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .db-in, .db-btn, .db-float, .db-bar { animation: none !important; } }
+</style>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #1F2A26; line-height: 1.55; background-color: #F7F4EE; border-radius: 10px; overflow: hidden; border: 1px solid #E2DDD2;">
+
+  <div class="db-bar" style="height: 6px; background-color: #1F3D33;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #1F3D33;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="db-float">🎮</span></td>
+      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
+        <p class="db-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #F3B9A8;">Juego educativo · Módulos 3 y 4</p>
+        <h2 class="db-in db-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 27px; font-weight: normal; line-height: 1.2; color: #FFFFFF;">DataBattle: ponga a prueba lo que sabe de dashboards y tablas dinámicas.</h2>
+        <p class="db-in db-d2" style="margin: 0; font-size: 15px; color: #DCE9E2;">Un juego de preguntas por equipos para <strong style="color: #FFFFFF;">fortalecer los conocimientos teóricos</strong> del módulo. Dos equipos de analistas compiten por devolver el orden a los datos de la red de ARS.</p>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Lo que tiene el juego -->
+  <table class="db-in db-d2" style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 10px; margin: 4px 0 0;" role="presentation">
+    <tr>
+      <td class="db-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #1F3D33; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">❓</span><br>
+        <strong style="color: #1F3D33; font-size: 18px;">80 preguntas</strong><br>
+        <span style="font-size: 13px; color: #5F6B64;">Dashboards, presentación de datos y tablas dinámicas</span>
+      </td>
+      <td class="db-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #C9573F; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">⚔️</span><br>
+        <strong style="color: #1F3D33; font-size: 18px;">Equipo contra equipo</strong><br>
+        <span style="font-size: 13px; color: #5F6B64;">Por puntos o por rounds</span>
+      </td>
+      <td class="db-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2DDD2; border-top: 4px solid #2F6B52; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">🛡️</span><br>
+        <strong style="color: #1F3D33; font-size: 18px;">Poderes</strong><br>
+        <span style="font-size: 13px; color: #5F6B64;">Más tiempo, escudo y saltar pregunta</span>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 4px 24px 26px;">
+
+    <!-- Dos formas de jugar -->
+    <p class="db-in db-d3" style="margin: 14px 0 8px; font-weight: bold; color: #1F3D33; font-size: 16px;">🕹️ Dos formas de jugar</p>
+    <table class="db-in db-d3" style="width: 100%; border-collapse: separate; border-spacing: 0 8px;" role="presentation">
+      <tr>
+        <td style="background-color: #E4EFE8; border-left: 5px solid #2F6B52; border-radius: 6px; padding: 12px 16px; font-size: 14.5px;">
+          <strong style="color: #1F3D33;">🎤 En clase, dirigido por el facilitador:</strong> el facilitador conduce la partida en pantalla compartida, forma los equipos y modera cada turno.
+        </td>
+      </tr>
+      <tr>
+        <td style="background-color: #FFFFFF; border: 1px solid #E2DDD2; border-left: 5px solid #C9573F; border-radius: 6px; padding: 12px 16px; font-size: 14.5px;">
+          <strong style="color: #1F3D33;">👥 Por su cuenta, en equipo:</strong> también puede reunirse con sus compañeros, formar dos equipos y jugar para repasar antes de la clase. Basta con abrir el juego en una computadora y escribir los nombres de cada equipo.
+        </td>
+      </tr>
+    </table>
+
+    <p class="db-in db-d4" style="margin: 10px 0 0; font-size: 14px; color: #5F6B64;">💡 Lea con atención: las opciones se parecen entre sí y cambian de orden en cada partida. Cuando un equipo falla, el juego señala la respuesta correcta para que todos aprendan.</p>
+
+    <!-- Llamado a la acción -->
+    <div class="db-in db-d4" style="text-align: center; margin: 22px 0 6px;">
+      <a class="db-btn" href="https://pitagoraslg.github.io/excelavanzado/databattle-modulo4.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #1F3D33; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px;">🎮 Entrar al juego</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #5F6B64;">Se abre en una pestaña nueva. Se recomienda jugar en computadora o tableta.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #5F6B64;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
