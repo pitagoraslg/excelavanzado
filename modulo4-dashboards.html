@@ -324,6 +324,14 @@ svg text{font-family:var(--sans)}
 .exl strong{color:var(--ink);font-weight:600}
 .ok-b .kcard b{font-size:22px}
 .idx button.pr{grid-column:span 3;border-right:0;background:var(--xl-soft)}
+/* Aviso parpadeante de la lámina «Su turno»: lleva al PDF de tarjetas KPI */
+.kpi-cta{display:flex;align-items:center;gap:16px;text-decoration:none;background:var(--ink);color:#fff;padding:11px 20px;border-left:6px solid #e8a33d;animation:ctaGlow 1.1s ease-in-out infinite}
+.kpi-cta .new{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.12em;background:#e8a33d;color:var(--ink);padding:4px 10px;animation:ctaBlink 1.1s steps(1) infinite}
+.kpi-cta .t{font-family:var(--mono);font-size:19px;font-weight:600;letter-spacing:.06em;flex:1}
+.kpi-cta .go{font-family:var(--mono);font-size:16px;font-weight:600;letter-spacing:.08em;color:#e8a33d;white-space:nowrap}
+.kpi-cta:hover{background:#1c4580}
+@keyframes ctaBlink{50%{opacity:0}}
+@keyframes ctaGlow{0%,100%{box-shadow:0 0 0 0 rgba(232,163,61,0)}50%{box-shadow:0 0 0 7px rgba(232,163,61,.45)}}
 </style>
 
 <div id="viewport"><div id="stage">
@@ -836,6 +844,7 @@ S.push({topic:T_PR, paso:"fin", html:`<div class="slide" style="gap:18px">
   <div class="eyebrow"><span class="n">+</span><span>Su turno.</span><span class="tag">Opcional · para ampliar.</span></div>
   <h2 style="font-size:42px">Haga crecer su dashboard.</h2>
   <p class="lead" style="font-size:19px;max-width:none">Ya tiene la base. Cada idea se arma igual: tabla dinámica en Tablas, gráfico o número en Dashboard, y conexión a la segmentación.</p>
+  <a class="kpi-cta" href="Instrucciones-KPI-Estetico-Modulo4.pdf" target="_blank" rel="noopener"><span class="new">NUEVO</span><span class="t">★ INSTRUCCIÓN PARA UN KPI MÁS ESTÉTICO</span><span class="go">ADELANTE ▶</span></a>
   <div class="uses" style="grid-template-columns:repeat(3,minmax(0,1fr))">
     <div class="use"><h3>Otro KPI.</h3><p>En TD_KPI arrastre otra vez <b>Monto</b> y cámbielo a <b>Promedio</b>: una tercera tarjeta, «Monto promedio».</p></div>
     <div class="use"><h3>Otro gráfico.</h3><p><b>Mes</b> en Filas y <b>Año</b> en Columnas, con un gráfico de <b>Línea</b>.</p></div>

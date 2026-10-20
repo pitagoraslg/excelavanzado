@@ -1,0 +1,121 @@
+'=====================================================================
+' TARJETA KPI CON ESTILO - Módulo 4 · Visualización de datos y dashboards
+' Crea una tarjeta: barra de color arriba, título pequeño en mayúsculas
+' y el número grande. El número queda VINCULADO a la celda del KPI.
+' Uso: Alt + F8 > CrearTarjetaKPI > Ejecutar.
+'=====================================================================
+Sub CrearTarjetaKPI()
+    '--- Tamaño de la tarjeta (puede cambiarlo) ---
+    Const ANCHO As Double = 270
+    Const ALTO As Double = 72
+
+    Dim celValor As Range, celDestino As Range
+    Dim titulo As String, opcion As String
+    Dim ws As Worksheet
+    Dim fondo As Shape, barra As Shape, txtTitulo As Shape, txtValor As Shape
+    Dim x As Double, y As Double
+    Dim colorBarra As Long
+
+    '--- Paso 1: la celda que tiene el valor del KPI ---
+    On Error Resume Next
+    Set celValor = Application.InputBox( _
+        "Haga clic en la celda que tiene el VALOR del KPI" & vbCrLf & _
+        "(por ejemplo, el 360 o el monto total).", _
+        "Tarjeta KPI - Paso 1 de 4", Type:=8)
+    On Error GoTo 0
+    If celValor Is Nothing Then Exit Sub
+    Set celValor = celValor.Cells(1, 1)
+
+    '--- Paso 2: el título ---
+    titulo = InputBox("Escriba el título de la tarjeta:", _
+        "Tarjeta KPI - Paso 2 de 4", "Servicios atendidos")
+    If Trim(titulo) = "" Then Exit Sub
+
+    '--- Paso 3: dónde se coloca ---
+    On Error Resume Next
+    Set celDestino = Application.InputBox( _
+        "Haga clic en la celda donde quiere colocar la tarjeta" & vbCrLf & _
+        "(será su esquina superior izquierda).", _
+        "Tarjeta KPI - Paso 3 de 4", Type:=8)
+    On Error GoTo 0
+    If celDestino Is Nothing Then Exit Sub
+
+    '--- Paso 4: el color de la barra ---
+    opcion = InputBox("Elija el color de la barra superior:" & vbCrLf & vbCrLf & _
+        "1 = Azul cielo" & vbCrLf & _
+        "2 = Azul oscuro" & vbCrLf & _
+        "3 = Verde azulado" & vbCrLf & _
+        "4 = Naranja" & vbCrLf & _
+        "5 = Ciruela" & vbCrLf & _
+        "6 = Rojo vino", _
+        "Tarjeta KPI - Paso 4 de 4", "1")
+    If opcion = "" Then Exit Sub
+    Select Case opcion
+        Case "2": colorBarra = RGB(19, 49, 92)
+        Case "3": colorBarra = RGB(42, 157, 143)
+        Case "4": colorBarra = RGB(199, 116, 31)
+        Case "5": colorBarra = RGB(138, 63, 143)
+        Case "6": colorBarra = RGB(163, 54, 79)
+        Case Else: colorBarra = RGB(47, 134, 214)
+    End Select
+
+    Set ws = celDestino.Worksheet
+    x = celDestino.Left
+    y = celDestino.Top
+
+    '--- Fondo blanco con borde gris azulado ---
+    Set fondo = ws.Shapes.AddShape(msoShapeRectangle, x, y, ANCHO, ALTO)
+    With fondo
+        .Fill.ForeColor.RGB = RGB(255, 255, 255)
+        .Line.ForeColor.RGB = RGB(201, 209, 221)
+        .Line.Weight = 1
+        .Shadow.Visible = msoFalse
+    End With
+
+    '--- Barra de color arriba ---
+    Set barra = ws.Shapes.AddShape(msoShapeRectangle, x, y, ANCHO, 4)
+    With barra
+        .Fill.ForeColor.RGB = colorBarra
+        .Line.Visible = msoFalse
+        .Shadow.Visible = msoFalse
+    End With
+
+    '--- Título: pequeño, mayúsculas, gris ---
+    Set txtTitulo = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, x + 14, y + 13, ANCHO - 24, 16)
+    With txtTitulo
+        .Fill.Visible = msoFalse
+        .Line.Visible = msoFalse
+        With .TextFrame2
+            .MarginLeft = 0: .MarginRight = 0: .MarginTop = 0: .MarginBottom = 0
+            .WordWrap = msoFalse
+            .TextRange.Text = UCase(titulo)
+            .TextRange.Font.Name = "Consolas"
+            .TextRange.Font.Size = 9
+            .TextRange.Font.Spacing = 0.6
+            .TextRange.Font.Fill.ForeColor.RGB = RGB(92, 102, 119)
+        End With
+    End With
+
+    '--- Valor: grande, en negrita, azul oscuro y vinculado a la celda ---
+    Set txtValor = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, x + 14, y + 30, ANCHO - 24, 34)
+    With txtValor
+        .Fill.Visible = msoFalse
+        .Line.Visible = msoFalse
+        .DrawingObject.Formula = "='" & celValor.Worksheet.Name & "'!" & celValor.Address
+        With .TextFrame2
+            .MarginLeft = 0: .MarginRight = 0: .MarginTop = 0: .MarginBottom = 0
+            .WordWrap = msoFalse
+            .TextRange.Font.Name = "Georgia"
+            .TextRange.Font.Size = 22
+            .TextRange.Font.Bold = msoTrue
+            .TextRange.Font.Fill.ForeColor.RGB = RGB(19, 49, 92)
+        End With
+    End With
+
+    '--- Agrupar las 4 piezas en una sola tarjeta ---
+    ws.Shapes.Range(Array(fondo.Name, barra.Name, txtTitulo.Name, txtValor.Name)).Group
+
+    MsgBox "Tarjeta creada." & vbCrLf & _
+        "Se actualizará sola cuando cambie la celda " & _
+        celValor.Address(False, False) & ".", vbInformation, "Listo"
+End Sub
