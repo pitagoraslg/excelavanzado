@@ -1,6 +1,6 @@
 '=====================================================================
 ' TARJETA KPI CON ESTILO - Módulo 4 · Visualización de datos y dashboards
-' Crea una tarjeta: barra de color arriba, título pequeño en mayúsculas
+' Crea una tarjeta: barra de color arriba, título en negro y mayúsculas
 ' y el número grande. El número queda VINCULADO a la celda del KPI.
 ' Uso: Alt + F8 > CrearTarjetaKPI > Ejecutar.
 '=====================================================================
@@ -80,7 +80,7 @@ Sub CrearTarjetaKPI()
         .Shadow.Visible = msoFalse
     End With
 
-    '--- Título: pequeño, mayúsculas, gris ---
+    '--- Título: mayúsculas, negrita, negro ---
     Set txtTitulo = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, x + 14, y + 13, ANCHO - 24, 16)
     With txtTitulo
         .Fill.Visible = msoFalse
@@ -89,14 +89,14 @@ Sub CrearTarjetaKPI()
             .MarginLeft = 0: .MarginRight = 0: .MarginTop = 0: .MarginBottom = 0
             .WordWrap = msoFalse
             .TextRange.Text = UCase(titulo)
-            .TextRange.Font.Name = "Consolas"
-            .TextRange.Font.Size = 9
+            .TextRange.Font.Name = "Segoe UI Semibold"
+            .TextRange.Font.Size = 10
             .TextRange.Font.Spacing = 0.6
-            .TextRange.Font.Fill.ForeColor.RGB = RGB(92, 102, 119)
+            .TextRange.Font.Fill.ForeColor.RGB = RGB(0, 0, 0)
         End With
     End With
 
-    '--- Valor: grande, en negrita, azul oscuro y vinculado a la celda ---
+    '--- Valor: grande, letra gruesa, azul oscuro y vinculado a la celda ---
     Set txtValor = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, x + 14, y + 30, ANCHO - 24, 34)
     With txtValor
         .Fill.Visible = msoFalse
@@ -105,8 +105,8 @@ Sub CrearTarjetaKPI()
         With .TextFrame2
             .MarginLeft = 0: .MarginRight = 0: .MarginTop = 0: .MarginBottom = 0
             .WordWrap = msoFalse
-            .TextRange.Font.Name = "Georgia"
-            .TextRange.Font.Size = 22
+            .TextRange.Font.Name = "Segoe UI Black"
+            .TextRange.Font.Size = 23
             .TextRange.Font.Bold = msoTrue
             .TextRange.Font.Fill.ForeColor.RGB = RGB(19, 49, 92)
         End With
