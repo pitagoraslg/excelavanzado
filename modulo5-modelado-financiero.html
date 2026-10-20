@@ -90,6 +90,9 @@ td.in{background:#fff6d6;font-weight:600} td.out{background:var(--pos-soft)} tr.
 .refs li{font-size:15px;line-height:1.45;padding-left:36px;text-indent:-36px}
 .refs a{color:var(--ink);word-break:break-all;text-decoration:none}
 .note{font-size:15px;color:var(--muted)}
+.pts{display:flex;flex-direction:column;border-top:2px solid var(--ink)}
+.pts div{display:grid;grid-template-columns:215px 1fr;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);font-size:15.5px;line-height:1.45}
+.pts b{color:var(--ink);font-size:15.5px}
 /* portada */
 .cover{justify-content:center;gap:22px}
 .cover-logo{position:absolute;top:54px;right:72px;height:96px;width:auto;mix-blend-mode:multiply}
@@ -247,6 +250,82 @@ const T = [
   ex:()=>exBox("","Si cada supuesto sube 10 %…",sensChart([{k:"Tarifa (+10 %)",d:300000},{k:"Costo variable (+10 %)",d:-168000},{k:"Servicios (+10 %)",d:132000},{k:"Gastos fijos (+10 %)",d:-90000}]),"Cambio sobre el resultado esperado de RD$ 420,000.00. La <b>tarifa</b> es la que más pesa; luego, el <b>costo por servicio</b>.") }
 ];
 
+/* ---------- Segunda lámina de cada concepto («A fondo»): una idea clave más con su ejemplo ---------- */
+const eqS = 900000/(E.esp.t-E.esp.c);            // servicios de equilibrio: 818.18
+const R2 = (s,t) => s*(t-1400)-900000;            // resultado con costo 1,400 y fijos 900,000
+const FONDO = [
+{ q:"¿Cómo se construye un buen modelo?",
+  lead:"Un modelo sirve si cualquier persona puede cambiar un supuesto y confiar en el resultado. Para eso se siguen cuatro reglas.",
+  pts:[["Separe las partes.","Supuestos arriba, cálculos en medio y resultados abajo, o en hojas distintas."],
+       ["Un dato, un solo lugar.","Cada supuesto se escribe una vez; las fórmulas lo usan desde su celda."],
+       ["Nada de números dentro de las fórmulas.","Escriba =B4*B5, nunca =1200*2500."],
+       ["Rotule y revise.","Cada celda con su nombre y su unidad (RD$, servicios). Pruebe con un valor fácil para ver si el cálculo cuadra."]],
+  ex:()=>exBox("","Bien y mal hecho.",`<table class="m"><tr><th>Ingresos</th><th>Fórmula</th><th>Si servicios = 1,300</th></tr>
+     <tr><td><span class="pos">✔ Bien</span></td><td style="font-family:var(--mono)">=B4*B5</td><td class="out">${fmt(1300*2500)}</td></tr>
+     <tr><td><span class="neg">✘ Mal</span></td><td style="font-family:var(--mono)">=1200*2500</td><td style="background:var(--neg-soft)">${fmt(1200*2500)}</td></tr></table>
+     <p style="font-size:16px;line-height:1.5">Al cambiar B4 a 1,300, la fórmula bien hecha se actualiza. La mal hecha sigue mostrando ${fmt(3000000)}: el modelo <b>parece</b> funcionar, pero da un resultado equivocado.</p>`,"Un número escrito dentro de una fórmula es el error más común y el más difícil de ver.") },
+{ q:"¿De dónde salen los supuestos?",
+  lead:"Un modelo es tan bueno como sus supuestos. Cada valor amarillo debe tener una fuente que lo respalde.",
+  pts:[["Datos históricos.","El promedio de los últimos meses: servicios atendidos y costos reales."],
+       ["Contratos y tarifas.","Las tarifas pactadas con las ARS y los precios de los proveedores."],
+       ["Opinión de expertos.","Lo que esperan la administración, finanzas o el área médica."],
+       ["Nombres de celda.","Con el Cuadro de nombres, B4 pasa a llamarse Servicios_al_mes y la fórmula se lee sola."]],
+  ex:()=>exBox("","Cada supuesto, con su fuente.",`<table class="m"><tr><th>Supuesto</th><th>Valor</th><th>Fuente</th></tr>
+     <tr><td>Servicios al mes</td><td class="in">1,200</td><td style="font-size:14px">Promedio de los últimos 6 meses.</td></tr>
+     <tr><td>Tarifa promedio</td><td class="in">${fmt(2500)}</td><td style="font-size:14px">Tarifas pactadas con las ARS.</td></tr>
+     <tr><td>Costo variable</td><td class="in">${fmt(1400)}</td><td style="font-size:14px">Insumos y honorarios por servicio.</td></tr>
+     <tr><td>Gastos fijos</td><td class="in">${fmt(900000)}</td><td style="font-size:14px">Alquiler, nómina y servicios.</td></tr></table>
+     <p style="font-size:15px;line-height:1.5">Sin nombres: <code style="font-family:var(--mono)">=B4*B5</code><br>Con nombres: <code style="font-family:var(--mono);color:var(--ink);font-weight:600">=Servicios_al_mes*Tarifa_promedio</code></p>`,`<span class="path" style="font-family:var(--mono);font-size:13px;background:var(--ink-soft);padding:1px 6px">Fórmulas › Administrador de nombres</span> o escriba el nombre en el Cuadro de nombres, a la izquierda de la barra de fórmulas.`) },
+{ q:"¿Cuántos servicios hacen falta para no perder?",
+  lead:"Cada servicio deja un <b>margen de contribución</b>: lo que queda de la tarifa después de pagar su costo variable. Con esos márgenes se pagan los gastos fijos.",
+  pts:[["Margen por servicio.","Tarifa − costo variable = RD$ 2,500 − RD$ 1,400 = RD$ 1,100."],
+       ["Punto de equilibrio.","Gastos fijos ÷ margen por servicio. Es la cantidad mínima para no perder."],
+       ["Por debajo, pérdida.","Cada servicio menos resta RD$ 1,100 al resultado."],
+       ["Por encima, ganancia.","Cada servicio más suma RD$ 1,100."]],
+  ex:()=>exBox("","El punto de equilibrio del centro.",`<div class="calc"><div><b> </b><span>Gastos fijos</span><span>${fmt(900000)}</span></div>
+     <div><b>÷</b><span>Margen por servicio (${fmt(2500)} − ${fmt(1400)})</span><span>${fmt(1100)}</span></div>
+     <div class="res"><b>=</b><span>Servicios para no perder</span><span class="pos">${eqS.toFixed(2)} → 819</span></div></div>
+     <p style="font-size:16px;line-height:1.5">Hoy el centro atiende <b>1,200</b>: está <b>381 servicios</b> por encima del equilibrio. Ese colchón es su margen de seguridad (32 %).</p>`,"En Excel: =B7/(B5-B6). Se redondea hacia arriba porque no existe medio servicio.") },
+{ q:"¿Cómo se arma un buen escenario?",
+  lead:"Un escenario no es cambiar números al azar: es contar una historia posible y traducirla a supuestos que se mueven juntos.",
+  pts:[["Coherente.","En un mes malo bajan los servicios y, a la vez, suben los costos. No se mezcla lo peor de uno con lo mejor de otro."],
+       ["Realista.","Los rangos salen de lo que ya ha pasado: el peor y el mejor mes del último año."],
+       ["Pocos.","Tres o cuatro escenarios se comparan bien; diez confunden."],
+       ["Documentado.","Cada escenario lleva una nota que explica por qué tiene esos valores."]],
+  ex:()=>exBox("","La historia detrás de cada escenario.",`<table class="m"><tr><th>Escenario</th><th>Qué lo provoca</th><th>Resultado</th></tr>
+     <tr><td>Conservador</td><td style="text-align:left;font-size:14px">Baja la demanda y suben los insumos.</td><td class="neg">${fmtS(E.cons.R)}</td></tr>
+     <tr><td>Esperado</td><td style="text-align:left;font-size:14px">Se mantiene la tendencia actual.</td><td>${fmt(E.esp.R)}</td></tr>
+     <tr><td>Favorable</td><td style="text-align:left;font-size:14px">Nuevo convenio con una ARS.</td><td class="pos">${fmt(E.fav.R)}</td></tr></table>
+     <p style="font-size:16px;line-height:1.5">Entre el peor y el mejor caso hay <b>${fmt(E.fav.R-E.cons.R)}</b> de diferencia. Ese <b>rango</b> mide la incertidumbre del mes.</p>`,"Mientras más ancho el rango, más importante es tener un plan para el escenario conservador.") },
+{ q:"¿Qué conviene saber del Administrador?",
+  lead:"Al agregar un escenario, Excel pide cuatro datos. Conocer sus reglas evita errores al comparar.",
+  pts:[["Celdas cambiantes.","Hasta 32 supuestos por escenario. Se seleccionan juntos, por ejemplo B4:B6."],
+       ["El resumen es una foto.","La hoja Resumen del escenario no se actualiza sola: si cambia el modelo, se genera otra."],
+       ["Celdas de resultado.","En el resumen se eligen las que se quieren comparar: Resultado y Margen."],
+       ["Combinar.","Trae escenarios hechos por otra persona en otra hoja o libro con el mismo modelo."]],
+  ex:()=>exBox("","Ventana «Agregar escenario».",`<div class="dlg"><div class="t">Agregar escenario</div><div class="b"><div class="r"><span>Nombre del escenario:</span><span>Conservador</span></div><div class="r"><span>Celdas cambiantes:</span><span>$B$4:$B$6</span></div><div class="r"><span>Comentario:</span><span style="font-family:var(--sans)">Baja la demanda y suben los insumos.</span></div><div class="r"><span>Protección:</span><span style="font-family:var(--sans)">☑ Evitar cambios</span></div><div class="k"><span>Aceptar</span><span>Cancelar</span></div></div></div>`,"Luego Excel pide los valores: 1000, 2400 y 1550. Repita con Esperado y Favorable.") },
+{ q:"Tres preguntas, una herramienta.",
+  lead:"Con <b>Con el valor = 0</b>, Buscar objetivo encuentra el límite de cada supuesto: hasta dónde puede llegar sin que el centro pierda.",
+  pts:[["Solo un supuesto a la vez.","Para mover varios a la vez se usan escenarios."],
+       ["Definir la celda debe tener fórmula.","Es el resultado, por ejemplo B13."],
+       ["Para cambiar la celda debe tener un valor.","Un supuesto escrito a mano, nunca una fórmula."],
+       ["Redondee el resultado.","Excel da decimales (818.18 servicios); en la vida real se redondea con criterio."]],
+  ex:()=>exBox("","Meta: resultado = RD$ 0.00.",`<table class="m"><tr><th>Para cambiar</th><th>Valor de equilibrio</th><th>Hoy</th></tr>
+     <tr><td>Servicios al mes</td><td class="out">${eqS.toFixed(2)} → 819</td><td>1,200</td></tr>
+     <tr><td>Tarifa promedio</td><td class="out">${fmt(2150)}</td><td>${fmt(2500)}</td></tr>
+     <tr><td>Costo variable</td><td class="out">${fmt(1750)}</td><td>${fmt(1400)}</td></tr></table>
+     <p style="font-size:16px;line-height:1.5">Lectura: la tarifa puede bajar hasta <b>${fmt(2150)}</b> o el costo subir hasta <b>${fmt(1750)}</b> antes de que el centro pierda dinero.</p>`,"Cada fila se calcula por separado, con los demás supuestos en su valor esperado.") },
+{ q:"Toda la sensibilidad en una tabla.",
+  lead:"La <b>Tabla de datos</b> calcula el resultado para muchas combinaciones de dos supuestos a la vez, sin cambiar el modelo.",
+  pts:[["Dónde está.","Datos › Análisis de hipótesis › Tabla de datos."],
+       ["Cómo se arma.","Valores de un supuesto en la fila, del otro en la columna y en la esquina =B13, la celda del resultado."],
+       ["Celdas de entrada.","Fila: la tarifa (B5). Columna: los servicios (B4)."],
+       ["Cómo se lee.","Las celdas en rojo marcan las combinaciones que dan menos ganancia; así se ve dónde está el riesgo."]],
+  ex:()=>exBox("","Resultado según servicios y tarifa.",`<table class="m"><tr><th>Servicios ↓ · Tarifa →</th><th>${fmt(2400)}</th><th>${fmt(2500)}</th><th>${fmt(2600)}</th></tr>
+     ${[1000,1200,1400].map(s=>`<tr><td><b>${s.toLocaleString("en-US")}</b></td>${[2400,2500,2600].map(t=>{const r=R2(s,t);return `<td style="background:${r<250000?'var(--neg-soft)':r>=500000?'var(--pos-soft)':'#fff'};font-weight:${s===1200&&t===2500?700:400}">${r.toLocaleString("en-US")}</td>`;}).join("")}</tr>`).join("")}</table>
+     <p style="font-size:16px;line-height:1.5">Costo variable fijo en ${fmt(1400)}. En negrita, el caso esperado (420,000). Con 1,000 servicios y tarifa de ${fmt(2400)} el centro apenas gana 100,000.</p>`,"Excel la llena con la fórmula {=TABLA(B5;B4)}. No se edita celda por celda.") }
+];
+
 /* ---------- Diapositivas ---------- */
 const S = [], INI = [];
 S.push({t:-1, h:`<div class="slide cover">
@@ -297,7 +376,11 @@ S.push({t:-1, h:`<div class="slide">
 
 T.forEach((t,i)=>{ INI[i]=S.length; S.push({t:i, h:`<div class="slide">
   <div class="eyebrow"><span class="n">0${i+1}</span><span>${t.k}.</span><span class="tag">Concepto.</span></div>
-  <div class="cols"><div class="col"><h2>${t.q}</h2><p class="lead">${t.def}</p><p class="analogy">${t.ana}</p><p class="exl"><b>En Excel</b>${t.xl}</p></div>${t.ex()}</div></div>`}); });
+  <div class="cols"><div class="col"><h2>${t.q}</h2><p class="lead">${t.def}</p><p class="analogy">${t.ana}</p><p class="exl"><b>En Excel</b>${t.xl}</p></div>${t.ex()}</div></div>`});
+  const f=FONDO[i]; S.push({t:i, h:`<div class="slide" style="gap:16px">
+  <div class="eyebrow"><span class="n">0${i+1}</span><span>${t.k}.</span><span class="tag">A fondo.</span></div>
+  <div class="cols" style="align-items:start"><div class="col" style="gap:14px"><h2 style="font-size:36px">${f.q}</h2><p class="lead" style="font-size:18px">${f.lead}</p>
+    <div class="pts">${f.pts.map(([h,p])=>`<div><b>${h}</b><span>${p}</span></div>`).join("")}</div></div>${f.ex()}</div></div>`}); });
 
 INI[T.length]=S.length;
 S.push({t:T.length, h:`<div class="slide" style="gap:16px">
