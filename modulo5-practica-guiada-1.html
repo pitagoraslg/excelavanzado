@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Práctica guiada 1 · Escenarios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* Láminas de 1280×720 con el motor del Módulo 5. Cada paso = «Haga esto» + «Compruebe». */
+:root{
+  --bg:#e7e3da; --paper:#f7f5f0; --card:#ffffff; --ink:#0f4c5c; --text:#1d2b30; --muted:#5e6b6f; --line:#e3ded3; --grid:#cfc8ba;
+  --acc:#e09f3e; --acc-d:#a8691a; --acc-soft:#fbf0dd; --pos:#23826f; --pos-soft:#e2f3f0; --neg:#c8553d; --neg-soft:#f8e4df; --ink-soft:#e3eef0;
+  --xl:#217346; --hi:#fff2cc; --ou:#e2efda;
+  --serif:"Source Serif 4",Georgia,serif; --sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif; --mono:"IBM Plex Mono",Consolas,monospace; --win:"Segoe UI",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;background:var(--paper);transform-origin:center;transform:translate(-50%,-50%);box-shadow:0 10px 40px rgba(15,76,92,.18);border-top:4px solid var(--ink)}
+.slide{position:absolute;inset:0;padding:62px 72px 70px;display:none;flex-direction:column;gap:16px}
+.slide.on{display:flex;animation:in .4s ease}
+@keyframes in{from{opacity:.3;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.slide.on,.pop,.flash{animation:none!important}}
+.top{position:absolute;top:20px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;z-index:3}
+.dots{display:flex;gap:6px}.dots button{width:28px;height:6px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dots button.done{background:var(--grid)}.dots button.cur{background:var(--acc)}
+.bottom{position:absolute;bottom:18px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);z-index:3}
+.navb{display:flex;gap:8px;align-items:center}
+.btn{font-family:var(--mono);font-size:13px;border:1px solid var(--grid);background:var(--card);color:var(--ink);padding:7px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink)} .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+h1,h2{font-family:var(--serif);font-weight:600;margin:0;color:var(--ink);line-height:1.08;text-wrap:balance}
+h2{font-size:38px}
+p{margin:0}
+b{font-weight:600}
+code{font-family:var(--mono);font-size:.9em;background:var(--ink-soft);color:var(--ink);padding:1px 6px;font-weight:600;white-space:nowrap}
+.eyebrow{font-family:var(--mono);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);display:flex;gap:12px;align-items:center}
+.eyebrow .tag{background:var(--ink);color:#fff;padding:3px 10px;font-size:12.5px}
+.eyebrow .tag.ok{background:var(--pos)}
+.eyebrow .tag.go{background:var(--acc);color:#2a1a00}
+.lead{font-size:20px;line-height:1.5}
+.why{display:flex;gap:12px;align-items:baseline;font-size:17px;color:var(--ink);background:var(--ink-soft);padding:9px 14px}
+.why b{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.cols{display:grid;grid-template-columns:430px 1fr;gap:36px;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.note{font-size:15px;color:var(--muted)}
+
+/* Instrucciones numeradas */
+.do{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:13px}
+.do li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;font-size:18px;line-height:1.42}
+.do li .h{display:block;font-size:14.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+.m{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--acc);color:#2a1a00;font-family:var(--mono);font-size:14px;font-weight:700;flex:none;box-shadow:0 0 0 2px #fff}
+.do li .m{margin-top:1px}
+.pin{position:absolute;top:-12px;right:-12px;z-index:2}
+.rel{position:relative}
+.path{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px;font-family:var(--win);font-size:15px}
+.path span{background:var(--card);border:1px solid var(--grid);padding:2px 9px;font-weight:600}
+.path i{font-style:normal;color:var(--acc-d);font-weight:700}
+.cap{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.arrow{font-family:var(--mono);font-size:13px;color:var(--acc-d);font-weight:700}
+.tip{border-left:4px solid var(--acc);background:var(--acc-soft);padding:10px 14px;font-size:15.5px;line-height:1.45}
+.warn{border-left:4px solid var(--neg);background:var(--neg-soft);padding:10px 14px;font-size:15.5px;line-height:1.45}
+
+/* Hoja de Excel simulada */
+.xl{border:1px solid #c6c6c6;background:#fff;font-family:var(--win);font-size:13.5px;box-shadow:0 6px 18px rgba(0,0,0,.08);align-self:start;max-width:100%}
+.xl .fx{display:flex;align-items:center;border-bottom:1px solid #d4d4d4;font-size:13px}
+.xl .fx .nm{min-width:130px;padding:4px 8px;border-right:1px solid #d4d4d4}
+.xl .fx .fi{padding:4px 10px;color:#777;font-style:italic;border-right:1px solid #d4d4d4}
+.xl .fx .fv{padding:4px 10px}
+.xl table{border-collapse:collapse;width:100%}
+.xl th{background:#f3f3f3;color:#555;font-weight:400;border:1px solid #dadada;padding:3px 8px;font-size:12.5px}
+.xl th.on{background:#d3e5d9;color:var(--xl);font-weight:600;border-bottom:2px solid var(--xl)}
+.xl td{border:1px solid #e2e2e2;padding:4px 8px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.xl td.rn{background:#f3f3f3;color:#555;text-align:center;font-size:12.5px;width:30px}
+.xl td.rn.on{background:#d3e5d9;color:var(--xl);font-weight:600}
+.xl td.h{background:var(--acc);color:#fff;font-weight:600;font-size:12px}
+.xl td.hd{background:#f2f2f2;font-weight:600}
+.xl td.dk{background:#595959;color:#fff;font-weight:600;text-align:right}
+.xl td.y{background:var(--hi);text-align:right;font-weight:600}
+.xl td.g{background:var(--ou);text-align:right}
+.xl td.nr{text-align:right}
+.xl td.neg{color:#c00000}
+.xl td.sel{background:#efe3b0;box-shadow:inset 0 0 0 2px var(--xl)}
+.xl td.flash{animation:flash 1s ease}
+@keyframes flash{0%{background:#ffd56a}100%{}}
+.xl .tabs{display:flex;background:#f3f3f3;border-top:1px solid #d4d4d4;font-size:12.5px}
+.xl .tabs span{padding:5px 14px;border-right:1px solid #d4d4d4;color:#444}
+.xl .tabs span.on{background:#fff;color:var(--xl);font-weight:600;border-bottom:3px solid var(--xl)}
+
+/* Cinta de opciones simulada */
+.ribbon{border:1px solid #c6c6c6;background:#fff;font-family:var(--win);font-size:13px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.ribbon .tabsr{display:flex;background:var(--xl);color:#fff}
+.ribbon .tabsr span{padding:7px 13px;opacity:.9;display:flex;align-items:center;gap:6px}
+.ribbon .tabsr span.on{background:#fff;color:var(--xl);font-weight:700;opacity:1}
+.ribbon .groups{display:flex;padding:10px 6px 6px;gap:4px;align-items:stretch}
+.ribbon .grp{display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:0 12px;border-right:1px solid #e1e1e1;color:#777;font-size:11.5px;gap:6px;text-align:center}
+.ribbon .grp .ic{font-size:24px;opacity:.5}
+.ribbon .grp.on{color:var(--text)}
+.ribbon .bt{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 8px;font-size:12.5px;color:var(--text);border:2px solid transparent;text-align:center}
+.ribbon .bt.on{border-color:var(--acc);background:var(--acc-soft);font-weight:600}
+.ribbon .drop{display:flex;justify-content:flex-end;padding:0 14px 14px}
+.ribbon .menu{border:1px solid #c6c6c6;box-shadow:0 6px 14px rgba(0,0,0,.16);background:#fff;font-size:14px}
+.ribbon .menu div{padding:8px 18px 8px 12px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.ribbon .menu div.on{background:#d3e5d9;outline:2px solid var(--acc);outline-offset:-2px;font-weight:600}
+
+/* Cuadros de diálogo simulados */
+.dlg{border:1px solid #9aa3a6;background:#f0f0f0;font-family:var(--win);font-size:13.5px;box-shadow:0 10px 26px rgba(0,0,0,.16);width:100%;align-self:start}
+.dlg .t{background:#fff;padding:8px 12px;border-bottom:1px solid #d0d0d0;font-weight:600;display:flex;justify-content:space-between}
+.dlg .t span{color:#777;font-weight:400}
+.dlg .b{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.dlg .f{background:#fff;border:1px solid #8f979a;padding:5px 8px;min-height:29px}
+.dlg .f.on{border:2px solid var(--acc);background:#fffaf0;font-weight:600}
+.dlg .row{display:grid;grid-template-columns:1fr 110px;gap:10px;align-items:center}
+.dlg .k{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}
+.dlg .k span,.dlg .side span{border:1px solid #8f979a;background:#fdfdfd;padding:4px 14px;text-align:center;position:relative}
+.dlg .k span.on,.dlg .side span.on{border:2px solid var(--acc);background:var(--acc-soft);font-weight:600}
+.dlg .small{font-size:12px;color:#555}
+.dlg .chk{display:flex;gap:16px;font-size:13px;color:#333}
+.dlg .mgr{display:grid;grid-template-columns:1fr 104px;gap:10px}
+.dlg .list{background:#fff;border:1px solid #8f979a;min-height:118px;padding:3px}
+.dlg .list div{padding:4px 8px}
+.dlg .list div.sel{background:#cce4f7}
+.dlg .list .empty{color:#666;font-size:12.5px;padding:8px;line-height:1.4}
+.dlg .list .new{color:var(--pos);font-weight:700}
+.dlg .side{display:flex;flex-direction:column;gap:6px}
+.dlg .radio{display:flex;flex-direction:column;gap:5px;font-size:13px}
+
+/* Lámina «Compruebe» */
+.okbox{border:2px solid var(--pos);background:var(--pos-soft);padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.okbox .t{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--pos);font-weight:700;display:flex;align-items:center;gap:10px}
+.okbox .t i{font-style:normal;display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--pos);color:#fff;align-items:center;justify-content:center;font-size:17px}
+.okbox p{font-size:19px;line-height:1.45}
+.fixbox{border:1px solid var(--grid);background:var(--card);padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.fixbox .t{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--neg);font-weight:700}
+.fixbox ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.fixbox li{display:grid;grid-template-columns:20px 1fr;gap:8px;font-size:15.5px;line-height:1.45}
+.fixbox li::before{content:"→";color:var(--neg);font-weight:700}
+.pop{animation:pop .6s cubic-bezier(.2,.9,.3,1.4) both}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+
+table.vals{border-collapse:collapse;width:100%;font-size:16px;background:var(--card);font-variant-numeric:tabular-nums}
+table.vals th,table.vals td{border:1px solid var(--line);padding:8px 12px;text-align:right}
+table.vals th{background:var(--ink);color:#fff;font-weight:600}
+table.vals th:first-child,table.vals td:first-child{text-align:left}
+table.vals td:first-child{font-weight:700;color:var(--ink)}
+table.vals tr.cur td{background:var(--acc-soft)}
+.badge{display:inline-block;font-family:var(--mono);font-size:12px;padding:2px 8px;font-weight:700}
+.badge.neg{background:var(--neg-soft);color:var(--neg)}.badge.pos{background:var(--pos-soft);color:var(--pos)}.badge.mid{background:var(--ink-soft);color:var(--ink)}
+
+/* Introducción */
+.cover{justify-content:center;gap:20px}
+.cover-logo{position:absolute;top:54px;right:72px;height:96px;width:auto;mix-blend-mode:multiply}
+.cover .mod{font-family:var(--mono);font-size:17px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-d)}
+.cover h1{font-size:60px;max-width:640px}
+.cover .lead{max-width:600px}
+.cover-tags{display:flex;gap:10px;flex-wrap:wrap;max-width:640px}
+.cover-tags span{font-family:var(--mono);font-size:13px;border:1px solid var(--ink);color:var(--ink);padding:5px 10px;background:var(--card)}
+.cover .hint{font-family:var(--mono);font-size:14px;color:var(--muted)}
+.cover-art{position:absolute;right:72px;top:190px;width:420px;display:flex;flex-direction:column;gap:12px}
+.dlbtn{display:inline-flex;align-items:center;gap:14px;text-decoration:none;background:var(--ink);color:#fff;padding:12px 18px;align-self:flex-start}
+.dlbtn:hover{background:#0b3a46}
+.dlbtn .ic{font-size:22px;line-height:1;color:var(--acc)}
+.dlbtn b{display:block;font-size:16px}
+.dlbtn small{display:block;font-family:var(--mono);font-size:11.5px;opacity:.9;margin-top:2px}
+.scen{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sc{background:var(--card);border:1px solid var(--line);border-top:6px solid var(--grid);padding:14px;display:flex;flex-direction:column;gap:6px}
+.sc.c1{border-top-color:var(--neg)}.sc.c2{border-top-color:var(--ink)}.sc.c3{border-top-color:var(--pos)}
+.sc .n{font-weight:700;color:var(--ink);font-size:19px}
+.sc .d{font-size:15px;color:var(--muted);line-height:1.4;min-height:42px}
+.sc .v{font-family:var(--mono);font-size:14px;line-height:1.75;font-variant-numeric:tabular-nums;border-top:1px solid var(--line);padding-top:8px}
+.sc .r{margin-top:6px;font-family:var(--mono);font-size:14px;background:var(--line);text-align:center;padding:6px;color:var(--muted);font-weight:600}
+.q{font-family:var(--serif);font-size:25px;line-height:1.35;color:var(--ink);border-left:4px solid var(--acc);padding-left:18px}
+.words{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;flex:1;align-content:start}
+.word{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--ink);padding:22px;display:flex;flex-direction:column;gap:12px}
+.word .ic{font-size:34px}
+.word .t{font-family:var(--serif);font-size:27px;color:var(--ink);font-weight:700}
+.word .d{font-size:17.5px;line-height:1.5}
+.word .ex{font-size:15.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;line-height:1.5}
+.legend{display:flex;flex-direction:column;gap:14px}
+.legend div{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;font-size:16.5px;line-height:1.45}
+.legend .sw{width:40px;height:26px;border:1px solid #b9b3a6}
+.legend .sw.y{background:var(--hi)}.legend .sw.g{background:var(--ou)}.legend .sw.s{background:#f2f2f2}
+
+/* Simulador */
+.go{font:inherit;border:2px solid var(--acc);background:var(--acc-soft);padding:4px 16px;font-weight:700;cursor:pointer;color:var(--text)}
+.go:hover{background:#f6dcae}
+#simList div{cursor:pointer}
+#simList div:hover{background:#e5f1fb}
+#simList div.sel{background:#cce4f7}
+.say{font-size:16px;margin-top:10px;line-height:1.45}
+
+/* Cierre */
+.final{background:var(--ink)}
+.final h2,.final .eyebrow{color:#fff}
+.final .chk{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.final .chk li{display:grid;grid-template-columns:30px 1fr;gap:8px;font-size:18.5px;color:#fff;line-height:1.4}
+.final .chk li::before{content:"☐";font-size:23px;line-height:1.1;color:var(--acc)}
+.final .save{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);padding:20px;display:flex;flex-direction:column;gap:12px;color:#fff;font-size:17px;line-height:1.45}
+.final code{background:rgba(255,255,255,.14);color:#fff;font-size:19px;padding:6px 10px;white-space:normal}
+.final .path span{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:#fff}
+.final .path i{color:var(--acc)}
+.final .think{font-family:var(--serif);font-size:22px;line-height:1.4;color:#fff;border-left:4px solid var(--acc);padding-left:16px}
+</style>
+</head>
+<body>
+<!-- GATE-INICIO · Acceso con clave (temporal; se quitará cuando el facilitador lo indique) -->
+<style>
+#gate{position:fixed;inset:0;z-index:9999;background:#e7e3da;display:flex;align-items:center;justify-content:center;padding:16px;font-family:"IBM Plex Sans","Segoe UI",Arial,sans-serif}
+#gate[hidden]{display:none}
+#gate form{background:#f7f5f0;border-top:4px solid #0f4c5c;box-shadow:0 10px 40px rgba(15,76,92,.18);padding:34px 36px;width:min(420px,100%);display:flex;flex-direction:column;gap:14px;box-sizing:border-box}
+#gate .mod{font-family:"IBM Plex Mono",Consolas,monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#b4741c}
+#gate h1{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:32px;line-height:1.1;margin:0;color:#0f4c5c}
+#gate p{margin:0;color:#5e6b6f;font-size:15px;line-height:1.45}
+#gate input{font-family:"IBM Plex Mono",Consolas,monospace;font-size:20px;padding:10px 12px;border:1px solid #cfc8ba;background:#fff;color:#0f4c5c;letter-spacing:.3em}
+#gate .err{color:#a3364f;font-size:14px;min-height:1.2em}
+#gate button{font-family:"IBM Plex Mono",Consolas,monospace;font-size:14px;padding:11px;border:0;background:#0f4c5c;color:#fff;cursor:pointer}
+</style>
+<div id="gate" hidden>
+  <form id="gateForm" autocomplete="off">
+    <div class="mod">Módulo 5.</div>
+    <h1>Modelado financiero y análisis de escenarios.</h1>
+    <p>Este contenido está protegido. Escriba la clave de acceso para continuar.</p>
+    <input id="gateIn" type="password" inputmode="numeric" maxlength="12" aria-label="Clave de acceso" placeholder="Clave">
+    <div class="err" id="gateErr" role="alert"></div>
+    <button type="submit">Entrar</button>
+  </form>
+</div>
+<script>
+(function(){
+  var CLAVE="1022", KEY="m5-acceso", gate=document.getElementById("gate"), locked;
+  function valido(){ try{ var t=+localStorage.getItem(KEY); return t && Date.now()-t < 12*3600e3; }catch(e){ return false; } }
+  locked=!valido();
+  if(locked){ gate.hidden=false; setTimeout(function(){ document.getElementById("gateIn").focus(); },50); }
+  // Mientras está bloqueado, las teclas no mueven la presentación
+  document.addEventListener("keydown",function(e){ if(locked) e.stopImmediatePropagation(); },true);
+  document.getElementById("gateForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    var inp=document.getElementById("gateIn");
+    if(inp.value.trim()===CLAVE){ try{ localStorage.setItem(KEY,String(Date.now())); }catch(err){} locked=false; gate.hidden=true; }
+    else { document.getElementById("gateErr").textContent="Clave incorrecta. Inténtelo de nuevo."; inp.select(); }
+  });
+})();
+</script>
+<!-- GATE-FIN -->
+<div id="stage">
+  <div class="top"><span id="topL">MÓDULO 5 · PRÁCTICA GUIADA 1.</span><div class="dots" id="dots"></div></div>
+  <div id="slides">
+
+  <!-- 1 · Portada -->
+  <div class="slide cover" data-t="0" data-l="MÓDULO 5 · PRÁCTICA GUIADA 1.">
+    <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI">
+    <div class="mod">Excel Avanzado · Práctica guiada 1 de 3.</div>
+    <h1>Tres escenarios para el Centro Médico Horizonte.</h1>
+    <p class="lead">Guardará tres situaciones posibles del próximo mes y Excel le dirá cuánto gana o pierde el centro en cada una.</p>
+    <div class="cover-tags"><span>⏱ 25 a 30 minutos</span><span>💻 Excel de escritorio</span><span>👤 Individual</span><span>🧰 Administrador de escenarios</span></div>
+    <a class="dlbtn" href="Modulo5-Base-Modelo-Financiero.xlsx" download><span class="ic">⬇</span><span><b>Descargar el archivo de Excel.</b><small>Modulo5-Base-Modelo-Financiero.xlsx</small></span></a>
+    <p class="hint">Use las flechas ← → del teclado o los botones de abajo · M = sonido.</p>
+    <div class="cover-art" aria-hidden="true">
+      <div class="sc c1 pop" style="animation-delay:.2s"><span class="n">Conservador</span><span class="r">Resultado: ?</span></div>
+      <div class="sc c2 pop" style="animation-delay:.4s;margin-left:40px"><span class="n">Esperado</span><span class="r">Resultado: ?</span></div>
+      <div class="sc c3 pop" style="animation-delay:.6s;margin-left:80px"><span class="n">Favorable</span><span class="r">Resultado: ?</span></div>
+    </div>
+  </div>
+
+  <!-- 2 · Misión -->
+  <div class="slide" data-t="0" data-l="MÓDULO 5 · PRÁCTICA GUIADA 1 · LA MISIÓN.">
+    <div class="eyebrow"><span class="tag go">La misión</span></div>
+    <h2>¿Qué pasaría el próximo mes si las cosas salen peor, igual o mejor?</h2>
+    <p class="q">La administración quiere saber si el centro <b>gana o pierde dinero</b> en tres situaciones distintas, sin cambiar los números a mano cada vez.</p>
+    <div class="scen">
+      <div class="sc c1"><span class="n">Conservador</span><span class="d">Llegan menos pacientes y todo cuesta más.</span><span class="v">1,000 servicios<br>RD$ 2,400.00 tarifa<br>RD$ 1,550.00 costo</span><span class="r">Resultado: ?</span></div>
+      <div class="sc c2"><span class="n">Esperado</span><span class="d">Lo más probable: igual que hoy.</span><span class="v">1,200 servicios<br>RD$ 2,500.00 tarifa<br>RD$ 1,400.00 costo</span><span class="r">Resultado: ?</span></div>
+      <div class="sc c3"><span class="n">Favorable</span><span class="d">Llegan más pacientes y se negocian mejores costos.</span><span class="v">1,400 servicios<br>RD$ 2,600.00 tarifa<br>RD$ 1,350.00 costo</span><span class="r">Resultado: ?</span></div>
+    </div>
+    <div class="tip">💡 Estos valores <b>ya están en su archivo</b>, en la tabla gris <code>D4:G7</code>. No tiene que inventar nada. Descubrirá los resultados en el paso 5.</div>
+  </div>
+
+  <!-- 3 · Palabras clave -->
+  <div class="slide" data-t="0" data-l="MÓDULO 5 · PRÁCTICA GUIADA 1 · TRES PALABRAS.">
+    <div class="eyebrow"><span class="tag go">Antes de empezar</span></div>
+    <h2>Tres palabras que verá en Excel.</h2>
+    <div class="words">
+      <div class="word"><span class="ic">📸</span><span class="t">Escenario.</span><span class="d">Un grupo de valores guardado con un nombre, como una «foto» de una situación.</span><span class="ex">Ejemplo: «Conservador» = 1,000 servicios, RD$ 2,400.00 de tarifa y RD$ 1,550.00 de costo.</span></div>
+      <div class="word"><span class="ic">🟨</span><span class="t">Celdas cambiantes.</span><span class="d">Las celdas que cambian de un escenario a otro. Son las <b>amarillas</b>.</span><span class="ex">En esta práctica: <code>B4:B6</code> (servicios, tarifa y costo).</span></div>
+      <div class="word"><span class="ic">🟩</span><span class="t">Celdas de resultado.</span><span class="d">Las celdas que usted quiere comparar. Son <b>verdes</b> y Excel las calcula solo.</span><span class="ex">En esta práctica: <code>B13</code> (resultado) y <code>B14</code> (margen).</span></div>
+    </div>
+  </div>
+
+  <!-- 4 · Conozca su hoja -->
+  <div class="slide" data-t="0" data-l="MÓDULO 5 · PRÁCTICA GUIADA 1 · CONOZCA SU HOJA.">
+    <div class="eyebrow"><span class="tag go">Abra el archivo</span></div>
+    <h2>Así se ve la hoja «Modelo».</h2>
+    <div class="cols" style="grid-template-columns:minmax(0,1fr) 290px;gap:26px;align-items:start">
+      <div class="xl" style="font-size:12.5px">
+        <table>
+          <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th></tr>
+          <tr><td class="rn">3</td><td class="h" colspan="2">SUPUESTOS (se pueden cambiar)</td><td></td><td class="h" colspan="4">VALORES DE LOS ESCENARIOS</td></tr>
+          <tr><td class="rn">4</td><td>Servicios al mes</td><td class="y">1,200</td><td></td><td class="hd">Variable</td><td class="hd">Conservador</td><td class="hd">Esperado</td><td class="hd">Favorable</td></tr>
+          <tr><td class="rn">5</td><td>Tarifa promedio por servicio</td><td class="y">RD$ 2,500.00</td><td></td><td>Servicios al mes (B4)</td><td class="nr">1,000</td><td class="nr">1,200</td><td class="nr">1,400</td></tr>
+          <tr><td class="rn">6</td><td>Costo variable por servicio</td><td class="y">RD$ 1,400.00</td><td></td><td>Tarifa promedio (B5)</td><td class="nr">RD$ 2,400.00</td><td class="nr">RD$ 2,500.00</td><td class="nr">RD$ 2,600.00</td></tr>
+          <tr><td class="rn">7</td><td>Gastos fijos mensuales</td><td class="y">RD$ 900,000.00</td><td></td><td>Costo variable (B6)</td><td class="nr">RD$ 1,550.00</td><td class="nr">RD$ 1,400.00</td><td class="nr">RD$ 1,350.00</td></tr>
+          <tr><td class="rn">9</td><td class="h" colspan="2">RESULTADOS (fórmulas)</td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rn">10</td><td>Ingresos</td><td class="g">RD$ 3,000,000.00</td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rn">11</td><td>Costos variables</td><td class="g">RD$ 1,680,000.00</td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rn">12</td><td>Gastos fijos</td><td class="g">RD$ 900,000.00</td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rn">13</td><td><b>Resultado (ganancia o pérdida)</b></td><td class="g"><b>RD$ 420,000.00</b></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rn">14</td><td>Margen sobre los ingresos</td><td class="g">14.00%</td><td></td><td></td><td></td><td></td><td></td></tr>
+        </table>
+        <div class="tabs"><span class="on">Modelo</span></div>
+      </div>
+      <div class="legend">
+        <div><span class="sw y"></span><span><b>Amarillo = usted cambia.</b> Servicios, tarifa, costo y gastos fijos.</span></div>
+        <div><span class="sw g"></span><span><b>Verde = Excel calcula.</b> Son fórmulas: nunca escriba encima.</span></div>
+        <div><span class="sw s"></span><span><b>Gris = su guía.</b> Los valores de los tres escenarios, listos para copiar.</span></div>
+        <div class="warn" style="display:block">Si ve la barra amarilla <b>Vista protegida</b>, pulse <b>Habilitar edición</b>. Si no, los botones de Excel estarán apagados.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 1 -->
+  <div class="slide" data-t="1" data-l="PRÁCTICA GUIADA 1 · PASO 1 DE 6 · HAGA ESTO.">
+    <div class="eyebrow"><span class="tag">Paso 1 de 6</span>Haga esto.</div>
+    <h2>Seleccione las tres celdas que van a cambiar.</h2>
+    <div class="why"><b>Para qué</b><span>Así Excel sabe qué celdas guardará en cada escenario.</span></div>
+    <div class="cols">
+      <ol class="do">
+        <li><span class="m">1</span><span>Haga clic en la celda <code>B4</code> (dice <b>1,200</b>).</span></li>
+        <li><span class="m">2</span><span>Sin soltar el botón del ratón, arrastre hacia abajo hasta <code>B6</code>.<span class="h">Otra forma: clic en B4, mantenga Mayús (Shift) y clic en B6.</span></span></li>
+        <li><span class="m">3</span><span>Mire el <b>cuadro de nombres</b>, arriba a la izquierda. Puede decir <code>B4</code> o <code>Servicios_al_mes</code>: es lo mismo.</span></li>
+      </ol>
+      <div class="col">
+        <span class="cap">Lo que debe ver en Excel</span>
+        <div class="xl rel" style="width:100%">
+          <div class="fx"><span class="nm rel">Servicios_al_mes<span class="m pin">3</span></span><span class="fi">fx</span><span class="fv">1200</span></div>
+          <table>
+            <tr><th></th><th>A</th><th class="on">B</th></tr>
+            <tr><td class="rn">3</td><td class="h" colspan="2">SUPUESTOS (se pueden cambiar)</td></tr>
+            <tr><td class="rn on">4</td><td>Servicios al mes</td><td class="y sel rel">1,200<span class="m pin">1</span></td></tr>
+            <tr><td class="rn on">5</td><td>Tarifa promedio por servicio</td><td class="y sel">RD$ 2,500.00</td></tr>
+            <tr><td class="rn on">6</td><td>Costo variable por servicio</td><td class="y sel rel">RD$ 1,400.00<span class="m pin">2</span></td></tr>
+            <tr><td class="rn">7</td><td>Gastos fijos mensuales</td><td class="y">RD$ 900,000.00</td></tr>
+          </table>
+        </div>
+        <div class="tip">B7 (gastos fijos) <b>no</b> se selecciona: es igual en los tres escenarios.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="1" data-ok="1" data-l="PRÁCTICA GUIADA 1 · PASO 1 DE 6 · COMPRUEBE.">
+    <div class="eyebrow"><span class="tag ok">Paso 1 de 6</span>Compruebe.</div>
+    <h2>¿Quedaron sombreadas B4, B5 y B6?</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div class="okbox pop"><span class="t"><i>✓</i>Va bien si…</span><p>Las celdas <code>B4</code>, <code>B5</code> y <code>B6</code> están sombreadas, con un borde verde alrededor de las tres.</p><p>La celda <code>B7</code> <b>no</b> está sombreada.</p></div>
+      <div class="fixbox"><span class="t">✋ ¿Le salió distinto?</span><ul>
+        <li><span>Si seleccionó también <code>B7</code>, haga clic fuera y repita desde B4 hasta B6.</span></li>
+        <li><span>Si solo quedó una celda sombreada, no arrastró: use Mayús + clic.</span></li>
+        <li><span>No escriba nada en las celdas: solo selecciónelas.</span></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- PASO 2 -->
+  <div class="slide" data-t="2" data-l="PRÁCTICA GUIADA 1 · PASO 2 DE 6 · HAGA ESTO.">
+    <div class="eyebrow"><span class="tag">Paso 2 de 6</span>Haga esto.</div>
+    <h2>Abra el Administrador de escenarios.</h2>
+    <div class="why"><b>Para qué</b><span>Es la ventana donde se guardan, se muestran y se comparan los escenarios.</span></div>
+    <div class="cols">
+      <div class="col">
+        <ol class="do">
+          <li><span class="m">1</span><span>Con <code>B4:B6</code> todavía seleccionadas, vaya a la pestaña <b>Datos</b>.</span></li>
+          <li><span class="m">2</span><span>A la derecha, en el grupo <b>Previsión</b>, pulse <b>Análisis de hipótesis</b>.</span></li>
+          <li><span class="m">3</span><span>En el menú, elija <b>Administrador de escenarios…</b></span></li>
+        </ol>
+        <div class="path"><span>Datos</span><i>›</i><span>Análisis de hipótesis</span><i>›</i><span>Administrador de escenarios</span></div>
+      </div>
+      <div class="col">
+        <span class="cap">Dónde hacer clic</span>
+        <div class="ribbon">
+          <div class="tabsr"><span>Archivo</span><span>Inicio</span><span>Insertar</span><span>Fórmulas</span><span class="on">Datos <span class="m">1</span></span><span>Revisar</span><span>Vista</span></div>
+          <div class="groups">
+            <div class="grp"><span class="ic">⤓</span><span>Obtener y<br>transformar</span></div>
+            <div class="grp"><span class="ic">⇅</span><span>Ordenar y<br>filtrar</span></div>
+            <div class="grp"><span class="ic">⚒</span><span>Herramientas<br>de datos</span></div>
+            <div class="grp on"><div style="display:flex;gap:4px"><span class="bt on rel"><span style="font-size:24px">❓</span>Análisis de<br>hipótesis ▾<span class="m pin">2</span></span><span class="bt"><span style="font-size:24px;opacity:.45">📈</span>Hoja de<br>previsión</span></div><span>Previsión</span></div>
+          </div>
+          <div class="drop"><div class="menu"><div class="on">Administrador de escenarios… <span class="m">3</span></div><div>Buscar objetivo…</div><div>Tabla de datos…</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="2" data-ok="1" data-l="PRÁCTICA GUIADA 1 · PASO 2 DE 6 · COMPRUEBE.">
+    <div class="eyebrow"><span class="tag ok">Paso 2 de 6</span>Compruebe.</div>
+    <h2>¿Se abrió esta ventana?</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div class="col">
+        <div class="dlg pop">
+          <div class="t">Administrador de escenarios <span>? ✕</span></div>
+          <div class="b">
+            <span>Escenarios:</span>
+            <div class="mgr"><div class="list"><div class="empty">No se han definido escenarios. Elija Agregar para agregar escenarios.</div></div>
+              <div class="side"><span>Agregar…</span><span>Eliminar</span><span>Modificar…</span><span>Combinar…</span><span>Resumen…</span></div></div>
+            <div class="k"><span>Mostrar</span><span>Cerrar</span></div>
+          </div>
+        </div>
+        <div class="okbox" style="padding:12px 16px"><span class="t"><i>✓</i>Va bien si…</span><p style="font-size:17px">La lista está <b>vacía</b>: todavía no ha guardado ningún escenario.</p></div>
+      </div>
+      <div class="fixbox"><span class="t">✋ ¿Le salió distinto?</span><ul>
+        <li><span><b>«Análisis de hipótesis» está gris:</b> está escribiendo dentro de una celda. Pulse <b>Esc</b> y vuelva a intentarlo. También pasa si no pulsó <b>Habilitar edición</b>.</span></li>
+        <li><span><b>No encuentra el botón:</b> si la ventana de Excel es pequeña, el grupo se encoge. Maximice Excel y busque el signo de interrogación.</span></li>
+        <li><span><b>No existe la opción:</b> está en Excel para la web. Esta práctica necesita Excel de escritorio.</span></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- PASO 3 -->
+  <div class="slide" data-t="3" data-l="PRÁCTICA GUIADA 1 · PASO 3 DE 6 · HAGA ESTO.">
+    <div class="eyebrow"><span class="tag">Paso 3 de 6</span>Haga esto.</div>
+    <h2>Guarde el primer escenario: «Esperado».</h2>
+    <div class="why"><b>Para qué</b><span>Guardar la situación de hoy con un nombre, para poder volver a ella siempre.</span></div>
+    <div class="cols" style="grid-template-columns:400px 1fr">
+      <ol class="do" style="gap:10px">
+        <li><span class="m">1</span><span>Pulse <b>Agregar…</b></span></li>
+        <li><span class="m">2</span><span>Nombre del escenario: escriba <code>Esperado</code>.</span></li>
+        <li><span class="m">3</span><span>Celdas cambiantes debe decir <code>B4:B6</code>. Si no, escríbalo.<span class="h">«Evitar cambios» y «Ocultar»: déjelas como están.</span></span></li>
+        <li><span class="m">4</span><span>Pulse <b>Aceptar</b>. Se abre <b>Valores del escenario</b>.</span></li>
+        <li><span class="m">5</span><span>Revise que diga <code>1200</code>, <code>2500</code> y <code>1400</code>, y pulse <b>Aceptar</b>.</span></li>
+      </ol>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start">
+        <div class="dlg">
+          <div class="t">Agregar escenario <span>✕</span></div>
+          <div class="b">
+            <span>Nombre del escenario:</span><div class="f on rel">Esperado<span class="m pin">2</span></div>
+            <span>Celdas cambiantes:</span><div class="f on rel">B4:B6<span class="m pin">3</span></div>
+            <span class="small">Ctrl+clic en las celdas para seleccionar celdas cambiantes no adyacentes.</span>
+            <span>Comentario:</span><div class="f small">Creado por …</div>
+            <div class="chk"><span>☑ Evitar cambios</span><span>☐ Ocultar</span></div>
+            <div class="k"><span class="on">Aceptar<span class="m pin">4</span></span><span>Cancelar</span></div>
+          </div>
+        </div>
+        <div class="col" style="gap:8px">
+          <span class="arrow">→ luego aparece</span>
+          <div class="dlg">
+            <div class="t">Valores del escenario <span>✕</span></div>
+            <div class="b">
+              <span class="small">Introduzca los valores para cada celda cambiante.</span>
+              <div class="row"><span>1: Servicios_al_mes</span><span class="f on">1200</span></div>
+              <div class="row"><span>2: Tarifa_promedio</span><span class="f on">2500</span></div>
+              <div class="row"><span>3: Costo_variable</span><span class="f on">1400</span></div>
+              <div class="k"><span class="on">Aceptar<span class="m pin">5</span></span><span>Cancelar</span><span>Agregar</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="3" data-ok="1" data-l="PRÁCTICA GUIADA 1 · PASO 3 DE 6 · COMPRUEBE.">
+    <div class="eyebrow"><span class="tag ok">Paso 3 de 6</span>Compruebe.</div>
+    <h2>¿Aparece «Esperado» en la lista?</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div class="col">
+        <div class="dlg pop">
+          <div class="t">Administrador de escenarios <span>? ✕</span></div>
+          <div class="b"><span>Escenarios:</span>
+            <div class="mgr"><div class="list"><div class="sel new">Esperado</div></div><div class="side"><span>Agregar…</span><span>Eliminar</span><span>Modificar…</span><span>Combinar…</span><span>Resumen…</span></div></div>
+            <div class="k"><span>Mostrar</span><span>Cerrar</span></div></div>
+        </div>
+        <div class="okbox" style="padding:12px 16px"><span class="t"><i>✓</i>Va bien si…</span><p style="font-size:17px">Regresó al Administrador y ya aparece <b>Esperado</b>.</p></div>
+      </div>
+      <div class="fixbox"><span class="t">✋ ¿Le salió distinto?</span><ul>
+        <li><span><b>Celdas cambiantes decía solo <code>B4</code>:</b> en el paso 1 no quedó seleccionado el rango. Escriba <code>B4:B6</code> a mano.</span></li>
+        <li><span><b>Los valores no eran 1200, 2500 y 1400:</b> alguien cambió las celdas amarillas. Escriba los valores correctos en la ventana.</span></li>
+        <li><span><b>Escribió mal el nombre:</b> selecciónelo, pulse <b>Modificar…</b> y corríjalo.</span></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- PASO 4 -->
+  <div class="slide" data-t="4" data-l="PRÁCTICA GUIADA 1 · PASO 4 DE 6 · HAGA ESTO.">
+    <div class="eyebrow"><span class="tag">Paso 4 de 6</span>Haga esto.</div>
+    <h2>Guarde «Conservador» y «Favorable».</h2>
+    <div class="why"><b>Para qué</b><span>Tener la situación peor y la mejor para compararlas con la esperada.</span></div>
+    <div class="cols" style="grid-template-columns:460px 1fr">
+      <div class="col">
+        <ol class="do" style="gap:10px">
+          <li><span class="m">1</span><span>Pulse <b>Agregar…</b> otra vez.</span></li>
+          <li><span class="m">2</span><span>Nombre: <code>Conservador</code>. Celdas cambiantes: <code>B4:B6</code>. Pulse <b>Aceptar</b>.</span></li>
+          <li><span class="m">3</span><span><b>Borre</b> los valores que aparecen y escriba <code>1000</code>, <code>2400</code> y <code>1550</code>. Pulse <b>Aceptar</b>.</span></li>
+          <li><span class="m">4</span><span>Repita para <code>Favorable</code> con <code>1400</code>, <code>2600</code> y <code>1350</code>.</span></li>
+        </ol>
+        <div class="warn">⚠️ Excel le propone los números de la hoja (1200, 2500, 1400). <b>Debe cambiarlos</b>; si no, el escenario quedará igual que «Esperado».</div>
+      </div>
+      <div class="col">
+        <table class="vals">
+          <tr><th>Escenario</th><th>1: Servicios</th><th>2: Tarifa</th><th>3: Costo</th></tr>
+          <tr><td>Esperado ✓</td><td>1200</td><td>2500</td><td>1400</td></tr>
+          <tr class="cur"><td>Conservador</td><td>1000</td><td>2400</td><td>1550</td></tr>
+          <tr class="cur"><td>Favorable</td><td>1400</td><td>2600</td><td>1350</td></tr>
+        </table>
+        <div style="display:grid;grid-template-columns:1fr 210px;gap:16px;align-items:start">
+          <div class="dlg">
+            <div class="t">Valores del escenario <span>✕</span></div>
+            <div class="b">
+              <div class="row"><span>1: Servicios_al_mes</span><span class="f on">1000</span></div>
+              <div class="row"><span>2: Tarifa_promedio</span><span class="f on">2400</span></div>
+              <div class="row"><span>3: Costo_variable</span><span class="f on">1550</span></div>
+              <div class="k"><span class="on">Aceptar<span class="m pin">3</span></span><span>Cancelar</span><span>Agregar</span></div>
+            </div>
+          </div>
+          <div class="tip" style="font-size:14.5px">Así se ve para «Conservador». Escriba los números <b>sin</b> RD$, sin comas y sin puntos.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="4" data-ok="1" data-l="PRÁCTICA GUIADA 1 · PASO 4 DE 6 · COMPRUEBE.">
+    <div class="eyebrow"><span class="tag ok">Paso 4 de 6</span>Compruebe.</div>
+    <h2>¿Tiene tres escenarios en la lista?</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div class="col">
+        <div class="dlg pop">
+          <div class="t">Administrador de escenarios <span>? ✕</span></div>
+          <div class="b"><span>Escenarios:</span>
+            <div class="mgr"><div class="list"><div>Esperado</div><div class="new">Conservador</div><div class="new sel">Favorable</div></div><div class="side"><span>Agregar…</span><span>Eliminar</span><span>Modificar…</span><span>Combinar…</span><span>Resumen…</span></div></div>
+            <div class="k"><span>Mostrar</span><span>Cerrar</span></div></div>
+        </div>
+        <div class="okbox" style="padding:12px 16px"><span class="t"><i>✓</i>Va bien si…</span><p style="font-size:17px">La lista muestra <b>Esperado</b>, <b>Conservador</b> y <b>Favorable</b>.</p></div>
+      </div>
+      <div class="fixbox"><span class="t">✋ ¿Le salió distinto?</span><ul>
+        <li><span><b>Un escenario tiene números equivocados:</b> selecciónelo, pulse <b>Modificar…</b>, luego <b>Aceptar</b> y corrija los valores.</span></li>
+        <li><span><b>Aparece un escenario repetido:</b> selecciónelo y pulse <b>Eliminar</b>.</span></li>
+        <li><span><b>Cerró la ventana sin querer:</b> vuelva a <b>Datos › Análisis de hipótesis › Administrador de escenarios</b>. Lo que guardó sigue ahí.</span></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- PASO 5 -->
+  <div class="slide" data-t="5" data-l="PRÁCTICA GUIADA 1 · PASO 5 DE 6 · HAGA ESTO.">
+    <div class="eyebrow"><span class="tag">Paso 5 de 6</span>Haga esto.</div>
+    <h2>Muestre cada escenario y mire el resultado.</h2>
+    <div class="why"><b>Pruébelo aquí</b><span>Elija un escenario y pulse «Mostrar». Luego haga lo mismo en su Excel.</span></div>
+    <div class="cols" style="grid-template-columns:400px 1fr">
+      <div class="col">
+        <ol class="do" style="gap:8px">
+          <li><span class="m">1</span><span>Elija <b>Conservador</b> y pulse <b>Mostrar</b>. Mire <code>B13</code>.</span></li>
+          <li><span class="m">2</span><span>Haga lo mismo con <b>Favorable</b>.</span></li>
+          <li><span class="m">3</span><span>Termine mostrando <b>Esperado</b>.</span></li>
+        </ol>
+        <div class="dlg">
+          <div class="t">Administrador de escenarios <span>? ✕</span></div>
+          <div class="b">
+            <div class="mgr"><div class="list" id="simList" role="listbox" aria-label="Escenarios" style="min-height:96px">
+              <div role="option" tabindex="0" data-s="0" class="sel" aria-selected="true">Esperado</div>
+              <div role="option" tabindex="0" data-s="1" aria-selected="false">Conservador</div>
+              <div role="option" tabindex="0" data-s="2" aria-selected="false">Favorable</div>
+            </div><div class="side"><span>Agregar…</span><span>Eliminar</span><span>Modificar…</span><span>Resumen…</span></div></div>
+            <div class="k"><button type="button" class="go" id="simShow">Mostrar</button><span>Cerrar</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="col" style="gap:0">
+        <div class="xl" style="width:100%">
+          <table>
+            <tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rn">4</td><td>Servicios al mes</td><td class="y" id="c4">1,200</td></tr>
+            <tr><td class="rn">5</td><td>Tarifa promedio por servicio</td><td class="y" id="c5">RD$ 2,500.00</td></tr>
+            <tr><td class="rn">6</td><td>Costo variable por servicio</td><td class="y" id="c6">RD$ 1,400.00</td></tr>
+            <tr><td class="rn">7</td><td>Gastos fijos mensuales</td><td class="y">RD$ 900,000.00</td></tr>
+            <tr><td class="rn">10</td><td>Ingresos</td><td class="g" id="c10">RD$ 3,000,000.00</td></tr>
+            <tr><td class="rn">11</td><td>Costos variables</td><td class="g" id="c11">RD$ 1,680,000.00</td></tr>
+            <tr><td class="rn">12</td><td>Gastos fijos</td><td class="g">RD$ 900,000.00</td></tr>
+            <tr><td class="rn">13</td><td><b>Resultado (ganancia o pérdida)</b></td><td class="g" id="c13"><b>RD$ 420,000.00</b></td></tr>
+            <tr><td class="rn">14</td><td>Margen sobre los ingresos</td><td class="g" id="c14">14.00%</td></tr>
+          </table>
+        </div>
+        <p class="say" id="simSay" aria-live="polite">Escenario visible: <b>Esperado</b>. El centro gana RD$ 420,000.00.</p>
+        <p class="note" style="margin-top:6px">En Excel, mueva la ventana del Administrador (arrastrándola por el título) para ver la columna B.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="5" data-ok="1" data-l="PRÁCTICA GUIADA 1 · PASO 5 DE 6 · COMPRUEBE.">
+    <div class="eyebrow"><span class="tag ok">Paso 5 de 6</span>Compruebe.</div>
+    <h2>¿Obtuvo estos resultados en Excel?</h2>
+    <table class="vals pop" style="font-size:18px">
+      <tr><th>Escenario</th><th>Resultado (B13)</th><th>Margen (B14)</th><th style="text-align:left">¿Qué significa?</th></tr>
+      <tr><td>Conservador</td><td style="color:var(--neg);font-weight:700">-RD$ 50,000.00</td><td style="color:var(--neg);font-weight:700">-2.08%</td><td style="text-align:left"><span class="badge neg">Pierde dinero</span></td></tr>
+      <tr><td>Esperado</td><td>RD$ 420,000.00</td><td>14.00%</td><td style="text-align:left"><span class="badge mid">Gana</span></td></tr>
+      <tr><td>Favorable</td><td style="color:var(--pos);font-weight:700">RD$ 850,000.00</td><td style="color:var(--pos);font-weight:700">23.35%</td><td style="text-align:left"><span class="badge pos">Gana más</span></td></tr>
+    </table>
+    <div class="cols" style="grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+      <div class="okbox" style="padding:14px 18px"><span class="t"><i>✓</i>Va bien si…</span><p style="font-size:17px">Sus números coinciden con la tabla. En Excel la pérdida se ve <b style="color:#c00000">en rojo</b>. Al terminar, <code>B13</code> vuelve a decir <b>RD$ 420,000.00</b>.</p></div>
+      <div class="fixbox" style="padding:14px 18px"><span class="t">✋ ¿Le salió distinto?</span><ul>
+        <li><span><b>No coinciden:</b> un valor está mal escrito. Use <b>Modificar…</b> y compare con la tabla del paso 4.</span></li>
+        <li><span><b>B13 no cambia:</b> pulse <b>Mostrar</b>, no solo el nombre.</span></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- PASO 6 -->
+  <div class="slide" data-t="6" data-l="PRÁCTICA GUIADA 1 · PASO 6 DE 6 · HAGA ESTO.">
+    <div class="eyebrow"><span class="tag">Paso 6 de 6</span>Haga esto.</div>
+    <h2>Genere el resumen que compara los tres escenarios.</h2>
+    <div class="why"><b>Para qué</b><span>Obtener en una sola hoja la tabla que usted le presentaría a la administración.</span></div>
+    <div class="cols" style="grid-template-columns:1fr 440px">
+      <ol class="do">
+        <li><span class="m">1</span><span>En el Administrador de escenarios, pulse <b>Resumen…</b></span></li>
+        <li><span class="m">2</span><span>Deje marcado <b>Resumen</b> (no «Informe de tabla dinámica»).</span></li>
+        <li><span class="m">3</span><span>En <b>Celdas de resultado</b> borre lo que haya y escriba <code>B13:B14</code>.<span class="h">B13 es el resultado y B14 el margen: lo que queremos comparar.</span></span></li>
+        <li><span class="m">4</span><span>Pulse <b>Aceptar</b>. Excel crea una hoja nueva: <b>Resumen del escenario</b>.</span></li>
+      </ol>
+      <div class="col">
+        <span class="cap">La ventana que verá</span>
+        <div class="dlg">
+          <div class="t">Resumen del escenario <span>? ✕</span></div>
+          <div class="b">
+            <span>Tipo de informe</span>
+            <div class="radio rel"><span><b>◉ Resumen</b></span><span>○ Informe de tabla dinámica de escenario</span><span class="m pin">2</span></div>
+            <span>Celdas de resultado:</span><div class="f on rel">B13:B14<span class="m pin">3</span></div>
+            <div class="k"><span class="on">Aceptar<span class="m pin">4</span></span><span>Cancelar</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="6" data-ok="1" data-l="PRÁCTICA GUIADA 1 · PASO 6 DE 6 · COMPRUEBE.">
+    <div class="eyebrow"><span class="tag ok">Paso 6 de 6</span>Compruebe.</div>
+    <h2>¿Tiene una hoja nueva parecida a esta?</h2>
+    <div class="xl pop" style="width:100%">
+      <table>
+        <tr><th></th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th></tr>
+        <tr><td class="rn">2</td><td class="dk" style="text-align:left">Resumen del escenario</td><td class="dk"></td><td class="dk">Valores actuales:</td><td class="dk">Esperado</td><td class="dk">Conservador</td><td class="dk">Favorable</td></tr>
+        <tr><td class="rn">5</td><td colspan="6"><b>Celdas cambiantes:</b></td></tr>
+        <tr><td class="rn">6</td><td></td><td>Servicios_al_mes</td><td class="nr">1,200</td><td class="nr">1,200</td><td class="nr">1,000</td><td class="nr">1,400</td></tr>
+        <tr><td class="rn">7</td><td></td><td>Tarifa_promedio</td><td class="nr">RD$ 2,500.00</td><td class="nr">RD$ 2,500.00</td><td class="nr">RD$ 2,400.00</td><td class="nr">RD$ 2,600.00</td></tr>
+        <tr><td class="rn">8</td><td></td><td>Costo_variable</td><td class="nr">RD$ 1,400.00</td><td class="nr">RD$ 1,400.00</td><td class="nr">RD$ 1,550.00</td><td class="nr">RD$ 1,350.00</td></tr>
+        <tr><td class="rn">9</td><td colspan="6"><b>Celdas de resultado:</b></td></tr>
+        <tr><td class="rn">10</td><td></td><td>Resultado</td><td class="nr">RD$ 420,000.00</td><td class="nr">RD$ 420,000.00</td><td class="nr neg">-RD$ 50,000.00</td><td class="nr">RD$ 850,000.00</td></tr>
+        <tr><td class="rn">11</td><td></td><td>Margen</td><td class="nr">14.00%</td><td class="nr">14.00%</td><td class="nr neg">-2.08%</td><td class="nr">23.35%</td></tr>
+      </table>
+      <div class="tabs"><span>Modelo</span><span class="on">Resumen del escenario</span></div>
+    </div>
+    <div class="cols" style="grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+      <div class="okbox" style="padding:14px 18px"><span class="t"><i>✓</i>Va bien si…</span><p style="font-size:16.5px">La fila <b>Resultado</b> muestra -RD$ 50,000.00, RD$ 420,000.00 y RD$ 850,000.00.</p></div>
+      <div class="fixbox" style="padding:14px 18px"><span class="t">✋ ¿Le salió distinto?</span><ul>
+        <li><span>Si ve <code>$B$13</code> en lugar de «Resultado», está bien: solo cambia la etiqueta.</span></li>
+        <li><span>Si salen otras filas, borre esa hoja y repita con <code>B13:B14</code>.</span></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- Cierre -->
+  <div class="slide final" data-t="7" data-ok="2" data-l="PRÁCTICA GUIADA 1 · ANTES DE TERMINAR.">
+    <div class="eyebrow"><span class="tag go">¡Lo logró!</span></div>
+    <h2>Lo que su archivo debe tener ahora.</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <ul class="chk">
+        <li>Tres escenarios guardados: Esperado, Conservador y Favorable.</li>
+        <li>Una hoja nueva llamada «Resumen del escenario».</li>
+        <li>En el resumen: -RD$ 50,000.00, RD$ 420,000.00 y RD$ 850,000.00.</li>
+        <li><span>La hoja «Modelo» con el escenario Esperado visible: <code style="font-size:16px;padding:1px 6px">B13</code> = RD$ 420,000.00.</span></li>
+      </ul>
+      <div class="save">
+        <b style="font-size:20px">Guarde su archivo.</b>
+        <span>Vaya a <span class="path"><span>Archivo</span><i>›</i><span>Guardar como</span></span> y use este nombre:</span>
+        <code>Modulo5_Apellido_Nombre.xlsx</code>
+        <span style="color:#cfe3e7">Consérvelo: en la <b style="color:#fff">Práctica guiada 2</b> seguirá trabajando sobre este mismo archivo.</span>
+      </div>
+    </div>
+    <p class="think">Para pensar: ¿cuál escenario le preocuparía más si usted fuera la administración, y por qué? Respóndalo con los números de su resumen.</p>
+  </div>
+
+  </div>
+  <div class="bottom">
+    <span>Jarlin Figueroa, MA</span>
+    <div class="navb">
+      <button class="btn" id="snd" title="Sonido (M)">🔊 Sonido</button>
+      <button class="btn" id="fs" title="Pantalla completa (F)">Pantalla completa</button>
+      <button class="btn" id="prev">← Anterior</button>
+      <span id="count" style="min-width:70px;text-align:center"></span>
+      <button class="btn primary" id="next">Siguiente →</button>
+    </div>
+  </div>
+</div>
+<script>
+const wrap=document.getElementById("slides"), els=[...wrap.querySelectorAll(":scope > .slide")];
+const SECC=["Introducción","Paso 1","Paso 2","Paso 3","Paso 4","Paso 5","Paso 6","Cierre"];
+const INI=SECC.map((_,i)=>els.findIndex(e=>+e.dataset.t===i));
+const dots=document.getElementById("dots");
+dots.innerHTML=SECC.map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
+dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.t]));
+
+/* Sonido: transición al cambiar de lámina y campanita en las láminas «Compruebe» */
+const SND={on:true,ctx:null,ready:false}; try{ SND.on=localStorage.getItem("m5sonido")!=="0"; }catch(e){}
+function ctx(){ const A=window.AudioContext||window.webkitAudioContext; if(!A) return null; const c=SND.ctx||(SND.ctx=new A()); if(c.state==="suspended") c.resume(); return c; }
+function tono(c,f,t0,dur,vol,tipo){ const o=c.createOscillator(), g=c.createGain(); o.type=tipo||"sine"; o.frequency.value=f; g.gain.setValueAtTime(.0001,t0); g.gain.exponentialRampToValueAtTime(vol,t0+.015); g.gain.exponentialRampToValueAtTime(.0001,t0+dur); o.connect(g); g.connect(c.destination); o.start(t0); o.stop(t0+dur+.02); }
+function sonar(dir){ if(!SND.on||!SND.ready) return; try{ const c=ctx(); if(!c) return;
+  const t=c.currentTime+.01, len=.22, b=c.createBuffer(1,Math.floor(c.sampleRate*len),c.sampleRate), d=b.getChannelData(0); for(let k=0;k<d.length;k++) d[k]=(Math.random()*2-1)*(1-k/d.length);
+  const s=c.createBufferSource(); s.buffer=b; const f=c.createBiquadFilter(); f.type="bandpass"; f.Q.value=1.4; f.frequency.setValueAtTime(dir>0?500:2600,t); f.frequency.exponentialRampToValueAtTime(dir>0?2600:500,t+len);
+  const g=c.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.2,t+.05); g.gain.exponentialRampToValueAtTime(.0001,t+len); s.connect(f); f.connect(g); g.connect(c.destination); s.start(t); s.stop(t+len);
+  tono(c,dir>0?880:587,t+.06,.25,.06); }catch(e){} }
+function exito(nivel){ if(!SND.on||!SND.ready) return; try{ const c=ctx(); if(!c) return; const t=c.currentTime+.18;
+  const notas=nivel>1?[523.25,659.25,783.99,1046.5]:[659.25,987.77]; notas.forEach((f,i)=>tono(c,f,t+i*.11,.45,.07,"triangle")); }catch(e){} }
+function clic(){ if(!SND.on) return; try{ const c=ctx(); if(!c) return; const t=c.currentTime+.005; tono(c,1320,t,.06,.05,"square"); tono(c,660,t+.05,.12,.05); }catch(e){} }
+const pintarSnd=()=>{ document.getElementById("snd").textContent=SND.on?"🔊 Sonido":"🔇 Sin sonido"; };
+document.getElementById("snd").onclick=e=>{ SND.on=!SND.on; try{ localStorage.setItem("m5sonido",SND.on?"1":"0"); }catch(_){} pintarSnd(); e.currentTarget.blur(); }; pintarSnd();
+
+let cur=0;
+function go(i){ const prev=cur; cur=Math.max(0,Math.min(els.length-1,i));
+  if(cur!==prev){ sonar(cur>prev?1:-1); if(cur>prev && els[cur].dataset.ok) exito(+els[cur].dataset.ok); }
+  els.forEach((e,j)=>e.classList.toggle("on",j===cur)); const tp=+els[cur].dataset.t;
+  dots.querySelectorAll("button").forEach((b,j)=>{ b.classList.toggle("cur",j===tp); b.classList.toggle("done",tp>j); });
+  document.getElementById("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
+  document.getElementById("topL").textContent=els[cur].dataset.l;
+  document.getElementById("prev").disabled=cur===0; document.getElementById("next").disabled=cur===els.length-1;
+  history.replaceState(null,"","#"+(cur+1)); }
+document.getElementById("prev").onclick=()=>go(cur-1); document.getElementById("next").onclick=()=>go(cur+1);
+document.getElementById("fs").onclick=e=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(_){} e.currentTarget.blur(); };
+document.addEventListener("keydown",e=>{ if(e.target.closest&&e.target.closest("#simList")) return;
+  if(["ArrowRight","PageDown"].includes(e.key)||e.key===" "){e.preventDefault();go(cur+1);} else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==="Home") go(0); else if(e.key==="End") go(els.length-1); else if(e.key==="f"||e.key==="F") document.getElementById("fs").click(); else if(e.key==="m"||e.key==="M") document.getElementById("snd").click(); });
+
+/* Simulador del botón «Mostrar» (paso 5) */
+const ESC=[{n:"Esperado",s:1200,t:2500,c:1400},{n:"Conservador",s:1000,t:2400,c:1550},{n:"Favorable",s:1400,t:2600,c:1350}], FIJOS=900000;
+let pick=0;
+const rd=v=>(v<0?"-":"")+"RD$ "+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+function celda(id,html,neg){ const el=document.getElementById(id); el.innerHTML=html; el.classList.toggle("neg",!!neg); el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }
+const opts=[...document.querySelectorAll("#simList [data-s]")];
+function elegir(i){ pick=i; opts.forEach(o=>{ const on=+o.dataset.s===i; o.classList.toggle("sel",on); o.setAttribute("aria-selected",on?"true":"false"); }); }
+function mostrar(){ const x=ESC[pick], ing=x.s*x.t, cv=x.s*x.c, r=ing-cv-FIJOS, m=r/ing; clic();
+  celda("c4",x.s.toLocaleString("en-US")); celda("c5",rd(x.t)); celda("c6",rd(x.c)); celda("c10",rd(ing)); celda("c11",rd(cv));
+  celda("c13","<b>"+rd(r)+"</b>",r<0); celda("c14",(m*100).toFixed(2)+"%",r<0);
+  document.getElementById("simSay").innerHTML="Escenario visible: <b>"+x.n+"</b>. "+(r<0?"El centro <b style=\"color:var(--neg)\">pierde "+rd(-r)+"</b>.":"El centro gana <b style=\"color:var(--pos)\">"+rd(r)+"</b>."); }
+opts.forEach(o=>{ o.onclick=()=>elegir(+o.dataset.s);
+  o.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); elegir(+o.dataset.s); mostrar(); } else if(e.key==="ArrowDown"||e.key==="ArrowUp"){ e.preventDefault(); const n=(+o.dataset.s+(e.key==="ArrowDown"?1:2))%3; elegir(n); opts[n].focus(); } }; });
+document.getElementById("simShow").onclick=e=>{ mostrar(); e.currentTarget.blur(); };
+
+function fit(){ const s=Math.min((innerWidth-16)/1280,(innerHeight-16)/720); document.getElementById("stage").style.transform=`translate(-50%,-50%) scale(${s})`; }
+addEventListener("resize",fit); fit(); go((parseInt(location.hash.slice(1),10)||1)-1); SND.ready=true;
+</script>
+</body>
+</html>
