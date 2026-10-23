@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Práctica guiada 3 · Sensibilidad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* Láminas de 1280×720 con el motor del Módulo 5. Cada paso = «Haga esto» + «Compruebe». */
+:root{
+  --bg:#e7e3da; --paper:#f7f5f0; --card:#ffffff; --ink:#0f4c5c; --text:#1d2b30; --muted:#5e6b6f; --line:#e3ded3; --grid:#cfc8ba;
+  --acc:#e09f3e; --acc-d:#a8691a; --acc-soft:#fbf0dd; --pos:#23826f; --pos-soft:#e2f3f0; --neg:#c8553d; --neg-soft:#f8e4df; --ink-soft:#e3eef0;
+  --xl:#217346; --hi:#fff2cc; --ou:#e2efda;
+  --serif:"Source Serif 4",Georgia,serif; --sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif; --mono:"IBM Plex Mono",Consolas,monospace; --win:"Segoe UI",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;background:var(--paper);transform-origin:center;transform:translate(-50%,-50%);box-shadow:0 10px 40px rgba(15,76,92,.18);border-top:4px solid var(--ink)}
+.slide{position:absolute;inset:0;padding:62px 72px 70px;display:none;flex-direction:column;gap:16px}
+.slide.on{display:flex;animation:in .4s ease}
+@keyframes in{from{opacity:.3;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.slide.on,.pop,.flash{animation:none!important}}
+.top{position:absolute;top:20px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;z-index:3}
+.dots{display:flex;gap:6px}.dots button{width:28px;height:6px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dots button.done{background:var(--grid)}.dots button.cur{background:var(--acc)}
+.bottom{position:absolute;bottom:18px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);z-index:3}
+.navb{display:flex;gap:8px;align-items:center}
+.btn{font-family:var(--mono);font-size:13px;border:1px solid var(--grid);background:var(--card);color:var(--ink);padding:7px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink)} .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+h1,h2{font-family:var(--serif);font-weight:600;margin:0;color:var(--ink);line-height:1.08;text-wrap:balance}
+h2{font-size:38px}
+p{margin:0}
+b{font-weight:600}
+code{font-family:var(--mono);font-size:.9em;background:var(--ink-soft);color:var(--ink);padding:1px 6px;font-weight:600;white-space:nowrap}
+.eyebrow{font-family:var(--mono);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);display:flex;gap:12px;align-items:center}
+.eyebrow .tag{background:var(--ink);color:#fff;padding:3px 10px;font-size:12.5px}
+.eyebrow .tag.ok{background:var(--pos)}
+.eyebrow .tag.go{background:var(--acc);color:#2a1a00}
+.lead{font-size:20px;line-height:1.5}
+.why{display:flex;gap:12px;align-items:baseline;font-size:17px;color:var(--ink);background:var(--ink-soft);padding:9px 14px}
+.why b{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.cols{display:grid;grid-template-columns:430px 1fr;gap:36px;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.note{font-size:15px;color:var(--muted)}
+
+/* Instrucciones numeradas */
+.do{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:13px}
+.do li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;font-size:18px;line-height:1.42}
+.do li .h{display:block;font-size:14.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+.m{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--acc);color:#2a1a00;font-family:var(--mono);font-size:14px;font-weight:700;flex:none;box-shadow:0 0 0 2px #fff}
+.do li .m{margin-top:1px}
+.pin{position:absolute;top:-12px;right:-12px;z-index:2}
+.rel{position:relative}
+.path{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px;font-family:var(--win);font-size:15px}
+.path span{background:var(--card);border:1px solid var(--grid);padding:2px 9px;font-weight:600}
+.path i{font-style:normal;color:var(--acc-d);font-weight:700}
+.cap{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.arrow{font-family:var(--mono);font-size:13px;color:var(--acc-d);font-weight:700}
+.tip{border-left:4px solid var(--acc);background:var(--acc-soft);padding:10px 14px;font-size:15.5px;line-height:1.45}
+.warn{border-left:4px solid var(--neg);background:var(--neg-soft);padding:10px 14px;font-size:15.5px;line-height:1.45}
+
+/* Hoja de Excel simulada */
+.xl{border:1px solid #c6c6c6;background:#fff;font-family:var(--win);font-size:13.5px;box-shadow:0 6px 18px rgba(0,0,0,.08);align-self:start;max-width:100%}
+.xl .fx{display:flex;align-items:center;border-bottom:1px solid #d4d4d4;font-size:13px}
+.xl .fx .nm{min-width:130px;padding:4px 8px;border-right:1px solid #d4d4d4}
+.xl .fx .fi{padding:4px 10px;color:#777;font-style:italic;border-right:1px solid #d4d4d4}
+.xl .fx .fv{padding:4px 10px}
+.xl table{border-collapse:collapse;width:100%}
+.xl th{background:#f3f3f3;color:#555;font-weight:400;border:1px solid #dadada;padding:3px 8px;font-size:12.5px}
+.xl th.on{background:#d3e5d9;color:var(--xl);font-weight:600;border-bottom:2px solid var(--xl)}
+.xl td{border:1px solid #e2e2e2;padding:4px 8px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.xl td.rn{background:#f3f3f3;color:#555;text-align:center;font-size:12.5px;width:30px}
+.xl td.rn.on{background:#d3e5d9;color:var(--xl);font-weight:600}
+.xl td.h{background:var(--acc);color:#fff;font-weight:600;font-size:12px}
+.xl td.hd{background:#f2f2f2;font-weight:600}
+.xl td.dk{background:#595959;color:#fff;font-weight:600;text-align:right}
+.xl td.y{background:var(--hi);text-align:right;font-weight:600}
+.xl td.g{background:var(--ou);text-align:right}
+.xl td.nr{text-align:right}
+.xl td.neg{color:#c00000}
+.xl td.sel{background:#efe3b0;box-shadow:inset 0 0 0 2px var(--xl)}
+.xl td.flash{animation:flash 1s ease}
+@keyframes flash{0%{background:#ffd56a}100%{}}
+.xl .tabs{display:flex;background:#f3f3f3;border-top:1px solid #d4d4d4;font-size:12.5px}
+.xl .tabs span{padding:5px 14px;border-right:1px solid #d4d4d4;color:#444}
+.xl .tabs span.on{background:#fff;color:var(--xl);font-weight:600;border-bottom:3px solid var(--xl)}
+
+/* Cinta de opciones simulada */
+.ribbon{border:1px solid #c6c6c6;background:#fff;font-family:var(--win);font-size:13px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.ribbon .tabsr{display:flex;background:var(--xl);color:#fff}
+.ribbon .tabsr span{padding:7px 13px;opacity:.9;display:flex;align-items:center;gap:6px}
+.ribbon .tabsr span.on{background:#fff;color:var(--xl);font-weight:700;opacity:1}
+.ribbon .groups{display:flex;padding:10px 6px 6px;gap:4px;align-items:stretch}
+.ribbon .grp{display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:0 12px;border-right:1px solid #e1e1e1;color:#777;font-size:11.5px;gap:6px;text-align:center}
+.ribbon .grp .ic{font-size:24px;opacity:.5}
+.ribbon .grp.on{color:var(--text)}
+.ribbon .bt{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 8px;font-size:12.5px;color:var(--text);border:2px solid transparent;text-align:center}
+.ribbon .bt.on{border-color:var(--acc);background:var(--acc-soft);font-weight:600}
+.ribbon .drop{display:flex;justify-content:flex-end;padding:0 14px 14px}
+.ribbon .menu{border:1px solid #c6c6c6;box-shadow:0 6px 14px rgba(0,0,0,.16);background:#fff;font-size:14px}
+.ribbon .menu div{padding:8px 18px 8px 12px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.ribbon .menu div.on{background:#d3e5d9;outline:2px solid var(--acc);outline-offset:-2px;font-weight:600}
+
+/* Cuadros de diálogo simulados */
+.dlg{border:1px solid #9aa3a6;background:#f0f0f0;font-family:var(--win);font-size:13.5px;box-shadow:0 10px 26px rgba(0,0,0,.16);width:100%;align-self:start}
+.dlg .t{background:#fff;padding:8px 12px;border-bottom:1px solid #d0d0d0;font-weight:600;display:flex;justify-content:space-between}
+.dlg .t span{color:#777;font-weight:400}
+.dlg .b{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.dlg .f{background:#fff;border:1px solid #8f979a;padding:5px 8px;min-height:29px}
+.dlg .f.on{border:2px solid var(--acc);background:#fffaf0;font-weight:600}
+.dlg .row{display:grid;grid-template-columns:1fr 110px;gap:10px;align-items:center}
+.dlg .k{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}
+.dlg .k span,.dlg .side span{border:1px solid #8f979a;background:#fdfdfd;padding:4px 14px;text-align:center;position:relative}
+.dlg .k span.on,.dlg .side span.on{border:2px solid var(--acc);background:var(--acc-soft);font-weight:600}
+.dlg .small{font-size:12px;color:#555}
+.dlg .chk{display:flex;gap:16px;font-size:13px;color:#333}
+.dlg .mgr{display:grid;grid-template-columns:1fr 104px;gap:10px}
+.dlg .list{background:#fff;border:1px solid #8f979a;min-height:118px;padding:3px}
+.dlg .list div{padding:4px 8px}
+.dlg .list div.sel{background:#cce4f7}
+.dlg .list .empty{color:#666;font-size:12.5px;padding:8px;line-height:1.4}
+.dlg .list .new{color:var(--pos);font-weight:700}
+.dlg .side{display:flex;flex-direction:column;gap:6px}
+.dlg .radio{display:flex;flex-direction:column;gap:5px;font-size:13px}
+
+/* Lámina «Compruebe» */
+.okbox{border:2px solid var(--pos);background:var(--pos-soft);padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.okbox .t{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--pos);font-weight:700;display:flex;align-items:center;gap:10px}
+.okbox .t i{font-style:normal;display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--pos);color:#fff;align-items:center;justify-content:center;font-size:17px}
+.okbox p{font-size:19px;line-height:1.45}
+.fixbox{align-self:start;border:1px solid var(--grid);background:var(--card);padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.fixbox .t{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--neg);font-weight:700}
+.fixbox ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.fixbox li{display:grid;grid-template-columns:20px 1fr;gap:8px;font-size:15.5px;line-height:1.45}
+.fixbox li::before{content:"→";color:var(--neg);font-weight:700}
+.pop{animation:pop .6s cubic-bezier(.2,.9,.3,1.4) both}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+
+table.vals{border-collapse:collapse;width:100%;font-size:16px;background:var(--card);font-variant-numeric:tabular-nums}
+table.vals th,table.vals td{border:1px solid var(--line);padding:8px 12px;text-align:right}
+table.vals th{background:var(--ink);color:#fff;font-weight:600}
+table.vals th:first-child,table.vals td:first-child{text-align:left}
+table.vals td:first-child{font-weight:700;color:var(--ink)}
+table.vals tr.cur td{background:var(--acc-soft)}
+.badge{display:inline-block;font-family:var(--mono);font-size:12px;padding:2px 8px;font-weight:700}
+.badge.neg{background:var(--neg-soft);color:var(--neg)}.badge.pos{background:var(--pos-soft);color:var(--pos)}.badge.mid{background:var(--ink-soft);color:var(--ink)}
+
+/* Introducción */
+.cover{justify-content:center;gap:20px}
+.cover-logo{position:absolute;top:54px;right:72px;height:96px;width:auto;mix-blend-mode:multiply}
+.cover .mod{font-family:var(--mono);font-size:17px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-d)}
+.cover h1{font-size:60px;max-width:640px}
+.cover .lead{max-width:600px}
+.cover-tags{display:flex;gap:10px;flex-wrap:wrap;max-width:640px}
+.cover-tags span{font-family:var(--mono);font-size:13px;border:1px solid var(--ink);color:var(--ink);padding:5px 10px;background:var(--card)}
+.cover .hint{font-family:var(--mono);font-size:14px;color:var(--muted)}
+.cover-art{position:absolute;right:72px;top:190px;width:420px;display:flex;flex-direction:column;gap:12px}
+.dlbtn{display:inline-flex;align-items:center;gap:14px;text-decoration:none;background:var(--ink);color:#fff;padding:12px 18px;align-self:flex-start}
+.dlbtn:hover{background:#0b3a46}
+.dlbtn .ic{font-size:22px;line-height:1;color:var(--acc)}
+.dlbtn b{display:block;font-size:16px}
+.dlbtn small{display:block;font-family:var(--mono);font-size:11.5px;opacity:.9;margin-top:2px}
+.scen{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sc{background:var(--card);border:1px solid var(--line);border-top:6px solid var(--grid);padding:14px;display:flex;flex-direction:column;gap:6px}
+.sc.c1{border-top-color:var(--neg)}.sc.c2{border-top-color:var(--ink)}.sc.c3{border-top-color:var(--pos)}
+.sc .n{font-weight:700;color:var(--ink);font-size:19px}
+.sc .d{font-size:15px;color:var(--muted);line-height:1.4;min-height:42px}
+.sc .v{font-family:var(--mono);font-size:14px;line-height:1.75;font-variant-numeric:tabular-nums;border-top:1px solid var(--line);padding-top:8px}
+.sc .r{margin-top:6px;font-family:var(--mono);font-size:14px;background:var(--line);text-align:center;padding:6px;color:var(--muted);font-weight:600}
+.q{font-family:var(--serif);font-size:25px;line-height:1.35;color:var(--ink);border-left:4px solid var(--acc);padding-left:18px}
+.words{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;flex:1;align-content:start}
+.word{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--ink);padding:22px;display:flex;flex-direction:column;gap:12px}
+.word .ic{font-size:34px}
+.word .t{font-family:var(--serif);font-size:27px;color:var(--ink);font-weight:700}
+.word .d{font-size:17.5px;line-height:1.5}
+.word .ex{font-size:15.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;line-height:1.5}
+.legend{display:flex;flex-direction:column;gap:14px}
+.legend div{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;font-size:16.5px;line-height:1.45}
+.legend .sw{width:40px;height:26px;border:1px solid #b9b3a6}
+.legend .sw.y{background:var(--hi)}.legend .sw.g{background:var(--ou)}.legend .sw.s{background:#f2f2f2}
+
+/* Simulador */
+.go{font:inherit;border:2px solid var(--acc);background:var(--acc-soft);padding:4px 16px;font-weight:700;cursor:pointer;color:var(--text)}
+.go:hover{background:#f6dcae}
+#simList div{cursor:pointer}
+#simList div:hover{background:#e5f1fb}
+#simList div.sel{background:#cce4f7}
+.say{font-size:16px;margin-top:10px;line-height:1.45}
+
+/* Cierre */
+.final{background:var(--ink)}
+.final h2,.final .eyebrow{color:#fff}
+.final .chk{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.final .chk li{display:grid;grid-template-columns:30px 1fr;gap:8px;font-size:18.5px;color:#fff;line-height:1.4}
+.final .chk li::before{content:"☐";font-size:23px;line-height:1.1;color:var(--acc)}
+.final .save{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);padding:20px;display:flex;flex-direction:column;gap:12px;color:#fff;font-size:17px;line-height:1.45}
+.final code{background:rgba(255,255,255,.14);color:#fff;font-size:19px;padding:6px 10px;white-space:normal}
+.final .path span{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:#fff}
+.final .path i{color:var(--acc)}
+.nextp{display:inline-flex;align-items:center;gap:12px;text-decoration:none;background:var(--acc);color:#2a1a00;padding:12px 18px;font-weight:700;font-size:17px;align-self:flex-start}
+.nextp:hover{background:#ebb15a}
+.final .think{font-family:var(--serif);font-size:22px;line-height:1.4;color:#fff;border-left:4px solid var(--acc);padding-left:16px}
+
+/* Práctica 3 */
+.vars{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.vars .sc .d{min-height:0}
+.ciclo{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:14px;font-weight:700}
+.ciclo span{background:var(--ink-soft);color:var(--ink);padding:6px 12px}
+.ciclo i{font-style:normal;color:var(--acc-d)}
+.flow3{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;align-items:stretch;gap:6px}
+.flow3 div{background:var(--card);border:1px solid var(--line);border-top:5px solid var(--ink);padding:16px;display:flex;flex-direction:column;gap:8px}
+.flow3 div b{font-family:var(--serif);font-size:24px;color:var(--ink)}
+.flow3 div span{font-size:16px;line-height:1.45}
+.flow3 .a{border:0;background:none;padding:0;align-items:center;justify-content:center;font-size:30px;color:var(--acc)}
+.labv{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.labv button{font-family:var(--sans);font-size:15px;font-weight:600;padding:12px 10px;border:2px solid var(--grid);background:var(--card);color:var(--ink);cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:2px}
+.labv button small{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:500}
+.labv button.on{border-color:var(--acc);background:var(--acc-soft)}
+.tor{display:flex;flex-direction:column;gap:10px}
+.tor .r{display:grid;grid-template-columns:200px 1fr;gap:12px;align-items:center;font-size:15.5px}
+.tor .r .bar{position:relative;height:30px;background:var(--line)}
+.tor .r .bar i{position:absolute;top:0;bottom:0;left:50%;width:0;transition:width .6s cubic-bezier(.2,.9,.3,1),left .6s cubic-bezier(.2,.9,.3,1)}
+.tor .r .bar i.p{background:var(--pos)} .tor .r .bar i.n{background:var(--neg)}
+.tor .r .bar em{position:absolute;top:5px;font-style:normal;font-family:var(--mono);font-size:13px;font-weight:700;white-space:nowrap}
+.tor .r .bar::after{content:"";position:absolute;left:50%;top:-4px;bottom:-4px;border-left:2px solid var(--muted)}
+.rank{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.rank li{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);padding:10px 14px;font-size:17px}
+.rank li b.n{font-family:var(--serif);font-size:28px;color:var(--acc-d)}
+.rank li:first-child{border:2px solid var(--acc);background:var(--acc-soft)}
+.rank li span:last-child{font-family:var(--mono);font-weight:700;font-variant-numeric:tabular-nums}
+.letter{background:var(--card);border:1px solid var(--grid);padding:18px 20px;font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--text)}
+.letter mark{background:var(--acc-soft);color:inherit;padding:0 3px}
+.verdict>div{display:flex;flex-direction:column;gap:4px}
+.done3{display:flex;gap:10px;flex-wrap:wrap}
+.done3 span{font-family:var(--mono);font-size:13px;font-weight:700;background:var(--pos);color:#fff;padding:6px 12px}
+</style>
+</head>
+<body>
+<!-- GATE-INICIO · Acceso con clave (temporal; se quitará cuando el facilitador lo indique) -->
+<style>
+#gate{position:fixed;inset:0;z-index:9999;background:#e7e3da;display:flex;align-items:center;justify-content:center;padding:16px;font-family:"IBM Plex Sans","Segoe UI",Arial,sans-serif}
+#gate[hidden]{display:none}
+#gate form{background:#f7f5f0;border-top:4px solid #0f4c5c;box-shadow:0 10px 40px rgba(15,76,92,.18);padding:34px 36px;width:min(420px,100%);display:flex;flex-direction:column;gap:14px;box-sizing:border-box}
+#gate .mod{font-family:"IBM Plex Mono",Consolas,monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#b4741c}
+#gate h1{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:32px;line-height:1.1;margin:0;color:#0f4c5c}
+#gate p{margin:0;color:#5e6b6f;font-size:15px;line-height:1.45}
+#gate input{font-family:"IBM Plex Mono",Consolas,monospace;font-size:20px;padding:10px 12px;border:1px solid #cfc8ba;background:#fff;color:#0f4c5c;letter-spacing:.3em}
+#gate .err{color:#a3364f;font-size:14px;min-height:1.2em}
+#gate button{font-family:"IBM Plex Mono",Consolas,monospace;font-size:14px;padding:11px;border:0;background:#0f4c5c;color:#fff;cursor:pointer}
+</style>
+<div id="gate" hidden>
+  <form id="gateForm" autocomplete="off">
+    <div class="mod">Módulo 5.</div>
+    <h1>Modelado financiero y análisis de escenarios.</h1>
+    <p>Este contenido está protegido. Escriba la clave de acceso para continuar.</p>
+    <input id="gateIn" type="password" inputmode="numeric" maxlength="12" aria-label="Clave de acceso" placeholder="Clave">
+    <div class="err" id="gateErr" role="alert"></div>
+    <button type="submit">Entrar</button>
+  </form>
+</div>
+<script>
+(function(){
+  var CLAVE="1022", KEY="m5-acceso", gate=document.getElementById("gate"), locked;
+  function valido(){ try{ var t=+localStorage.getItem(KEY); return t && Date.now()-t < 12*3600e3; }catch(e){ return false; } }
+  locked=!valido();
+  if(locked){ gate.hidden=false; setTimeout(function(){ document.getElementById("gateIn").focus(); },50); }
+  // Mientras está bloqueado, las teclas no mueven la presentación
+  document.addEventListener("keydown",function(e){ if(locked) e.stopImmediatePropagation(); },true);
+  document.getElementById("gateForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    var inp=document.getElementById("gateIn");
+    if(inp.value.trim()===CLAVE){ try{ localStorage.setItem(KEY,String(Date.now())); }catch(err){} locked=false; gate.hidden=true; }
+    else { document.getElementById("gateErr").textContent="Clave incorrecta. Inténtelo de nuevo."; inp.select(); }
+  });
+})();
+</script>
+<!-- GATE-FIN -->
+<div id="stage">
+  <div class="top"><span id="topL">MÓDULO 5 · PRÁCTICA GUIADA 3.</span><div class="dots" id="dots"></div></div>
+  <div id="slides">
+
+  <!-- 1 · Portada -->
+  <div class="slide cover" data-t="0" data-l="MÓDULO 5 · PRÁCTICA GUIADA 3.">
+    <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI">
+    <div class="mod">Excel Avanzado · Práctica guiada 3 de 3.</div>
+    <h1>¿Qué variable mueve más la ganancia?</h1>
+    <p class="lead">Subirá cada supuesto un 10 %, <b>uno a la vez</b>, y medirá cuánto cambia el resultado. Así sabrá dónde poner la atención.</p>
+    <div class="cover-tags"><span>⏱ 25 a 30 minutos</span><span>💻 Excel de escritorio</span><span>👤 Individual</span><span>🔍 Análisis de sensibilidad</span></div>
+    <a class="dlbtn" href="Modulo5-Base-Modelo-Financiero.xlsx" download><span class="ic">⬇</span><span><b>Descargar el archivo de Excel.</b><small>Si ya hizo las prácticas 1 y 2, use su propio archivo.</small></span></a>
+    <p class="hint">Use las flechas ← → del teclado o los botones de abajo · M = sonido.</p>
+    <div class="cover-art" aria-hidden="true">
+      <div class="tor" style="background:var(--card);border:1px solid var(--line);padding:18px">
+        <div class="r pop" style="grid-template-columns:110px 1fr;animation-delay:.2s"><span>Servicios</span><div class="bar"><em style="left:46%;color:var(--muted)">?</em></div></div>
+        <div class="r pop" style="grid-template-columns:110px 1fr;animation-delay:.35s"><span>Tarifa</span><div class="bar"><em style="left:46%;color:var(--muted)">?</em></div></div>
+        <div class="r pop" style="grid-template-columns:110px 1fr;animation-delay:.5s"><span>Costo variable</span><div class="bar"><em style="left:46%;color:var(--muted)">?</em></div></div>
+        <div class="r pop" style="grid-template-columns:110px 1fr;animation-delay:.65s"><span>Gastos fijos</span><div class="bar"><em style="left:46%;color:var(--muted)">?</em></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 · Misión -->
+  <div class="slide" data-t="0" data-l="MÓDULO 5 · PRÁCTICA GUIADA 3 · LA MISIÓN.">
+    <div class="eyebrow"><span class="tag go">La misión</span></div>
+    <h2>Cuatro variables, un mismo cambio: +10 %.</h2>
+    <p class="q">Si cada variable sube lo mismo (10 %), ¿cuál cambia más la ganancia? Esa es la variable que la administración debe <b>vigilar primero</b>.</p>
+    <div class="vars">
+      <div class="sc c2"><span class="n">Servicios al mes</span><span class="v">1,200 → <b>1,320</b></span><span class="r">Cambio: ?</span></div>
+      <div class="sc c2"><span class="n">Tarifa promedio</span><span class="v">RD$ 2,500.00 → <b>RD$ 2,750.00</b></span><span class="r">Cambio: ?</span></div>
+      <div class="sc c1"><span class="n">Costo variable</span><span class="v">RD$ 1,400.00 → <b>RD$ 1,540.00</b></span><span class="r">Cambio: ?</span></div>
+      <div class="sc c1"><span class="n">Gastos fijos</span><span class="v">RD$ 900,000.00 → <b>RD$ 990,000.00</b></span><span class="r">Cambio: ?</span></div>
+    </div>
+    <div class="tip">💡 Los valores con +10 % <b>ya están en su archivo</b>, en <code>E12:E15</code>. Usted solo los copia en la celda amarilla, uno a la vez.</div>
+  </div>
+
+  <!-- 3 · El método -->
+  <div class="slide" data-t="0" data-l="MÓDULO 5 · PRÁCTICA GUIADA 3 · EL MÉTODO.">
+    <div class="eyebrow"><span class="tag go">El método</span></div>
+    <h2>Una variable a la vez: cambie, anote y devuelva.</h2>
+    <div class="flow3">
+      <div><b>① Cambie.</b><span>Escriba el valor con +10 % en <b>una sola</b> celda amarilla.</span></div><div class="a">→</div>
+      <div><b>② Anote.</b><span>Escriba en la tabla el resultado que muestra <code>B13</code> y calcule cuánto cambió.</span></div><div class="a">→</div>
+      <div><b>③ Devuelva.</b><span>Regrese la celda a su valor de hoy antes de probar la siguiente.</span></div>
+    </div>
+    <div class="cols" style="grid-template-columns:1fr 1fr;align-items:start">
+      <div class="warn" style="font-size:16.5px">⚠️ <b>¿Por qué una a la vez?</b> Si cambia dos variables juntas, no sabrá cuál de las dos movió la ganancia. Es como un experimento: se cambia una cosa y se mide.</div>
+      <div class="tip" style="font-size:16.5px">💡 Vaya marcando: después de cada prueba, <code>B13</code> debe volver a <b>RD$ 420,000.00</b>. Si no vuelve, olvidó el paso ③.</div>
+    </div>
+  </div>
+
+  <!-- 4 · Laboratorio -->
+  <div class="slide" data-t="0" data-l="MÓDULO 5 · PRÁCTICA GUIADA 3 · PRUÉBELO AQUÍ.">
+    <div class="eyebrow"><span class="tag go">Pruébelo aquí</span></div>
+    <h2>Mini laboratorio: pulse una variable y mire B13.</h2>
+    <div class="labv" id="labBtns">
+      <button type="button" data-i="0">Servicios +10 %<small>B4 = 1,320</small></button>
+      <button type="button" data-i="1">Tarifa +10 %<small>B5 = RD$ 2,750.00</small></button>
+      <button type="button" data-i="2">Costo variable +10 %<small>B6 = RD$ 1,540.00</small></button>
+      <button type="button" data-i="3">Gastos fijos +10 %<small>B7 = RD$ 990,000.00</small></button>
+    </div>
+    <div class="cols" style="grid-template-columns:400px 1fr;gap:28px">
+      <div class="col">
+        <div class="verdict" style="display:grid;grid-template-columns:1fr;gap:10px">
+          <div style="background:var(--card);border:1px solid var(--line);padding:14px 16px"><span class="cap">B13 · Resultado</span><b id="labR" style="font-family:var(--serif);font-size:34px;color:var(--ink)">RD$ 420,000.00</b></div>
+          <div style="background:var(--card);border:1px solid var(--line);padding:14px 16px"><span class="cap">Cambio vs. RD$ 420,000.00</span><b id="labC" style="font-family:var(--serif);font-size:34px;color:var(--muted)">—</b></div>
+        </div>
+        <p class="note" id="labSay" aria-live="polite">Pulse una de las cuatro variables. Cada vez que pulsa otra, la anterior vuelve a su valor de hoy, como debe hacerlo usted en Excel.</p>
+      </div>
+      <div class="tor" id="labTor">
+        <span class="cap">Lo que ya probó</span>
+        <div class="r"><span>Servicios</span><div class="bar"><i></i><em></em></div></div>
+        <div class="r"><span>Tarifa</span><div class="bar"><i></i><em></em></div></div>
+        <div class="r"><span>Costo variable</span><div class="bar"><i></i><em></em></div></div>
+        <div class="r"><span>Gastos fijos</span><div class="bar"><i></i><em></em></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-t="1" data-l="PRÁCTICA GUIADA 3 · PASO 1 DE 5 · HAGA ESTO.">
+    <div class="eyebrow"><span class="tag">Paso 1 de 5</span>Haga esto.</div>
+    <h2>Primera prueba: suba los servicios al mes un 10 %.</h2>
+    <div class="ciclo"><span class="on">① Cambie</span><i>→</i><span class="on">② Anote</span><i>→</i><span class="on">③ Devuelva</span></div>
+    <div class="cols" style="grid-template-columns:480px 1fr">
+      <ol class="do" style="gap:11px">
+        <li><span class="m">1</span><span>En <code>B4</code> escriba <code>1320</code> y pulse Enter.</span></li>
+        <li><span class="m">2</span><span>Mire <code>B13</code>: ahora dice <b>RD$ 552,000.00</b>.</span></li>
+        <li><span class="m">3</span><span>En <code>F12</code> <b>escriba</b> <code>552000</code>.<span class="h">No copie B13: se llevaría la fórmula y el número cambiaría.</span></span></li>
+        <li><span class="m">4</span><span>En <code>G12</code> escriba <code>=F12-420000</code>. Debe dar <b>132000</b>.</span></li>
+        <li><span class="m">5</span><span>Devuelva <code>B4</code> a <code>1200</code>. B13 vuelve a RD$ 420,000.00.</span></li>
+      </ol>
+      <div class="col">
+        <div class="xl rel" style="width:100%">
+          <table>
+            <tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rn">4</td><td>Servicios al mes</td><td class="y sel rel">1,320<span class="m pin">1</span></td></tr>
+            <tr><td class="rn">13</td><td><b>Resultado (ganancia o pérdida)</b></td><td class="g rel"><b>RD$ 552,000.00</b><span class="m pin">2</span></td></tr>
+          </table>
+        </div>
+        <div class="xl" style="width:100%;font-size:12.5px">
+          <table>
+            <tr><th></th><th>D</th><th>E</th><th>F</th><th>G</th></tr>
+            <tr><td class="rn">11</td><td class="hd">Variable</td><td class="hd">Valor con +10 %</td><td class="hd">Resultado obtenido</td><td class="hd">Cambio vs. RD$ 420,000</td></tr>
+            <tr><td class="rn">12</td><td>Servicios (B4)</td><td class="nr">1,320</td><td class="nr sel rel">552000<span class="m pin">3</span></td><td class="nr sel rel">132000<span class="m pin">4</span></td></tr><tr><td class="rn">13</td><td>Tarifa promedio (B5)</td><td class="nr">RD$ 2,750.00</td><td></td><td></td></tr><tr><td class="rn">14</td><td>Costo variable (B6)</td><td class="nr">RD$ 1,540.00</td><td></td><td></td></tr><tr><td class="rn">15</td><td>Gastos fijos (B7)</td><td class="nr">RD$ 990,000.00</td><td></td><td></td></tr>
+          </table>
+        </div>
+        <div class="warn" style="font-size:15px">⚠️ Paso 5 obligatorio: si no devuelve <code>B4</code> a 1,200, la siguiente prueba saldrá mal.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="1" data-ok="1" data-l="PRÁCTICA GUIADA 3 · PASO 1 DE 5 · COMPRUEBE.">
+    <div class="eyebrow"><span class="tag ok">Paso 1 de 5</span>Compruebe.</div>
+    <h2>Servicios al mes: la ganancia sube RD$ 132,000.00.</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div class="col">
+        <div class="okbox pop"><span class="t"><i>✓</i>Va bien si…</span>
+          <p><code>F12</code> = <b>552000</b> y <code>G12</code> = <b style="color:var(--pos)">132000</b>.</p>
+          <p><code>B4</code> volvió a <b>1,200</b> y <code>B13</code> dice <b>RD$ 420,000.00</b>.</p></div>
+        <div class="tip"><b>¿Por qué RD$ 132,000.00?</b> 120 servicios más × RD$ 1,100.00 de margen por servicio.</div>
+      </div>
+      <div class="fixbox"><span class="t">✋ ¿Le salió distinto?</span><ul>
+        <li><span><b>B13 no da RD$ 552,000.00:</b> revise que las demás celdas amarillas estén en su valor de hoy (2,500 · 1,400 · 900,000).</span></li>
+        <li><span><b>F12 cambia solo:</b> copió B13 en lugar de escribir el número. Bórrelo y escriba <code>552000</code>.</span></li>
+        <li><span><b>G12 muestra la fórmula como texto:</b> le faltó el signo <code>=</code> al inicio.</span></li>
+        <li><span><b>Ve 552000 sin RD$ ni comas:</b> está bien; es solo el formato de la celda.</span></li>
+      </ul></div>
+    </div>
+  </div>
+  <div class="slide" data-t="2" data-l="PRÁCTICA GUIADA 3 · PASO 2 DE 5 · HAGA ESTO.">
+    <div class="eyebrow"><span class="tag">Paso 2 de 5</span>Haga esto.</div>
+    <h2>Siguiente prueba: suba la tarifa promedio un 10 %.</h2>
+    <div class="ciclo"><span class="on">① Cambie</span><i>→</i><span class="on">② Anote</span><i>→</i><span class="on">③ Devuelva</span></div>
+    <div class="cols" style="grid-template-columns:480px 1fr">
+      <ol class="do" style="gap:11px">
+        <li><span class="m">1</span><span>En <code>B5</code> escriba <code>2750</code> y pulse Enter.</span></li>
+        <li><span class="m">2</span><span>Mire <code>B13</code>: ahora dice <b>RD$ 720,000.00</b>.</span></li>
+        <li><span class="m">3</span><span>En <code>F13</code> <b>escriba</b> <code>720000</code>.<span class="h">No copie B13: se llevaría la fórmula y el número cambiaría.</span></span></li>
+        <li><span class="m">4</span><span>En <code>G13</code> escriba <code>=F13-420000</code>. Debe dar <b>300000</b>.</span></li>
+        <li><span class="m">5</span><span>Devuelva <code>B5</code> a <code>2500</code>. B13 vuelve a RD$ 420,000.00.</span></li>
+      </ol>
+      <div class="col">
+        <div class="xl rel" style="width:100%">
+          <table>
+            <tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rn">5</td><td>Tarifa promedio por servicio</td><td class="y sel rel">RD$ 2,750.00<span class="m pin">1</span></td></tr>
+            <tr><td class="rn">13</td><td><b>Resultado (ganancia o pérdida)</b></td><td class="g rel"><b>RD$ 720,000.00</b><span class="m pin">2</span></td></tr>
+          </table>
+        </div>
+        <div class="xl" style="width:100%;font-size:12.5px">
+          <table>
+            <tr><th></th><th>D</th><th>E</th><th>F</th><th>G</th></tr>
+            <tr><td class="rn">11</td><td class="hd">Variable</td><td class="hd">Valor con +10 %</td><td class="hd">Resultado obtenido</td><td class="hd">Cambio vs. RD$ 420,000</td></tr>
+            <tr><td class="rn">12</td><td>Servicios (B4)</td><td class="nr">1,320</td><td class="nr">552000</td><td class="nr">132000</td></tr><tr><td class="rn">13</td><td>Tarifa promedio (B5)</td><td class="nr">RD$ 2,750.00</td><td class="nr sel rel">720000<span class="m pin">3</span></td><td class="nr sel rel">300000<span class="m pin">4</span></td></tr><tr><td class="rn">14</td><td>Costo variable (B6)</td><td class="nr">RD$ 1,540.00</td><td></td><td></td></tr><tr><td class="rn">15</td><td>Gastos fijos (B7)</td><td class="nr">RD$ 990,000.00</td><td></td><td></td></tr>
+          </table>
+        </div>
+        <div class="warn" style="font-size:15px">⚠️ Paso 5 obligatorio: si no devuelve <code>B5</code> a RD$ 2,500.00, la siguiente prueba saldrá mal.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="2" data-ok="1" data-l="PRÁCTICA GUIADA 3 · PASO 2 DE 5 · COMPRUEBE.">
+    <div class="eyebrow"><span class="tag ok">Paso 2 de 5</span>Compruebe.</div>
+    <h2>Tarifa promedio por servicio: la ganancia sube RD$ 300,000.00.</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div class="col">
+        <div class="okbox pop"><span class="t"><i>✓</i>Va bien si…</span>
+          <p><code>F13</code> = <b>720000</b> y <code>G13</code> = <b style="color:var(--pos)">300000</b>.</p>
+          <p><code>B5</code> volvió a <b>RD$ 2,500.00</b> y <code>B13</code> dice <b>RD$ 420,000.00</b>.</p></div>
+        <div class="tip"><b>¿Por qué RD$ 300,000.00?</b> RD$ 250.00 más en cada uno de los 1,200 servicios.</div>
+      </div>
+      <div class="fixbox"><span class="t">✋ ¿Le salió distinto?</span><ul>
+        <li><span><b>B13 no da RD$ 720,000.00:</b> seguramente no devolvió la variable anterior. Revise que B4:B7 sean 1,200 · 2,500 · 1,400 · 900,000, salvo B5.</span></li>
+        <li><span><b>F13 cambia solo:</b> copió B13 en lugar de escribir el número. Bórrelo y escriba <code>720000</code>.</span></li>
+        <li><span><b>G13 muestra la fórmula como texto:</b> le faltó el signo <code>=</code> al inicio.</span></li>
+        <li><span><b>Ve 720000 sin RD$ ni comas:</b> está bien; es solo el formato de la celda.</span></li>
+      </ul></div>
+    </div>
+  </div>
+  <div class="slide" data-t="3" data-l="PRÁCTICA GUIADA 3 · PASO 3 DE 5 · HAGA ESTO.">
+    <div class="eyebrow"><span class="tag">Paso 3 de 5</span>Haga esto.</div>
+    <h2>Siguiente prueba: suba el costo variable por servicio un 10 %.</h2>
+    <div class="ciclo"><span class="on">① Cambie</span><i>→</i><span class="on">② Anote</span><i>→</i><span class="on">③ Devuelva</span></div>
+    <div class="cols" style="grid-template-columns:480px 1fr">
+      <ol class="do" style="gap:11px">
+        <li><span class="m">1</span><span>En <code>B6</code> escriba <code>1540</code> y pulse Enter.</span></li>
+        <li><span class="m">2</span><span>Mire <code>B13</code>: ahora dice <b>RD$ 252,000.00</b>.</span></li>
+        <li><span class="m">3</span><span>En <code>F14</code> <b>escriba</b> <code>252000</code>.<span class="h">No copie B13: se llevaría la fórmula y el número cambiaría.</span></span></li>
+        <li><span class="m">4</span><span>En <code>G14</code> escriba <code>=F14-420000</code>. Debe dar <b>-168000</b>.</span></li>
+        <li><span class="m">5</span><span>Devuelva <code>B6</code> a <code>1400</code>. B13 vuelve a RD$ 420,000.00.</span></li>
+      </ol>
+      <div class="col">
+        <div class="xl rel" style="width:100%">
+          <table>
+            <tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rn">6</td><td>Costo variable por servicio</td><td class="y sel rel">RD$ 1,540.00<span class="m pin">1</span></td></tr>
+            <tr><td class="rn">13</td><td><b>Resultado (ganancia o pérdida)</b></td><td class="g rel"><b>RD$ 252,000.00</b><span class="m pin">2</span></td></tr>
+          </table>
+        </div>
+        <div class="xl" style="width:100%;font-size:12.5px">
+          <table>
+            <tr><th></th><th>D</th><th>E</th><th>F</th><th>G</th></tr>
+            <tr><td class="rn">11</td><td class="hd">Variable</td><td class="hd">Valor con +10 %</td><td class="hd">Resultado obtenido</td><td class="hd">Cambio vs. RD$ 420,000</td></tr>
+            <tr><td class="rn">12</td><td>Servicios (B4)</td><td class="nr">1,320</td><td class="nr">552000</td><td class="nr">132000</td></tr><tr><td class="rn">13</td><td>Tarifa promedio (B5)</td><td class="nr">RD$ 2,750.00</td><td class="nr">720000</td><td class="nr">300000</td></tr><tr><td class="rn">14</td><td>Costo variable (B6)</td><td class="nr">RD$ 1,540.00</td><td class="nr sel rel">252000<span class="m pin">3</span></td><td class="nr sel rel">-168000<span class="m pin">4</span></td></tr><tr><td class="rn">15</td><td>Gastos fijos (B7)</td><td class="nr">RD$ 990,000.00</td><td></td><td></td></tr>
+          </table>
+        </div>
+        <div class="warn" style="font-size:15px">⚠️ Paso 5 obligatorio: si no devuelve <code>B6</code> a RD$ 1,400.00, la siguiente prueba saldrá mal.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="3" data-ok="1" data-l="PRÁCTICA GUIADA 3 · PASO 3 DE 5 · COMPRUEBE.">
+    <div class="eyebrow"><span class="tag ok">Paso 3 de 5</span>Compruebe.</div>
+    <h2>Costo variable por servicio: la ganancia baja RD$ 168,000.00.</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div class="col">
+        <div class="okbox pop"><span class="t"><i>✓</i>Va bien si…</span>
+          <p><code>F14</code> = <b>252000</b> y <code>G14</code> = <b style="color:var(--neg)">-168000</b>.</p>
+          <p><code>B6</code> volvió a <b>RD$ 1,400.00</b> y <code>B13</code> dice <b>RD$ 420,000.00</b>.</p></div>
+        <div class="tip"><b>¿Por qué RD$ 168,000.00?</b> RD$ 140.00 más de costo en cada uno de los 1,200 servicios. Un costo que sube <b>resta</b> ganancia: por eso el cambio es negativo.</div>
+      </div>
+      <div class="fixbox"><span class="t">✋ ¿Le salió distinto?</span><ul>
+        <li><span><b>B13 no da RD$ 252,000.00:</b> seguramente no devolvió la variable anterior. Revise que B4:B7 sean 1,200 · 2,500 · 1,400 · 900,000, salvo B6.</span></li>
+        <li><span><b>F14 cambia solo:</b> copió B13 en lugar de escribir el número. Bórrelo y escriba <code>252000</code>.</span></li>
+        <li><span><b>G14 muestra la fórmula como texto:</b> le faltó el signo <code>=</code> al inicio.</span></li>
+        <li><span><b>Ve 252000 sin RD$ ni comas:</b> está bien; es solo el formato de la celda.</span></li>
+      </ul></div>
+    </div>
+  </div>
+  <div class="slide" data-t="4" data-l="PRÁCTICA GUIADA 3 · PASO 4 DE 5 · HAGA ESTO.">
+    <div class="eyebrow"><span class="tag">Paso 4 de 5</span>Haga esto.</div>
+    <h2>Última prueba: suba los gastos fijos un 10 %.</h2>
+    <div class="ciclo"><span class="on">① Cambie</span><i>→</i><span class="on">② Anote</span><i>→</i><span class="on">③ Devuelva</span></div>
+    <div class="cols" style="grid-template-columns:480px 1fr">
+      <ol class="do" style="gap:11px">
+        <li><span class="m">1</span><span>En <code>B7</code> escriba <code>990000</code> y pulse Enter.</span></li>
+        <li><span class="m">2</span><span>Mire <code>B13</code>: ahora dice <b>RD$ 330,000.00</b>.</span></li>
+        <li><span class="m">3</span><span>En <code>F15</code> <b>escriba</b> <code>330000</code>.<span class="h">No copie B13: se llevaría la fórmula y el número cambiaría.</span></span></li>
+        <li><span class="m">4</span><span>En <code>G15</code> escriba <code>=F15-420000</code>. Debe dar <b>-90000</b>.</span></li>
+        <li><span class="m">5</span><span>Devuelva <code>B7</code> a <code>900000</code>. B13 vuelve a RD$ 420,000.00.</span></li>
+      </ol>
+      <div class="col">
+        <div class="xl rel" style="width:100%">
+          <table>
+            <tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rn">7</td><td>Gastos fijos mensuales</td><td class="y sel rel">RD$ 990,000.00<span class="m pin">1</span></td></tr>
+            <tr><td class="rn">13</td><td><b>Resultado (ganancia o pérdida)</b></td><td class="g rel"><b>RD$ 330,000.00</b><span class="m pin">2</span></td></tr>
+          </table>
+        </div>
+        <div class="xl" style="width:100%;font-size:12.5px">
+          <table>
+            <tr><th></th><th>D</th><th>E</th><th>F</th><th>G</th></tr>
+            <tr><td class="rn">11</td><td class="hd">Variable</td><td class="hd">Valor con +10 %</td><td class="hd">Resultado obtenido</td><td class="hd">Cambio vs. RD$ 420,000</td></tr>
+            <tr><td class="rn">12</td><td>Servicios (B4)</td><td class="nr">1,320</td><td class="nr">552000</td><td class="nr">132000</td></tr><tr><td class="rn">13</td><td>Tarifa promedio (B5)</td><td class="nr">RD$ 2,750.00</td><td class="nr">720000</td><td class="nr">300000</td></tr><tr><td class="rn">14</td><td>Costo variable (B6)</td><td class="nr">RD$ 1,540.00</td><td class="nr">252000</td><td class="nr neg">-168000</td></tr><tr><td class="rn">15</td><td>Gastos fijos (B7)</td><td class="nr">RD$ 990,000.00</td><td class="nr sel rel">330000<span class="m pin">3</span></td><td class="nr sel rel">-90000<span class="m pin">4</span></td></tr>
+          </table>
+        </div>
+        <div class="warn" style="font-size:15px">⚠️ Paso 5 obligatorio: si no devuelve <code>B7</code> a RD$ 900,000.00, la siguiente prueba saldrá mal.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="4" data-ok="1" data-l="PRÁCTICA GUIADA 3 · PASO 4 DE 5 · COMPRUEBE.">
+    <div class="eyebrow"><span class="tag ok">Paso 4 de 5</span>Compruebe.</div>
+    <h2>Gastos fijos mensuales: la ganancia baja RD$ 90,000.00.</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div class="col">
+        <div class="okbox pop"><span class="t"><i>✓</i>Va bien si…</span>
+          <p><code>F15</code> = <b>330000</b> y <code>G15</code> = <b style="color:var(--neg)">-90000</b>.</p>
+          <p><code>B7</code> volvió a <b>RD$ 900,000.00</b> y <code>B13</code> dice <b>RD$ 420,000.00</b>.</p></div>
+        <div class="tip"><b>¿Por qué RD$ 90,000.00?</b> RD$ 90,000.00 más de gastos fijos, una sola vez al mes. Un costo que sube <b>resta</b> ganancia: por eso el cambio es negativo.</div>
+      </div>
+      <div class="fixbox"><span class="t">✋ ¿Le salió distinto?</span><ul>
+        <li><span><b>B13 no da RD$ 330,000.00:</b> seguramente no devolvió la variable anterior. Revise que B4:B7 sean 1,200 · 2,500 · 1,400 · 900,000, salvo B7.</span></li>
+        <li><span><b>F15 cambia solo:</b> copió B13 en lugar de escribir el número. Bórrelo y escriba <code>330000</code>.</span></li>
+        <li><span><b>G15 muestra la fórmula como texto:</b> le faltó el signo <code>=</code> al inicio.</span></li>
+        <li><span><b>Ve 330000 sin RD$ ni comas:</b> está bien; es solo el formato de la celda.</span></li>
+      </ul></div>
+    </div>
+  </div>
+  <!-- PASO 5 -->
+  <div class="slide" data-t="5" data-l="PRÁCTICA GUIADA 3 · PASO 5 DE 5 · HAGA ESTO.">
+    <div class="eyebrow"><span class="tag">Paso 5 de 5</span>Haga esto.</div>
+    <h2>Ordene las variables y escriba su recomendación.</h2>
+    <div class="why"><b>Para qué</b><span>Convertir los números de las tres prácticas en una decisión para la administración.</span></div>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div class="col">
+        <ol class="do" style="gap:10px">
+          <li><span class="m">1</span><span>Mire la columna <code>G12:G15</code> y ordene las variables de mayor a menor cambio, <b>sin importar el signo</b>.</span></li>
+          <li><span class="m">2</span><span>Haga clic en <code>A18</code> (cuadro de recomendación) y escriba 2 o 3 líneas.</span></li>
+          <li><span class="m">3</span><span>Use números de sus tres prácticas: escenarios, punto de equilibrio y sensibilidad.</span></li>
+        </ol>
+        <div class="tip">💡 Para escribir varias líneas dentro de la misma celda, pulse <b>Alt + Enter</b>.</div>
+      </div>
+      <div class="col">
+        <span class="cap">Su recomendación debe responder</span>
+        <table class="vals" style="font-size:15px">
+          <tr><th>Pregunta</th><th style="text-align:left">Cómo empezar</th></tr>
+          <tr><td>¿Qué riesgo hay?</td><td style="text-align:left">«En el escenario … el centro …»</td></tr>
+          <tr><td>¿Cuál es el mínimo?</td><td style="text-align:left">«Para no perder necesita …»</td></tr>
+          <tr><td>¿Qué propone?</td><td style="text-align:left">«Como la variable que más pesa es …, se recomienda …»</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="5" data-ok="1" data-l="PRÁCTICA GUIADA 3 · PASO 5 DE 5 · COMPRUEBE.">
+    <div class="eyebrow"><span class="tag ok">Paso 5 de 5</span>Compruebe.</div>
+    <h2>La tarifa es la variable que más pesa.</h2>
+    <div class="cols" style="grid-template-columns:480px 1fr;align-items:start">
+      <ol class="rank pop">
+        <li><b class="n">1</b><span>Tarifa promedio</span><span style="color:var(--pos)">+RD$ 300,000.00</span></li>
+        <li><b class="n">2</b><span>Costo variable</span><span style="color:var(--neg)">-RD$ 168,000.00</span></li>
+        <li><b class="n">3</b><span>Servicios al mes</span><span style="color:var(--pos)">+RD$ 132,000.00</span></li>
+        <li><b class="n">4</b><span>Gastos fijos</span><span style="color:var(--neg)">-RD$ 90,000.00</span></li>
+      </ol>
+      <div class="col">
+        <span class="cap">Ejemplo de recomendación (escriba la suya con sus palabras)</span>
+        <div class="letter">El escenario <mark>Conservador</mark> es el de mayor riesgo: el centro perdería <mark>RD$ 50,000.00</mark> al mes. Para no perder necesita al menos <mark>819 servicios</mark>. Como la <mark>tarifa</mark> es la variable que más pesa (+RD$ 300,000.00 con un 10 %), se recomienda revisar las tarifas con las ARS y vigilar el costo por servicio.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cierre -->
+  <div class="slide final" data-t="6" data-ok="2" data-l="PRÁCTICA GUIADA 3 · ANTES DE TERMINAR.">
+    <div class="eyebrow"><span class="tag go">¡Completó las tres prácticas!</span></div>
+    <h2>Su modelo financiero está terminado.</h2>
+    <div class="done3"><span>✓ Práctica 1 · Escenarios</span><span>✓ Práctica 2 · Buscar objetivo</span><span>✓ Práctica 3 · Sensibilidad</span></div>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <ul class="chk">
+        <li><span>Tres escenarios y la hoja «Resumen del escenario».</span></li>
+        <li><span>El punto de equilibrio en F16 = 819.</span></li>
+        <li><span>La tabla F12:G15 completa: 552000, 720000, 252000 y 330000.</span></li>
+        <li><span>Su recomendación escrita en A18.</span></li>
+        <li><span>El modelo intacto: B13 = RD$ 420,000.00.</span></li>
+      </ul>
+      <div class="save">
+        <b style="font-size:20px">Guarde los cambios.</b>
+        <span>Vaya a <span class="path"><span>Archivo</span><i>›</i><span>Guardar</span></span>. El archivo final se llama:</span>
+        <code>Modulo5_Apellido_Nombre.xlsx</code>
+        <span style="color:#cfe3e7">Con estas tres herramientas usted puede responder «¿qué pasaría si…?» con números, no con suposiciones.</span>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  <div class="bottom">
+    <span>Jarlin Figueroa, MA</span>
+    <div class="navb">
+      <button class="btn" id="snd" title="Sonido (M)">🔊 Sonido</button>
+      <button class="btn" id="fs" title="Pantalla completa (F)">Pantalla completa</button>
+      <button class="btn" id="prev">← Anterior</button>
+      <span id="count" style="min-width:70px;text-align:center"></span>
+      <button class="btn primary" id="next">Siguiente →</button>
+    </div>
+  </div>
+</div>
+<script>
+const wrap=document.getElementById("slides"), els=[...wrap.querySelectorAll(":scope > .slide")];
+const SECC=["Introducción","Paso 1","Paso 2","Paso 3","Paso 4","Paso 5","Cierre"];
+const INI=SECC.map((_,i)=>els.findIndex(e=>+e.dataset.t===i));
+const dots=document.getElementById("dots");
+dots.innerHTML=SECC.map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
+dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.t]));
+
+/* Sonido: transición al cambiar de lámina y campanita en las láminas «Compruebe» */
+const SND={on:true,ctx:null,ready:false}; try{ SND.on=localStorage.getItem("m5sonido")!=="0"; }catch(e){}
+function ctx(){ const A=window.AudioContext||window.webkitAudioContext; if(!A) return null; const c=SND.ctx||(SND.ctx=new A()); if(c.state==="suspended") c.resume(); return c; }
+function tono(c,f,t0,dur,vol,tipo){ const o=c.createOscillator(), g=c.createGain(); o.type=tipo||"sine"; o.frequency.value=f; g.gain.setValueAtTime(.0001,t0); g.gain.exponentialRampToValueAtTime(vol,t0+.015); g.gain.exponentialRampToValueAtTime(.0001,t0+dur); o.connect(g); g.connect(c.destination); o.start(t0); o.stop(t0+dur+.02); }
+function sonar(dir){ if(!SND.on||!SND.ready) return; try{ const c=ctx(); if(!c) return;
+  const t=c.currentTime+.01, len=.22, b=c.createBuffer(1,Math.floor(c.sampleRate*len),c.sampleRate), d=b.getChannelData(0); for(let k=0;k<d.length;k++) d[k]=(Math.random()*2-1)*(1-k/d.length);
+  const s=c.createBufferSource(); s.buffer=b; const f=c.createBiquadFilter(); f.type="bandpass"; f.Q.value=1.4; f.frequency.setValueAtTime(dir>0?500:2600,t); f.frequency.exponentialRampToValueAtTime(dir>0?2600:500,t+len);
+  const g=c.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.2,t+.05); g.gain.exponentialRampToValueAtTime(.0001,t+len); s.connect(f); f.connect(g); g.connect(c.destination); s.start(t); s.stop(t+len);
+  tono(c,dir>0?880:587,t+.06,.25,.06); }catch(e){} }
+function exito(nivel){ if(!SND.on||!SND.ready) return; try{ const c=ctx(); if(!c) return; const t=c.currentTime+.18;
+  const notas=nivel>1?[523.25,659.25,783.99,1046.5]:[659.25,987.77]; notas.forEach((f,i)=>tono(c,f,t+i*.11,.45,.07,"triangle")); }catch(e){} }
+function clic(){ if(!SND.on) return; try{ const c=ctx(); if(!c) return; const t=c.currentTime+.005; tono(c,1320,t,.06,.05,"square"); tono(c,660,t+.05,.12,.05); }catch(e){} }
+const pintarSnd=()=>{ document.getElementById("snd").textContent=SND.on?"🔊 Sonido":"🔇 Sin sonido"; };
+document.getElementById("snd").onclick=e=>{ SND.on=!SND.on; try{ localStorage.setItem("m5sonido",SND.on?"1":"0"); }catch(_){} pintarSnd(); e.currentTarget.blur(); }; pintarSnd();
+
+let cur=0;
+function go(i){ const prev=cur; cur=Math.max(0,Math.min(els.length-1,i));
+  if(cur!==prev){ sonar(cur>prev?1:-1); if(cur>prev && els[cur].dataset.ok) exito(+els[cur].dataset.ok); }
+  els.forEach((e,j)=>e.classList.toggle("on",j===cur)); const tp=+els[cur].dataset.t;
+  dots.querySelectorAll("button").forEach((b,j)=>{ b.classList.toggle("cur",j===tp); b.classList.toggle("done",tp>j); });
+  document.getElementById("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
+  document.getElementById("topL").textContent=els[cur].dataset.l;
+  document.getElementById("prev").disabled=cur===0; document.getElementById("next").disabled=cur===els.length-1;
+  history.replaceState(null,"","#"+(cur+1)); }
+document.getElementById("prev").onclick=()=>go(cur-1); document.getElementById("next").onclick=()=>go(cur+1);
+document.getElementById("fs").onclick=e=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(_){} e.currentTarget.blur(); };
+document.addEventListener("keydown",e=>{ if(e.target.closest&&e.target.closest("#simList, input, textarea")) return;
+  if(["ArrowRight","PageDown"].includes(e.key)||e.key===" "){e.preventDefault();go(cur+1);} else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==="Home") go(0); else if(e.key==="End") go(els.length-1); else if(e.key==="f"||e.key==="F") document.getElementById("fs").click(); else if(e.key==="m"||e.key==="M") document.getElementById("snd").click(); });
+
+/* Mini laboratorio de sensibilidad */
+(function(){
+  const V=[{s:1320,t:2500,c:1400,f:900000},{s:1200,t:2750,c:1400,f:900000},{s:1200,t:2500,c:1540,f:900000},{s:1200,t:2500,c:1400,f:990000}];
+  const rd=v=>(v<0?"-":"")+"RD$ "+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+  const MAX=300000, btns=[...document.querySelectorAll("#labBtns button")], rows=[...document.querySelectorAll("#labTor .r")];
+  btns.forEach((b,i)=>b.onclick=()=>{ const x=V[i], r=x.s*(x.t-x.c)-x.f, d=r-420000; clic();
+    btns.forEach((o,j)=>o.classList.toggle("on",j===i));
+    const R=document.getElementById("labR"), C=document.getElementById("labC");
+    R.textContent=rd(r); C.textContent=(d>0?"+":"")+rd(d); C.style.color=d>0?"var(--pos)":"var(--neg)";
+    const bar=rows[i].querySelector("i"), em=rows[i].querySelector("em"), w=Math.abs(d)/MAX*50;
+    bar.className=d>0?"p":"n"; bar.style.width=w+"%"; bar.style.left=d>0?"50%":(50-w)+"%";
+    em.textContent=(d>0?"+":"")+rd(d); em.style.color=d>0?"var(--pos)":"var(--neg)";
+    if(d>0){ em.style.left=(50+w+1)+"%"; em.style.right="auto"; } else { em.style.left="auto"; em.style.right=(50+w+1)+"%"; }
+    document.getElementById("labSay").innerHTML=["Más servicios: la ganancia sube.","Mayor tarifa: la ganancia sube mucho, porque afecta los 1,200 servicios.","Mayor costo por servicio: la ganancia baja.","Más gastos fijos: la ganancia baja, pero menos que con las otras."][i]+" Pruebe las otras variables para compararlas.";
+  });
+})();
+
+function fit(){ const s=Math.min((innerWidth-16)/1280,(innerHeight-16)/720); document.getElementById("stage").style.transform=`translate(-50%,-50%) scale(${s})`; }
+addEventListener("resize",fit); fit(); go((parseInt(location.hash.slice(1),10)||1)-1); SND.ready=true;
+</script>
+</body>
+</html>
