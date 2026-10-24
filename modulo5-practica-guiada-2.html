@@ -234,45 +234,6 @@ table.vals tr.cur td{background:var(--acc-soft)}
 </style>
 </head>
 <body>
-<!-- GATE-INICIO · Acceso con clave (temporal; se quitará cuando el facilitador lo indique) -->
-<style>
-#gate{position:fixed;inset:0;z-index:9999;background:#e7e3da;display:flex;align-items:center;justify-content:center;padding:16px;font-family:"IBM Plex Sans","Segoe UI",Arial,sans-serif}
-#gate[hidden]{display:none}
-#gate form{background:#f7f5f0;border-top:4px solid #0f4c5c;box-shadow:0 10px 40px rgba(15,76,92,.18);padding:34px 36px;width:min(420px,100%);display:flex;flex-direction:column;gap:14px;box-sizing:border-box}
-#gate .mod{font-family:"IBM Plex Mono",Consolas,monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#b4741c}
-#gate h1{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:32px;line-height:1.1;margin:0;color:#0f4c5c}
-#gate p{margin:0;color:#5e6b6f;font-size:15px;line-height:1.45}
-#gate input{font-family:"IBM Plex Mono",Consolas,monospace;font-size:20px;padding:10px 12px;border:1px solid #cfc8ba;background:#fff;color:#0f4c5c;letter-spacing:.3em}
-#gate .err{color:#a3364f;font-size:14px;min-height:1.2em}
-#gate button{font-family:"IBM Plex Mono",Consolas,monospace;font-size:14px;padding:11px;border:0;background:#0f4c5c;color:#fff;cursor:pointer}
-</style>
-<div id="gate" hidden>
-  <form id="gateForm" autocomplete="off">
-    <div class="mod">Módulo 5.</div>
-    <h1>Modelado financiero y análisis de escenarios.</h1>
-    <p>Este contenido está protegido. Escriba la clave de acceso para continuar.</p>
-    <input id="gateIn" type="password" inputmode="numeric" maxlength="12" aria-label="Clave de acceso" placeholder="Clave">
-    <div class="err" id="gateErr" role="alert"></div>
-    <button type="submit">Entrar</button>
-  </form>
-</div>
-<script>
-(function(){
-  var CLAVE="1022", KEY="m5-acceso", gate=document.getElementById("gate"), locked;
-  function valido(){ try{ var t=+localStorage.getItem(KEY); return t && Date.now()-t < 12*3600e3; }catch(e){ return false; } }
-  locked=!valido();
-  if(locked){ gate.hidden=false; setTimeout(function(){ document.getElementById("gateIn").focus(); },50); }
-  // Mientras está bloqueado, las teclas no mueven la presentación
-  document.addEventListener("keydown",function(e){ if(locked) e.stopImmediatePropagation(); },true);
-  document.getElementById("gateForm").addEventListener("submit",function(e){
-    e.preventDefault();
-    var inp=document.getElementById("gateIn");
-    if(inp.value.trim()===CLAVE){ try{ localStorage.setItem(KEY,String(Date.now())); }catch(err){} locked=false; gate.hidden=true; }
-    else { document.getElementById("gateErr").textContent="Clave incorrecta. Inténtelo de nuevo."; inp.select(); }
-  });
-})();
-</script>
-<!-- GATE-FIN -->
 <div id="stage">
   <div class="top"><span id="topL">MÓDULO 5 · PRÁCTICA GUIADA 2.</span><div class="dots" id="dots"></div></div>
   <div id="slides">
