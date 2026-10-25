@@ -7,9 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
 <style>
-/* Evaluación interactiva de los 7 conceptos del Módulo 5.
+/* Evaluación interactiva de la teoría del Módulo 5 (documento de estudio, 7 conceptos).
    20 preguntas al azar de un banco de 60 · 0.5 puntos cada una · 1 minuto por pregunta.
-   Cada intento nuevo usa preguntas que no han salido en este navegador; al agotarse el banco, empieza otra vuelta. */
+   Reglas: si sale de la página (minimiza, cambia de pestaña o de ventana) pierde la pregunta y pasa a la siguiente;
+   copiar, cortar, pegar y el menú contextual están bloqueados. Las salidas quedan registradas en la nota. */
 :root{
   --bg:#e7e3da; --paper:#f7f5f0; --card:#ffffff; --ink:#0f4c5c; --ink-d:#0a3843; --text:#1d2b30; --muted:#5e6b6f; --line:#e3ded3; --grid:#cfc8ba;
   --acc:#e09f3e; --acc-d:#a8691a; --acc-soft:#fbf0dd; --pos:#23826f; --pos-soft:#e2f3f0; --neg:#c8553d; --neg-soft:#f8e4df; --ink-soft:#e3eef0;
@@ -18,9 +19,10 @@
 }
 *{box-sizing:border-box}
 html,body{min-height:100%}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.5}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.5;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input{-webkit-user-select:text;user-select:text}
 button{font-family:inherit}
-button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+button:focus-visible,input:focus-visible,label:focus-within{outline:3px solid var(--acc);outline-offset:2px}
 .wrap{max-width:900px;margin:0 auto;padding:20px 16px 36px}
 .sheet{background:var(--paper);border-top:4px solid var(--ink);box-shadow:0 10px 40px rgba(15,76,92,.16);position:relative;overflow:hidden}
 .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 18px;font-family:var(--mono);font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--line)}
@@ -30,13 +32,15 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(-
 @keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 h1,h2{font-family:var(--serif);font-weight:600;color:var(--ink);margin:0;line-height:1.1;text-wrap:balance}
 .cap{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc-d);font-weight:700}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;cursor:pointer;font-weight:700;font-size:18px;padding:14px 26px;text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;cursor:pointer;font-weight:700;font-size:18px;padding:14px 26px;text-decoration:none;transition:transform .15s,background-color .15s}
+.btn:hover:not(:disabled){transform:translateY(-2px)}
 .btn.main{background:var(--ink);color:#fff}
 .btn.main:hover{background:var(--ink-d)}
 .btn.alt{background:var(--acc);color:#2a1a00}
 .btn.alt:hover{background:#ebb15a}
-.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--grid)}
 .btn:disabled{opacity:.45;cursor:default}
+.btn.glow:not(:disabled){animation:glow 2s ease-in-out infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(224,159,62,.6)}50%{box-shadow:0 0 0 12px rgba(224,159,62,0)}}
 
 /* ---------- Portada ---------- */
 .hero{background:var(--ink);color:#fff;margin:-30px -34px 24px;padding:36px 34px 30px;position:relative;overflow:hidden}
@@ -46,67 +50,113 @@ h1,h2{font-family:var(--serif);font-weight:600;color:var(--ink);margin:0;line-he
 .chipsfly{position:absolute;inset:0;pointer-events:none}
 .chipsfly span{position:absolute;font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.1);padding:3px 9px;white-space:nowrap;animation:fly linear infinite}
 @keyframes fly{from{transform:translateY(40px);opacity:0}15%{opacity:1}85%{opacity:1}to{transform:translateY(-260px);opacity:0}}
-.rules{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 22px}
+.rules{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 20px}
 .rule{background:var(--card);border:1px solid var(--line);padding:12px;text-align:center;animation:pop .5s ease both}
 .rule:nth-child(2){animation-delay:.1s}.rule:nth-child(3){animation-delay:.2s}.rule:nth-child(4){animation-delay:.3s}
 @keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
 .rule b{display:block;font-family:var(--serif);font-size:30px;color:var(--ink);line-height:1.1}
 .rule span{font-size:13.5px;color:var(--muted)}
-.concepts{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px}
+.concepts{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px}
 .concepts span{background:var(--ink-soft);color:var(--ink);font-size:13.5px;padding:3px 11px;border-radius:14px}
+.honor{background:var(--neg-soft);border-left:5px solid var(--neg);padding:14px 18px;margin:0 0 18px}
+.honor b.h{display:block;color:var(--neg);font-size:17px;margin:0 0 6px}
+.honor ul{margin:0;padding-left:20px;font-size:15px}
+.honor li{margin:0 0 4px}
 .namebox{background:var(--card);border:1px solid var(--line);padding:18px 20px;display:flex;flex-direction:column;gap:10px}
-.namebox label{font-weight:600;color:var(--ink)}
-.namebox input{font:inherit;font-size:18px;padding:12px 14px;border:2px solid var(--grid);background:#fff;width:100%}
-.namebox input:focus{border-color:var(--ink);outline:none}
+.namebox label.l{font-weight:600;color:var(--ink)}
+.namebox input[type=text]{font:inherit;font-size:18px;padding:12px 14px;border:2px solid var(--grid);background:#fff;width:100%}
+.namebox input[type=text]:focus{border-color:var(--ink);outline:none}
+.agree{display:flex;gap:10px;align-items:flex-start;font-size:15px;cursor:pointer}
+.agree input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--ink);flex:none}
 .err{color:var(--neg);font-size:14px;min-height:20px;margin:0}
-.hint{font-size:13.5px;color:var(--muted);margin:0}
+
+/* ---------- Cuenta regresiva ---------- */
+.count{position:fixed;inset:0;z-index:60;background:rgba(10,56,67,.94);display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:#fff}
+.count.on{display:flex}
+.count b{font-family:var(--serif);font-size:min(34vw,200px);line-height:1;animation:zoom .9s ease both}
+.count span{font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#f3c98a}
+@keyframes zoom{0%{transform:scale(2.2);opacity:0}30%{transform:scale(1);opacity:1}100%{transform:scale(.9);opacity:.9}}
 
 /* ---------- Pregunta ---------- */
-.qtop{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 10px}
+.qtop{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px}
 .qnum{font-family:var(--mono);font-size:14px;color:var(--muted)}
-.qnum b{color:var(--ink);font-size:18px}
-.score{font-family:var(--mono);font-size:14px;background:var(--ink-soft);color:var(--ink);padding:4px 10px;font-weight:700}
-.prog{height:6px;background:var(--line);margin:0 0 16px}
-.prog i{display:block;height:100%;background:var(--acc);width:0;transition:width .4s ease}
-.timer{display:flex;align-items:center;gap:12px;margin:0 0 18px}
-.timer .t{font-family:var(--mono);font-weight:700;font-size:20px;color:var(--ink);min-width:62px}
-.timer .tb{flex:1;height:10px;background:var(--line);overflow:hidden}
-.timer .tb i{display:block;height:100%;background:var(--pos);width:100%;transition:width 1s linear,background-color .3s}
-.timer.warn .t{color:var(--neg);animation:blink 1s steps(2) infinite}
-.timer.warn .tb i{background:var(--neg)}
-@keyframes blink{50%{opacity:.35}}
-.tag{display:inline-block;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#fff;background:var(--ink);padding:3px 9px;margin:0 0 10px}
+.qnum b{color:var(--ink);font-size:20px}
+.right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.score{font-family:var(--mono);font-size:14px;background:var(--ink-soft);color:var(--ink);padding:5px 10px;font-weight:700;position:relative}
+.streak{font-family:var(--mono);font-size:14px;background:var(--acc);color:#2a1a00;padding:5px 10px;font-weight:700;display:none}
+.streak.on{display:inline-block;animation:pop .4s ease}
+.float{position:absolute;right:0;top:-6px;font-weight:700;color:var(--pos);font-size:18px;animation:up 1s ease forwards;pointer-events:none}
+@keyframes up{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-34px)}}
+.dots{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;margin:0 0 18px}
+.dots i{height:8px;background:var(--line);transition:background-color .3s}
+.dots i.cur{background:var(--acc);animation:blink 1.2s ease-in-out infinite}
+.dots i.ok{background:var(--pos)}
+.dots i.bad{background:var(--neg)}
+.qhead{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:start}
+.tag{display:inline-block;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#fff;background:var(--ink);padding:3px 9px;margin:0 6px 10px 0}
+.tag.kind{background:var(--acc);color:#2a1a00}
 .qtext{font-family:var(--serif);font-weight:600;font-size:clamp(21px,3.4vw,27px);color:var(--ink);line-height:1.25;margin:0 0 18px}
+.ring{position:relative;width:78px;height:78px;flex:none}
+.ring svg{width:78px;height:78px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:7}
+.ring .bg{stroke:var(--line)}
+.ring .fg{stroke:var(--pos);stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .3s}
+.ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:20px;color:var(--ink)}
+.ring.warn .fg{stroke:var(--neg)}
+.ring.warn b{color:var(--neg);animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.35}}
+.card{background:var(--card);border:1px solid var(--line);padding:22px 22px 20px;animation:slide .45s cubic-bezier(.2,.9,.3,1.1)}
+@keyframes slide{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+.card.shake{animation:shake .45s ease}
+.card.good{box-shadow:0 0 0 3px var(--pos),0 0 28px rgba(35,130,111,.35)}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 .opts{display:grid;gap:10px}
-.opt{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:center;text-align:left;background:var(--card);border:2px solid var(--line);padding:12px 14px;font-size:16.5px;color:var(--text);cursor:pointer;transition:border-color .15s,transform .15s,background-color .2s}
-.opt:hover:not(:disabled){border-color:var(--ink);transform:translateX(3px)}
+.opt{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:center;text-align:left;background:var(--paper);border:2px solid var(--line);padding:12px 14px;font-size:16.5px;color:var(--text);cursor:pointer;transition:border-color .15s,transform .15s,background-color .2s;opacity:0;animation:optin .35s ease forwards}
+.opt:nth-child(1){animation-delay:.15s}.opt:nth-child(2){animation-delay:.25s}.opt:nth-child(3){animation-delay:.35s}.opt:nth-child(4){animation-delay:.45s}
+@keyframes optin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.opt:hover:not(:disabled){border-color:var(--ink);transform:translateX(4px);background:#fff}
 .opt .l{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--ink-soft);color:var(--ink);font-family:var(--mono);font-weight:700}
 .opt:disabled{cursor:default}
-.opt.ok{border-color:var(--pos);background:var(--pos-soft);animation:okp .5s ease}
+.opt.ok{border-color:var(--pos);background:var(--pos-soft)}
 .opt.ok .l{background:var(--pos);color:#fff}
-.opt.bad{border-color:var(--neg);background:var(--neg-soft);animation:shake .4s ease}
+.opt.bad{border-color:var(--neg);background:var(--neg-soft)}
 .opt.bad .l{background:var(--neg);color:#fff}
-.opt.dim{opacity:.55}
-@keyframes okp{40%{transform:scale(1.02)}}
-@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.opt.dim{opacity:.5!important}
 .fb{display:none;margin:16px 0 0;padding:14px 16px;border-left:5px solid var(--pos);background:var(--pos-soft);font-size:15.5px}
 .fb.on{display:block;animation:in .35s ease}
 .fb.bad{border-color:var(--neg);background:var(--neg-soft)}
 .fb b.h{display:block;font-size:17px;margin:0 0 4px}
 .next{margin:16px 0 0;display:none;justify-content:flex-end}
 .next.on{display:flex}
+.flash{position:fixed;inset:0;pointer-events:none;z-index:40;opacity:0}
+.flash.ok{background:radial-gradient(circle,rgba(35,130,111,.0) 40%,rgba(35,130,111,.35));animation:fl .6s ease}
+.flash.bad{background:radial-gradient(circle,rgba(200,85,61,.0) 40%,rgba(200,85,61,.4));animation:fl .6s ease}
+@keyframes fl{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
+
+/* ---------- Aviso de salida y avisos breves ---------- */
+.modal{position:fixed;inset:0;z-index:70;background:rgba(29,43,48,.75);display:none;align-items:center;justify-content:center;padding:16px}
+.modal.on{display:flex}
+.modal .box{background:var(--card);max-width:460px;width:100%;border-top:6px solid var(--neg);padding:24px;text-align:center;animation:pop .35s ease}
+.modal .box b.h{display:block;font-family:var(--serif);font-size:26px;color:var(--neg);margin:6px 0 8px}
+.modal .box p{margin:0 0 16px;font-size:16px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);z-index:80;background:var(--neg);color:#fff;font-weight:700;padding:12px 20px;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .3s ease;max-width:92vw;text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
 
 /* ---------- Resultado ---------- */
 .result{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
-.certif{background:var(--ink);color:#fff;padding:24px 24px 20px;text-align:center;position:relative}
+.certif{background:var(--ink);color:#fff;padding:24px 24px 20px;text-align:center;position:relative;overflow:hidden}
+.certif::before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 0deg,transparent,rgba(224,159,62,.18),transparent 30%);animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.certif > *{position:relative}
 .certif .cap{color:#f3c98a}
 .certif .who{font-family:var(--serif);font-size:24px;font-weight:600;margin:10px 0 2px;overflow-wrap:anywhere}
-.certif .meta{font-family:var(--mono);font-size:12.5px;color:#cfe3e7}
+.certif .meta{font-family:var(--mono);font-size:12.5px;color:#cfe3e7;margin:0}
 .grade{font-family:var(--serif);font-weight:700;font-size:88px;line-height:1;margin:14px 0 2px;color:#fff}
 .grade small{font-size:30px;color:#cfe3e7}
 .verdict{display:inline-block;margin:8px 0 10px;padding:4px 14px;font-weight:700;background:var(--acc);color:#2a1a00}
-.stats{display:flex;justify-content:center;gap:18px;font-size:14px;color:#d5e6ea;flex-wrap:wrap}
+.stats{display:flex;justify-content:center;gap:6px 16px;font-size:14px;color:#d5e6ea;flex-wrap:wrap}
 .stats b{color:#fff}
+.stats .x b{color:#ffb4a3}
 .side{display:flex;flex-direction:column;gap:14px}
 .send{background:var(--acc-soft);border-left:5px solid var(--acc);padding:14px 16px;font-size:15px}
 .send b.h{display:block;color:var(--ink);font-size:17px;margin:0 0 4px}
@@ -129,9 +179,13 @@ footer{text-align:center;font-family:var(--mono);font-size:12.5px;color:var(--mu
   .rules{grid-template-columns:repeat(2,1fr)}
   .result{grid-template-columns:1fr}
   .grade{font-size:72px}
+  .card{padding:16px 14px}
+  .ring,.ring svg{width:64px;height:64px}
+  .dots{gap:2px}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
+  .opt{opacity:1}
 }
 </style>
 </head>
@@ -144,9 +198,9 @@ footer{text-align:center;font-family:var(--mono);font-size:12.5px;color:var(--mu
     <section class="screen on" id="sIntro">
       <div class="hero">
         <div class="chipsfly" id="fly"></div>
-        <span class="cap">Evaluación interactiva · Módulo 5</span>
+        <span class="cap">Evaluación de la teoría · Módulo 5</span>
         <h1>¿Dominas los conceptos del modelado financiero?</h1>
-        <p>Responde 20 preguntas sobre los siete conceptos del módulo. Al final verás tu nota sobre 10 y enviarás la captura por Moodle.</p>
+        <p>20 preguntas sobre los siete conceptos del documento de estudio. Al final verás tu nota sobre 10 y enviarás la captura por Moodle.</p>
       </div>
       <div class="rules">
         <div class="rule"><b>20</b><span>preguntas al azar</span></div>
@@ -156,25 +210,40 @@ footer{text-align:center;font-family:var(--mono);font-size:12.5px;color:var(--mu
       </div>
       <p class="cap" style="margin:0 0 8px">Los siete conceptos</p>
       <div class="concepts" id="cList"></div>
+      <div class="honor">
+        <b class="h">⚠️ Reglas de la evaluación.</b>
+        <ul>
+          <li><b>No salgas de esta página.</b> Si minimizas, cambias de pestaña o abres otra ventana, <b>pierdes la pregunta</b> y pasas a la siguiente.</li>
+          <li><b>No se permite copiar ni pegar.</b> Está bloqueado en toda la evaluación.</li>
+          <li>Cada salida de la página <b>queda registrada</b> en tu nota final.</li>
+          <li>Si se acaba el minuto sin responder, la pregunta cuenta como incorrecta.</li>
+        </ul>
+      </div>
       <div class="namebox">
-        <label for="nm">Escribe tu nombre y apellido.</label>
-        <input id="nm" type="text" autocomplete="name" maxlength="60" placeholder="Ejemplo: María Pérez">
+        <label class="l" for="nm">Escribe tu nombre y apellido.</label>
+        <input id="nm" type="text" autocomplete="off" spellcheck="false" maxlength="60" placeholder="Ejemplo: María Pérez">
+        <label class="agree"><input type="checkbox" id="ok"><span>Leí las reglas y me comprometo a hacer la evaluación sin salir de la página y sin copiar ni pegar.</span></label>
         <p class="err" id="nmErr"></p>
-        <button class="btn main" id="go" type="button">▶ Comenzar la evaluación</button>
-        <p class="hint">Si se acaba el minuto sin responder, la pregunta cuenta como incorrecta. Puedes repetir la evaluación las veces que quieras: cada intento trae preguntas nuevas.</p>
+        <button class="btn main glow" id="go" type="button">▶ Comenzar la evaluación</button>
       </div>
     </section>
 
     <!-- Pregunta -->
     <section class="screen" id="sQ">
-      <div class="qtop"><span class="qnum">Pregunta <b id="qn">1</b> de 20</span><span class="score" id="pts">0.0 puntos</span></div>
-      <div class="prog"><i id="prog"></i></div>
-      <div class="timer" id="timer"><span class="t" id="tt">1:00</span><div class="tb"><i id="tb"></i></div></div>
-      <span class="tag" id="qc">Concepto</span>
-      <p class="qtext" id="qt"></p>
-      <div class="opts" id="opts"></div>
-      <div class="fb" id="fb"></div>
-      <div class="next" id="nx"><button class="btn main" id="nxb" type="button">Siguiente →</button></div>
+      <div class="qtop">
+        <span class="qnum">Pregunta <b id="qn">1</b> de 20</span>
+        <div class="right"><span class="streak" id="stk"></span><span class="score" id="pts">0 puntos</span></div>
+      </div>
+      <div class="dots" id="dots"></div>
+      <div class="card" id="card">
+        <div class="qhead">
+          <div><span class="tag" id="qc">Concepto</span><span class="tag kind" id="qk">Tipo</span><p class="qtext" id="qt"></p></div>
+          <div class="ring" id="ring"><svg viewBox="0 0 80 80"><circle class="bg" cx="40" cy="40" r="34"/><circle class="fg" id="rfg" cx="40" cy="40" r="34"/></svg><b id="tt">60</b></div>
+        </div>
+        <div class="opts" id="opts"></div>
+        <div class="fb" id="fb"></div>
+        <div class="next" id="nx"><button class="btn main" id="nxb" type="button">Siguiente →</button></div>
+      </div>
     </section>
 
     <!-- Resultado -->
@@ -186,10 +255,10 @@ footer{text-align:center;font-family:var(--mono);font-size:12.5px;color:var(--mu
           <p class="meta" id="rMeta"></p>
           <p class="grade"><span id="rGrade">0</span><small> / 10</small></p>
           <span class="verdict" id="rVerd"></span>
-          <div class="stats"><span>Correctas: <b id="rOk"></b></span><span>Incorrectas: <b id="rBad"></b></span><span>Sin responder: <b id="rTo"></b></span></div>
+          <div class="stats"><span>Correctas: <b id="rOk"></b></span><span>Incorrectas: <b id="rBad"></b></span><span>Sin responder: <b id="rTo"></b></span><span class="x">Salidas de la página: <b id="rEx"></b></span></div>
         </div>
         <div class="side">
-          <div class="send"><b class="h">📸 Envía tu captura.</b>Toma una captura de esta pantalla donde se vea tu <b>nombre y tu nota</b> y súbela a la tarea en Moodle. También puedes descargarla con el botón de abajo.<br><span style="font-size:13.5px;color:var(--muted)">En Windows: tecla Windows + Shift + S. En tablet o celular: botón de encendido + bajar volumen.</span></div>
+          <div class="send"><b class="h">📸 Envía tu captura.</b>Toma una captura de esta pantalla donde se vean tu <b>nombre y tu nota</b> y súbela a la tarea en Moodle. También puedes descargarla con el botón de abajo.<br><span style="font-size:13.5px;color:var(--muted)">En Windows: tecla Windows + Shift + S. En tablet o celular: botón de encendido + bajar volumen.</span></div>
           <div class="review" id="rRev"></div>
           <div class="acts">
             <button class="btn main" id="dl" type="button">⬇ Descargar captura con mi nota</button>
@@ -202,83 +271,90 @@ footer{text-align:center;font-family:var(--mono);font-size:12.5px;color:var(--mu
   </div>
 </div>
 <footer>Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</footer>
+
+<div class="count" id="count"><span>Prepárate</span><b id="cn">3</b></div>
+<div class="modal" id="away"><div class="box"><span style="font-size:42px">🚫</span><b class="h">Saliste de la página.</b><p id="awayTxt">Perdiste esta pregunta. Recuerda: durante la evaluación no puedes minimizar ni cambiar de pestaña.</p><button class="btn main" id="awayBtn" type="button">Continuar con la siguiente →</button></div></div>
+<div class="toast" id="toast"></div>
+<div class="flash" id="flash"></div>
 <canvas class="confetti" id="conf"></canvas>
 
 <script>
-/* ---------- Conceptos ---------- */
+/* ---------- Conceptos y tipos de pregunta ---------- */
 const C = ["Modelo financiero","Supuestos y resultados","Ingresos, costos y resultado","Escenarios","Administrador de escenarios","Buscar objetivo","Sensibilidad"];
+const K = { D:"Concepto", A:"Analogía", C:"Comparación", V:"Verdadero o falso", H:"Herramienta" };
 
-/* ---------- Banco de 60 preguntas ----------
-   [concepto, pregunta, respuesta correcta, [incorrectas], explicación]  */
+/* ---------- Banco de 60 preguntas (documento de estudio del Módulo 5) ----------
+   [concepto, tipo, pregunta, respuesta correcta, [incorrectas], explicación]
+   Regla de redacción: la respuesta correcta nunca es la opción más larga. */
 const V = "Verdadero", F = "Falso";
 const BANK = [
 // 0 · Modelo financiero
-[0,"¿Qué es un modelo financiero?","Una hoja de Excel que calcula un resultado a partir de supuestos y lo recalcula solo cuando estos cambian.",["Una tabla con los datos históricos del mes pasado.","Un gráfico que muestra las ventas del año.","Un informe escrito con la opinión de la gerencia."],"El modelo une datos de entrada (supuestos) con fórmulas que producen un resultado."],
-[0,"«Es como una receta: si cambias la cantidad de ingredientes, cambia el plato que sale.» ¿Qué concepto describe esta analogía?","Modelo financiero",["Escenarios","Buscar objetivo","Sensibilidad"],"Los ingredientes son los supuestos y el plato es el resultado del modelo."],
-[0,"En un modelo financiero, ¿qué pasa cuando cambias un supuesto?","El resultado se recalcula automáticamente.",["Se borran los resultados anteriores.","Hay que volver a escribir todas las fórmulas.","Nada: el resultado se actualiza a mano."],"Las fórmulas apuntan a las celdas de los supuestos, por eso el resultado cambia solo."],
-[0,"Verdadero o falso: «Un modelo financiero adivina con certeza lo que pasará el próximo mes».",F,[V],"El modelo no adivina el futuro: muestra qué pasaría si los supuestos se cumplen."],
-[0,"¿Cuál de estas fórmulas está bien hecha en un modelo financiero?","=B4*B5",["=1200*2500","=3000000","=B4*2500"],"La fórmula debe usar las celdas de los supuestos, no números escritos dentro."],
-[0,"¿Por qué no se deben escribir números dentro de las fórmulas de un modelo?","Porque si el supuesto cambia, la fórmula no se actualiza y da un resultado equivocado.",["Porque Excel no acepta números dentro de las fórmulas.","Porque hacen el archivo más pesado.","Porque cambian el formato de la celda."],"Es el error más común y el más difícil de ver: el modelo parece funcionar, pero no se actualiza."],
-[0,"La regla «un dato, un solo lugar» significa que…","cada supuesto se escribe una sola vez y las fórmulas lo usan desde su celda.",["cada hoja del libro tiene un solo dato.","solo se puede usar una fórmula por hoja.","todos los datos van en una sola columna."],"Así, al cambiar el dato en su celda, todo el modelo se actualiza."],
-[0,"¿Cómo conviene organizar un modelo financiero?","Separando supuestos, cálculos y resultados.",["Mezclando datos y fórmulas en la misma celda.","Poniendo solo los resultados, sin los supuestos.","Escribiendo todo en un único bloque sin títulos."],"Separar las partes permite que cualquiera cambie un supuesto y confíe en el resultado."],
+[0,"D","¿Qué es un modelo financiero?","Una hoja que calcula un resultado a partir de supuestos.",["Un registro histórico de lo que ocurrió en el mes anterior.","Un gráfico que resume las ventas y los gastos del año.","Un informe escrito con la opinión de la gerencia general."],"Calcula un resultado (por ejemplo, la ganancia del mes) a partir de supuestos, y se recalcula solo si estos cambian."],
+[0,"A","«Es como una receta: si cambias la cantidad de ingredientes, cambia el plato que sale.» ¿Qué concepto describe?","Modelo financiero",["Análisis de sensibilidad","Buscar objetivo","Administrador de escenarios"],"Los ingredientes son los supuestos y el plato es el resultado del modelo."],
+[0,"V","«Un modelo financiero adivina con certeza lo que pasará el próximo mes.»",F,[V],"El modelo no adivina el futuro: muestra qué pasaría si los supuestos se cumplen."],
+[0,"D","Según el material, ¿qué muestra un modelo financiero?","Qué pasaría si los supuestos se cumplen.",["Lo que pasará con total seguridad el mes próximo.","Los errores que se cometieron en meses anteriores.","El dinero que hay hoy en el banco."],"Un modelo no predice el futuro: muestra qué pasaría si…"],
+[0,"D","¿Cuándo sirve un modelo financiero, según el material?","Cuando cualquiera cambia un supuesto y confía en el resultado.",["Cuando solo su autor entiende cómo están hechas todas sus fórmulas.","Cuando tiene muchos colores y gráficos.","Cuando los resultados se escriben a mano para que coincidan bien."],"Un modelo sirve si cualquier persona puede cambiar un supuesto y confiar en el resultado."],
+[0,"D","¿Cuál es el error más común y más difícil de ver en un modelo?","Escribir números dentro de las fórmulas.",["Usar colores en las celdas.","Separar supuestos y resultados en hojas distintas.","Poner nombre y unidad a cada una de las celdas."],"El modelo parece funcionar, pero no se actualiza al cambiar el supuesto."],
+[0,"D","La regla «Un dato, un solo lugar» significa que…","cada supuesto se escribe una vez y las fórmulas lo usan.",["todos los datos van juntos en una sola columna de la hoja.","solo se permite escribir una fórmula en cada hoja del libro.","cada dato se copia en todas las hojas."],"Cada supuesto se escribe una vez; las fórmulas lo usan desde su celda."],
+[0,"D","¿Cuál de estas NO es una de las cuatro reglas para construir un buen modelo?","Escriba los resultados a mano.",["Separe supuestos, cálculos y resultados.","Un dato, un solo lugar.","Rotule cada celda con su nombre y unidad."],"Las reglas son: separe las partes, un dato en un solo lugar, nada de números dentro de las fórmulas, rotule y revise."],
 // 1 · Supuestos y resultados
-[1,"¿Qué es un supuesto?","Un valor de entrada que se puede cambiar, como los servicios o la tarifa.",["Una fórmula que calcula la ganancia.","El total de ingresos del mes.","El gráfico del resultado."],"Los supuestos son los datos que alimentan el modelo."],
-[1,"¿Qué es un resultado en un modelo financiero?","Un valor que se calcula con fórmulas a partir de los supuestos.",["Un dato que se escribe a mano.","Una suposición de la gerencia.","El nombre de la hoja de cálculo."],"Los resultados nunca se escriben a mano: los calculan las fórmulas."],
-[1,"En el modelo del Centro Médico Horizonte, ¿cuál de estos es un supuesto?","Tarifa promedio por servicio",["Resultado (ganancia o pérdida)","Margen sobre los ingresos","Ingresos"],"La tarifa es un valor de entrada que se puede cambiar."],
-[1,"En el modelo del centro, ¿cuál de estos es un resultado?","Margen sobre los ingresos",["Servicios al mes","Gastos fijos mensuales","Costo variable por servicio"],"El margen se calcula: resultado ÷ ingresos."],
-[1,"«En una calculadora, tú marcas los números y la pantalla muestra el total.» Los números que marcas representan…","los supuestos.",["los resultados.","los escenarios.","el punto de equilibrio."],"Tú pones los supuestos; la pantalla (las fórmulas) muestra el resultado."],
-[1,"En el archivo del curso, ¿qué indican las celdas amarillas?","Supuestos que se pueden cambiar.",["Resultados que se calculan solos.","Celdas con errores.","Celdas que nunca se deben tocar."],"Buena práctica: supuestos en amarillo y resultados en verde."],
-[1,"Verdadero o falso: «Los resultados se escriben a mano para que coincidan con el informe».",F,[V],"Los resultados siempre son fórmulas; escribirlos a mano rompe el modelo."],
-[1,"¿De dónde deben salir los supuestos de un modelo?","De fuentes que los respalden: datos históricos, contratos y opinión de expertos.",["Se inventan para que el resultado se vea bien.","Del resultado que se quiere obtener.","De cualquier página web, sin importar la fuente."],"Cada valor amarillo debe tener una fuente que lo respalde."],
-[1,"Completa la frase: «Un modelo es tan bueno como sus…»","supuestos.",["gráficos.","colores.","hojas."],"Si los supuestos están mal, el resultado también lo estará."],
+[1,"D","¿Qué son los supuestos?","Los valores que se pueden cambiar, como la tarifa.",["Las fórmulas que calculan la ganancia.","Los totales que aparecen siempre al final de la hoja.","Los gráficos que resumen el resultado del período."],"Los supuestos son los datos de entrada: servicios, tarifa, costos."],
+[1,"D","¿Qué son los resultados de un modelo?","Fórmulas que se calculan a partir de los supuestos.",["Datos que el analista escribe a mano en cada celda.","Suposiciones de la gerencia sobre lo que vendrá luego.","Notas que explican cada valor."],"Los resultados son fórmulas que nunca se escriben a mano."],
+[1,"C","¿Cuál es la diferencia entre un supuesto y un resultado?","El supuesto se cambia; el resultado se calcula.",["El supuesto se calcula; el resultado se cambia.","Ambos se escriben siempre a mano en celdas amarillas.","Ninguno cambia nunca."],"Lo que se cambia y lo que se calcula."],
+[1,"A","«En una calculadora, tú marcas los números y la pantalla muestra el total.» Los números que marcas son…","los supuestos.",["los resultados.","los escenarios.","las fórmulas."],"Tú pones los supuestos; la pantalla muestra el resultado."],
+[1,"D","¿Qué buena práctica de colores recomienda el material?","Supuestos en amarillo y resultados en verde.",["Supuestos en verde y resultados en amarillo.","Todo en blanco, sin colores.","Un color distinto para cada una de las filas."],"Amarillo: se cambia. Verde: se calcula."],
+[1,"V","«Los resultados de un modelo nunca se escriben a mano.»",V,[F],"Los resultados siempre son fórmulas que apuntan a las celdas de los supuestos."],
+[1,"D","¿De dónde deben salir los supuestos de un modelo?","De datos históricos, contratos y opinión de expertos.",["Del resultado que se quiere obtener.","De valores al azar para probar cómo responde el modelo.","De cualquier página de internet, sin revisar la fuente."],"Cada valor amarillo debe tener una fuente que lo respalde."],
+[1,"D","Completa la frase del material: «Un modelo es tan bueno como sus…»","supuestos.",["gráficos de barras.","colores.","fórmulas largas."],"Si los supuestos están mal, el resultado también lo estará."],
+[1,"H","¿Para qué sirven los nombres de celda, como Servicios_al_mes?","Para que las fórmulas se lean y entiendan solas.",["Para proteger la hoja con clave.","Para cambiar el color de las celdas de supuestos.","Para ocultar las fórmulas a los demás usuarios del libro."],"Con nombres, la fórmula se lee sola: =Servicios_al_mes*Tarifa_promedio."],
 // 2 · Ingresos, costos y resultado
-[2,"¿Cómo se calculan los ingresos del centro?","Servicios × tarifa",["Servicios + tarifa","Tarifa − costo variable","Gastos fijos ÷ servicios"],"Ingresos = servicios al mes × tarifa promedio por servicio."],
-[2,"¿Cómo se calcula el resultado del mes?","Ingresos − costos variables − gastos fijos",["Ingresos + costos variables + gastos fijos","Ingresos × gastos fijos","Costos variables − ingresos"],"Lo que entra menos lo que sale."],
-[2,"¿Qué es un costo variable?","Un costo que aumenta con cada servicio que se presta.",["Un gasto que se paga igual cada mes.","Un costo que nunca cambia.","Un pago que se hace una sola vez al año."],"Ejemplo: los insumos y honorarios de cada servicio."],
-[2,"¿Cuál de estos es un gasto fijo?","El alquiler del local.",["Los insumos usados en cada servicio.","El honorario que se paga por cada consulta.","El material desechable de cada paciente."],"El alquiler se paga igual aunque haya pocos servicios."],
-[2,"«En un taxi, la gasolina aumenta con cada viaje.» La gasolina representa…","un costo variable.",["un gasto fijo.","un ingreso.","un supuesto de tarifa."],"Sube o baja según la cantidad de viajes (servicios)."],
-[2,"«El seguro del taxi se paga igual cada mes, haya muchos o pocos viajes.» El seguro representa…","un gasto fijo.",["un costo variable.","un ingreso.","un margen."],"No depende de la cantidad de servicios."],
-[2,"Si el centro atiende 1,200 servicios con una tarifa de RD$ 2,500.00, ¿cuánto son los ingresos?","RD$ 3,000,000.00",["RD$ 2,500,000.00","RD$ 1,680,000.00","RD$ 420,000.00"],"1,200 × RD$ 2,500.00 = RD$ 3,000,000.00."],
-[2,"El margen del centro es 14 %. ¿Qué significa?","De cada RD$ 100.00 que entran, quedan RD$ 14.00 de ganancia.",["El centro pierde el 14 % de sus ingresos.","Los costos son el 14 % de los ingresos.","La tarifa subió un 14 %."],"Margen = resultado ÷ ingresos."],
-[2,"¿Qué es el margen de contribución por servicio?","Lo que queda de la tarifa después de pagar su costo variable.",["La suma de la tarifa y el costo variable.","Los gastos fijos divididos entre la tarifa.","Los ingresos menos los gastos fijos."],"RD$ 2,500.00 − RD$ 1,400.00 = RD$ 1,100.00 por servicio."],
+[2,"D","¿Cómo se obtiene el resultado del mes?","Ingresos menos costos variables menos gastos fijos.",["Ingresos más todos los costos.","Costos variables menos ingresos y menos gastos fijos.","Gastos fijos divididos entre los ingresos totales del mes."],"Lo que entra menos lo que sale."],
+[2,"C","¿Qué diferencia a un costo variable de un gasto fijo?","El variable sube con cada servicio; el fijo no cambia.",["El fijo sube con cada servicio; el variable no cambia.","Los dos suben con cada servicio.","Los dos se pagan una sola vez al año, al cierre fiscal."],"Los gastos fijos se pagan igual aunque haya pocos servicios."],
+[2,"A","«En un taxi, la gasolina sube con cada viaje.» La gasolina representa…","un costo variable.",["un gasto fijo.","un ingreso.","un margen de contribución."],"Aumenta según la cantidad de viajes (servicios)."],
+[2,"A","«El seguro del taxi se paga igual cada mes.» El seguro representa…","un gasto fijo.",["un costo variable.","un ingreso.","un supuesto de tarifa."],"No depende de la cantidad de viajes."],
+[2,"D","¿Qué es el margen de contribución?","Lo que queda de la tarifa tras pagar su costo variable.",["Lo que queda de los ingresos tras pagar los gastos fijos.","La suma de tarifa y costo variable.","El porcentaje de ganancia que se obtiene sobre los costos."],"Cada servicio deja un margen de contribución."],
+[2,"D","Según el material, ¿para qué alcanzan los márgenes de contribución?","Para pagar los gastos fijos.",["Para fijar la tarifa.","Para comprar más insumos por servicio.","Para definir el escenario favorable."],"Con esos márgenes se pagan los gastos fijos."],
+[2,"D","¿Qué es el punto de equilibrio?","La cantidad mínima de servicios para no perder.",["La cantidad máxima de servicios que se puede atender.","El número que deja más ganancia.","El promedio de servicios atendidos en el último año."],"Por debajo hay pérdida; por encima, ganancia."],
+[2,"D","¿Qué indica el margen sobre los ingresos?","Qué parte de lo que entra queda como ganancia.",["Qué parte de los costos se paga con dinero prestado hoy.","Cuánto subió la tarifa.","Cuántos servicios faltan para llegar a la meta del mes."],"Margen 14 %: de cada RD$ 100.00 que entran, quedan RD$ 14.00."],
 // 3 · Escenarios
-[3,"¿Qué es un escenario?","Un conjunto de valores para los supuestos que representa una situación posible.",["Una hoja nueva del libro de Excel.","Un gráfico de barras con resultados.","Un tipo especial de fórmula."],"Cada escenario cuenta una historia posible con sus propios supuestos."],
-[3,"¿Cuáles son los tres escenarios que se suelen comparar?","Conservador, esperado y favorable.",["Alto, medio y bajo costo.","Enero, febrero y marzo.","Ingresos, costos y resultado."],"Peor, probable y mejor."],
-[3,"«Como planificar un viaje con el pronóstico del tiempo: lluvia, nublado o sol.» ¿Qué concepto describe?","Escenarios",["Sensibilidad","Buscar objetivo","Modelo financiero"],"Cada clima es una situación posible: un escenario."],
-[3,"El escenario conservador representa…","una situación en la que las cosas salen peor de lo esperado.",["lo más probable.","una situación en la que las cosas salen mejor.","el mes en que no cambia nada."],"Sirve para planificar el riesgo."],
-[3,"El escenario esperado representa…","lo más probable.",["lo peor que puede pasar.","lo mejor que puede pasar.","un mes sin servicios."],"Es la situación base, la que se espera que ocurra."],
-[3,"¿Qué hace que un escenario sea coherente?","Que sus supuestos se muevan juntos: en un mes malo bajan los servicios y suben los costos.",["Mezclar lo peor de un escenario con lo mejor de otro.","Cambiar números al azar.","Cambiarle solo el nombre al escenario."],"Un escenario cuenta una historia posible."],
-[3,"¿Cuántos escenarios conviene comparar?","Tres o cuatro.",["Diez o más.","Solo uno.","Uno por cada celda del modelo."],"Pocos escenarios se comparan bien; muchos confunden."],
-[3,"La diferencia entre el resultado del peor y del mejor escenario mide…","la incertidumbre del período.",["la ganancia segura.","el costo fijo del mes.","la cantidad de servicios."],"Mientras más ancho el rango, más importante es tener un plan."],
+[3,"D","¿Qué es un escenario?","Valores de los supuestos que representan una situación posible.",["Una hoja nueva del libro donde se guardan los resultados finales.","Un gráfico que compara los ingresos de varios meses del año.","Una fórmula especial que reemplaza a todos los supuestos."],"Un escenario es un conjunto de valores para los supuestos."],
+[3,"D","¿Cuáles son los tres escenarios que se suelen comparar?","Conservador, esperado y favorable.",["Alto, medio y bajo costo por servicio.","Ingresos, costos variables y gastos.","Enero, febrero y marzo."],"Peor, probable y mejor."],
+[3,"A","«Como planificar un viaje con el pronóstico del tiempo: lluvia, nublado o sol.» ¿Qué concepto describe?","Escenarios",["Sensibilidad","Supuestos","Modelo financiero"],"Cada clima es una situación posible."],
+[3,"C","¿Qué diferencia al escenario conservador del favorable?","En el conservador todo sale peor; en el favorable, mejor.",["El conservador es lo más probable; el favorable, lo peor posible.","Los dos son iguales; solo cambia el nombre.","El conservador cambia la tarifa; el favorable, los gastos fijos."],"Conservador: las cosas salen peor. Favorable: salen mejor."],
+[3,"D","¿Qué hace coherente a un escenario?","Sus supuestos se mueven juntos según una historia posible.",["Mezcla lo peor de un escenario con lo mejor de otro distinto.","Cambia los números al azar para ver qué resultado aparece.","Usa siempre los mismos valores que el escenario esperado."],"En un mes malo bajan los servicios y, a la vez, suben los costos."],
+[3,"D","¿Cuántos escenarios conviene comparar, según el material?","Tres o cuatro, porque diez confunden.",["Diez o más, para cubrir todos los casos.","Solo uno, el preferido.","Uno por cada celda que tenga el modelo."],"Tres o cuatro escenarios se comparan bien."],
+[3,"D","La diferencia entre el peor y el mejor escenario (el rango) mide…","la incertidumbre del período.",["la ganancia asegurada del mes.","el total de gastos.","la tarifa promedio por servicio."],"Mientras más ancho el rango, más importante es tener un plan."],
+[3,"D","¿Qué debe llevar cada escenario para estar documentado?","Una nota que explique por qué tiene esos valores.",["Una contraseña para protegerlo.","El nombre de la persona que lo va a imprimir luego.","Un gráfico con los resultados de los tres escenarios."],"Documentado: cada escenario lleva una nota que lo explica."],
+[3,"V","«Un escenario no es cambiar números al azar: es contar una historia posible.»",V,[F],"Se cuenta una historia posible y se traduce a supuestos que se mueven juntos."],
 // 4 · Administrador de escenarios
-[4,"¿Qué hace el Administrador de escenarios?","Guarda varios escenarios en la misma hoja y permite compararlos en un resumen.",["Busca el valor de un supuesto para llegar a una meta.","Ordena los datos de mayor a menor.","Crea gráficos dinámicos."],"Guarda y compara escenarios."],
-[4,"¿Dónde está el Administrador de escenarios en Excel?","Datos › Análisis de hipótesis › Administrador de escenarios",["Insertar › Tabla","Fórmulas › Insertar función","Inicio › Formato condicional"],"Está en el grupo Análisis de hipótesis de la ficha Datos."],
-[4,"¿Qué es el «Resumen del escenario»?","Una hoja nueva con una tabla que compara los escenarios lado a lado.",["Un gráfico circular con los ingresos.","Un comentario dentro de una celda.","Una macro que cambia los valores."],"Excel lo crea a partir de los escenarios guardados."],
-[4,"«El resumen del escenario es una foto.» ¿Qué significa?","Que no se actualiza solo: si cambia el modelo, hay que generar otro.",["Que se imprime automáticamente.","Que es una imagen pegada en la hoja.","Que se actualiza cada minuto."],"Muestra los valores del momento en que se creó."],
-[4,"En el Administrador de escenarios, ¿qué son las celdas cambiantes?","Las celdas de los supuestos que cambian en cada escenario.",["Las celdas del resultado.","Las celdas que tienen color.","Las celdas vacías de la hoja."],"En el modelo del centro: B4:B6."],
-[4,"¿Cuántas celdas cambiantes admite como máximo cada escenario?","32",["3","1","Ilimitadas"],"Hasta 32 supuestos por escenario."],
-[4,"«Como guardar tres versiones del mismo presupuesto y luego verlas juntas en una sola hoja.» ¿Qué herramienta describe?","Administrador de escenarios",["Buscar objetivo","Tabla dinámica","Formato condicional"],"Guarda versiones y las compara en un resumen."],
-[4,"¿En qué versión de Excel NO está el Administrador de escenarios?","Excel para la web.",["Excel 2016 de escritorio.","Excel 2021 de escritorio.","Excel de Microsoft 365 de escritorio."],"Se usa en Excel de escritorio, 2016 o posterior."],
-[4,"¿Para qué sirve el botón «Combinar» del Administrador de escenarios?","Para traer escenarios hechos por otra persona en otra hoja o libro.",["Para unir dos celdas en una.","Para sumar los resultados de los escenarios.","Para borrar todos los escenarios."],"Funciona si la otra hoja tiene el mismo modelo."],
+[4,"D","¿Qué hace el Administrador de escenarios?","Guarda varios escenarios y los compara en un resumen.",["Busca el valor que logra una meta.","Mide cuál variable mueve más el resultado del modelo.","Ordena todos los datos de la hoja de mayor a menor valor."],"Guarda escenarios en la misma hoja y crea el Resumen del escenario."],
+[4,"A","«Como guardar tres versiones del mismo presupuesto y luego verlas juntas en una sola hoja.» ¿Qué herramienta describe?","Administrador de escenarios",["Análisis de sensibilidad","Tabla de datos de dos variables","Buscar objetivo con valor cero"],"Guarda versiones y las compara en un resumen."],
+[4,"H","¿En qué grupo de Excel están el Administrador de escenarios y Buscar objetivo?","Datos › Análisis de hipótesis",["Insertar › Tabla dinámica nueva","Fórmulas › Insertar función","Inicio › Formato condicional"],"Ambas herramientas están en Datos › Análisis de hipótesis."],
+[4,"D","¿Qué es el «Resumen del escenario»?","Una hoja nueva que compara los escenarios lado a lado.",["Un gráfico circular que se agrega dentro de la misma hoja.","Un comentario que aparece al pasar sobre cada celda.","Una macro que cambia los valores de forma automática."],"Excel lo crea con una tabla que compara los escenarios."],
+[4,"D","«El resumen del escenario es una foto.» ¿Qué significa?","No se actualiza solo si el modelo cambia.",["Se imprime de forma automática al guardarlo.","Es una imagen pegada que no se puede editar.","Se actualiza cada minuto."],"Si cambia el modelo, se genera otro resumen."],
+[4,"D","En el Administrador de escenarios, ¿qué son las celdas cambiantes?","Las celdas de los supuestos que cambian.",["Las celdas que contienen los resultados.","Las celdas que tienen color de relleno.","Las celdas vacías que quedan al final de la hoja."],"Se seleccionan juntas, por ejemplo B4:B6."],
+[4,"C","¿Qué diferencia hay entre celdas cambiantes y celdas de resultado?","Las cambiantes son supuestos; las de resultado se comparan.",["Las cambiantes son fórmulas; las de resultado se escriben.","Las dos son lo mismo, solo cambia el nombre en el resumen.","Las de resultado son supuestos; las cambiantes, los totales."],"En el resumen se eligen las celdas de resultado que se quieren comparar."],
+[4,"D","¿Para qué sirve la opción «Combinar» del Administrador?","Traer escenarios hechos en otra hoja o libro.",["Unir varias celdas seguidas en una sola celda.","Sumar todos los escenarios.","Borrar de una vez todos los escenarios guardados."],"Trae escenarios de otra persona con el mismo modelo."],
+[4,"V","«El Administrador de escenarios está disponible en Excel para la web.»",F,[V],"Está en Excel de escritorio 2016 o posterior; no en Excel para la web."],
 // 5 · Buscar objetivo
-[5,"¿Qué hace Buscar objetivo?","Tú indicas el resultado que quieres y Excel calcula qué valor debe tener un supuesto para lograrlo.",["Guarda varios escenarios para compararlos.","Mide qué variable pesa más en el resultado.","Ordena la tabla de datos."],"Hace el camino al revés: del resultado al dato."],
-[5,"«¿A qué hora debo salir de casa para llegar a las 8:00?» ¿Qué herramienta describe esta pregunta?","Buscar objetivo",["Administrador de escenarios","Sensibilidad","Modelo financiero"],"Conoces la meta (llegar a las 8:00) y buscas el dato (la hora de salida)."],
-[5,"¿Qué tres datos pide la ventana de Buscar objetivo?","Definir la celda, Con el valor y Para cambiar la celda.",["Nombre, comentario y protección.","Fila, columna y tabla.","Origen, destino y formato."],"Resultado, meta y supuesto."],
-[5,"En Buscar objetivo, ¿qué debe tener la celda de «Definir la celda»?","Una fórmula: el resultado, por ejemplo B13.",["Un número escrito a mano.","Un texto.","Nada: debe estar vacía."],"Es la celda del resultado que quieres alcanzar."],
-[5,"En Buscar objetivo, ¿qué debe tener la celda de «Para cambiar la celda»?","Un valor escrito a mano: un supuesto.",["Una fórmula.","Un gráfico.","Un comentario."],"Excel cambia ese supuesto hasta llegar a la meta."],
-[5,"¿Cuántos supuestos puede cambiar Buscar objetivo a la vez?","Solo uno.",["Dos.","Hasta 32.","Todos los del modelo."],"Para mover varios a la vez se usan escenarios."],
-[5,"¿Qué es el punto de equilibrio?","El nivel en el que el resultado es cero: no se gana ni se pierde.",["La ganancia más alta posible.","El escenario favorable.","El promedio de servicios del año."],"Es el mínimo necesario para no perder."],
-[5,"Para hallar el punto de equilibrio con Buscar objetivo, ¿qué se escribe en «Con el valor»?","0",["420000","100","1"],"Resultado igual a cero: ni gana ni pierde."],
-[5,"Buscar objetivo da 818.18 servicios para no perder. ¿Qué número se usa?","819, porque se redondea hacia arriba: no existe medio servicio.",["818, porque se redondea hacia abajo.","818.18, tal como lo da Excel.","800, para que sea un número redondo."],"Con 818 todavía habría pérdida."],
+[5,"D","¿Qué hace Buscar objetivo?","Calcula el valor de un supuesto para lograr una meta.",["Guarda varios escenarios para poder compararlos luego.","Mide cuál de las variables mueve más el resultado.","Revisa que cada supuesto tenga una fuente confiable."],"Indicas el resultado que quieres y Excel calcula el supuesto."],
+[5,"A","«¿A qué hora debo salir de casa para llegar a las 8:00?» ¿Qué herramienta describe?","Buscar objetivo",["Administrador de escenarios","Análisis de sensibilidad","Escenarios"],"Conoces la meta y buscas el dato que la logra."],
+[5,"H","¿Qué tres datos pide la ventana de Buscar objetivo?","Definir la celda, Con el valor y Para cambiar la celda.",["Nombre del escenario, Celdas cambiantes y Comentario.","Celda de entrada de fila y celda de entrada de columna.","Rango de origen, criterio de orden y el formato de salida."],"Resultado, meta y el supuesto que cambia."],
+[5,"C","En Buscar objetivo, ¿qué diferencia hay entre «Definir la celda» y «Para cambiar la celda»?","La primera tiene una fórmula; la segunda, un valor.",["La primera tiene un valor; la segunda, una fórmula.","Las dos deben tener fórmulas que dependan una de la otra.","Las dos deben estar vacías."],"Definir la celda es el resultado; Para cambiar la celda es un supuesto escrito a mano."],
+[5,"C","¿Qué diferencia a Buscar objetivo de los escenarios?","Buscar objetivo mueve un supuesto; los escenarios, varios.",["Buscar objetivo mueve varios supuestos; los escenarios, uno.","Los dos mueven solo un supuesto, pero en hojas diferentes.","Ninguno mueve supuestos: solo cambian el formato visual."],"Solo un supuesto a la vez; para mover varios se usan escenarios."],
+[5,"D","Si en «Con el valor» se escribe 0, ¿qué se obtiene?","El punto de equilibrio.",["El escenario favorable.","La ganancia máxima.","El margen de contribución."],"Con resultado igual a 0, ni se gana ni se pierde."],
+[5,"D","¿Qué significa estar en el punto de equilibrio?","No se gana ni se pierde.",["Se gana el máximo.","Los gastos fijos llegan a cero.","La tarifa es igual al costo fijo."],"El resultado es igual a cero."],
+[5,"V","«Buscar objetivo puede cambiar varios supuestos al mismo tiempo.»",F,[V],"Solo cambia un supuesto a la vez."],
 // 6 · Sensibilidad
-[6,"¿Qué es el análisis de sensibilidad?","Medir cuánto cambia el resultado cuando se mueve un solo supuesto y los demás se quedan igual.",["Comparar tres escenarios en un resumen.","Buscar el valor de un supuesto para llegar a una meta.","Ordenar los supuestos alfabéticamente."],"Así se descubre qué variable pesa más."],
-[6,"«Como probar qué ingrediente cambia más el sabor de una receta: se cambia uno a la vez.» ¿Qué concepto describe?","Sensibilidad",["Escenarios","Modelo financiero","Administrador de escenarios"],"Se mueve un supuesto a la vez y se mide el efecto."],
-[6,"¿Por qué en la sensibilidad se cambia un solo supuesto a la vez?","Para saber exactamente cuál de ellos movió el resultado.",["Porque Excel no permite cambiar dos celdas.","Porque es más rápido.","Para ahorrar memoria en el archivo."],"Si cambias dos juntos, no sabrás cuál causó el cambio."],
-[6,"¿Qué busca descubrir el análisis de sensibilidad?","Qué variable tiene mayor impacto y merece más atención.",["El punto de equilibrio exacto.","El nombre de cada celda.","Cuál es el escenario favorable."],"La variable que más pesa es la que se vigila primero."],
-[6,"¿Cuál es el procedimiento correcto de la sensibilidad?","Subir un supuesto un 10 %, anotar el resultado y devolverlo a su valor antes de probar el siguiente.",["Cambiar todos los supuestos juntos y anotar el resultado.","Borrar las fórmulas y escribir los resultados.","Crear un escenario por cada celda de la hoja."],"Cambie, anote y devuelva."],
-[6,"En el centro, al subir cada supuesto un 10 %, ¿cuál variable movió más la ganancia?","La tarifa promedio: +RD$ 300,000.00.",["Los gastos fijos: −RD$ 90,000.00.","Los servicios al mes: +RD$ 132,000.00.","El costo variable: −RD$ 168,000.00."],"La tarifa es la variable que más pesa."],
-[6,"Un supuesto cambia la ganancia en −RD$ 168,000.00 y otro en +RD$ 132,000.00. ¿Cuál pesa más?","El de −RD$ 168,000.00: importa el tamaño del cambio, no el signo.",["El de +RD$ 132,000.00, porque es positivo.","Pesan igual.","Ninguno, porque uno es negativo."],"El signo solo indica si la ganancia sube o baja."],
-[6,"Verdadero o falso: «Si cambio dos supuestos al mismo tiempo, sé exactamente cuál de los dos movió la ganancia».",F,[V],"Por eso la sensibilidad cambia una variable a la vez."]
+[6,"D","¿Qué es el análisis de sensibilidad?","Medir cuánto cambia el resultado al mover un solo supuesto.",["Comparar varios escenarios completos en una hoja de resumen.","Encontrar el valor de un supuesto que logra una meta dada.","Revisar que cada supuesto tenga una fuente que lo respalde."],"Se mueve un supuesto y los demás se quedan igual."],
+[6,"A","«Como probar qué ingrediente cambia más el sabor de una receta: se cambia uno a la vez.» ¿Qué concepto describe?","Análisis de sensibilidad",["Administrador de escenarios","Escenarios","Tabla de datos de dos variables"],"Se cambia una variable a la vez y se mide el efecto."],
+[6,"D","¿Por qué en la sensibilidad se cambia un solo supuesto a la vez?","Para saber cuál de ellos movió el resultado.",["Porque Excel no permite cambiar dos celdas a la vez.","Porque así termina más rápido.","Para que el archivo de Excel ocupe menos memoria."],"Si cambias dos juntos, no sabrás cuál causó el cambio."],
+[6,"D","¿Qué busca descubrir el análisis de sensibilidad?","Qué variable tiene mayor impacto en el resultado.",["Cuál es el escenario más probable para el próximo mes.","Cuántos servicios hacen falta para no perder dinero.","Qué fuente respalda cada dato."],"La variable de mayor impacto es la que merece más atención."],
+[6,"C","¿Qué diferencia a la sensibilidad de un escenario?","La sensibilidad mueve un supuesto; el escenario, varios juntos.",["La sensibilidad mueve varios supuestos; el escenario, solo uno.","Los dos mueven siempre todos los supuestos al mismo tiempo.","Ninguno cambia supuestos: los dos solo cambian el formato visual."],"El escenario cuenta una historia con varios supuestos; la sensibilidad aísla uno."],
+[6,"D","Al comparar el efecto de cada variable, ¿qué es lo que importa?","El tamaño del cambio, no su signo.",["Solo los cambios positivos.","Solo los cambios que son negativos.","El orden en que se hicieron las pruebas."],"El signo solo dice si el resultado sube o baja."],
+[6,"H","¿Qué hace la Tabla de datos?","Calcula el resultado para muchas combinaciones de supuestos.",["Resume los datos de una lista larga en filas y columnas dinámicas.","Guarda varios escenarios con nombre para mostrarlos luego.","Busca el valor de un supuesto que da un resultado exacto."],"Muestra el resultado para muchas combinaciones de uno o dos supuestos."],
+[6,"V","«Si cambio dos supuestos a la vez, sé exactamente cuál movió la ganancia.»",F,[V],"Por eso la sensibilidad cambia una variable a la vez."],
+[6,"D","¿Por qué conviene conocer la variable que más pesa?","Porque es la que merece más atención y vigilancia.",["Porque es la única del resumen.","Porque es la que se debe borrar primero del modelo.","Porque es la que nunca cambia de un mes a otro mes."],"La variable de mayor impacto es la que se vigila primero."]
 ];
 
 /* ---------- Utilidades ---------- */
@@ -288,25 +364,29 @@ const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 };
-const KEY = "m5eval";
-const N = 20, PTS = 0.5, SECS = 60;
+const KEY = "m5eval2";
+const N = 20, PTS = 0.5, SECS = 60, RING = 2 * Math.PI * 34;
 const fmtG = g => (Math.round(g * 10) / 10).toFixed(1).replace(/\.0$/, "");
 
 /* ---------- Sonido (sintetizado, sin archivos) ---------- */
 let soundOn = store.get(KEY + ".snd", true), AC = null;
 function ac() { if (!AC) { const A = window.AudioContext || window.webkitAudioContext; if (!A) return null; AC = new A(); } if (AC.state === "suspended") AC.resume(); return AC; }
-function tone(f, d, type = "sine", v = .18, delay = 0) {
+function tone(f, d, type = "sine", v = .18, delay = 0, slide) {
   if (!soundOn) return; const c = ac(); if (!c) return;
   const t = c.currentTime + delay, o = c.createOscillator(), g = c.createGain();
-  o.type = type; o.frequency.setValueAtTime(f, t);
+  o.type = type; o.frequency.setValueAtTime(f, t); if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + d);
   g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + d);
   o.connect(g).connect(c.destination); o.start(t); o.stop(t + d + .05);
 }
 const SFX = {
-  start() { [523, 659, 784, 1047].forEach((f, i) => tone(f, .25, "triangle", .2, i * .1)); },
-  ok() { tone(880, .14, "triangle", .2); tone(1320, .25, "triangle", .18, .1); },
-  bad() { tone(220, .18, "sawtooth", .12); tone(165, .3, "sawtooth", .12, .14); },
+  beep() { tone(660, .18, "square", .1); },
+  go() { tone(990, .4, "square", .12); tone(1320, .4, "triangle", .12, .05); },
+  ok() { tone(880, .12, "triangle", .2); tone(1320, .22, "triangle", .18, .09); },
+  streak() { [988, 1175, 1568].forEach((f, i) => tone(f, .14, "triangle", .15, i * .07)); },
+  bad() { tone(260, .35, "sawtooth", .12, 0, 120); },
   tick() { tone(1000, .05, "square", .06); },
+  whoosh() { tone(300, .25, "sine", .12, 0, 900); },
+  alarm() { [0, .18, .36].forEach(d => tone(520, .14, "square", .14, d)); },
   click() { tone(600, .05, "triangle", .1); },
   end(g) { const s = g >= 7 ? [523, 659, 784, 1047, 1319] : g >= 5 ? [523, 659, 784] : [392, 330, 262]; s.forEach((f, i) => tone(f, .32, "triangle", .2, i * .13)); }
 };
@@ -314,29 +394,44 @@ function paintSnd() { $("snd").textContent = soundOn ? "🔊 Sonido" : "🔇 Sin
 $("snd").onclick = () => { soundOn = !soundOn; store.set(KEY + ".snd", soundOn); paintSnd(); SFX.click(); };
 paintSnd();
 
+/* ---------- Avisos breves ---------- */
+let toastT;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
+function flash(kind) { const f = $("flash"); f.className = "flash"; void f.offsetWidth; f.className = "flash " + kind; }
+
+/* ---------- Bloqueo de copiar y pegar ---------- */
+["copy", "cut", "paste", "contextmenu", "dragstart", "drop"].forEach(ev =>
+  document.addEventListener(ev, e => { e.preventDefault(); toast(ev === "contextmenu" ? "🚫 El menú contextual está desactivado." : "🚫 No se permite copiar ni pegar en esta evaluación."); }));
+document.addEventListener("selectstart", e => { if (e.target.tagName !== "INPUT") e.preventDefault(); });
+document.addEventListener("keydown", e => {
+  const k = e.key.toLowerCase();
+  if ((e.ctrlKey || e.metaKey) && ["c", "v", "x", "a", "s", "p", "u", "f"].includes(k)) { e.preventDefault(); toast("🚫 No se permite copiar ni pegar en esta evaluación."); }
+  if ((e.shiftKey && k === "insert") || (e.ctrlKey && k === "insert")) { e.preventDefault(); toast("🚫 No se permite copiar ni pegar en esta evaluación."); }
+  if (k === "f12" || ((e.ctrlKey || e.metaKey) && e.shiftKey && ["i", "j", "c"].includes(k))) e.preventDefault();
+});
+
 /* ---------- Portada ---------- */
 $("cList").innerHTML = C.map((c, i) => `<span>${i + 1} · ${c}</span>`).join("");
-$("fly").innerHTML = C.concat(["=B4*B5", "Supuestos", "RD$ 420,000.00", "Punto de equilibrio", "+10 %"]).map((c, i) =>
+$("fly").innerHTML = C.concat(["Supuestos", "Resultado", "Punto de equilibrio", "¿Y si…?", "Margen"]).map((c, i) =>
   `<span style="left:${(i * 37) % 92}%;top:${60 + (i * 13) % 40}%;animation-duration:${7 + (i % 5)}s;animation-delay:${-i * 1.3}s">${c}</span>`).join("");
 $("nm").value = store.get(KEY + ".name", "");
 $("nm").addEventListener("keydown", e => { if (e.key === "Enter") $("go").click(); });
 
 function pickQuestions() {
-  // Preguntas que no han salido en este navegador; repartidas por concepto.
+  // Preguntas que no han salido en este navegador, repartidas por concepto.
   let used = new Set(store.get(KEY + ".used", []));
-  let free = BANK.map((_, i) => i).filter(i => !used.has(i));
-  let chosen = [];
+  const free = BANK.map((_, i) => i).filter(i => !used.has(i));
   const roundRobin = (pool, need) => {
     const by = C.map((_, c) => shuffle(pool.filter(i => BANK[i][0] === c)));
-    const out = []; let order = shuffle(C.map((_, c) => c));
+    const out = [], order = shuffle(C.map((_, c) => c));
     while (out.length < need && by.some(b => b.length)) for (const c of order) { if (out.length < need && by[c].length) out.push(by[c].pop()); }
     return out;
   };
-  if (free.length >= N) { chosen = roundRobin(free, N); }
+  let chosen;
+  if (free.length >= N) chosen = roundRobin(free, N);
   else {                                            // se agotó el banco: se usan las que quedan y empieza otra vuelta
     chosen = free.slice();
-    const rest = BANK.map((_, i) => i).filter(i => !chosen.includes(i));
-    chosen = chosen.concat(roundRobin(rest, N - chosen.length));
+    chosen = chosen.concat(roundRobin(BANK.map((_, i) => i).filter(i => !chosen.includes(i)), N - chosen.length));
     used = new Set();
   }
   chosen.forEach(i => used.add(i));
@@ -351,89 +446,140 @@ function show(id) { document.querySelectorAll(".screen").forEach(s => s.classLis
 $("go").onclick = () => {
   const name = $("nm").value.trim().replace(/\s+/g, " ");
   if (name.split(" ").length < 2 || name.length < 5) { $("nmErr").textContent = "Escribe tu nombre y tu apellido para que aparezcan en tu nota."; $("nm").focus(); SFX.bad(); return; }
+  if (!$("ok").checked) { $("nmErr").textContent = "Marca la casilla para confirmar que leíste las reglas."; SFX.bad(); return; }
   $("nmErr").textContent = ""; store.set(KEY + ".name", name);
   const attempt = store.get(KEY + ".attempt", 0) + 1; store.set(KEY + ".attempt", attempt);
-  S = { name, attempt, qs: pickQuestions(), i: 0, score: 0, log: [] };
-  SFX.start(); show("sQ"); renderQ();
+  S = { name, attempt, qs: pickQuestions(), i: 0, score: 0, log: [], exits: 0, streak: 0, start: Date.now(), live: false };
+  $("dots").innerHTML = "<i></i>".repeat(N);
+  countdown(() => { S.live = true; show("sQ"); renderQ(); });
 };
 
+function countdown(done) {
+  const box = $("count"), n = $("cn"); box.classList.add("on");
+  const steps = ["3", "2", "1", "¡Ya!"]; let k = 0;
+  const step = () => {
+    n.textContent = steps[k]; n.style.animation = "none"; void n.offsetWidth; n.style.animation = "";
+    k < 3 ? SFX.beep() : SFX.go();
+    if (++k < steps.length) setTimeout(step, 800); else setTimeout(() => { box.classList.remove("on"); done(); }, 650);
+  };
+  step();
+}
+
 function renderQ() {
-  const idx = S.qs[S.i], [c, q, ok, bad] = BANK[idx];
-  const opts = (ok === V || ok === F) ? [V, F] : shuffle([ok, ...bad]);
+  const idx = S.qs[S.i], [c, kind, q, ok, bad] = BANK[idx];
+  const opts = kind === "V" ? [V, F] : shuffle([ok, ...bad]);
   S.cur = { idx, ok, opts, done: false };
-  $("qn").textContent = S.i + 1; $("pts").textContent = fmtG(S.score) + " puntos";
-  $("prog").style.width = (S.i / N * 100) + "%";
-  $("qc").textContent = C[c]; $("qt").textContent = q;
+  $("qn").textContent = S.i + 1; $("pts").firstChild.textContent = fmtG(S.score) + " puntos";
+  [...$("dots").children].forEach((d, j) => d.classList.toggle("cur", j === S.i));
+  $("qc").textContent = C[c]; $("qk").textContent = K[kind]; $("qt").textContent = q;
   $("opts").innerHTML = opts.map((o, k) => `<button class="opt" type="button" data-k="${k}"><span class="l">${"ABCD"[k]}</span><span>${o}</span></button>`).join("");
   $("opts").querySelectorAll(".opt").forEach(b => b.onclick = () => answer(+b.dataset.k));
   $("fb").className = "fb"; $("nx").className = "next";
-  startTimer();
+  const card = $("card"); card.className = "card"; card.style.animation = "none"; void card.offsetWidth; card.style.animation = "";
+  SFX.whoosh(); startTimer();
 }
 
 function startTimer() {
-  clearInterval(timerId); let left = SECS;
-  const paint = () => { $("tt").textContent = Math.floor(left / 60) + ":" + String(left % 60).padStart(2, "0"); $("tb").style.width = (left / SECS * 100) + "%"; $("timer").classList.toggle("warn", left <= 10); };
-  $("tb").style.transition = "none"; paint(); void $("tb").offsetWidth; $("tb").style.transition = "";
+  clearInterval(timerId); let left = SECS; const fg = $("rfg");
+  fg.style.strokeDasharray = RING;
+  const paint = () => { $("tt").textContent = left; fg.style.strokeDashoffset = RING * (1 - left / SECS); $("ring").classList.toggle("warn", left <= 10); };
+  fg.style.transition = "none"; paint(); void fg.getBoundingClientRect(); fg.style.transition = "";
   timerId = setInterval(() => { left--; paint(); if (left <= 10 && left > 0) SFX.tick(); if (left <= 0) { clearInterval(timerId); answer(-1); } }, 1000);
 }
 
+/* k ≥ 0: opción elegida · −1: se acabó el tiempo · −2: salió de la página */
 function answer(k) {
-  if (S.cur.done) return; S.cur.done = true; clearInterval(timerId);
-  const { idx, ok, opts } = S.cur, right = k >= 0 && opts[k] === ok, [c, q, , , ex] = BANK[idx];
+  if (!S || !S.cur || S.cur.done) return; S.cur.done = true; clearInterval(timerId);
+  const { idx, ok, opts } = S.cur, right = k >= 0 && opts[k] === ok, [c, , q, , , ex] = BANK[idx];
   $("opts").querySelectorAll(".opt").forEach((b, j) => {
     b.disabled = true;
     if (opts[j] === ok) b.classList.add("ok"); else if (j === k) b.classList.add("bad"); else b.classList.add("dim");
   });
-  if (right) { S.score += PTS; SFX.ok(); } else SFX.bad();
-  S.log.push({ c, q, ok, given: k >= 0 ? opts[k] : null, right });
-  $("pts").textContent = fmtG(S.score) + " puntos";
+  const dot = $("dots").children[S.i]; dot.classList.remove("cur"); dot.classList.add(right ? "ok" : "bad");
+  if (right) {
+    S.score += PTS; S.streak++;
+    const f = document.createElement("span"); f.className = "float"; f.textContent = "+0.5"; $("pts").appendChild(f); setTimeout(() => f.remove(), 1000);
+    $("card").classList.add("good"); flash("ok");
+    if (S.streak >= 3) { $("stk").textContent = "🔥 Racha x" + S.streak; $("stk").className = "streak"; void $("stk").offsetWidth; $("stk").className = "streak on"; SFX.streak(); } else SFX.ok();
+  } else {
+    S.streak = 0; $("stk").className = "streak";
+    $("card").classList.add("shake"); flash("bad"); SFX.bad();
+  }
+  S.log.push({ c, q, ok, given: k >= 0 ? opts[k] : null, right, exit: k === -2 });
+  $("pts").firstChild.textContent = fmtG(S.score) + " puntos";
   const fb = $("fb");
   fb.className = "fb on" + (right ? "" : " bad");
-  fb.innerHTML = `<b class="h">${right ? "✓ ¡Correcto! +0.5" : k < 0 ? "⏱ Se acabó el tiempo." : "✗ Incorrecto."}</b>${right ? "" : `Respuesta correcta: <b>${ok}</b><br>`}${ex}`;
+  const head = right ? "✓ ¡Correcto! +0.5" : k === -1 ? "⏱ Se acabó el tiempo." : k === -2 ? "🚫 Saliste de la página: pregunta perdida." : "✗ Incorrecto.";
+  fb.innerHTML = `<b class="h">${head}</b>${right ? "" : `Respuesta correcta: <b>${ok}</b><br>`}${ex}`;
   $("nxb").textContent = S.i + 1 < N ? "Siguiente →" : "Ver mi nota →";
-  $("nx").className = "next on"; $("nxb").focus({ preventScroll: true });
+  $("nx").className = "next on";
 }
 
-$("nxb").onclick = () => { SFX.click(); S.i++; if (S.i < N) renderQ(); else finish(); };
+function nextQ() { S.i++; if (S.i < N) renderQ(); else finish(); }
+$("nxb").onclick = () => { SFX.click(); nextQ(); };
+
+/* ---------- Salir de la página = pregunta perdida ---------- */
+function leftPage() {
+  if (!S || !S.live || !$("sQ").classList.contains("on")) return;
+  if (S.cur && !S.cur.done) {
+    S.exits++; answer(-2);
+    $("awayTxt").textContent = `Perdiste la pregunta ${S.i + 1}. Durante la evaluación no puedes minimizar, cambiar de pestaña ni abrir otra ventana. Salidas registradas: ${S.exits}.`;
+    $("awayBtn").textContent = S.i + 1 < N ? "Continuar con la siguiente →" : "Ver mi nota →";
+    $("away").classList.add("on");
+  }
+}
+document.addEventListener("visibilitychange", () => { if (document.hidden) leftPage(); else if ($("away").classList.contains("on")) SFX.alarm(); });
+window.addEventListener("blur", leftPage);
+$("awayBtn").onclick = () => { $("away").classList.remove("on"); SFX.click(); nextQ(); };
+window.addEventListener("beforeunload", e => { if (S && S.live) { e.preventDefault(); e.returnValue = ""; } });
 
 function finish() {
-  const g = S.score, okN = S.log.filter(l => l.right).length, toN = S.log.filter(l => l.given === null).length;
-  const now = new Date();
+  S.live = false;
+  const g = S.score, okN = S.log.filter(l => l.right).length, toN = S.log.filter(l => l.given === null && !l.exit).length;
+  const now = new Date(), mins = Math.max(1, Math.round((Date.now() - S.start) / 60000));
   S.when = now.toLocaleDateString("es-DO", { day: "2-digit", month: "long", year: "numeric" }) + " · " + now.toLocaleTimeString("es-DO", { hour: "2-digit", minute: "2-digit" });
   S.verd = g >= 9 ? "¡Excelente!" : g >= 7 ? "¡Muy bien!" : g >= 5 ? "Puedes mejorar" : "Repasa los conceptos";
   $("rName").textContent = S.name;
-  $("rMeta").innerHTML = S.when + "<br>Intento " + S.attempt;
-  $("rGrade").textContent = fmtG(g); $("rVerd").textContent = S.verd;
-  $("rOk").textContent = okN + " de " + N; $("rBad").textContent = N - okN - toN; $("rTo").textContent = toN;
-  // Conceptos para repasar
+  $("rMeta").innerHTML = S.when + "<br>Intento " + S.attempt + " · " + mins + " min";
+  $("rVerd").textContent = S.verd;
+  $("rOk").textContent = okN + " de " + N; $("rBad").textContent = N - okN - toN - S.exits; $("rTo").textContent = toN; $("rEx").textContent = S.exits;
   const miss = {}; S.log.filter(l => !l.right).forEach(l => miss[l.c] = (miss[l.c] || 0) + 1);
   const keys = Object.keys(miss).sort((a, b) => miss[b] - miss[a]);
   $("rRev").innerHTML = keys.length
     ? `<h3>Conceptos para repasar</h3><ul>${keys.map(c => `<li>${C[c]}: ${miss[c]} ${miss[c] > 1 ? "errores" : "error"}</li>`).join("")}</ul>`
     : `<h3>¡Sin errores!</h3><p style="margin:0;font-size:14.5px">Dominas los siete conceptos del módulo.</p>`;
-  $("rvList").innerHTML = S.log.map((l, i) => `<div class="rvitem${l.right ? "" : " bad"}"><b>${i + 1}. ${l.q}</b><br>${l.right ? "✓ " + l.ok : `✗ Tu respuesta: ${l.given ?? "sin responder"}<br><span class="m">Correcta: ${l.ok}</span>`}</div>`).join("");
-  $("prog").style.width = "100%";
-  show("sR"); SFX.end(g); if (g >= 7) confetti();
+  $("rvList").innerHTML = S.log.map((l, i) => `<div class="rvitem${l.right ? "" : " bad"}"><b>${i + 1}. ${l.q}</b><br>${l.right ? "✓ " + l.ok : `✗ ${l.exit ? "Saliste de la página" : "Tu respuesta: " + (l.given ?? "sin responder")}<br><span class="m">Correcta: ${l.ok}</span>`}</div>`).join("");
+  show("sR");
+  // La nota sube contando
+  let v = 0; const el = $("rGrade"), step = Math.max(.5, g / 20);
+  el.textContent = "0";
+  const up = setInterval(() => { v = Math.min(g, v + step); el.textContent = fmtG(v); if (v >= g) { clearInterval(up); SFX.end(g); if (g >= 7) confetti(); } else SFX.tick(); }, 70);
 }
 
-$("again").onclick = () => { SFX.click(); show("sIntro"); $("nm").focus(); };
+$("again").onclick = () => { SFX.click(); $("ok").checked = false; show("sIntro"); $("nm").focus(); };
 
 /* ---------- Captura descargable ---------- */
 $("dl").onclick = () => {
-  const W = 1000, H = 620, cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
+  const W = 1000, H = 640, cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
   x.fillStyle = "#0f4c5c"; x.fillRect(0, 0, W, H);
   x.fillStyle = "#e09f3e"; x.fillRect(0, 0, W, 10);
   x.textAlign = "center";
   x.fillStyle = "#f3c98a"; x.font = "700 18px 'IBM Plex Mono', Consolas, monospace"; x.fillText("EVALUACIÓN DE CONCEPTOS · MÓDULO 5 · MODELADO FINANCIERO", W / 2, 70);
   x.fillStyle = "#ffffff"; x.font = "600 44px 'Source Serif 4', Georgia, serif"; x.fillText(S.name, W / 2, 140, W - 80);
   x.fillStyle = "#cfe3e7"; x.font = "18px 'IBM Plex Mono', Consolas, monospace"; x.fillText(S.when + " · Intento " + S.attempt, W / 2, 178);
-  x.fillStyle = "#ffffff"; x.font = "700 170px 'Source Serif 4', Georgia, serif"; x.fillText(fmtG(S.score), W / 2 - 50, 370);
-  x.fillStyle = "#cfe3e7"; x.font = "600 52px 'Source Serif 4', Georgia, serif"; x.textAlign = "left"; x.fillText("/ 10", W / 2 + (fmtG(S.score).length > 1 ? 80 : 30), 370); x.textAlign = "center";
+  const gs = fmtG(S.score);
+  x.font = "700 170px 'Source Serif 4', Georgia, serif"; const gw = x.measureText(gs).width;
+  x.font = "600 52px 'Source Serif 4', Georgia, serif"; const sw = x.measureText(" / 10").width;
+  const gx = W / 2 - (gw + sw) / 2; x.textAlign = "left";
+  x.fillStyle = "#ffffff"; x.font = "700 170px 'Source Serif 4', Georgia, serif"; x.fillText(gs, gx, 370);
+  x.fillStyle = "#cfe3e7"; x.font = "600 52px 'Source Serif 4', Georgia, serif"; x.fillText(" / 10", gx + gw, 370);
+  x.textAlign = "center";
   const vw = 360; x.fillStyle = "#e09f3e"; x.fillRect(W / 2 - vw / 2, 400, vw, 48);
   x.fillStyle = "#2a1a00"; x.font = "700 24px 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif"; x.fillText(S.verd, W / 2, 433);
   const okN = S.log.filter(l => l.right).length;
   x.fillStyle = "#d5e6ea"; x.font = "20px 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif"; x.fillText(`Correctas: ${okN} de ${N} · 0.5 puntos cada una`, W / 2, 495);
-  x.fillStyle = "#9fbfc6"; x.font = "16px 'IBM Plex Mono', Consolas, monospace"; x.fillText("Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI", W / 2, 580);
+  x.fillStyle = S.exits ? "#ffb4a3" : "#d5e6ea"; x.fillText(`Salidas de la página: ${S.exits}`, W / 2, 528);
+  x.fillStyle = "#9fbfc6"; x.font = "16px 'IBM Plex Mono', Consolas, monospace"; x.fillText("Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI", W / 2, 600);
   const a = document.createElement("a");
   a.download = "Modulo5_Evaluacion_" + S.name.replace(/[^\p{L}\p{N}]+/gu, "_") + "_Intento" + S.attempt + ".png";
   a.href = cv.toDataURL("image/png"); document.body.appendChild(a); a.click(); a.remove();
@@ -444,11 +590,11 @@ function confetti() {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const cv = $("conf"), x = cv.getContext("2d"); cv.width = innerWidth; cv.height = innerHeight;
   const cols = ["#e09f3e", "#0f4c5c", "#23826f", "#f3c98a", "#c8553d"];
-  const P = Array.from({ length: 140 }, () => ({ x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * .5, vx: (Math.random() - .5) * 3, vy: 2 + Math.random() * 4, r: Math.random() * 6.28, s: 6 + Math.random() * 6, c: cols[Math.floor(Math.random() * cols.length)] }));
+  const P = Array.from({ length: 160 }, () => ({ x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * .5, vx: (Math.random() - .5) * 3, vy: 2 + Math.random() * 4, r: Math.random() * 6.28, s: 6 + Math.random() * 6, c: cols[Math.floor(Math.random() * cols.length)] }));
   let f = 0; (function step() {
     x.clearRect(0, 0, cv.width, cv.height);
     P.forEach(p => { p.x += p.vx; p.y += p.vy; p.r += .1; x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); x.restore(); });
-    if (++f < 240) requestAnimationFrame(step); else x.clearRect(0, 0, cv.width, cv.height);
+    if (++f < 260) requestAnimationFrame(step); else x.clearRect(0, 0, cv.width, cv.height);
   })();
 }
 </script>
