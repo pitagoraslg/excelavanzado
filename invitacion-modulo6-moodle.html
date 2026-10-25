@@ -1,0 +1,111 @@
+<!-- Invitación al Módulo 6 (Power Query y consolidación de datos) para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Paleta propia del Módulo 6: índigo + mandarina (distinta del azul petróleo + ámbar del Módulo 5). -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes m6-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  @keyframes m6-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(242,153,74,.55); } 50% { box-shadow: 0 0 0 12px rgba(242,153,74,0); } }
+  @keyframes m6-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-6px) rotate(4deg); } }
+  @keyframes m6-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  @keyframes m6-flow { 0% { transform: translateX(-6px); opacity: .3; } 50% { opacity: 1; } 100% { transform: translateX(6px); opacity: .3; } }
+  .m6-in { animation: m6-in .7s ease-out both; }
+  .m6-d1 { animation-delay: .1s; } .m6-d2 { animation-delay: .25s; } .m6-d3 { animation-delay: .4s; } .m6-d4 { animation-delay: .55s; } .m6-d5 { animation-delay: .7s; }
+  .m6-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .m6-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(47,58,143,.18); }
+  .m6-float { display: inline-block; animation: m6-float 3s ease-in-out infinite; }
+  .m6-arrow { display: inline-block; animation: m6-flow 1.6s ease-in-out infinite; }
+  .m6-btn { animation: m6-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .m6-btn:hover { transform: scale(1.04); background-color: #232C70 !important; }
+  .m6-bar { background: linear-gradient(90deg, #E7E9F6 0%, #2F3A8F 30%, #F2994A 55%, #E7E9F6 80%, #2F3A8F 100%); background-size: 200% 100%; animation: m6-shine 7s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .m6-in, .m6-btn, .m6-float, .m6-bar, .m6-arrow { animation: none !important; } }
+</style>
+
+<div style="max-width: 900px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #1F2233; line-height: 1.55; background-color: #F7F6F3; border-radius: 10px; overflow: hidden; border: 1px solid #E2E0EA;">
+
+  <div class="m6-bar" style="height: 6px; background-color: #2F3A8F;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #2F3A8F;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="m6-float">🧩</span></td>
+      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
+        <p class="m6-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #F8C9A0;">Nuevo módulo · Módulo 6</p>
+        <h2 class="m6-in m6-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 27px; font-weight: normal; line-height: 1.2; color: #FFFFFF;">Power Query y consolidación de datos.</h2>
+        <p class="m6-in m6-d2" style="margin: 0; font-size: 15px; color: #DADDF2;">Cuando la información llega de <strong style="color: #FFFFFF;">varios archivos</strong>, cada uno a su manera, unirla a mano es lento y arriesgado. Aprende a <strong style="color: #FFFFFF;">importar, limpiar, combinar y actualizar</strong> datos con Power Query: se hace una vez y se repite con un clic.</p>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 6px 22px 26px;">
+
+    <!-- El caso -->
+    <div class="m6-in m6-d3" style="margin: 18px 0 0; background-color: #FFFFFF; border: 1px solid #E2E0EA; border-radius: 8px; padding: 14px 16px;">
+      <p style="margin: 0 0 4px; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; color: #B8641C;">El caso del módulo</p>
+      <p style="margin: 0 0 10px; font-size: 15px;">Cada mes llegan los reportes de reclamaciones de <strong>ARS Humano</strong>, <strong>ARS Universal</strong> y <strong>ARS Primera</strong>. Traen la misma información, pero con columnas en código, montos como texto, filas vacías y repetidas. ¿Cómo convertirlos en <strong>una sola tabla limpia</strong> que se actualice sola cuando llegue <strong>ARS Senasa</strong>?</p>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; font-size: 13px; text-align: center;">
+        <span style="background-color: #FDEEDD; border: 1px solid #F2994A; border-radius: 6px; padding: 6px 10px;">📂 3 reportes<br><strong>138 filas</strong> tal como llegan</span>
+        <span class="m6-arrow" style="color: #F2994A; font-size: 22px; font-weight: bold;">→</span>
+        <span style="background-color: #E7E9F6; border: 1px solid #2F3A8F; border-radius: 6px; padding: 6px 10px;">🧹 Power Query<br>limpia y une</span>
+        <span class="m6-arrow" style="color: #F2994A; font-size: 22px; font-weight: bold;">→</span>
+        <span style="background-color: #E2F3F0; border: 1px solid #2A9D8F; border-radius: 6px; padding: 6px 10px;">✅ 1 tabla<br><strong>120 reclamaciones</strong></span>
+        <span class="m6-arrow" style="color: #F2994A; font-size: 22px; font-weight: bold;">↻</span>
+        <span style="background-color: #FFFFFF; border: 2px dashed #F2994A; border-radius: 6px; padding: 6px 10px;">+ ARS Senasa<br><strong>160</strong> con un clic</span>
+      </div>
+      <p style="margin: 10px 0 0; font-size: 12.5px; color: #5F6275;">Los reportes contienen datos ficticios creados con fines didácticos.</p>
+    </div>
+
+    <!-- Materiales -->
+    <div style="display: flex; flex-wrap: wrap; gap: 14px; margin: 16px 0 0;">
+
+      <a class="m6-card m6-in m6-d3" href="https://pitagoraslg.github.io/excelavanzado/modulo6-power-query.html" target="_blank" rel="noopener" style="flex: 1 1 240px; display: block; text-decoration: none; color: #1F2233; background-color: #FFFFFF; border: 1px solid #E2E0EA; border-top: 4px solid #2F3A8F; border-radius: 8px; padding: 14px 16px;">
+        <p style="margin: 0 0 6px; font-size: 30px; line-height: 1;">💡</p>
+        <h3 style="margin: 0 0 4px; font-size: 17px; color: #2F3A8F;">Aspectos teóricos.</h3>
+        <p style="margin: 0 0 8px; font-size: 14px;">7 conceptos explicados con analogías y los reportes de las ARS, cada uno con su lámina «A fondo».</p>
+        <span style="font-size: 13px; font-weight: bold; color: #B8641C;">Abrir la presentación →</span>
+      </a>
+
+      <a class="m6-card m6-in m6-d4" href="https://pitagoraslg.github.io/excelavanzado/Modulo6-Reportes-ARS.zip" style="flex: 1 1 240px; display: block; text-decoration: none; color: #1F2233; background-color: #FFFFFF; border: 1px solid #E2E0EA; border-top: 4px solid #F2994A; border-radius: 8px; padding: 14px 16px;">
+        <p style="margin: 0 0 6px; font-size: 30px; line-height: 1;">📂</p>
+        <h3 style="margin: 0 0 4px; font-size: 17px; color: #2F3A8F;">Reportes de las ARS.</h3>
+        <p style="margin: 0 0 8px; font-size: 14px;">La carpeta «Reportes ARS» con los archivos de ARS Humano, ARS Universal y ARS Primera.</p>
+        <span style="font-size: 13px; font-weight: bold; color: #B8641C;">Descargar la carpeta (.zip) ⬇</span>
+      </a>
+
+      <a class="m6-card m6-in m6-d5" href="https://pitagoraslg.github.io/excelavanzado/Modulo6-Archivo-Nuevo-ARS-Senasa.zip" style="flex: 1 1 240px; display: block; text-decoration: none; color: #1F2233; background-color: #FFFFFF; border: 1px solid #E2E0EA; border-top: 4px solid #2A9D8F; border-radius: 8px; padding: 14px 16px;">
+        <p style="margin: 0 0 6px; font-size: 30px; line-height: 1;">🆕</p>
+        <h3 style="margin: 0 0 4px; font-size: 17px; color: #2F3A8F;">Archivo nuevo.</h3>
+        <p style="margin: 0 0 8px; font-size: 14px;">El reporte de ARS Senasa, que llega después, para comprobar que la consulta se actualiza sola.</p>
+        <span style="font-size: 13px; font-weight: bold; color: #B8641C;">Descargar (.zip) ⬇</span>
+      </a>
+
+    </div>
+
+    <!-- Lo que aprenderás -->
+    <div class="m6-in m6-d5" style="margin: 18px 0 0;">
+      <p style="margin: 0 0 8px; font-size: 13px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; color: #2F3A8F;">Lo que aprenderás</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <span style="background-color: #E7E9F6; color: #2F3A8F; border-radius: 16px; padding: 4px 12px; font-size: 14px;">01 · Power Query</span>
+        <span style="background-color: #E7E9F6; color: #2F3A8F; border-radius: 16px; padding: 4px 12px; font-size: 14px;">02 · Importar datos</span>
+        <span style="background-color: #E7E9F6; color: #2F3A8F; border-radius: 16px; padding: 4px 12px; font-size: 14px;">03 · Editor y pasos aplicados</span>
+        <span style="background-color: #E7E9F6; color: #2F3A8F; border-radius: 16px; padding: 4px 12px; font-size: 14px;">04 · Limpiar los datos</span>
+        <span style="background-color: #E7E9F6; color: #2F3A8F; border-radius: 16px; padding: 4px 12px; font-size: 14px;">05 · Tipos de datos y duplicados</span>
+        <span style="background-color: #E7E9F6; color: #2F3A8F; border-radius: 16px; padding: 4px 12px; font-size: 14px;">06 · Combinar información</span>
+        <span style="background-color: #E7E9F6; color: #2F3A8F; border-radius: 16px; padding: 4px 12px; font-size: 14px;">07 · Cargar y actualizar</span>
+      </div>
+    </div>
+
+    <!-- Avisos -->
+    <div class="m6-in m6-d5" style="margin: 16px 0 0; background-color: #FDEEDD; border-left: 5px solid #F2994A; border-radius: 6px; padding: 12px 16px; font-size: 14px;">
+      💻 <strong style="color: #2F3A8F;">Usa Excel de escritorio para Windows</strong>, versión 2016 o posterior: Power Query está en <strong>Datos › Obtener y transformar datos</strong>.<br>
+      📂 <strong style="color: #2F3A8F;">Descomprime la carpeta</strong> antes de usarla y guarda tu propio libro de Excel <strong>fuera</strong> de la carpeta «Reportes ARS».
+    </div>
+
+    <!-- Llamado a la acción -->
+    <div class="m6-in m6-d5" style="text-align: center; margin: 24px 0 6px;">
+      <a class="m6-btn" href="https://pitagoraslg.github.io/excelavanzado/modulo6-power-query.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #2F3A8F; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px; margin: 4px 6px;">▶ Entrar al Módulo 6</a>
+      <a href="https://pitagoraslg.github.io/excelavanzado/Modulo6-Reportes-ARS.zip" style="display: inline-block; background-color: #FFFFFF; color: #B8641C; border: 2px solid #F2994A; text-decoration: none; font-weight: bold; font-size: 17px; padding: 13px 28px; border-radius: 30px; margin: 4px 6px;">⬇ Reportes de las ARS</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #5F6275;">La presentación se abre en una pestaña nueva.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #5F6275;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>

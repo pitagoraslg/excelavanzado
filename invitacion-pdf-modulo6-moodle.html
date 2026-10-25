@@ -1,0 +1,76 @@
+<!-- Invitación al documento de estudio (PDF) del Módulo 6 para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Paleta del Módulo 6: índigo + mandarina. -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes p6-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes p6-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(242,153,74,.55); } 50% { box-shadow: 0 0 0 12px rgba(242,153,74,0); } }
+  @keyframes p6-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(-4deg); } }
+  @keyframes p6-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  .p6-in { animation: p6-in .7s ease-out both; }
+  .p6-d1 { animation-delay: .1s; } .p6-d2 { animation-delay: .25s; } .p6-d3 { animation-delay: .4s; } .p6-d4 { animation-delay: .55s; }
+  .p6-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .p6-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(47,58,143,.16); }
+  .p6-float { display: inline-block; animation: p6-float 3s ease-in-out infinite; }
+  .p6-btn { animation: p6-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .p6-btn:hover { transform: scale(1.04); background-color: #232C70 !important; }
+  .p6-bar { background: linear-gradient(90deg, #E7E9F6 0%, #2F3A8F 30%, #F2994A 55%, #E7E9F6 80%, #2F3A8F 100%); background-size: 200% 100%; animation: p6-shine 7s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .p6-in, .p6-btn, .p6-float, .p6-bar { animation: none !important; } }
+</style>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #1F2233; line-height: 1.55; background-color: #F7F6F3; border-radius: 10px; overflow: hidden; border: 1px solid #E2E0EA;">
+
+  <div class="p6-bar" style="height: 6px; background-color: #2F3A8F;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #2F3A8F;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="p6-float">📘</span></td>
+      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
+        <p class="p6-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #F8C9A0;">Material de estudio · Módulo 6</p>
+        <h2 class="p6-in p6-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 27px; font-weight: normal; line-height: 1.2; color: #FFFFFF;">Power Query y consolidación de datos, para leer, imprimir o repasar.</h2>
+        <p class="p6-in p6-d2" style="margin: 0; font-size: 15px; color: #DADDF2;">Todo el contenido del módulo en un <strong style="color: #FFFFFF;">documento PDF listo para imprimir</strong>: cada concepto con su explicación, una analogía, la ruta en Excel y un ejemplo con los <strong style="color: #FFFFFF;">reportes de reclamaciones de las ARS</strong>. Tenlo a mano mientras trabajas en tu consulta.</p>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Datos rápidos -->
+  <div class="p6-in p6-d2" style="display: flex; flex-wrap: wrap; gap: 10px; padding: 14px 14px 0;">
+    <div class="p6-card" style="flex: 1 1 170px; background-color: #FFFFFF; border: 1px solid #E2E0EA; border-top: 4px solid #2F3A8F; border-radius: 6px; padding: 14px; text-align: center;">
+      <span style="font-size: 26px;">🧩</span><br>
+      <strong style="color: #2F3A8F; font-size: 18px;">7 conceptos</strong><br>
+      <span style="font-size: 13px; color: #5F6275;">Cada uno con su página «A fondo»</span>
+    </div>
+    <div class="p6-card" style="flex: 1 1 170px; background-color: #FFFFFF; border: 1px solid #E2E0EA; border-top: 4px solid #F2994A; border-radius: 6px; padding: 14px; text-align: center;">
+      <span style="font-size: 26px;">↻</span><br>
+      <strong style="color: #2F3A8F; font-size: 18px;">Ejemplo integrador</strong><br>
+      <span style="font-size: 13px; color: #5F6275;">Del correo al reporte en un clic</span>
+    </div>
+    <div class="p6-card" style="flex: 1 1 170px; background-color: #FFFFFF; border: 1px solid #E2E0EA; border-top: 4px solid #2A9D8F; border-radius: 6px; padding: 14px; text-align: center;">
+      <span style="font-size: 26px;">🧭</span><br>
+      <strong style="color: #2F3A8F; font-size: 18px;">Resumen final</strong><br>
+      <span style="font-size: 13px; color: #5F6275;">Herramientas, rutas de Excel y cifras clave</span>
+    </div>
+  </div>
+
+  <div style="padding: 4px 26px 26px;">
+
+    <!-- Contenido -->
+    <div class="p6-in p6-d3" style="margin: 16px 0 0; background-color: #FFFFFF; border: 1px solid #E2E0EA; border-radius: 8px; padding: 12px 16px;">
+      <p style="margin: 0 0 8px; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; color: #B8641C;">Qué encontrarás · 20 páginas</p>
+      <p style="margin: 0; font-size: 14px;">01 Power Query · 02 Importar datos · 03 Editor y pasos aplicados · 04 Limpiar los datos · 05 Tipos de datos y duplicados · 06 Combinar información · 07 Cargar y actualizar · ★ Ejemplo integrador · Resumen · Referencias.</p>
+    </div>
+
+    <!-- Consejo -->
+    <div class="p6-in p6-d3" style="margin: 14px 0 0; background-color: #FDEEDD; border-left: 5px solid #F2994A; border-radius: 6px; padding: 12px 16px; font-size: 14px;">
+      🖨️ <strong style="color: #2F3A8F;">Para imprimir:</strong> ábrelo, pulsa <strong>Ctrl + P</strong> y elige tamaño <strong>Carta</strong>. Se ve bien a color y en blanco y negro.
+    </div>
+
+    <!-- Llamado a la acción -->
+    <div class="p6-in p6-d4" style="text-align: center; margin: 22px 0 6px;">
+      <a class="p6-btn" href="https://pitagoraslg.github.io/excelavanzado/Conceptos-Power-Query-Modulo6.pdf" target="_blank" rel="noopener" style="display: inline-block; background-color: #2F3A8F; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px;">📘 Abrir el documento de estudio</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #5F6275;">Se abre en una pestaña nueva. Desde ahí puedes leerlo, guardarlo o imprimirlo.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #5F6275;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
