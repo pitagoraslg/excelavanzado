@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Actividad práctica · Módulo 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* Portada de la actividad del Módulo 5: una sola actividad en dos partes (prácticas guiadas 1 y 2) sobre el mismo archivo. */
+:root{
+  --bg:#e7e3da; --paper:#f7f5f0; --card:#ffffff; --ink:#0f4c5c; --text:#1d2b30; --muted:#5e6b6f; --line:#e3ded3; --grid:#cfc8ba;
+  --acc:#e09f3e; --acc-d:#a8691a; --acc-soft:#fbf0dd; --pos:#23826f; --pos-soft:#e2f3f0; --ink-soft:#e3eef0;
+  --serif:"Source Serif 4",Georgia,serif; --sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif; --mono:"IBM Plex Mono",Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 16px 40px}
+.sheet{background:var(--paper);border-top:4px solid var(--ink);box-shadow:0 10px 40px rgba(15,76,92,.14)}
+header{background:var(--ink);color:#fff;padding:34px 40px 30px}
+.eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#f3c98a;margin:0 0 10px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(28px,4.4vw,42px);line-height:1.1;margin:0 0 12px;text-wrap:balance}
+header p.lead{margin:0;font-size:18px;color:#d5e6ea;max-width:760px}
+header p.lead b{color:#fff}
+main{padding:28px 40px 36px;display:flex;flex-direction:column;gap:26px}
+h2{font-family:var(--serif);font-weight:600;color:var(--ink);font-size:26px;margin:0 0 12px;line-height:1.15}
+.cap{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-d);font-weight:700;margin:0 0 6px}
+
+/* Ruta: parte 1 → parte 2 → informe */
+.route{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--mono);font-size:14px}
+.route span{background:var(--card);border:1px solid var(--line);padding:6px 12px;font-weight:600;color:var(--ink)}
+.route i{font-style:normal;color:var(--acc-d);font-weight:700}
+
+.file{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;background:var(--card);border:1px solid var(--line);padding:16px 20px}
+.file p{flex:1 1 320px;margin:0;font-size:16px}
+.dl{display:inline-flex;align-items:center;gap:12px;text-decoration:none;background:var(--ink);color:#fff;padding:12px 18px}
+.dl:hover{background:#0b3a46}
+.dl .ic{font-size:22px;color:var(--acc);line-height:1}
+.dl b{display:block;font-size:16px}
+.dl small{display:block;font-family:var(--mono);font-size:11.5px;opacity:.9}
+
+.parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.part{background:var(--card);border:1px solid var(--line);border-top:5px solid var(--ink);padding:22px 22px 20px;display:flex;flex-direction:column;gap:12px}
+.part.p2{border-top-color:var(--acc)}
+.part .num{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--acc-d)}
+.part h3{font-family:var(--serif);font-weight:600;font-size:25px;color:var(--ink);margin:0;line-height:1.15}
+.part p{margin:0;font-size:16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{background:var(--ink-soft);color:var(--ink);font-size:13.5px;padding:3px 10px;border-radius:14px}
+.part ul{margin:0;padding-left:20px;font-size:15.5px}
+.part ul li{margin:0 0 4px}
+.go{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;font-weight:700;font-size:18px;padding:14px 18px;text-align:center}
+.go.first{background:var(--ink);color:#fff}
+.go.first:hover{background:#0b3a46}
+.go.second{background:var(--acc);color:#2a1a00}
+.go.second:hover{background:#ebb15a}
+.note{font-size:14px;color:var(--muted)}
+.same{background:var(--acc-soft);border-left:4px solid var(--acc);padding:8px 12px;font-size:14.5px}
+
+.report{background:var(--card);border:1px solid var(--line);padding:20px 24px}
+.report p{margin:0 0 10px;font-size:16px}
+.report ol{margin:0;padding-left:22px;font-size:16px}
+.report li{margin:0 0 8px}
+.report li b{color:var(--ink)}
+.warn{background:var(--acc-soft);border-left:4px solid var(--acc);padding:12px 16px;font-size:15px}
+footer{text-align:center;font-family:var(--mono);font-size:13px;color:var(--muted);padding:0 16px 24px}
+a:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+
+@media (max-width:640px){
+  header{padding:26px 20px 24px}
+  main{padding:22px 16px 28px}
+  header p.lead{font-size:16.5px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="sheet">
+    <header>
+      <p class="eyebrow">Actividad práctica · Módulo 5</p>
+      <h1>Escenarios y punto de equilibrio del Centro Médico Horizonte.</h1>
+      <p class="lead">Es <b>una sola actividad</b> en <b>dos partes</b>, y las dos se hacen <b>en el mismo archivo de Excel</b>. Primero termina la parte 1; después, en ese mismo archivo, continúa con la parte 2.</p>
+    </header>
+
+    <main>
+      <section>
+        <p class="cap">El recorrido</p>
+        <div class="route"><span>Descarga el archivo</span><i>→</i><span>Parte 1 · Escenarios</span><i>→</i><span>Parte 2 · Buscar objetivo</span><i>→</i><span>Informe de aprendizaje</span></div>
+      </section>
+
+      <section class="file">
+        <p><b>Antes de empezar, descarga el archivo de la actividad.</b> Lo usarás en las dos partes: no abras un archivo nuevo para la parte 2.</p>
+        <a class="dl" href="Modulo5-Actividad-Escenarios-Buscar-Objetivo.xlsx" download><span class="ic">⬇</span><span><b>Descargar el archivo de Excel.</b><small>Modulo5-Actividad-Escenarios-Buscar-Objetivo.xlsx</small></span></a>
+      </section>
+
+      <section>
+        <h2>Las dos partes de la actividad.</h2>
+        <div class="parts">
+          <article class="part">
+            <span class="num">Parte 1 · Empieza aquí</span>
+            <h3>Escenarios.</h3>
+            <div class="chips"><span>Supuestos y resultados</span><span>Escenarios</span><span>Administrador de escenarios</span><span>Resumen del escenario</span></div>
+            <p>Guardarás tres escenarios para el próximo mes del centro (Conservador, Esperado y Favorable) y generarás un resumen que los compara en una sola hoja.</p>
+            <ul>
+              <li>Al terminar tendrás: tres escenarios guardados y la hoja «Resumen del escenario».</li>
+            </ul>
+            <a class="go first" href="modulo5-practica-guiada-1.html">▶ Empezar la parte 1</a>
+          </article>
+
+          <article class="part p2">
+            <span class="num">Parte 2 · Cuando termines la parte 1</span>
+            <h3>Buscar objetivo.</h3>
+            <div class="chips"><span>Buscar objetivo</span><span>Punto de equilibrio</span><span>Celda objetivo y celda que cambia</span></div>
+            <p>Le pedirás a Excel que encuentre cuántos servicios necesita el centro para no perder dinero y qué tarifa haría falta para llegar a una meta de ganancia.</p>
+            <ul>
+              <li>Al terminar tendrás: el punto de equilibrio escrito en <b>F16</b> y la respuesta al reto de la tarifa.</li>
+            </ul>
+            <div class="same">📂 Abre <b>el mismo archivo</b> donde hiciste la parte 1.</div>
+            <a class="go second" href="modulo5-practica-guiada-2.html">Ya hice la parte 1 · Continuar con la parte 2 →</a>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2>Al terminar: tu informe de aprendizaje.</h2>
+        <div class="report">
+          <p>El informe no es una copia de los pasos: es <b>tu reflexión</b> sobre lo que hiciste y lo que descubriste. Debe tener estas partes:</p>
+          <ol>
+            <li><b>Introducción.</b> En un párrafo, explica con tus palabras qué es un modelo financiero y para qué sirve el análisis «¿y si…?».</li>
+            <li><b>Lo que aprendí.</b> Dos aprendizajes clave como mínimo, uno de cada parte.</li>
+            <li><b>Dificultades.</b> Qué se te complicó y cómo lo resolviste.</li>
+            <li><b>Aplicación en mi trabajo.</b> Un ejemplo real de tu área donde usarías escenarios o Buscar objetivo.</li>
+            <li><b>Recomendación final.</b> Si fueras parte de la administración del Centro Médico Horizonte, ¿qué decisión tomarías con estos resultados?</li>
+          </ol>
+        </div>
+      </section>
+
+      <div class="warn">💻 <b>Usa Excel de escritorio</b> (2016 o posterior): el Administrador de escenarios no está en Excel para la web. Cada parte se explica en láminas con sonido: actívalo para escuchar la explicación.</div>
+    </main>
+  </div>
+</div>
+<footer>Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</footer>
+</body>
+</html>
