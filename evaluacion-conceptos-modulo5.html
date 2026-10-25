@@ -364,7 +364,7 @@ const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 };
-const KEY = "m5eval2";
+const KEY = "m5eval3";
 const N = 20, PTS = 0.5, SECS = 60, RING = 2 * Math.PI * 34;
 const fmtG = g => (Math.round(g * 10) / 10).toFixed(1).replace(/\.0$/, "");
 
@@ -417,25 +417,34 @@ $("fly").innerHTML = C.concat(["Supuestos", "Resultado", "Punto de equilibrio", 
 $("nm").value = store.get(KEY + ".name", "");
 $("nm").addEventListener("keydown", e => { if (e.key === "Enter") $("go").click(); });
 
-function pickQuestions() {
-  // Preguntas que no han salido en este navegador, repartidas por concepto.
-  let used = new Set(store.get(KEY + ".used", []));
-  const free = BANK.map((_, i) => i).filter(i => !used.has(i));
-  const roundRobin = (pool, need) => {
-    const by = C.map((_, c) => shuffle(pool.filter(i => BANK[i][0] === c)));
-    const out = [], order = shuffle(C.map((_, c) => c));
-    while (out.length < need && by.some(b => b.length)) for (const c of order) { if (out.length < need && by[c].length) out.push(by[c].pop()); }
-    return out;
-  };
-  let chosen;
-  if (free.length >= N) chosen = roundRobin(free, N);
-  else {                                            // se agotó el banco: se usan las que quedan y empieza otra vuelta
-    chosen = free.slice();
-    chosen = chosen.concat(roundRobin(BANK.map((_, i) => i).filter(i => !chosen.includes(i)), N - chosen.length));
-    used = new Set();
+/* Intentos 1, 2 y 3: tres tiradas de 20 preguntas distintas entre sí (las 60 del banco).
+   Intento 4 en adelante: mezcla 7 + 7 + 6 preguntas de las tres tiradas (rota cuál aporta 6)
+   y prefiere las que menos han salido en las mezclas anteriores. */
+function roundRobin(pool, need) {
+  const by = C.map((_, c) => shuffle(pool.filter(i => BANK[i][0] === c)));
+  const out = [], order = shuffle(C.map((_, c) => c));
+  while (out.length < need && by.some(b => b.length)) for (const c of order) { if (out.length < need && by[c].length) out.push(by[c].pop()); }
+  return out;
+}
+function pickQuestions(attempt) {
+  const sets = store.get(KEY + ".sets", []);
+  if (sets.length < 3) {
+    const usedAll = new Set(sets.flat());
+    const set = roundRobin(BANK.map((_, i) => i).filter(i => !usedAll.has(i)), N);
+    sets.push(set); store.set(KEY + ".sets", sets);
+    return shuffle(set);
   }
-  chosen.forEach(i => used.add(i));
-  store.set(KEY + ".used", [...used]);
+  const uses = store.get(KEY + ".mix", {}), mixN = store.get(KEY + ".mixN", 0);
+  const take = [7, 7, 7]; take[mixN % 3] = 6;
+  const chosen = [];
+  sets.forEach((set, s) => {
+    // De cada tirada: primero las que menos han salido, repartidas por concepto.
+    const tiers = [...new Set(set.map(i => uses[i] || 0))].sort((a, b) => a - b);
+    const got = [];
+    for (const t of tiers) { if (got.length >= take[s]) break; got.push(...roundRobin(set.filter(i => (uses[i] || 0) === t), take[s] - got.length)); }
+    got.forEach(i => { chosen.push(i); uses[i] = (uses[i] || 0) + 1; });
+  });
+  store.set(KEY + ".mix", uses); store.set(KEY + ".mixN", mixN + 1);
   return shuffle(chosen);
 }
 
@@ -449,7 +458,7 @@ $("go").onclick = () => {
   if (!$("ok").checked) { $("nmErr").textContent = "Marca la casilla para confirmar que leíste las reglas."; SFX.bad(); return; }
   $("nmErr").textContent = ""; store.set(KEY + ".name", name);
   const attempt = store.get(KEY + ".attempt", 0) + 1; store.set(KEY + ".attempt", attempt);
-  S = { name, attempt, qs: pickQuestions(), i: 0, score: 0, log: [], exits: 0, streak: 0, start: Date.now(), live: false };
+  S = { name, attempt, qs: pickQuestions(attempt), i: 0, score: 0, log: [], exits: 0, streak: 0, start: Date.now(), live: false };
   $("dots").innerHTML = "<i></i>".repeat(N);
   countdown(() => { S.live = true; show("sQ"); renderQ(); });
 };
