@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Práctica demostrativa · Módulo 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* Práctica demostrativa (solo para observar): los dos ejercicios de la actividad con otros números. Láminas «Observe» + «Resultado». */
+:root{
+  --bg:#e7e3da; --paper:#f7f5f0; --card:#ffffff; --ink:#0f4c5c; --text:#1d2b30; --muted:#5e6b6f; --line:#e3ded3; --grid:#cfc8ba;
+  --acc:#e09f3e; --acc-d:#a8691a; --acc-soft:#fbf0dd; --pos:#23826f; --pos-soft:#e2f3f0; --neg:#c8553d; --neg-soft:#f8e4df; --ink-soft:#e3eef0;
+  --xl:#217346; --hi:#fff2cc; --ou:#e2efda;
+  --serif:"Source Serif 4",Georgia,serif; --sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif; --mono:"IBM Plex Mono",Consolas,monospace; --win:"Segoe UI",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;background:var(--paper);transform-origin:center;transform:translate(-50%,-50%);box-shadow:0 10px 40px rgba(15,76,92,.18);border-top:4px solid var(--ink)}
+.slide{position:absolute;inset:0;padding:62px 72px 70px;display:none;flex-direction:column;gap:16px}
+.slide.on{display:flex;animation:in .4s ease}
+@keyframes in{from{opacity:.3;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.slide.on,.pop,.flash{animation:none!important}}
+.top{position:absolute;top:20px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;z-index:3}
+.dots{display:flex;gap:6px}.dots button{width:28px;height:6px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dots button.done{background:var(--grid)}.dots button.cur{background:var(--acc)}
+.bottom{position:absolute;bottom:18px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);z-index:3}
+.navb{display:flex;gap:8px;align-items:center}
+.btn{font-family:var(--mono);font-size:13px;border:1px solid var(--grid);background:var(--card);color:var(--ink);padding:7px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink)} .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+h1,h2{font-family:var(--serif);font-weight:600;margin:0;color:var(--ink);line-height:1.08;text-wrap:balance}
+h2{font-size:38px}
+p{margin:0}
+b{font-weight:600}
+code{font-family:var(--mono);font-size:.9em;background:var(--ink-soft);color:var(--ink);padding:1px 6px;font-weight:600;white-space:nowrap}
+.eyebrow{font-family:var(--mono);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);display:flex;gap:12px;align-items:center}
+.eyebrow .tag{background:var(--ink);color:#fff;padding:3px 10px;font-size:12.5px}
+.eyebrow .tag.ok{background:var(--pos)}
+.eyebrow .tag.go{background:var(--acc);color:#2a1a00}
+.lead{font-size:20px;line-height:1.5}
+.why{display:flex;gap:12px;align-items:baseline;font-size:17px;color:var(--ink);background:var(--ink-soft);padding:9px 14px}
+.why b{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.cols{display:grid;grid-template-columns:430px 1fr;gap:36px;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.note{font-size:15px;color:var(--muted)}
+
+/* Instrucciones numeradas */
+.do{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:13px}
+.do li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;font-size:18px;line-height:1.42}
+.do li .h{display:block;font-size:14.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+.m{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--acc);color:#2a1a00;font-family:var(--mono);font-size:14px;font-weight:700;flex:none;box-shadow:0 0 0 2px #fff}
+.do li .m{margin-top:1px}
+.pin{position:absolute;top:-12px;right:-12px;z-index:2}
+.rel{position:relative}
+.path{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px;font-family:var(--win);font-size:15px}
+.path span{background:var(--card);border:1px solid var(--grid);padding:2px 9px;font-weight:600}
+.path i{font-style:normal;color:var(--acc-d);font-weight:700}
+.cap{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.arrow{font-family:var(--mono);font-size:13px;color:var(--acc-d);font-weight:700}
+.tip{border-left:4px solid var(--acc);background:var(--acc-soft);padding:10px 14px;font-size:15.5px;line-height:1.45}
+.warn{border-left:4px solid var(--neg);background:var(--neg-soft);padding:10px 14px;font-size:15.5px;line-height:1.45}
+
+/* Hoja de Excel simulada */
+.xl{border:1px solid #c6c6c6;background:#fff;font-family:var(--win);font-size:13.5px;box-shadow:0 6px 18px rgba(0,0,0,.08);align-self:start;max-width:100%}
+.xl .fx{display:flex;align-items:center;border-bottom:1px solid #d4d4d4;font-size:13px}
+.xl .fx .nm{min-width:130px;padding:4px 8px;border-right:1px solid #d4d4d4}
+.xl .fx .fi{padding:4px 10px;color:#777;font-style:italic;border-right:1px solid #d4d4d4}
+.xl .fx .fv{padding:4px 10px}
+.xl table{border-collapse:collapse;width:100%}
+.xl th{background:#f3f3f3;color:#555;font-weight:400;border:1px solid #dadada;padding:3px 8px;font-size:12.5px}
+.xl th.on{background:#d3e5d9;color:var(--xl);font-weight:600;border-bottom:2px solid var(--xl)}
+.xl td{border:1px solid #e2e2e2;padding:4px 8px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.xl td.rn{background:#f3f3f3;color:#555;text-align:center;font-size:12.5px;width:30px}
+.xl td.rn.on{background:#d3e5d9;color:var(--xl);font-weight:600}
+.xl td.h{background:var(--acc);color:#fff;font-weight:600;font-size:12px}
+.xl td.hd{background:#f2f2f2;font-weight:600}
+.xl td.dk{background:#595959;color:#fff;font-weight:600;text-align:right}
+.xl td.y{background:var(--hi);text-align:right;font-weight:600}
+.xl td.g{background:var(--ou);text-align:right}
+.xl td.nr{text-align:right}
+.xl td.neg{color:#c00000}
+.xl td.sel{background:#efe3b0;box-shadow:inset 0 0 0 2px var(--xl)}
+.xl td.flash{animation:flash 1s ease}
+@keyframes flash{0%{background:#ffd56a}100%{}}
+.xl .tabs{display:flex;background:#f3f3f3;border-top:1px solid #d4d4d4;font-size:12.5px}
+.xl .tabs span{padding:5px 14px;border-right:1px solid #d4d4d4;color:#444}
+.xl .tabs span.on{background:#fff;color:var(--xl);font-weight:600;border-bottom:3px solid var(--xl)}
+
+/* Cinta de opciones simulada */
+.ribbon{border:1px solid #c6c6c6;background:#fff;font-family:var(--win);font-size:13px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.ribbon .tabsr{display:flex;background:var(--xl);color:#fff}
+.ribbon .tabsr span{padding:7px 13px;opacity:.9;display:flex;align-items:center;gap:6px}
+.ribbon .tabsr span.on{background:#fff;color:var(--xl);font-weight:700;opacity:1}
+.ribbon .groups{display:flex;padding:10px 6px 6px;gap:4px;align-items:stretch}
+.ribbon .grp{display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:0 12px;border-right:1px solid #e1e1e1;color:#777;font-size:11.5px;gap:6px;text-align:center}
+.ribbon .grp .ic{font-size:24px;opacity:.5}
+.ribbon .grp.on{color:var(--text)}
+.ribbon .bt{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 8px;font-size:12.5px;color:var(--text);border:2px solid transparent;text-align:center}
+.ribbon .bt.on{border-color:var(--acc);background:var(--acc-soft);font-weight:600}
+.ribbon .drop{display:flex;justify-content:flex-end;padding:0 14px 14px}
+.ribbon .menu{border:1px solid #c6c6c6;box-shadow:0 6px 14px rgba(0,0,0,.16);background:#fff;font-size:14px}
+.ribbon .menu div{padding:8px 18px 8px 12px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.ribbon .menu div.on{background:#d3e5d9;outline:2px solid var(--acc);outline-offset:-2px;font-weight:600}
+
+/* Cuadros de diálogo simulados */
+.dlg{border:1px solid #9aa3a6;background:#f0f0f0;font-family:var(--win);font-size:13.5px;box-shadow:0 10px 26px rgba(0,0,0,.16);width:100%;align-self:start}
+.dlg .t{background:#fff;padding:8px 12px;border-bottom:1px solid #d0d0d0;font-weight:600;display:flex;justify-content:space-between}
+.dlg .t span{color:#777;font-weight:400}
+.dlg .b{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.dlg .f{background:#fff;border:1px solid #8f979a;padding:5px 8px;min-height:29px}
+.dlg .f.on{border:2px solid var(--acc);background:#fffaf0;font-weight:600}
+.dlg .row{display:grid;grid-template-columns:1fr 110px;gap:10px;align-items:center}
+.dlg .k{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}
+.dlg .k span,.dlg .side span{border:1px solid #8f979a;background:#fdfdfd;padding:4px 14px;text-align:center;position:relative}
+.dlg .k span.on,.dlg .side span.on{border:2px solid var(--acc);background:var(--acc-soft);font-weight:600}
+.dlg .small{font-size:12px;color:#555}
+.dlg .chk{display:flex;gap:16px;font-size:13px;color:#333}
+.dlg .mgr{display:grid;grid-template-columns:1fr 104px;gap:10px}
+.dlg .list{background:#fff;border:1px solid #8f979a;min-height:118px;padding:3px}
+.dlg .list div{padding:4px 8px}
+.dlg .list div.sel{background:#cce4f7}
+.dlg .list .empty{color:#666;font-size:12.5px;padding:8px;line-height:1.4}
+.dlg .list .new{color:var(--pos);font-weight:700}
+.dlg .side{display:flex;flex-direction:column;gap:6px}
+.dlg .radio{display:flex;flex-direction:column;gap:5px;font-size:13px}
+
+/* Lámina «Compruebe» */
+.okbox{border:2px solid var(--pos);background:var(--pos-soft);padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.okbox .t{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--pos);font-weight:700;display:flex;align-items:center;gap:10px}
+.okbox .t i{font-style:normal;display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--pos);color:#fff;align-items:center;justify-content:center;font-size:17px}
+.okbox p{font-size:19px;line-height:1.45}
+.fixbox{align-self:start;border:1px solid var(--grid);background:var(--card);padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.fixbox .t{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--neg);font-weight:700}
+.fixbox ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.fixbox li{display:grid;grid-template-columns:20px 1fr;gap:8px;font-size:15.5px;line-height:1.45}
+.fixbox li::before{content:"→";color:var(--neg);font-weight:700}
+.pop{animation:pop .6s cubic-bezier(.2,.9,.3,1.4) both}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+
+table.vals{border-collapse:collapse;width:100%;font-size:16px;background:var(--card);font-variant-numeric:tabular-nums}
+table.vals th,table.vals td{border:1px solid var(--line);padding:8px 12px;text-align:right}
+table.vals th{background:var(--ink);color:#fff;font-weight:600}
+table.vals th:first-child,table.vals td:first-child{text-align:left}
+table.vals td:first-child{font-weight:700;color:var(--ink)}
+table.vals tr.cur td{background:var(--acc-soft)}
+.badge{display:inline-block;font-family:var(--mono);font-size:12px;padding:2px 8px;font-weight:700}
+.badge.neg{background:var(--neg-soft);color:var(--neg)}.badge.pos{background:var(--pos-soft);color:var(--pos)}.badge.mid{background:var(--ink-soft);color:var(--ink)}
+
+/* Introducción */
+.cover{justify-content:center;gap:20px}
+.cover-logo{position:absolute;top:54px;right:72px;height:96px;width:auto;mix-blend-mode:multiply}
+.cover .mod{font-family:var(--mono);font-size:17px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-d)}
+.cover h1{font-size:60px;max-width:640px}
+.cover .lead{max-width:600px}
+.cover-tags{display:flex;gap:10px;flex-wrap:wrap;max-width:640px}
+.cover-tags span{font-family:var(--mono);font-size:13px;border:1px solid var(--ink);color:var(--ink);padding:5px 10px;background:var(--card)}
+.cover .hint{font-family:var(--mono);font-size:14px;color:var(--muted)}
+.cover-art{position:absolute;right:72px;top:190px;width:420px;display:flex;flex-direction:column;gap:12px}
+.dlbtn{display:inline-flex;align-items:center;gap:14px;text-decoration:none;background:var(--ink);color:#fff;padding:12px 18px;align-self:flex-start}
+.dlbtn:hover{background:#0b3a46}
+.dlbtn .ic{font-size:22px;line-height:1;color:var(--acc)}
+.dlbtn b{display:block;font-size:16px}
+.dlbtn small{display:block;font-family:var(--mono);font-size:11.5px;opacity:.9;margin-top:2px}
+.scen{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sc{background:var(--card);border:1px solid var(--line);border-top:6px solid var(--grid);padding:14px;display:flex;flex-direction:column;gap:6px}
+.sc.c1{border-top-color:var(--neg)}.sc.c2{border-top-color:var(--ink)}.sc.c3{border-top-color:var(--pos)}
+.sc .n{font-weight:700;color:var(--ink);font-size:19px}
+.sc .d{font-size:15px;color:var(--muted);line-height:1.4;min-height:42px}
+.sc .v{font-family:var(--mono);font-size:14px;line-height:1.75;font-variant-numeric:tabular-nums;border-top:1px solid var(--line);padding-top:8px}
+.sc .r{margin-top:6px;font-family:var(--mono);font-size:14px;background:var(--line);text-align:center;padding:6px;color:var(--muted);font-weight:600}
+.q{font-family:var(--serif);font-size:25px;line-height:1.35;color:var(--ink);border-left:4px solid var(--acc);padding-left:18px}
+.words{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;flex:1;align-content:start}
+.word{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--ink);padding:22px;display:flex;flex-direction:column;gap:12px}
+.word .ic{font-size:34px}
+.word .t{font-family:var(--serif);font-size:27px;color:var(--ink);font-weight:700}
+.word .d{font-size:17.5px;line-height:1.5}
+.word .ex{font-size:15.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;line-height:1.5}
+.legend{display:flex;flex-direction:column;gap:14px}
+.legend div{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;font-size:16.5px;line-height:1.45}
+.legend .sw{width:40px;height:26px;border:1px solid #b9b3a6}
+.legend .sw.y{background:var(--hi)}.legend .sw.g{background:var(--ou)}.legend .sw.s{background:#f2f2f2}
+
+/* Simulador */
+.go{font:inherit;border:2px solid var(--acc);background:var(--acc-soft);padding:4px 16px;font-weight:700;cursor:pointer;color:var(--text)}
+.go:hover{background:#f6dcae}
+#simList div{cursor:pointer}
+#simList div:hover{background:#e5f1fb}
+#simList div.sel{background:#cce4f7}
+.say{font-size:16px;margin-top:10px;line-height:1.45}
+
+/* Cierre */
+.final{background:var(--ink)}
+.final h2,.final .eyebrow{color:#fff}
+.final .chk{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.final .chk li{display:grid;grid-template-columns:30px 1fr;gap:8px;font-size:18.5px;color:#fff;line-height:1.4}
+.final .chk li::before{content:"☐";font-size:23px;line-height:1.1;color:var(--acc)}
+.final .save{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);padding:20px;display:flex;flex-direction:column;gap:12px;color:#fff;font-size:17px;line-height:1.45}
+.final code{background:rgba(255,255,255,.14);color:#fff;font-size:19px;padding:6px 10px;white-space:normal}
+.final .path span{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:#fff}
+.final .path i{color:var(--acc)}
+.nextp{display:inline-flex;align-items:center;gap:12px;text-decoration:none;background:var(--acc);color:#2a1a00;padding:12px 18px;font-weight:700;font-size:17px;align-self:flex-start}
+.nextp:hover{background:#ebb15a}
+.final .think{font-family:var(--serif);font-size:22px;line-height:1.4;color:#fff;border-left:4px solid var(--acc);padding-left:16px}
+.sc .r.neg-r{color:var(--neg);background:var(--neg-soft)} .sc .r.pos-r{color:var(--pos);background:var(--pos-soft)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="top"><span id="topL">MÓDULO 5 · PRÁCTICA DEMOSTRATIVA.</span><div class="dots" id="dots"></div></div>
+  <div id="slides">
+
+  <!-- Portada -->
+  <div class="slide cover" data-t="0" data-l="MÓDULO 5 · PRÁCTICA DEMOSTRATIVA.">
+    <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI">
+    <div class="mod">Excel Avanzado · Práctica demostrativa.</div>
+    <h1>Observe cómo se resuelve, paso a paso.</h1>
+    <p class="lead">El mismo caso del <b>Centro Médico Horizonte</b>, con <b>otros números</b>. Verá resueltos los dos ejercicios de la actividad: <b>escenarios</b> y <b>Buscar objetivo</b>.</p>
+    <div class="cover-tags"><span>👀 Solo para observar</span><span>🧰 Administrador de escenarios</span><span>🎯 Buscar objetivo</span><span>⬇ Archivo resuelto al final</span></div>
+    <div class="tip" style="max-width:640px">No tiene que hacer nada en Excel: <b>mire cada paso</b> con atención. Al final podrá descargar el archivo resuelto para revisarlo.</div>
+    <p class="hint">Use las flechas ← → del teclado o los botones de abajo · M = sonido.</p>
+    <div class="cover-art" aria-hidden="true">
+      <div class="sc c1 pop" style="animation-delay:.2s"><span class="n">Conservador</span><span class="r neg-r">−RD$ 190,000.00</span></div>
+      <div class="sc c2 pop" style="animation-delay:.4s;margin-left:40px"><span class="n">Esperado</span><span class="r">RD$ 250,000.00</span></div>
+      <div class="sc c3 pop" style="animation-delay:.6s;margin-left:80px"><span class="n">Favorable</span><span class="r pos-r">RD$ 685,000.00</span></div>
+    </div>
+  </div>
+
+  <!-- Los datos -->
+  <div class="slide" data-t="0" data-l="PRÁCTICA DEMOSTRATIVA · LOS DATOS DE ESTE EJEMPLO.">
+    <div class="eyebrow"><span class="tag go">Los datos de este ejemplo</span></div>
+    <h2>Mismo modelo, números nuevos.</h2>
+    <div class="cols" style="grid-template-columns:minmax(0,1fr) 300px;gap:26px;align-items:start">
+      <div class="xl" style="font-size:12.5px">
+        <table>
+          <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th></tr>
+          <tr><td class="rn">3</td><td class="h" colspan="2">SUPUESTOS (se pueden cambiar)</td><td></td><td class="h" colspan="4">VALORES DE LOS ESCENARIOS</td></tr>
+          <tr><td class="rn">4</td><td>Servicios al mes</td><td class="y">1,500</td><td></td><td class="hd">Variable</td><td class="hd">Conservador</td><td class="hd">Esperado</td><td class="hd">Favorable</td></tr>
+          <tr><td class="rn">5</td><td>Tarifa promedio por servicio</td><td class="y">RD$ 2,200.00</td><td></td><td>Servicios al mes (B4)</td><td class="nr">1,300</td><td class="nr">1,500</td><td class="nr">1,700</td></tr>
+          <tr><td class="rn">6</td><td>Costo variable por servicio</td><td class="y">RD$ 1,300.00</td><td></td><td>Tarifa promedio (B5)</td><td class="nr">RD$ 2,100.00</td><td class="nr">RD$ 2,200.00</td><td class="nr">RD$ 2,300.00</td></tr>
+          <tr><td class="rn">7</td><td>Gastos fijos mensuales</td><td class="y">RD$ 1,100,000.00</td><td></td><td>Costo variable (B6)</td><td class="nr">RD$ 1,400.00</td><td class="nr">RD$ 1,300.00</td><td class="nr">RD$ 1,250.00</td></tr>
+          <tr><td class="rn">9</td><td class="h" colspan="2">RESULTADOS (fórmulas)</td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rn">10</td><td>Ingresos</td><td class="g">RD$ 3,300,000.00</td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rn">11</td><td>Costos variables</td><td class="g">RD$ 1,950,000.00</td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rn">12</td><td>Gastos fijos</td><td class="g">RD$ 1,100,000.00</td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rn">13</td><td><b>Resultado (ganancia o pérdida)</b></td><td class="g"><b>RD$ 250,000.00</b></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rn">14</td><td>Margen sobre los ingresos</td><td class="g">7.58%</td><td></td><td></td><td></td><td></td><td></td></tr>
+        </table>
+        <div class="tabs"><span class="on">Modelo</span></div>
+      </div>
+      <div class="legend">
+        <div><span class="sw y"></span><span><b>Amarillo:</b> los supuestos. Hoy el centro atiende <b>1,500</b> servicios.</span></div>
+        <div><span class="sw g"></span><span><b>Verde:</b> fórmulas. Con estos números el centro gana <b>RD$ 250,000.00</b> al mes.</span></div>
+        <div><span class="sw s"></span><span><b>Gris:</b> los valores de los tres escenarios que se van a guardar.</span></div>
+        <div class="tip" style="display:block">Son los mismos pasos de la actividad. Solo cambian los números, para que vea el procedimiento con otro ejemplo.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 1 · Paso 1 -->
+  <div class="slide" data-t="1" data-l="EJERCICIO 1 · ESCENARIOS · PASO 1 DE 6 · OBSERVE.">
+    <div class="eyebrow"><span class="tag">Ejercicio 1 · Paso 1 de 6</span>Observe.</div>
+    <h2>Se seleccionan las tres celdas que van a cambiar.</h2>
+    <div class="why"><b>Por qué</b><span>Así Excel sabe qué celdas guarda en cada escenario.</span></div>
+    <div class="cols">
+      <ol class="do">
+        <li><span class="m">1</span><span>Clic en <code>B4</code> (dice <b>1,500</b>).</span></li>
+        <li><span class="m">2</span><span>Sin soltar el ratón, se arrastra hasta <code>B6</code>.<span class="h">También vale: clic en B4, Mayús (Shift) y clic en B6.</span></span></li>
+        <li><span class="m">3</span><span>El cuadro de nombres muestra <code>Servicios_al_mes</code>: es el nombre de B4.</span></li>
+      </ol>
+      <div class="col">
+        <span class="cap">Así se ve en Excel</span>
+        <div class="xl rel" style="width:100%">
+          <div class="fx"><span class="nm rel">Servicios_al_mes<span class="m pin">3</span></span><span class="fi">fx</span><span class="fv">1500</span></div>
+          <table>
+            <tr><th></th><th>A</th><th class="on">B</th></tr>
+            <tr><td class="rn on">4</td><td>Servicios al mes</td><td class="y sel rel">1,500<span class="m pin">1</span></td></tr>
+            <tr><td class="rn on">5</td><td>Tarifa promedio por servicio</td><td class="y sel">RD$ 2,200.00</td></tr>
+            <tr><td class="rn on">6</td><td>Costo variable por servicio</td><td class="y sel rel">RD$ 1,300.00<span class="m pin">2</span></td></tr>
+            <tr><td class="rn">7</td><td>Gastos fijos mensuales</td><td class="y">RD$ 1,100,000.00</td></tr>
+          </table>
+        </div>
+        <div class="tip"><code>B7</code> no se selecciona: los gastos fijos son iguales en los tres escenarios.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 2 -->
+  <div class="slide" data-t="1" data-l="EJERCICIO 1 · ESCENARIOS · PASO 2 DE 6 · OBSERVE.">
+    <div class="eyebrow"><span class="tag">Ejercicio 1 · Paso 2 de 6</span>Observe.</div>
+    <h2>Se abre el Administrador de escenarios.</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div class="col">
+        <ol class="do">
+          <li><span class="m">1</span><span>Pestaña <b>Datos</b>.</span></li>
+          <li><span class="m">2</span><span>Grupo <b>Previsión</b> › <b>Análisis de hipótesis</b>.</span></li>
+          <li><span class="m">3</span><span><b>Administrador de escenarios…</b></span></li>
+        </ol>
+        <div class="ribbon">
+          <div class="tabsr"><span>Inicio</span><span>Insertar</span><span>Fórmulas</span><span class="on">Datos <span class="m">1</span></span><span>Revisar</span></div>
+          <div class="groups">
+            <div class="grp"><span class="ic">⤓</span><span>Obtener y<br>transformar</span></div>
+            <div class="grp"><span class="ic">⚒</span><span>Herramientas<br>de datos</span></div>
+            <div class="grp on"><span class="bt on rel"><span style="font-size:24px">❓</span>Análisis de<br>hipótesis ▾<span class="m pin">2</span></span><span>Previsión</span></div>
+          </div>
+          <div class="drop"><div class="menu"><div class="on">Administrador de escenarios… <span class="m">3</span></div><div>Buscar objetivo…</div><div>Tabla de datos…</div></div></div>
+        </div>
+      </div>
+      <div class="col">
+        <span class="cap">Resultado: se abre esta ventana, todavía vacía</span>
+        <div class="dlg pop">
+          <div class="t">Administrador de escenarios <span>? ✕</span></div>
+          <div class="b">
+            <span>Escenarios:</span>
+            <div class="mgr"><div class="list"><div class="empty">No se han definido escenarios. Elija Agregar para agregar escenarios.</div></div>
+              <div class="side"><span class="on">Agregar…</span><span>Eliminar</span><span>Modificar…</span><span>Combinar…</span><span>Resumen…</span></div></div>
+            <div class="k"><span>Mostrar</span><span>Cerrar</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 3 -->
+  <div class="slide" data-t="1" data-l="EJERCICIO 1 · ESCENARIOS · PASO 3 DE 6 · OBSERVE.">
+    <div class="eyebrow"><span class="tag">Ejercicio 1 · Paso 3 de 6</span>Observe.</div>
+    <h2>Se guarda el primer escenario: «Esperado».</h2>
+    <div class="cols" style="grid-template-columns:380px 1fr">
+      <ol class="do" style="gap:10px">
+        <li><span class="m">1</span><span>Clic en <b>Agregar…</b></span></li>
+        <li><span class="m">2</span><span>Nombre: <code>Esperado</code>.</span></li>
+        <li><span class="m">3</span><span>Celdas cambiantes: <code>B4:B6</code> (ya aparece por el paso 1).</span></li>
+        <li><span class="m">4</span><span><b>Aceptar</b>. Se abre «Valores del escenario».</span></li>
+        <li><span class="m">5</span><span>Excel propone los números de hoy: <code>1500</code>, <code>2200</code> y <code>1300</code>. Son los correctos: <b>Aceptar</b>.</span></li>
+      </ol>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start">
+        <div class="dlg">
+          <div class="t">Agregar escenario <span>✕</span></div>
+          <div class="b">
+            <span>Nombre del escenario:</span><div class="f on rel">Esperado<span class="m pin">2</span></div>
+            <span>Celdas cambiantes:</span><div class="f on rel">B4:B6<span class="m pin">3</span></div>
+            <span>Comentario:</span><div class="f small">Se mantiene la demanda actual.</div>
+            <div class="chk"><span>☑ Evitar cambios</span><span>☐ Ocultar</span></div>
+            <div class="k"><span class="on rel">Aceptar<span class="m pin">4</span></span><span>Cancelar</span></div>
+          </div>
+        </div>
+        <div class="col" style="gap:8px">
+          <span class="arrow">→ luego aparece</span>
+          <div class="dlg">
+            <div class="t">Valores del escenario <span>✕</span></div>
+            <div class="b">
+              <span class="small">Introduzca los valores para cada celda cambiante.</span>
+              <div class="row"><span>1: Servicios_al_mes</span><span class="f on">1500</span></div>
+              <div class="row"><span>2: Tarifa_promedio</span><span class="f on">2200</span></div>
+              <div class="row"><span>3: Costo_variable</span><span class="f on">1300</span></div>
+              <div class="k"><span class="on rel">Aceptar<span class="m pin">5</span></span><span>Cancelar</span><span>Agregar</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 4 -->
+  <div class="slide" data-t="1" data-l="EJERCICIO 1 · ESCENARIOS · PASO 4 DE 6 · OBSERVE.">
+    <div class="eyebrow"><span class="tag">Ejercicio 1 · Paso 4 de 6</span>Observe.</div>
+    <h2>Se guardan «Conservador» y «Favorable».</h2>
+    <div class="cols" style="grid-template-columns:440px 1fr">
+      <div class="col">
+        <ol class="do" style="gap:10px">
+          <li><span class="m">1</span><span><b>Agregar…</b> › nombre <code>Conservador</code> › celdas <code>B4:B6</code> › <b>Aceptar</b>.</span></li>
+          <li><span class="m">2</span><span>Se <b>borran</b> los números propuestos y se escriben <code>1300</code>, <code>2100</code> y <code>1400</code> › <b>Aceptar</b>.</span></li>
+          <li><span class="m">3</span><span>Igual con <code>Favorable</code>: <code>1700</code>, <code>2300</code> y <code>1250</code>.</span></li>
+        </ol>
+        <div class="warn">⚠️ Observe que Excel siempre propone los números de la hoja. Si no se cambian, el escenario queda igual que «Esperado».</div>
+        <table class="vals">
+          <tr><th>Escenario</th><th>Servicios</th><th>Tarifa</th><th>Costo</th></tr>
+          <tr><td>Esperado</td><td>1500</td><td>2200</td><td>1300</td></tr>
+          <tr class="cur"><td>Conservador</td><td>1300</td><td>2100</td><td>1400</td></tr>
+          <tr class="cur"><td>Favorable</td><td>1700</td><td>2300</td><td>1250</td></tr>
+        </table>
+      </div>
+      <div class="col">
+        <div class="dlg">
+          <div class="t">Valores del escenario · Conservador <span>✕</span></div>
+          <div class="b">
+            <div class="row"><span>1: Servicios_al_mes</span><span class="f on">1300</span></div>
+            <div class="row"><span>2: Tarifa_promedio</span><span class="f on">2100</span></div>
+            <div class="row"><span>3: Costo_variable</span><span class="f on">1400</span></div>
+            <div class="k"><span class="on">Aceptar</span><span>Cancelar</span><span>Agregar</span></div>
+          </div>
+        </div>
+        <span class="arrow">→ al terminar, la lista tiene los tres</span>
+        <div class="dlg pop">
+          <div class="t">Administrador de escenarios <span>? ✕</span></div>
+          <div class="b"><div class="mgr"><div class="list" style="min-height:76px"><div>Esperado</div><div class="new">Conservador</div><div class="new sel">Favorable</div></div><div class="side"><span>Agregar…</span><span>Eliminar</span><span>Resumen…</span></div></div>
+            <div class="k"><span>Mostrar</span><span>Cerrar</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 5 -->
+  <div class="slide" data-t="1" data-l="EJERCICIO 1 · ESCENARIOS · PASO 5 DE 6 · OBSERVE.">
+    <div class="eyebrow"><span class="tag">Ejercicio 1 · Paso 5 de 6</span>Observe.</div>
+    <h2>Se muestra cada escenario y se mira B13.</h2>
+    <div class="why"><b>Pruébelo aquí</b><span>Elija un escenario y pulse «Mostrar» para ver qué pasa en la hoja.</span></div>
+    <div class="cols" style="grid-template-columns:400px 1fr">
+      <div class="col">
+        <ol class="do" style="gap:8px">
+          <li><span class="m">1</span><span>Se elige <b>Conservador</b> › <b>Mostrar</b>.</span></li>
+          <li><span class="m">2</span><span>Luego <b>Favorable</b> › <b>Mostrar</b>.</span></li>
+          <li><span class="m">3</span><span>Se termina en <b>Esperado</b>.</span></li>
+        </ol>
+        <div class="dlg">
+          <div class="t">Administrador de escenarios <span>? ✕</span></div>
+          <div class="b">
+            <div class="mgr"><div class="list" id="simList" role="listbox" aria-label="Escenarios" style="min-height:96px">
+              <div role="option" tabindex="0" data-s="0" class="sel" aria-selected="true">Esperado</div>
+              <div role="option" tabindex="0" data-s="1" aria-selected="false">Conservador</div>
+              <div role="option" tabindex="0" data-s="2" aria-selected="false">Favorable</div>
+            </div><div class="side"><span>Agregar…</span><span>Eliminar</span><span>Modificar…</span><span>Resumen…</span></div></div>
+            <div class="k"><button type="button" class="go" id="simShow">Mostrar</button><span>Cerrar</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="col" style="gap:0">
+        <div class="xl" style="width:100%">
+          <table>
+            <tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rn">4</td><td>Servicios al mes</td><td class="y" id="c4">1,500</td></tr>
+            <tr><td class="rn">5</td><td>Tarifa promedio por servicio</td><td class="y" id="c5">RD$ 2,200.00</td></tr>
+            <tr><td class="rn">6</td><td>Costo variable por servicio</td><td class="y" id="c6">RD$ 1,300.00</td></tr>
+            <tr><td class="rn">7</td><td>Gastos fijos mensuales</td><td class="y">RD$ 1,100,000.00</td></tr>
+            <tr><td class="rn">10</td><td>Ingresos</td><td class="g" id="c10">RD$ 3,300,000.00</td></tr>
+            <tr><td class="rn">11</td><td>Costos variables</td><td class="g" id="c11">RD$ 1,950,000.00</td></tr>
+            <tr><td class="rn">12</td><td>Gastos fijos</td><td class="g">RD$ 1,100,000.00</td></tr>
+            <tr><td class="rn">13</td><td><b>Resultado (ganancia o pérdida)</b></td><td class="g" id="c13"><b>RD$ 250,000.00</b></td></tr>
+            <tr><td class="rn">14</td><td>Margen sobre los ingresos</td><td class="g" id="c14">7.58%</td></tr>
+          </table>
+        </div>
+        <p class="say" id="simSay" aria-live="polite">Escenario visible: <b>Esperado</b>. El centro gana RD$ 250,000.00.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="1" data-ok="1" data-l="EJERCICIO 1 · ESCENARIOS · PASO 5 DE 6 · RESULTADO.">
+    <div class="eyebrow"><span class="tag ok">Ejercicio 1 · Paso 5 de 6</span>Resultado.</div>
+    <h2>Lo que mostró cada escenario.</h2>
+    <table class="vals pop" style="font-size:18px">
+      <tr><th>Escenario</th><th>Resultado (B13)</th><th>Margen (B14)</th><th style="text-align:left">Lectura</th></tr>
+      <tr><td>Conservador</td><td style="color:var(--neg);font-weight:700">-RD$ 190,000.00</td><td style="color:var(--neg);font-weight:700">-6.96%</td><td style="text-align:left"><span class="badge neg">Pierde dinero</span></td></tr>
+      <tr><td>Esperado</td><td>RD$ 250,000.00</td><td>7.58%</td><td style="text-align:left"><span class="badge mid">Gana</span></td></tr>
+      <tr><td>Favorable</td><td style="color:var(--pos);font-weight:700">RD$ 685,000.00</td><td style="color:var(--pos);font-weight:700">17.52%</td><td style="text-align:left"><span class="badge pos">Gana más</span></td></tr>
+    </table>
+    <div class="cols" style="grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+      <div class="okbox" style="padding:14px 18px"><span class="t"><i>✓</i>Cómo se calcula el conservador</span><p style="font-size:16.5px">Ingresos 1,300 × RD$ 2,100.00 = RD$ 2,730,000.00 − costos 1,300 × RD$ 1,400.00 = RD$ 1,820,000.00 − fijos RD$ 1,100,000.00 = <b style="color:var(--neg)">−RD$ 190,000.00</b>.</p></div>
+      <div class="tip" style="font-size:16px">Fíjese: entre el peor y el mejor caso hay <b>RD$ 875,000.00</b> de diferencia. Ese rango mide la incertidumbre del mes.</div>
+    </div>
+  </div>
+
+  <!-- Paso 6 -->
+  <div class="slide" data-t="2" data-l="EJERCICIO 1 · ESCENARIOS · PASO 6 DE 6 · OBSERVE.">
+    <div class="eyebrow"><span class="tag">Ejercicio 1 · Paso 6 de 6</span>Observe.</div>
+    <h2>Se genera el resumen que compara los tres.</h2>
+    <div class="cols" style="grid-template-columns:1fr 440px">
+      <ol class="do">
+        <li><span class="m">1</span><span>En el Administrador: <b>Resumen…</b></span></li>
+        <li><span class="m">2</span><span>Tipo de informe: <b>Resumen</b>.</span></li>
+        <li><span class="m">3</span><span>Celdas de resultado: <code>B13:B14</code> (resultado y margen).</span></li>
+        <li><span class="m">4</span><span><b>Aceptar</b>: Excel crea la hoja <b>Resumen del escenario</b>.</span></li>
+      </ol>
+      <div class="col">
+        <div class="dlg">
+          <div class="t">Resumen del escenario <span>? ✕</span></div>
+          <div class="b">
+            <span>Tipo de informe</span>
+            <div class="radio rel"><span><b>◉ Resumen</b></span><span>○ Informe de tabla dinámica de escenario</span><span class="m pin">2</span></div>
+            <span>Celdas de resultado:</span><div class="f on rel">B13:B14<span class="m pin">3</span></div>
+            <div class="k"><span class="on rel">Aceptar<span class="m pin">4</span></span><span>Cancelar</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="2" data-ok="1" data-l="EJERCICIO 1 · ESCENARIOS · PASO 6 DE 6 · RESULTADO.">
+    <div class="eyebrow"><span class="tag ok">Ejercicio 1 · Paso 6 de 6</span>Resultado.</div>
+    <h2>La hoja «Resumen del escenario».</h2>
+    <div class="xl pop" style="width:100%">
+      <table>
+        <tr><th></th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th></tr>
+        <tr><td class="rn">2</td><td class="dk" style="text-align:left">Resumen del escenario</td><td class="dk"></td><td class="dk">Valores actuales:</td><td class="dk">Esperado</td><td class="dk">Conservador</td><td class="dk">Favorable</td></tr>
+        <tr><td class="rn">5</td><td colspan="6"><b>Celdas cambiantes:</b></td></tr>
+        <tr><td class="rn">6</td><td></td><td>Servicios_al_mes</td><td class="nr">1,500</td><td class="nr">1,500</td><td class="nr">1,300</td><td class="nr">1,700</td></tr>
+        <tr><td class="rn">7</td><td></td><td>Tarifa_promedio</td><td class="nr">RD$ 2,200.00</td><td class="nr">RD$ 2,200.00</td><td class="nr">RD$ 2,100.00</td><td class="nr">RD$ 2,300.00</td></tr>
+        <tr><td class="rn">8</td><td></td><td>Costo_variable</td><td class="nr">RD$ 1,300.00</td><td class="nr">RD$ 1,300.00</td><td class="nr">RD$ 1,400.00</td><td class="nr">RD$ 1,250.00</td></tr>
+        <tr><td class="rn">9</td><td colspan="6"><b>Celdas de resultado:</b></td></tr>
+        <tr><td class="rn">10</td><td></td><td>Resultado</td><td class="nr">RD$ 250,000.00</td><td class="nr">RD$ 250,000.00</td><td class="nr neg">-RD$ 190,000.00</td><td class="nr">RD$ 685,000.00</td></tr>
+        <tr><td class="rn">11</td><td></td><td>Margen</td><td class="nr">7.58%</td><td class="nr">7.58%</td><td class="nr neg">-6.96%</td><td class="nr">17.52%</td></tr>
+      </table>
+      <div class="tabs"><span>Modelo</span><span class="on">Resumen del escenario</span></div>
+    </div>
+    <div class="cols" style="grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+      <div class="okbox" style="padding:14px 18px"><span class="t"><i>✓</i>Ejercicio 1 terminado</span><p style="font-size:16.5px">Tres escenarios guardados y una hoja que los compara lado a lado.</p></div>
+      <div class="tip" style="font-size:15.5px">La columna «Valores actuales» repite el escenario que estaba visible al crear el resumen: aquí, <b>Esperado</b>.</div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 2 · Las tres preguntas -->
+  <div class="slide" data-t="3" data-l="EJERCICIO 2 · BUSCAR OBJETIVO · LAS TRES PREGUNTAS.">
+    <div class="eyebrow"><span class="tag go">Ejercicio 2 · Buscar objetivo</span></div>
+    <h2>¿Cuántos servicios necesita para no perder?</h2>
+    <p class="q">Hoy el centro atiende <b>1,500</b> servicios y gana <b>RD$ 250,000.00</b>. Buscar objetivo hace el camino al revés: se le da el resultado deseado (<b>0</b>) y Excel busca los servicios.</p>
+    <div class="words">
+      <div class="word"><span class="ic">🎯</span><span class="t">Definir la celda.</span><span class="d">La fórmula que se quiere llevar a un valor.</span><span class="ex"><code>B13</code> · el resultado.</span></div>
+      <div class="word"><span class="ic">🔢</span><span class="t">Con el valor.</span><span class="d">El número al que se quiere llegar. Se escribe.</span><span class="ex"><code>0</code> · ni gana ni pierde.</span></div>
+      <div class="word"><span class="ic">🔧</span><span class="t">Para cambiar la celda.</span><span class="d">El supuesto que Excel puede mover.</span><span class="ex"><code>B4</code> · los servicios al mes.</span></div>
+    </div>
+  </div>
+
+  <!-- Paso 7 -->
+  <div class="slide" data-t="3" data-l="EJERCICIO 2 · BUSCAR OBJETIVO · PASO 1 DE 4 · OBSERVE.">
+    <div class="eyebrow"><span class="tag">Ejercicio 2 · Paso 1 de 4</span>Observe.</div>
+    <h2>Se abre Buscar objetivo y se llenan las tres casillas.</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div class="col">
+        <ol class="do" style="gap:10px">
+          <li><span class="m">1</span><span>Clic en <code>B13</code>.</span></li>
+          <li><span class="m">2</span><span><b>Datos › Análisis de hipótesis › Buscar objetivo…</b></span></li>
+          <li><span class="m">3</span><span>Definir la celda: <code>B13</code>. Con el valor: <code>0</code>. Para cambiar la celda: clic en <code>B4</code>.</span></li>
+          <li><span class="m">4</span><span><b>Aceptar</b>.</span></li>
+        </ol>
+        <div class="ribbon">
+          <div class="tabsr"><span>Inicio</span><span>Fórmulas</span><span class="on">Datos</span><span>Revisar</span></div>
+          <div class="drop" style="padding-top:12px"><div class="menu"><div>Administrador de escenarios…</div><div class="on">Buscar objetivo… <span class="m">2</span></div><div>Tabla de datos…</div></div></div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="dlg pop">
+          <div class="t">Buscar objetivo <span>? ✕</span></div>
+          <div class="b">
+            <div class="row" style="grid-template-columns:170px 1fr"><span>Definir la celda:</span><span class="f on">B13</span></div>
+            <div class="row" style="grid-template-columns:170px 1fr"><span>Con el valor:</span><span class="f on">0</span></div>
+            <div class="row" style="grid-template-columns:170px 1fr"><span>Para cambiar la celda:</span><span class="f on">$B$4</span></div>
+            <div class="k"><span class="on rel">Aceptar<span class="m pin">4</span></span><span>Cancelar</span></div>
+          </div>
+        </div>
+        <div class="tip">Excel escribe <b>$B$4</b> al hacer clic en la celda: es lo mismo que B4.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide" data-t="3" data-ok="1" data-l="EJERCICIO 2 · BUSCAR OBJETIVO · PASO 2 DE 4 · RESULTADO.">
+    <div class="eyebrow"><span class="tag ok">Ejercicio 2 · Paso 2 de 4</span>Resultado.</div>
+    <h2>Excel encontró 1,222.22 servicios.</h2>
+    <div class="cols" style="grid-template-columns:440px 1fr">
+      <ol class="do">
+        <li><span class="m">1</span><span>Aparece «La búsqueda con la celda B13 <b>ha encontrado una solución</b>».</span></li>
+        <li><span class="m">2</span><span><code>B4</code> muestra <b>1,222</b>; la barra de fórmulas dice <b>1222.22222…</b></span></li>
+        <li><span class="m">3</span><span><code>B13</code> quedó en <b>RD$ 0.00</b>: el equilibrio.</span></li>
+        <li><span class="m">4</span><span>Se anota el número y se pulsa <b>Cancelar</b>: B4 vuelve a 1,500.</span></li>
+      </ol>
+      <div class="col">
+        <div class="xl rel" style="width:100%">
+          <div class="fx"><span class="nm">B4</span><span class="fi">fx</span><span class="fv rel" style="font-weight:700">1222.22222222222<span class="m pin">2</span></span></div>
+          <table>
+            <tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rn">4</td><td>Servicios al mes</td><td class="y sel">1,222</td></tr>
+            <tr><td class="rn">5</td><td>Tarifa promedio por servicio</td><td class="y">RD$ 2,200.00</td></tr>
+            <tr><td class="rn">6</td><td>Costo variable por servicio</td><td class="y">RD$ 1,300.00</td></tr>
+            <tr><td class="rn">13</td><td><b>Resultado (ganancia o pérdida)</b></td><td class="g rel"><b>RD$ 0.00</b><span class="m pin">3</span></td></tr>
+          </table>
+        </div>
+        <div class="dlg" style="max-width:460px">
+          <div class="t">Estado de la búsqueda de objetivo <span>✕</span></div>
+          <div class="b"><span class="small rel">La búsqueda con la celda B13 ha encontrado una solución.<span class="m pin">1</span></span>
+            <div class="row" style="grid-template-columns:130px 1fr"><span class="small">Valor del objetivo:</span><span class="small">0</span></div>
+            <div class="row" style="grid-template-columns:130px 1fr"><span class="small">Valor actual:</span><span class="small">RD$ 0.00</span></div>
+            <div class="k"><span>Aceptar</span><span class="on rel">Cancelar<span class="m pin">4</span></span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Redondeo -->
+  <div class="slide" data-t="3" data-ok="1" data-l="EJERCICIO 2 · BUSCAR OBJETIVO · PASO 3 DE 4 · RESULTADO.">
+    <div class="eyebrow"><span class="tag ok">Ejercicio 2 · Paso 3 de 4</span>Resultado.</div>
+    <h2>¿1,222 o 1,223? Se prueban los dos.</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr;align-items:start">
+      <div class="col">
+        <p class="lead">No existe medio servicio, así que hay que redondear. Se escribe cada número en <code>B4</code> y se mira <code>B13</code>:</p>
+        <table class="vals pop" style="font-size:18px">
+          <tr><th>Servicios en B4</th><th>Resultado en B13</th><th style="text-align:left">Lectura</th></tr>
+          <tr><td>1,222</td><td style="color:var(--neg);font-weight:700">-RD$ 200.00</td><td style="text-align:left"><span class="badge neg">Todavía pierde</span></td></tr>
+          <tr class="cur"><td>1,223</td><td style="color:var(--pos);font-weight:700">RD$ 700.00</td><td style="text-align:left"><span class="badge pos">Ya no pierde</span></td></tr>
+        </table>
+        <div class="okbox" style="padding:14px 18px"><span class="t"><i>✓</i>Respuesta</span><p style="font-size:18px">El punto de equilibrio es <b>1,223 servicios</b>. Se redondea <b>hacia arriba</b>. Se escribe en <code>F16</code>.</p></div>
+      </div>
+      <div class="col">
+        <div class="xl" style="width:100%">
+          <table>
+            <tr><th></th><th>D</th><th>E</th><th>F</th></tr>
+            <tr><td class="rn">15</td><td class="h" colspan="3">PUNTO DE EQUILIBRIO (Buscar objetivo)</td></tr>
+            <tr><td class="rn">16</td><td>Punto de equilibrio (servicios al mes):</td><td></td><td class="y flash"><b>1,223</b></td></tr>
+          </table>
+        </div>
+        <div class="tip">¿Por qué no 1,222? Con 1,222 servicios el centro todavía pierde RD$ 200.00. Cada servicio deja RD$ 900.00 (RD$ 2,200.00 − RD$ 1,300.00).</div>
+        <div class="tip" style="border-left-color:var(--ink);background:var(--ink-soft)">Después de probar, se devuelve <code>B4</code> a <b>1,500</b>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reto -->
+  <div class="slide" data-t="4" data-l="EJERCICIO 2 · BUSCAR OBJETIVO · PASO 4 DE 4 · RETO.">
+    <div class="eyebrow"><span class="tag">Ejercicio 2 · Paso 4 de 4</span>Reto.</div>
+    <h2>¿Qué tarifa se necesita para ganar RD$ 400,000.00?</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div class="col">
+        <p class="lead">Misma herramienta, otra pregunta. Ahora el supuesto que se mueve es la <b>tarifa</b> (<code>B5</code>) y la meta es <b>400000</b>.</p>
+        <div class="dlg pop">
+          <div class="t">Buscar objetivo <span>? ✕</span></div>
+          <div class="b">
+            <div class="row" style="grid-template-columns:170px 1fr"><span>Definir la celda:</span><span class="f on">B13</span></div>
+            <div class="row" style="grid-template-columns:170px 1fr"><span>Con el valor:</span><span class="f on">400000</span></div>
+            <div class="row" style="grid-template-columns:170px 1fr"><span>Para cambiar la celda:</span><span class="f on">$B$5</span></div>
+            <div class="k"><span class="on">Aceptar</span><span>Cancelar</span></div>
+          </div>
+        </div>
+        <div class="tip">Con el valor se escribe sin RD$, sin comas: <code>400000</code>.</div>
+      </div>
+      <div class="col">
+        <span class="cap">Resultado</span>
+        <div class="xl" style="width:100%">
+          <div class="fx"><span class="nm">B5</span><span class="fi">fx</span><span class="fv" style="font-weight:700">2300</span></div>
+          <table>
+            <tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rn">4</td><td>Servicios al mes</td><td class="y">1,500</td></tr>
+            <tr><td class="rn">5</td><td>Tarifa promedio por servicio</td><td class="y sel flash"><b>RD$ 2,300.00</b></td></tr>
+            <tr><td class="rn">13</td><td><b>Resultado (ganancia o pérdida)</b></td><td class="g"><b>RD$ 400,000.00</b></td></tr>
+          </table>
+        </div>
+        <div class="okbox" style="padding:14px 18px"><span class="t"><i>✓</i>Respuesta</span><p style="font-size:17px">La tarifa debe subir de RD$ 2,200.00 a <b>RD$ 2,300.00</b>. Se anota y se pulsa <b>Cancelar</b> para que el modelo vuelva a RD$ 2,200.00.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cierre -->
+  <div class="slide final" data-t="5" data-ok="2" data-l="PRÁCTICA DEMOSTRATIVA · EL ARCHIVO RESUELTO.">
+    <div class="eyebrow"><span class="tag go">Ejemplo resuelto</span></div>
+    <h2>Así queda el archivo terminado.</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <ul class="chk">
+        <li>Tres escenarios en el Administrador: Esperado, Conservador y Favorable.</li>
+        <li>Hoja «Resumen del escenario»: −RD$ 190,000.00, RD$ 250,000.00 y RD$ 685,000.00.</li>
+        <li><span>Punto de equilibrio en <code style="font-size:16px;padding:1px 6px">F16</code>: 1,223 servicios (exacto: 1,222.22).</span></li>
+        <li>Reto: tarifa de RD$ 2,300.00 para ganar RD$ 400,000.00.</li>
+        <li>Hoja «Cómo se resolvió» con todos los pasos y la conclusión.</li>
+      </ul>
+      <div class="save">
+        <b style="font-size:20px">Descargue el archivo resuelto.</b>
+        <span style="color:#cfe3e7">Ábralo y revise: <b style="color:#fff">Datos › Análisis de hipótesis › Administrador de escenarios</b> para ver los tres escenarios guardados, y la hoja «Resumen del escenario».</span>
+        <a class="nextp" href="Modulo5-Ejemplo-Resuelto.xlsx" download>⬇ Descargar el archivo resuelto (Excel)</a>
+        <span style="color:#cfe3e7;font-size:15px">Modulo5-Ejemplo-Resuelto.xlsx · Si aparece «Vista protegida», pulse Habilitar edición.</span>
+      </div>
+    </div>
+    <p class="think">Conclusión del ejemplo: el escenario Conservador es el de mayor riesgo (pierde RD$ 190,000.00). El centro necesita al menos 1,223 servicios al mes para no perder; hoy atiende 1,500.</p>
+  </div>
+
+  </div>
+  <div class="bottom">
+    <span>Jarlin Figueroa, MA</span>
+    <div class="navb">
+      <button class="btn" id="snd" title="Sonido (M)">🔊 Sonido</button>
+      <button class="btn" id="fs" title="Pantalla completa (F)">Pantalla completa</button>
+      <button class="btn" id="prev">← Anterior</button>
+      <span id="count" style="min-width:70px;text-align:center"></span>
+      <button class="btn primary" id="next">Siguiente →</button>
+    </div>
+  </div>
+</div>
+<script>
+const wrap=document.getElementById("slides"), els=[...wrap.querySelectorAll(":scope > .slide")];
+const SECC=["Introducción","Escenarios","Resumen del escenario","Buscar objetivo","Reto","Archivo resuelto"];
+const INI=SECC.map((_,i)=>els.findIndex(e=>+e.dataset.t===i));
+const dots=document.getElementById("dots");
+dots.innerHTML=SECC.map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
+dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.t]));
+
+/* Sonido: transición al cambiar de lámina y campanita en las láminas «Resultado» */
+const SND={on:true,ctx:null,ready:false}; try{ SND.on=localStorage.getItem("m5sonido")!=="0"; }catch(e){}
+function ctx(){ const A=window.AudioContext||window.webkitAudioContext; if(!A) return null; const c=SND.ctx||(SND.ctx=new A()); if(c.state==="suspended") c.resume(); return c; }
+function tono(c,f,t0,dur,vol,tipo){ const o=c.createOscillator(), g=c.createGain(); o.type=tipo||"sine"; o.frequency.value=f; g.gain.setValueAtTime(.0001,t0); g.gain.exponentialRampToValueAtTime(vol,t0+.015); g.gain.exponentialRampToValueAtTime(.0001,t0+dur); o.connect(g); g.connect(c.destination); o.start(t0); o.stop(t0+dur+.02); }
+function sonar(dir){ if(!SND.on||!SND.ready) return; try{ const c=ctx(); if(!c) return;
+  const t=c.currentTime+.01, len=.22, b=c.createBuffer(1,Math.floor(c.sampleRate*len),c.sampleRate), d=b.getChannelData(0); for(let k=0;k<d.length;k++) d[k]=(Math.random()*2-1)*(1-k/d.length);
+  const s=c.createBufferSource(); s.buffer=b; const f=c.createBiquadFilter(); f.type="bandpass"; f.Q.value=1.4; f.frequency.setValueAtTime(dir>0?500:2600,t); f.frequency.exponentialRampToValueAtTime(dir>0?2600:500,t+len);
+  const g=c.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.2,t+.05); g.gain.exponentialRampToValueAtTime(.0001,t+len); s.connect(f); f.connect(g); g.connect(c.destination); s.start(t); s.stop(t+len);
+  tono(c,dir>0?880:587,t+.06,.25,.06); }catch(e){} }
+function exito(nivel){ if(!SND.on||!SND.ready) return; try{ const c=ctx(); if(!c) return; const t=c.currentTime+.18;
+  const notas=nivel>1?[523.25,659.25,783.99,1046.5]:[659.25,987.77]; notas.forEach((f,i)=>tono(c,f,t+i*.11,.45,.07,"triangle")); }catch(e){} }
+function clic(){ if(!SND.on) return; try{ const c=ctx(); if(!c) return; const t=c.currentTime+.005; tono(c,1320,t,.06,.05,"square"); tono(c,660,t+.05,.12,.05); }catch(e){} }
+const pintarSnd=()=>{ document.getElementById("snd").textContent=SND.on?"🔊 Sonido":"🔇 Sin sonido"; };
+document.getElementById("snd").onclick=e=>{ SND.on=!SND.on; try{ localStorage.setItem("m5sonido",SND.on?"1":"0"); }catch(_){} pintarSnd(); e.currentTarget.blur(); }; pintarSnd();
+
+let cur=0;
+function go(i){ const prev=cur; cur=Math.max(0,Math.min(els.length-1,i));
+  if(cur!==prev){ sonar(cur>prev?1:-1); if(cur>prev && els[cur].dataset.ok) exito(+els[cur].dataset.ok); }
+  els.forEach((e,j)=>e.classList.toggle("on",j===cur)); const tp=+els[cur].dataset.t;
+  dots.querySelectorAll("button").forEach((b,j)=>{ b.classList.toggle("cur",j===tp); b.classList.toggle("done",tp>j); });
+  document.getElementById("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
+  document.getElementById("topL").textContent=els[cur].dataset.l;
+  document.getElementById("prev").disabled=cur===0; document.getElementById("next").disabled=cur===els.length-1;
+  history.replaceState(null,"","#"+(cur+1)); }
+document.getElementById("prev").onclick=()=>go(cur-1); document.getElementById("next").onclick=()=>go(cur+1);
+document.getElementById("fs").onclick=e=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(_){} e.currentTarget.blur(); };
+document.addEventListener("keydown",e=>{ if(e.target.closest&&e.target.closest("#simList, input, textarea")) return;
+  if(["ArrowRight","PageDown"].includes(e.key)||e.key===" "){e.preventDefault();go(cur+1);} else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==="Home") go(0); else if(e.key==="End") go(els.length-1); else if(e.key==="f"||e.key==="F") document.getElementById("fs").click(); else if(e.key==="m"||e.key==="M") document.getElementById("snd").click(); });
+
+/* Simulador del botón «Mostrar» con los números de este ejemplo */
+const ESC=[{n:"Esperado",s:1500,t:2200,c:1300},{n:"Conservador",s:1300,t:2100,c:1400},{n:"Favorable",s:1700,t:2300,c:1250}], FIJOS=1100000;
+let pick=0;
+const rd=v=>(v<0?"-":"")+"RD$ "+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+function celda(id,html,neg){ const el=document.getElementById(id); el.innerHTML=html; el.classList.toggle("neg",!!neg); el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }
+const opts=[...document.querySelectorAll("#simList [data-s]")];
+function elegir(i){ pick=i; opts.forEach(o=>{ const on=+o.dataset.s===i; o.classList.toggle("sel",on); o.setAttribute("aria-selected",on?"true":"false"); }); }
+function mostrar(){ const x=ESC[pick], ing=x.s*x.t, cv=x.s*x.c, r=ing-cv-FIJOS, m=r/ing; clic();
+  celda("c4",x.s.toLocaleString("en-US")); celda("c5",rd(x.t)); celda("c6",rd(x.c)); celda("c10",rd(ing)); celda("c11",rd(cv));
+  celda("c13","<b>"+rd(r)+"</b>",r<0); celda("c14",(m*100).toFixed(2)+"%",r<0);
+  document.getElementById("simSay").innerHTML="Escenario visible: <b>"+x.n+"</b>. "+(r<0?"El centro <b style=\"color:var(--neg)\">pierde "+rd(-r)+"</b>.":"El centro gana <b style=\"color:var(--pos)\">"+rd(r)+"</b>."); }
+opts.forEach(o=>{ o.onclick=()=>elegir(+o.dataset.s);
+  o.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); elegir(+o.dataset.s); mostrar(); } else if(e.key==="ArrowDown"||e.key==="ArrowUp"){ e.preventDefault(); const n=(+o.dataset.s+(e.key==="ArrowDown"?1:2))%3; elegir(n); opts[n].focus(); } }; });
+document.getElementById("simShow").onclick=e=>{ mostrar(); e.currentTarget.blur(); };
+
+function fit(){ const s=Math.min((innerWidth-16)/1280,(innerHeight-16)/720); document.getElementById("stage").style.transform=`translate(-50%,-50%) scale(${s})`; }
+addEventListener("resize",fit); fit(); go((parseInt(location.hash.slice(1),10)||1)-1); SND.ready=true;
+</script>
+</body>
+</html>
