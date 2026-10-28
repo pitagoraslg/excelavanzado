@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Jarlin Figueroa, M.A.">
 <title>Muro de preguntas y aportes · Módulo 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,42 +30,77 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
 input,textarea{font:inherit;color:inherit}
 .hidden{display:none !important}
 .loading{min-height:100vh;display:grid;place-items:center;color:var(--muted);font-weight:500}
-.wrap{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 40px}
 .muted{color:var(--muted)}
 h1,h2,h3{font-family:var(--serif);color:var(--ink);line-height:1.2}
 
+/* ---------- Animaciones comunes ---------- */
+@keyframes enter{0%{opacity:0;transform:translateY(22px) scale(.94)}60%{opacity:1;transform:translateY(-4px) scale(1.01)}100%{opacity:1;transform:none}}
+@keyframes bump{0%{transform:scale(1)}35%{transform:scale(1.28)}100%{transform:scale(1)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes fadeOut{to{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(40px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes glow{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.06)}}
+@keyframes floatUp{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.55}90%{opacity:.45}100%{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+@keyframes shine{from{background-position:0% 0}to{background-position:200% 0}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(95,224,176,.6)}70%{box-shadow:0 0 0 8px rgba(95,224,176,0)}100%{box-shadow:0 0 0 0 rgba(95,224,176,0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{50%{opacity:0}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(5deg)}}
+@keyframes fheart{0%{transform:translate(-50%,0) scale(.3);opacity:0}15%{opacity:1;transform:translate(-50%,-14px) scale(1.15)}100%{transform:translate(calc(-50% + var(--dx)),-140px) scale(.7);opacity:0}}
+@keyframes dots{0%,80%,100%{transform:scale(.4);opacity:.3}40%{transform:scale(1);opacity:1}}
+.bump{animation:bump .45s ease}
+.fheart{position:fixed;z-index:95;color:#e4573f;pointer-events:none;animation:fheart 1.4s ease-out forwards;text-shadow:0 2px 8px rgba(0,0,0,.2)}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:90}
+
 /* ---------- Botones ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:12px;font-weight:600;transition:transform .12s, background .15s, box-shadow .15s}
-.btn:active{transform:scale(.97)}
+.btn:active{transform:scale(.95)}
 .btn-primary{background:var(--ink);color:#fff;box-shadow:0 4px 14px rgba(15,76,92,.25)}
-.btn-primary:hover{background:var(--ink-deep)}
-.btn-primary:disabled{background:#9aa3a6;box-shadow:none;cursor:not-allowed}
+.btn-primary:hover{background:var(--ink-deep);transform:translateY(-1px);box-shadow:0 8px 20px rgba(15,76,92,.3)}
+.btn-primary:disabled{background:#9aa3a6;box-shadow:none;cursor:not-allowed;transform:none}
+.btn-primary.ok{background:var(--teal);animation:bump .5s ease}
 .btn-ghost{background:var(--card);border:1px solid var(--line);color:var(--ink)}
 .btn-ghost:hover{border-color:var(--ink)}
 .btn-danger{background:var(--terra-soft);color:var(--terra)}
 .btn-danger:hover{background:#f2cfc6}
 .btn-sm{padding:7px 12px;font-size:14px;border-radius:10px}
 
+/* ---------- Crédito ---------- */
+.credit{text-align:center;font-size:13px;color:var(--muted);padding:18px 16px 26px}
+.credit b{color:var(--ink);font-weight:600}
+.login-card .credit{padding:18px 0 0;font-size:12.5px}
+
 /* ---------- Ingreso ---------- */
-.login{min-height:100vh;display:grid;place-items:center;padding:24px 16px;
+.login{min-height:100vh;display:grid;place-items:center;padding:24px 16px;position:relative;overflow:hidden;
   background:radial-gradient(circle at 15% 20%, rgba(224,159,62,.25), transparent 45%),
              radial-gradient(circle at 85% 80%, rgba(42,157,143,.22), transparent 45%), var(--bg)}
-.login-card{width:100%;max-width:460px;background:var(--card);border-radius:22px;padding:34px 28px;box-shadow:0 20px 50px rgba(15,76,92,.15);text-align:center}
-.login-badge{display:inline-block;background:var(--amber-soft);color:#9a6416;font-weight:600;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:5px 12px;border-radius:999px;margin-bottom:16px}
+.login::before,.login::after{content:"";position:absolute;width:340px;height:340px;border-radius:50%;filter:blur(40px);opacity:.35;animation:drift 12s ease-in-out infinite}
+.login::before{background:var(--amber);top:-80px;left:-80px}
+.login::after{background:var(--teal);bottom:-100px;right:-60px;animation-delay:-6s}
+.floaters{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.floaters span{position:absolute;bottom:-60px;font-size:28px;animation:floatUp linear infinite;opacity:0}
+.login-card{position:relative;z-index:2;width:100%;max-width:460px;background:var(--card);border-radius:22px;padding:34px 28px 22px;box-shadow:0 20px 50px rgba(15,76,92,.15);text-align:center;animation:rise .6s cubic-bezier(.2,.9,.3,1.2)}
+.login-badge{display:inline-flex;align-items:center;gap:7px;background:var(--amber-soft);color:#9a6416;font-weight:600;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:5px 12px;border-radius:999px;margin-bottom:16px}
+.login-badge .dot{background:var(--terra)}
 .login-card h1{font-size:30px;margin-bottom:8px}
 .login-card p{color:var(--muted);margin-bottom:22px}
-.field{width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:14px;background:var(--paper);font-size:17px;outline:none;transition:border-color .15s}
-.field:focus{border-color:var(--ink);background:#fff}
+.big-ico{font-size:46px;display:block;width:max-content;margin-left:auto;margin-right:auto;animation:wiggle 2.4s ease-in-out infinite;transform-origin:50% 80%;margin-bottom:6px}
+.field{width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:14px;background:var(--paper);font-size:17px;outline:none;transition:border-color .15s, box-shadow .2s, background .2s}
+.field:focus{border-color:var(--ink);background:#fff;box-shadow:0 0 0 5px rgba(15,76,92,.12)}
 .login-card .btn{width:100%;margin-top:14px;padding:14px;font-size:17px}
 .login-err{color:var(--terra);font-size:14px;margin-top:10px;min-height:20px}
+.shake{animation:wiggle .45s ease}
 
 /* ---------- Encabezado ---------- */
-.top{background:var(--ink);color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.top{color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 2px 12px rgba(0,0,0,.15);
+  background:linear-gradient(110deg,#0f4c5c 0%,#13606f 25%,#0f4c5c 50%,#13606f 75%,#0f4c5c 100%);background-size:200% 100%;animation:shine 10s linear infinite}
 .top-in{max-width:980px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .top-title{flex:1;min-width:200px}
 .top-title b{display:block;font-family:var(--serif);font-size:19px;line-height:1.2}
@@ -74,101 +110,137 @@ h1,h2,h3{font-family:var(--serif);color:var(--ink);line-height:1.2}
 .top .btn-sm{background:rgba(255,255,255,.12);color:#fff}
 .top .btn-sm:hover{background:rgba(255,255,255,.22)}
 .live{display:inline-flex;align-items:center;gap:6px;font-size:13px;background:rgba(255,255,255,.12);padding:5px 10px;border-radius:999px}
-.dot{width:8px;height:8px;border-radius:50%;background:#5fe0b0;box-shadow:0 0 0 0 rgba(95,224,176,.7);animation:pulse 2s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(95,224,176,.6)}70%{box-shadow:0 0 0 8px rgba(95,224,176,0)}100%{box-shadow:0 0 0 0 rgba(95,224,176,0)}}
+.dot{width:8px;height:8px;border-radius:50%;background:#5fe0b0;box-shadow:0 0 0 0 rgba(95,224,176,.7);animation:pulse 2s infinite;display:inline-block}
 
 /* ---------- Redactar ---------- */
-.composer{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 6px 22px rgba(15,76,92,.08);margin:20px 0 18px}
+.composer{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 6px 22px rgba(15,76,92,.08);margin:20px 0 18px;animation:rise .5s ease}
 .composer h2{font-size:20px;margin-bottom:12px}
 .tipo-sel{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.tipo-btn{flex:1;min-width:140px;padding:11px 14px;border-radius:12px;border:2px solid var(--line);background:var(--paper);font-weight:600;color:var(--muted);transition:all .15s}
+.tipo-btn{flex:1;min-width:140px;padding:11px 14px;border-radius:12px;border:2px solid var(--line);background:var(--paper);font-weight:600;color:var(--muted);transition:all .2s}
+.tipo-btn:hover{transform:translateY(-2px)}
+.tipo-btn[aria-pressed="true"]{transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,.08)}
 .tipo-btn[aria-pressed="true"].t-pregunta{border-color:var(--terra);background:var(--terra-soft);color:var(--terra)}
 .tipo-btn[aria-pressed="true"].t-aporte{border-color:var(--teal);background:var(--teal-soft);color:#1d7a6f}
+.tipo-btn .e{display:inline-block}
+.tipo-btn[aria-pressed="true"] .e{animation:wiggle .6s ease}
 textarea.field{min-height:96px;resize:vertical;font-size:16px;line-height:1.5}
 .composer-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;flex-wrap:wrap}
-.count{font-size:13px;color:var(--muted)}
-.closed-note{background:var(--amber-soft);color:#8a5a12;border-radius:12px;padding:12px 14px;font-weight:500;margin-bottom:10px}
+.count{font-size:13px;color:var(--muted);transition:color .2s}
+.count.warn{color:var(--terra);font-weight:600}
+.closed-note{background:var(--amber-soft);color:#8a5a12;border-radius:12px;padding:12px 14px;font-weight:500;margin-bottom:10px;animation:fade .3s}
 
 /* ---------- Barra de filtros ---------- */
 .bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 .seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:3px}
-.seg button{padding:7px 13px;border-radius:9px;font-size:14px;font-weight:600;color:var(--muted)}
+.seg button{padding:7px 13px;border-radius:9px;font-size:14px;font-weight:600;color:var(--muted);transition:background .2s,color .2s}
 .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
 
 /* ---------- Tarjetas ---------- */
 .list{display:grid;gap:12px}
-.post{background:var(--card);border-radius:16px;padding:16px 18px;box-shadow:0 3px 14px rgba(15,76,92,.07);border-left:5px solid var(--teal);animation:enter .35s ease}
+.post{position:relative;background:var(--card);border-radius:16px;padding:16px 18px;box-shadow:0 3px 14px rgba(15,76,92,.07);border-left:5px solid var(--teal);transition:box-shadow .2s, transform .2s}
+.post:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,76,92,.12)}
 .post.pregunta{border-left-color:var(--terra)}
+.post.nuevo{animation:enter .6s cubic-bezier(.2,.9,.3,1.15) both}
 .post.spot{box-shadow:0 0 0 3px var(--amber), 0 6px 20px rgba(224,159,62,.3)}
-@keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.post.fresh::after{content:"";position:absolute;inset:-5px;border-radius:20px;border:3px solid var(--amber);pointer-events:none;animation:glow 1.3s ease-out 4}
+.post.fresh::before{content:"¡Nuevo!";position:absolute;top:-11px;right:14px;background:var(--amber);color:#3b2604;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.2);animation:bump .6s ease 2}
 .post-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
 .post-author{font-weight:600;color:var(--ink)}
 .post-time{font-size:13px;color:var(--muted)}
 .chip{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px}
 .chip.pregunta{background:var(--terra-soft);color:var(--terra)}
 .chip.aporte{background:var(--teal-soft);color:#1d7a6f}
-.chip.ok{background:#e6f0e9;color:#2f6b52}
-.chip.spot{background:var(--amber-soft);color:#9a6416}
+.chip.ok{background:#e6f0e9;color:#2f6b52;animation:fade .4s}
+.chip.spot{background:var(--amber-soft);color:#9a6416;animation:bump .6s ease}
 .post-text{white-space:pre-wrap;word-wrap:break-word;overflow-wrap:anywhere;font-size:16.5px}
 .post-foot{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
 .like{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;border:2px solid var(--line);font-weight:700;font-size:15px;color:var(--muted);transition:all .15s;background:#fff}
-.like:hover:not(:disabled){border-color:var(--terra);color:var(--terra)}
+.like:hover:not(:disabled){border-color:var(--terra);color:var(--terra);transform:scale(1.05)}
 .like.on,.like.on:hover:not(:disabled){background:var(--terra);border-color:var(--terra);color:#fff}
 .like:disabled{cursor:default;opacity:.75}
-.like .heart{font-size:17px;line-height:1}
-.like.pop .heart{animation:pop .4s ease}
-@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+.like .heart{font-size:17px;line-height:1;display:inline-block}
+.like.pop .heart{animation:bump .45s ease}
 .post-foot .grow{flex:1}
 .link-del{font-size:13px;color:var(--muted);text-decoration:underline}
 .link-del:hover{color:var(--terra)}
-.empty{text-align:center;padding:40px 16px;color:var(--muted);background:var(--card);border-radius:16px;border:2px dashed var(--line)}
+.empty{text-align:center;padding:40px 16px;color:var(--muted);background:var(--card);border-radius:16px;border:2px dashed var(--line);animation:fade .4s}
 .empty b{display:block;font-family:var(--serif);font-size:20px;color:var(--ink);margin-bottom:4px}
+.wait{display:inline-flex;gap:6px;margin-top:14px}
+.wait i{width:10px;height:10px;border-radius:50%;background:currentColor;animation:dots 1.4s infinite ease-in-out}
+.wait i:nth-child(2){animation-delay:.16s}.wait i:nth-child(3){animation-delay:.32s}
+
+/* ---------- Mi turno (participante) ---------- */
+.mi-turno{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;background:rgba(6,30,37,.78);backdrop-filter:blur(4px);animation:fade .3s}
+.mi-turno.out,.spotlight.out{animation:fadeOut .3s forwards}
+.mt-card{width:min(520px,100%);background:#fff;border-radius:24px;padding:30px 24px;text-align:center;border-top:8px solid var(--amber);animation:rise .5s cubic-bezier(.2,.9,.3,1.25)}
+.mt-ico{font-size:64px;display:inline-block;animation:wiggle 1s ease infinite;transform-origin:50% 80%}
+.mt-card h2{font-size:28px;margin:8px 0}
+.mt-card p{color:var(--muted);margin-bottom:14px}
+.mt-card blockquote{background:var(--paper);border-radius:14px;padding:14px;font-family:var(--serif);font-size:18px;margin-bottom:18px;white-space:pre-wrap;overflow-wrap:anywhere}
 
 /* ---------- Pantalla (proyección) ---------- */
-body.pantalla{background:var(--ink-deep);color:#fff;overflow-x:hidden}
-.scr{min-height:100vh;display:flex;flex-direction:column;padding:22px 26px 26px;gap:18px;
-  background:radial-gradient(circle at 10% 0%, rgba(42,157,143,.25), transparent 40%),
-             radial-gradient(circle at 100% 100%, rgba(224,159,62,.18), transparent 45%), var(--ink-deep)}
-.scr-head{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap}
+body.pantalla{background:var(--ink-deep);color:#fff}
+.bg-fx{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.bg-fx .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.28;animation:drift 16s ease-in-out infinite}
+.bg-fx .em{position:absolute;bottom:-60px;font-size:30px;animation:floatUp linear infinite;opacity:0;filter:grayscale(.2)}
+.scr{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;padding:22px 26px 60px;gap:18px}
+.scr-head{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;animation:fade .6s}
 .scr-head .ttl{flex:1;min-width:260px}
-.scr-head .kicker{font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);font-weight:700}
+.scr-head .kicker{font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);font-weight:700;display:flex;align-items:center;gap:8px}
 .scr-head h1{color:#fff;font-size:clamp(26px,3.2vw,44px);margin-top:4px}
 .scr-head .sub{opacity:.8;font-size:clamp(14px,1.3vw,18px);margin-top:4px}
 .stats{display:flex;gap:10px;flex-wrap:wrap}
-.stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:10px 16px;min-width:96px;text-align:center}
+.stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:10px 16px;min-width:96px;text-align:center;transition:background .3s}
+.stat.bump{background:rgba(224,159,62,.3)}
 .stat b{display:block;font-size:clamp(22px,2.2vw,32px);font-family:var(--serif);line-height:1.1}
 .stat span{font-size:12px;opacity:.75;text-transform:uppercase;letter-spacing:.06em}
 .scr-body{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
-.wall{columns:3 300px;column-gap:16px}
-.wall .post{break-inside:avoid;margin-bottom:16px;color:var(--text);display:block}
+.wall{columns:3 300px;column-gap:16px;padding-top:8px}
+.wall .post{break-inside:avoid;margin-bottom:18px;color:var(--text);display:block}
 .wall .post-text{font-size:clamp(16px,1.25vw,20px)}
-.side{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:18px;position:sticky;top:20px}
+.side{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:18px;position:sticky;top:20px;backdrop-filter:blur(6px)}
 .side h3{color:var(--amber);font-family:var(--sans);font-size:14px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
 .rank{display:grid;gap:10px}
-.rank-item{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:start;background:rgba(255,255,255,.06);border-radius:12px;padding:10px 12px}
-.rank-n{font-family:var(--serif);font-size:22px;color:var(--amber);line-height:1}
+.rank-item{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:start;background:rgba(255,255,255,.06);border-radius:12px;padding:10px 12px}
+.rank-item:first-child{background:rgba(224,159,62,.18);box-shadow:inset 0 0 0 1px rgba(224,159,62,.4)}
+.rank-n{font-size:24px;line-height:1}
 .rank-t{font-size:14px;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
 .rank-t small{display:block;opacity:.7;font-size:12px;margin-top:3px}
 .rank-l{font-weight:700;color:#ffb4a3;white-space:nowrap}
-.scr-empty{border:2px dashed rgba(255,255,255,.2);border-radius:18px;padding:60px 20px;text-align:center;opacity:.85}
+.scr-empty{border:2px dashed rgba(255,255,255,.2);border-radius:18px;padding:60px 20px;text-align:center;opacity:.9;column-span:all}
 .scr-empty b{display:block;font-family:var(--serif);font-size:28px;margin-bottom:6px}
 .join{margin-top:16px;font-size:14px;opacity:.85;word-break:break-all}
 .join code{background:rgba(255,255,255,.1);padding:3px 8px;border-radius:8px;font-family:inherit}
-.closed-flag{background:var(--terra);color:#fff;font-weight:700;padding:6px 14px;border-radius:999px;font-size:14px}
+.closed-flag{background:var(--terra);color:#fff;font-weight:700;padding:6px 14px;border-radius:999px;font-size:14px;animation:bump .6s ease}
+.scr-foot{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 20px;pointer-events:none}
+.scr-foot > *{pointer-events:auto}
+.sound-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px 14px;border-radius:999px;font-size:14px;font-weight:600;transition:background .2s}
+.sound-btn:hover{background:rgba(255,255,255,.22)}
+.sound-btn.off{background:var(--amber);color:#3b2604;border-color:var(--amber);animation:bump 1.2s ease infinite}
+.scr-credit{font-size:13px;opacity:.75;background:rgba(0,0,0,.2);padding:6px 12px;border-radius:999px}
+.scr-credit b{color:var(--amber);font-weight:600}
+.joins{position:fixed;left:20px;bottom:58px;z-index:6;display:flex;flex-direction:column-reverse;gap:8px;pointer-events:none}
+.join-pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.95);color:var(--ink);font-weight:600;font-size:14px;padding:6px 14px 6px 6px;border-radius:999px;box-shadow:0 8px 20px rgba(0,0,0,.25);animation:rise .4s cubic-bezier(.2,.9,.3,1.3)}
+.join-pill .avatar{width:28px;height:28px;font-size:12px}
+.join-pill.out{animation:fadeOut .5s forwards}
 
 /* Foco: tiene la palabra */
-.spotlight{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:30px;background:rgba(6,30,37,.82);backdrop-filter:blur(4px);animation:fade .3s ease}
-@keyframes fade{from{opacity:0}to{opacity:1}}
-.spot-card{width:min(1100px,100%);background:var(--card);color:var(--text);border-radius:28px;padding:clamp(26px,4vw,56px);box-shadow:0 30px 80px rgba(0,0,0,.4);border-top:10px solid var(--teal);animation:rise .45s cubic-bezier(.2,.9,.3,1.2)}
+.spotlight{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:30px;background:rgba(6,30,37,.86);backdrop-filter:blur(5px);animation:fade .3s ease;overflow:hidden}
+.rays{position:absolute;left:50%;top:50%;width:220vmax;height:220vmax;margin:-110vmax 0 0 -110vmax;pointer-events:none;opacity:.22;
+  background:repeating-conic-gradient(from 0deg, rgba(224,159,62,.9) 0deg 7deg, transparent 7deg 20deg);animation:spin 40s linear infinite;
+  -webkit-mask:radial-gradient(circle, #000 0%, transparent 45%);mask:radial-gradient(circle, #000 0%, transparent 45%)}
+.spot-card{position:relative;width:min(1100px,100%);background:var(--card);color:var(--text);border-radius:28px;padding:clamp(26px,4vw,56px);box-shadow:0 30px 80px rgba(0,0,0,.45);border-top:10px solid var(--teal);animation:rise .55s cubic-bezier(.2,.9,.3,1.25)}
 .spot-card.pregunta{border-top-color:var(--terra)}
-@keyframes rise{from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:none}}
 .spot-kicker{font-size:clamp(14px,1.4vw,18px);letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#9a6416;margin-bottom:10px}
+.spot-kicker .mega{display:inline-block;animation:wiggle 1s ease infinite;transform-origin:50% 80%}
 .spot-who{display:flex;align-items:center;gap:16px;margin-bottom:20px}
-.spot-who .avatar{width:64px;height:64px;font-size:24px}
+.spot-who .avatar{width:64px;height:64px;font-size:24px;animation:bump .8s ease .2s}
 .spot-who b{font-family:var(--serif);font-size:clamp(26px,3vw,42px);color:var(--ink);line-height:1.1;display:block}
-.spot-text{font-family:var(--serif);font-size:clamp(24px,2.8vw,40px);line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere}
+.spot-text{font-family:var(--serif);font-size:clamp(24px,2.8vw,40px);line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere;min-height:1.35em}
+.caret{display:inline-block;width:3px;height:1em;background:var(--amber);vertical-align:-.12em;margin-left:3px;animation:blink .8s step-end infinite}
 .spot-foot{margin-top:24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .spot-foot .like{font-size:20px;padding:10px 20px;background:var(--terra);border-color:var(--terra);color:#fff}
+.spot-foot .chip.ok{font-size:15px}
 
 /* ---------- Profesor ---------- */
 .panel{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 6px 22px rgba(15,76,92,.08);margin-bottom:18px}
@@ -187,7 +259,7 @@ body.pantalla{background:var(--ink-deep);color:#fff;overflow-x:hidden}
 .link-row span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .link-row b{white-space:nowrap;color:var(--ink)}
 
-#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink-deep);color:#fff;padding:12px 18px;border-radius:12px;font-weight:500;opacity:0;pointer-events:none;transition:all .25s;z-index:100;max-width:calc(100% - 32px);text-align:center}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink-deep);color:#fff;padding:12px 18px;border-radius:12px;font-weight:500;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.2,.9,.3,1.3);z-index:100;max-width:calc(100% - 32px);text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25)}
 #toast.show{opacity:1;transform:translateX(-50%)}
 
 @media (max-width:1100px){
@@ -198,7 +270,8 @@ body.pantalla{background:var(--ink-deep);color:#fff;overflow-x:hidden}
   .grid2{grid-template-columns:1fr}
   .top-title b{font-size:17px}
   .composer,.panel{padding:15px}
-  .scr{padding:16px}
+  .scr{padding:16px 16px 70px}
+  .scr-foot{flex-direction:column-reverse;align-items:flex-start;gap:6px}
 }
 </style>
 </head>
@@ -272,10 +345,12 @@ body.pantalla{background:var(--ink-deep);color:#fff;overflow-x:hidden}
 const ROOT = 'muroM5';
 const CLAVE = '1022';
 const TEMA_DEF = 'Módulo 5 · Modelado financiero y análisis de escenarios';
+const AUTOR = 'Jarlin Figueroa, M.A.';
 const MAX_CHARS = 400;
 const ESPERA_MS = 8000;               // tiempo mínimo entre publicaciones
 const MODO = (new URLSearchParams(location.search).get('modo') || 'participante').toLowerCase();
 const COLORES = ['#0f4c5c','#2a9d8f','#c8553d','#e09f3e','#6a4c93','#1d7a6f','#9a6416','#3d5a80'];
+const CREDITO = `<footer class="credit">Creado por <b>${AUTOR}</b></footer>`;
 
 let db;
 const S = { config:{}, posts:{}, likes:{}, presentes:{}, filtro:'todas', orden:'recientes', tipo:'pregunta' };
@@ -290,31 +365,32 @@ function sstore(k, v){ try{ if(v === undefined) return sessionStorage.getItem(k)
 function uidNuevo(){ return 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
 function iniciales(n){ const p = String(n).trim().split(/\s+/); return ((p[0] || '?')[0] + (p[1] ? p[1][0] : '')).toUpperCase(); }
 function colorDe(uid){ let h = 0; for(const c of String(uid)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return COLORES[h % COLORES.length]; }
-function avatar(nombre, uid){ return '<div class="avatar" style="background:' + colorDe(uid) + '">' + esc(iniciales(nombre)) + '</div>'; }
+function avatar(nombre, uid){ return `<div class="avatar" style="background:${colorDe(uid)}">${esc(iniciales(nombre))}</div>`; }
 function hace(t){
   if(!t) return 'ahora';
   const s = Math.max(0, Math.round((Date.now() - t) / 1000));
   if(s < 45) return 'hace un momento';
   const m = Math.round(s / 60);
   if(m < 60) return 'hace ' + m + ' min';
-  const h = Math.round(m / 60);
-  return 'hace ' + h + ' h';
+  return 'hace ' + Math.round(m / 60) + ' h';
 }
 function toast(msg){
   const el = document.getElementById('toast');
   el.textContent = msg; el.classList.add('show');
-  clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove('show'), 2600);
+  clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove('show'), 2800);
 }
+function limitar(fn, ms){ let t = 0; return (...a) => { const n = Date.now(); if(n - t > ms){ t = n; fn(...a); } }; }
 function nLikes(pid){ return Object.keys(S.likes[pid] || {}).length; }
 function abierto(){ return S.config.abierto !== false; }
 function tema(){ return S.config.tema || TEMA_DEF; }
+function bump(el){ if(!el) return; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
 
 function postsOrdenados(){
   let arr = Object.entries(S.posts).map(([id, p]) => Object.assign({ id, likes: nLikes(id) }, p));
   if(S.filtro === 'preguntas') arr = arr.filter(p => p.tipo === 'pregunta');
   if(S.filtro === 'aportes') arr = arr.filter(p => p.tipo === 'aporte');
-  if(S.orden === 'apoyadas') arr.sort((a, b) => b.likes - a.likes || (b.t || 0) - (a.t || 0));
-  else arr.sort((a, b) => (b.t || Infinity) - (a.t || Infinity));
+  if(S.orden === 'apoyadas') arr.sort((a, b) => b.likes - a.likes || (b.t || 9e15) - (a.t || 9e15));
+  else arr.sort((a, b) => (b.t || 9e15) - (a.t || 9e15));
   return arr;
 }
 function totales(){
@@ -327,7 +403,154 @@ function totales(){
   };
 }
 
-/* Tarjeta de publicación (participante y profesor) */
+/* =========================================================
+   SONIDOS (sintetizados, sin archivos)
+   ========================================================= */
+const Sonido = (() => {
+  let ctx = null, master = null, on = true;
+  function ac(){
+    if(!ctx){
+      const C = window.AudioContext || window.webkitAudioContext;
+      if(!C) return null;
+      ctx = new C(); master = ctx.createGain(); master.gain.value = .8; master.connect(ctx.destination);
+    }
+    if(ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+  function tono(f, ini, dur, tipo, vol, fFin){
+    const c = on && ac(); if(!c) return;
+    const t = c.currentTime + ini, o = c.createOscillator(), g = c.createGain();
+    o.type = tipo || 'sine'; o.frequency.setValueAtTime(f, t);
+    if(fFin) o.frequency.exponentialRampToValueAtTime(fFin, t + dur);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol || .2, t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g).connect(master); o.start(t); o.stop(t + dur + .05);
+  }
+  function ruido(ini, dur, vol, fDesde, fHasta){
+    const c = on && ac(); if(!c) return;
+    const t = c.currentTime + ini, n = Math.max(1, Math.floor(c.sampleRate * dur));
+    const buf = c.createBuffer(1, n, c.sampleRate), d = buf.getChannelData(0);
+    for(let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+    s.buffer = buf; f.type = 'bandpass'; f.Q.value = .8; f.frequency.setValueAtTime(fDesde, t);
+    if(fHasta) f.frequency.exponentialRampToValueAtTime(fHasta, t + dur);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    s.connect(f).connect(g).connect(master); s.start(t);
+  }
+  return {
+    activar(){ return ac(); },
+    get on(){ return on; },
+    set on(v){ on = !!v; if(on) ac(); },
+    nuevo(){ tono(988, 0, .22, 'sine', .16); tono(1319, .09, .4, 'sine', .13); },
+    like(){ tono(520, 0, .14, 'triangle', .2, 1150); tono(1760, .07, .12, 'sine', .06); },
+    likeRecibido(){ [784, 988, 1319].forEach((f, i) => tono(f, i * .08, .3, 'triangle', .14)); },
+    publicar(){ ruido(0, .35, .18, 400, 4000); tono(1047, .22, .35, 'sine', .16); tono(1568, .32, .5, 'sine', .12); },
+    entrar(){ [523, 659, 784, 1047].forEach((f, i) => tono(f, i * .07, .28, 'triangle', .12)); },
+    unido(){ tono(660, 0, .12, 'sine', .08); tono(880, .07, .18, 'sine', .07); },
+    abrir(){ tono(523, 0, .2, 'triangle', .14); tono(784, .12, .35, 'triangle', .14); },
+    cerrar(){ tono(784, 0, .2, 'triangle', .14); tono(523, .12, .4, 'triangle', .14); },
+    palabra(){
+      for(let k = 0; k < 20; k++) ruido(k * .045, .06, .05 + k * .012, 1600);
+      ruido(.95, 1.3, .22, 7000, 3000);
+      [523, 659, 784].forEach((f, i) => tono(f, .95 + i * .11, .3, 'triangle', .18));
+      [523, 659, 784, 1047].forEach(f => tono(f, 1.3, 1.1, 'triangle', .1));
+      tono(1047, 1.3, 1.1, 'square', .04);
+    }
+  };
+})();
+
+/* =========================================================
+   EFECTOS VISUALES
+   ========================================================= */
+const FX = { parts: [], run: false, cv: null };
+function confeti(n, x, y){
+  if(!FX.cv){ FX.cv = document.createElement('canvas'); FX.cv.id = 'fx'; document.body.appendChild(FX.cv); }
+  const cols = ['#e09f3e','#c8553d','#2a9d8f','#ffffff','#5fe0b0','#f2c14e','#0f4c5c'];
+  const ox = x == null ? innerWidth / 2 : x, oy = y == null ? innerHeight / 3 : y;
+  for(let i = 0; i < n; i++){
+    const a = Math.random() * Math.PI * 2, v = 4 + Math.random() * 11;
+    FX.parts.push({ x: ox, y: oy, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 6, w: 6 + Math.random() * 7, h: 4 + Math.random() * 5,
+      c: cols[i % cols.length], r: Math.random() * 6, vr: (Math.random() - .5) * .35, vida: 0 });
+  }
+  if(!FX.run){ FX.run = true; requestAnimationFrame(cuadro); }
+}
+function cuadro(){
+  const cv = FX.cv, dpr = window.devicePixelRatio || 1;
+  if(cv.width !== innerWidth * dpr || cv.height !== innerHeight * dpr){ cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; }
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, innerWidth, innerHeight);
+  FX.parts = FX.parts.filter(p => p.y < innerHeight + 30 && p.vida < 260);
+  FX.parts.forEach(p => {
+    p.vy += .32; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.vida++;
+    g.save(); g.translate(p.x, p.y); g.rotate(p.r); g.globalAlpha = Math.min(1, (260 - p.vida) / 60);
+    g.fillStyle = p.c; g.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.r * 2))); g.restore();
+  });
+  if(FX.parts.length) requestAnimationFrame(cuadro);
+  else { FX.run = false; g.clearRect(0, 0, innerWidth, innerHeight); }
+}
+function corazones(el, n){
+  if(!el || !el.isConnected) return;
+  const r = el.getBoundingClientRect();
+  for(let i = 0; i < n; i++){
+    const s = document.createElement('span');
+    s.className = 'fheart'; s.textContent = '♥';
+    s.style.left = (r.left + r.width / 2 + (Math.random() - .5) * 26) + 'px';
+    s.style.top = r.top + 'px';
+    s.style.setProperty('--dx', ((Math.random() - .5) * 90) + 'px');
+    s.style.animationDelay = (i * 80) + 'ms';
+    s.style.fontSize = (14 + Math.random() * 16) + 'px';
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 1600 + i * 80);
+  }
+}
+function flotantes(cont, emojis, n, cls){
+  for(let i = 0; i < n; i++){
+    const s = document.createElement('span');
+    s.className = cls || '';
+    s.textContent = emojis[i % emojis.length];
+    s.style.left = (Math.random() * 96) + '%';
+    s.style.animationDuration = (14 + Math.random() * 14) + 's';
+    s.style.animationDelay = (-Math.random() * 26) + 's';
+    s.style.fontSize = (20 + Math.random() * 22) + 'px';
+    cont.appendChild(s);
+  }
+}
+
+/* Pinta la lista conservando las tarjetas que no cambian:
+   solo las nuevas entran con animación y los «me gusta» nuevos rebotan. */
+function pintarClaves(cont, arr, html, opts){
+  const vistos = cont._vistos || (cont._vistos = new Set());
+  const primera = !cont._ok; cont._ok = true;
+  if(!arr.length){ cont.innerHTML = opts.vacio; return []; }
+  cont.querySelectorAll(':scope > :not(.post)').forEach(e => e.remove());
+  const viejos = {}; cont.querySelectorAll(':scope > .post').forEach(e => { viejos[e.dataset.id] = e; });
+  const nuevos = [];
+  arr.forEach((p, i) => {
+    const h = html(p);
+    let el = viejos[p.id];
+    delete viejos[p.id];
+    if(!el || el._h !== h){
+      const t = document.createElement('div'); t.innerHTML = h;
+      const n = t.firstElementChild; n._h = h;
+      if(el){
+        const antes = Number(el.dataset.likes) || 0;
+        if(el.classList.contains('fresh')) n.classList.add('fresh');
+        el.replaceWith(n);
+        if(p.likes > antes){ const lk = n.querySelector('.like'); bump(lk); if(opts.alLike) opts.alLike(lk, p); }
+      } else if(!vistos.has(p.id)){
+        n.classList.add('nuevo');
+        if(primera) n.style.animationDelay = Math.min(i, 14) * 70 + 'ms';
+        else { nuevos.push(p); if(opts.fresco){ n.classList.add('fresh'); setTimeout(() => n.classList.remove('fresh'), 6500); } }
+        n.addEventListener('animationend', e => { if(e.animationName === 'enter'){ n.classList.remove('nuevo'); n.style.animationDelay = ''; } });
+      }
+      el = n;
+    }
+    vistos.add(p.id);
+    if(cont.children[i] !== el) cont.insertBefore(el, cont.children[i] || null);
+  });
+  Object.values(viejos).forEach(e => e.remove());
+  return nuevos;
+}
+
+/* Tarjeta de publicación (participante, pantalla y profesor) */
 function postHTML(p, opts){
   const uid = opts.uid;
   const mio = uid && p.uid === uid;
@@ -335,36 +558,35 @@ function postHTML(p, opts){
   const spot = S.config.destacado === p.id;
   let foot = '';
   if(opts.modo === 'participante'){
-    foot = '<button class="like' + (di ? ' on' : '') + '" data-like="' + p.id + '"' + (mio ? ' disabled title="Es tu publicación"' : '') +
-           ' aria-pressed="' + (di ? 'true' : 'false') + '"><span class="heart">' + (di ? '♥' : '♡') + '</span>' + p.likes + '</button>' +
-           '<span class="grow"></span>' + (mio ? '<button class="link-del" data-del="' + p.id + '">Eliminar</button>' : '');
+    foot = `<button class="like${di ? ' on' : ''}" data-like="${p.id}"${mio ? ' disabled title="Es tu publicación"' : ''} aria-pressed="${!!di}"><span class="heart">${di ? '♥' : '♡'}</span>${p.likes}</button>` +
+           `<span class="grow"></span>` + (mio ? `<button class="link-del" data-del="${p.id}">Eliminar</button>` : '');
   } else if(opts.modo === 'profesor'){
-    foot = '<span class="like" style="cursor:default"><span class="heart">♥</span>' + p.likes + '</span><span class="grow"></span>' +
-           '<button class="btn btn-sm ' + (spot ? 'btn-primary' : 'btn-ghost') + '" data-spot="' + p.id + '">' + (spot ? 'Quitar de pantalla' : '📣 Dar la palabra') + '</button>' +
-           '<button class="btn btn-sm btn-ghost" data-ok="' + p.id + '">' + (p.respondida ? '↺ Pendiente' : '✓ Respondida') + '</button>' +
-           '<button class="btn btn-sm btn-danger" data-del="' + p.id + '">Eliminar</button>';
+    foot = `<span class="like" style="cursor:default"><span class="heart">♥</span>${p.likes}</span><span class="grow"></span>` +
+           `<button class="btn btn-sm ${spot ? 'btn-primary' : 'btn-ghost'}" data-spot="${p.id}">${spot ? 'Quitar de pantalla' : '📣 Dar la palabra'}</button>` +
+           `<button class="btn btn-sm btn-ghost" data-ok="${p.id}">${p.respondida ? '↺ Pendiente' : '✓ Respondida'}</button>` +
+           `<button class="btn btn-sm btn-danger" data-del="${p.id}">Eliminar</button>`;
   } else {
-    foot = '<span class="like on" style="cursor:default"><span class="heart">♥</span>' + p.likes + '</span>';
+    foot = `<span class="like on" style="cursor:default"><span class="heart">♥</span>${p.likes}</span>`;
   }
-  return '<article class="post ' + esc(p.tipo) + (spot ? ' spot' : '') + '" data-id="' + p.id + '">' +
-    '<div class="post-head">' + avatar(p.autor, p.uid) +
-      '<span class="post-author">' + esc(p.autor) + (mio ? ' (tú)' : '') + '</span>' +
-      '<span class="chip ' + esc(p.tipo) + '">' + (p.tipo === 'pregunta' ? 'Pregunta' : 'Aporte') + '</span>' +
+  return `<article class="post ${esc(p.tipo)}${spot ? ' spot' : ''}" data-id="${p.id}" data-likes="${p.likes}">` +
+    `<div class="post-head">${avatar(p.autor, p.uid)}` +
+      `<span class="post-author">${esc(p.autor)}${mio ? ' (tú)' : ''}</span>` +
+      `<span class="chip ${esc(p.tipo)}">${p.tipo === 'pregunta' ? '❓ Pregunta' : '💡 Aporte'}</span>` +
       (p.respondida ? '<span class="chip ok">✓ Respondida</span>' : '') +
       (spot ? '<span class="chip spot">📣 En pantalla</span>' : '') +
-      '<span class="post-time" data-t="' + (p.t || '') + '">' + hace(p.t) + '</span>' +
-    '</div>' +
-    '<div class="post-text">' + esc(p.texto) + '</div>' +
-    '<div class="post-foot">' + foot + '</div>' +
-  '</article>';
+      `<span class="post-time" data-t="${p.t || ''}">${hace(p.t)}</span>` +
+    `</div>` +
+    `<div class="post-text">${esc(p.texto)}</div>` +
+    `<div class="post-foot">${foot}</div>` +
+  `</article>`;
 }
 
 function barraHTML(){
-  const b = (grupo, val, txt) => '<button data-' + grupo + '="' + val + '" aria-pressed="' + (S[grupo] === val) + '">' + txt + '</button>';
-  return '<div class="bar">' +
-    '<div class="seg">' + b('filtro','todas','Todas') + b('filtro','preguntas','Preguntas') + b('filtro','aportes','Aportes') + '</div>' +
-    '<div class="seg">' + b('orden','recientes','Recientes') + b('orden','apoyadas','Más apoyadas') + '</div>' +
-  '</div>';
+  const b = (grupo, val, txt) => `<button data-${grupo}="${val}" aria-pressed="${S[grupo] === val}">${txt}</button>`;
+  return `<div class="bar">` +
+    `<div class="seg">${b('filtro','todas','Todas')}${b('filtro','preguntas','Preguntas')}${b('filtro','aportes','Aportes')}</div>` +
+    `<div class="seg">${b('orden','recientes','Recientes')}${b('orden','apoyadas','Más apoyadas')}</div>` +
+  `</div>`;
 }
 function enlazarBarra(root, pintar){
   root.addEventListener('click', e => {
@@ -380,8 +602,9 @@ function enlazarBarra(root, pintar){
   });
 }
 function listaVacia(){
-  return '<div class="empty"><b>' + (Object.keys(S.posts).length ? 'Nada en este filtro.' : 'El muro está esperando.') + '</b>' +
-         (Object.keys(S.posts).length ? 'Prueba con otro filtro.' : 'Sé la primera persona en publicar una pregunta o un aporte.') + '</div>';
+  const hay = Object.keys(S.posts).length;
+  return `<div class="empty"><b>${hay ? 'Nada en este filtro.' : 'El muro está esperando.'}</b>` +
+         (hay ? 'Prueba con otro filtro.' : 'Sé la primera persona en publicar una pregunta o un aporte.<br><span class="wait"><i></i><i></i><i></i></span>') + `</div>`;
 }
 
 /* =========================================================
@@ -391,28 +614,39 @@ function participante(){
   let uid = store('muroM5_uid');
   if(!uid){ uid = uidNuevo(); store('muroM5_uid', uid); }
   let nombre = store('muroM5_nombre');
-  let presRef = null;
-  let ultimo = 0;
+  let presRef = null, ultimo = 0, previo = null;
+  Sonido.on = store('muroM5_sonido') !== '0';
+  document.addEventListener('pointerdown', () => { if(Sonido.on) Sonido.activar(); }, { once: true });
+  const sNuevo = limitar(() => Sonido.nuevo(), 1500);
 
   function ingreso(){
     if(presRef){ presRef.remove(); presRef = null; }
     app.innerHTML =
-      '<div class="login"><form class="login-card" id="fLogin" autocomplete="off">' +
-        '<span class="login-badge">Muro en vivo</span>' +
-        '<h1>Preguntas y aportes.</h1>' +
-        '<p>' + esc(tema()) + '<br>Escribe tu nombre para entrar al muro de la clase.</p>' +
-        '<input class="field" id="iNombre" maxlength="40" placeholder="Nombre y apellido" aria-label="Nombre y apellido">' +
-        '<div class="login-err" id="eNombre"></div>' +
-        '<button class="btn btn-primary" type="submit">Entrar al muro</button>' +
-      '</form></div>';
+      `<div class="login"><div class="floaters" id="flo"></div><form class="login-card" id="fLogin" autocomplete="off">` +
+        `<span class="login-badge"><span class="dot"></span>Muro en vivo</span>` +
+        `<div class="big-ico">🙋</div>` +
+        `<h1>Preguntas y aportes.</h1>` +
+        `<p>${esc(tema())}<br>Escribe tu nombre para entrar al muro de la clase.</p>` +
+        `<input class="field" id="iNombre" maxlength="40" placeholder="Nombre y apellido" aria-label="Nombre y apellido">` +
+        `<div class="login-err" id="eNombre"></div>` +
+        `<button class="btn btn-primary" type="submit">Entrar al muro</button>` +
+        CREDITO +
+      `</form></div>`;
+    flotantes(document.getElementById('flo'), ['❓','💡','♥','📊','💬','📈'], 14);
     const inp = document.getElementById('iNombre');
     inp.focus();
     document.getElementById('fLogin').addEventListener('submit', e => {
       e.preventDefault();
       const v = inp.value.trim().replace(/\s+/g, ' ');
-      if(v.length < 3){ document.getElementById('eNombre').textContent = 'Escribe tu nombre (al menos 3 letras).'; return; }
+      if(v.length < 3){
+        document.getElementById('eNombre').textContent = 'Escribe tu nombre (al menos 3 letras).';
+        inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
+        return;
+      }
       nombre = v; store('muroM5_nombre', v);
+      Sonido.entrar();
       muro();
+      confeti(90, innerWidth / 2, innerHeight / 4);
     });
   }
 
@@ -420,29 +654,36 @@ function participante(){
     presRef = db.ref(ROOT + '/presentes/' + uid);
     presRef.onDisconnect().remove();
     presRef.set({ nombre, t: firebase.database.ServerValue.TIMESTAMP });
+    previo = null;
 
     app.innerHTML =
-      '<header class="top"><div class="top-in">' +
-        '<div class="top-title"><b id="hTema"></b><span id="hExp"></span></div>' +
-        '<span class="live"><span class="dot"></span><span id="hPers">0</span> conectados</span>' +
-        '<div class="top-user">' + avatar(nombre, uid) + '<span>' + esc(nombre) + '</span>' +
-          '<button class="btn btn-sm" id="bSalir">Cambiar nombre</button></div>' +
-      '</div></header>' +
-      '<main class="wrap">' +
-        '<section class="composer">' +
-          '<h2>¿Qué quieres compartir?</h2>' +
-          '<div class="closed-note hidden" id="nCerrado">El facilitador cerró el muro por ahora. Puedes seguir leyendo y dando «me gusta».</div>' +
-          '<div class="tipo-sel">' +
-            '<button class="tipo-btn t-pregunta" data-tipo="pregunta">❓ Pregunta</button>' +
-            '<button class="tipo-btn t-aporte" data-tipo="aporte">💡 Aporte</button>' +
-          '</div>' +
-          '<textarea class="field" id="tTexto" maxlength="' + MAX_CHARS + '" placeholder="Escribe tu pregunta para el grupo expositor…"></textarea>' +
-          '<div class="composer-foot"><span class="count" id="cCount">0 / ' + MAX_CHARS + '</span>' +
-            '<button class="btn btn-primary" id="bPub">Publicar en el muro</button></div>' +
-        '</section>' +
+      `<header class="top"><div class="top-in">` +
+        `<div class="top-title"><b id="hTema"></b><span id="hExp"></span></div>` +
+        `<span class="live"><span class="dot"></span><span id="hPers">0</span> conectados</span>` +
+        `<div class="top-user">${avatar(nombre, uid)}<span>${esc(nombre)}</span>` +
+          `<button class="btn btn-sm" id="bSon" title="Sonido"></button>` +
+          `<button class="btn btn-sm" id="bSalir">Cambiar nombre</button></div>` +
+      `</div></header>` +
+      `<main class="wrap">` +
+        `<section class="composer">` +
+          `<h2>¿Qué quieres compartir?</h2>` +
+          `<div class="closed-note hidden" id="nCerrado">🔒 El facilitador cerró el muro por ahora. Puedes seguir leyendo y dando «me gusta».</div>` +
+          `<div class="tipo-sel">` +
+            `<button class="tipo-btn t-pregunta" data-tipo="pregunta"><span class="e">❓</span> Pregunta</button>` +
+            `<button class="tipo-btn t-aporte" data-tipo="aporte"><span class="e">💡</span> Aporte</button>` +
+          `</div>` +
+          `<textarea class="field" id="tTexto" maxlength="${MAX_CHARS}"></textarea>` +
+          `<div class="composer-foot"><span class="count" id="cCount">0 / ${MAX_CHARS}</span>` +
+            `<button class="btn btn-primary" id="bPub">Publicar en el muro</button></div>` +
+        `</section>` +
         barraHTML() +
-        '<div class="list" id="lista"></div>' +
-      '</main>';
+        `<div class="list" id="lista"></div>` +
+      `</main>` + CREDITO;
+
+    const bSon = document.getElementById('bSon');
+    const pintarSon = () => { bSon.textContent = Sonido.on ? '🔊' : '🔇'; };
+    pintarSon();
+    bSon.addEventListener('click', () => { Sonido.on = !Sonido.on; store('muroM5_sonido', Sonido.on ? '1' : '0'); pintarSon(); if(Sonido.on) Sonido.like(); });
 
     const tx = document.getElementById('tTexto');
     const pintarTipo = () => {
@@ -450,21 +691,34 @@ function participante(){
       tx.placeholder = S.tipo === 'pregunta' ? 'Escribe tu pregunta para el grupo expositor…' : 'Comparte un aporte, un ejemplo o una idea sobre el tema…';
     };
     pintarTipo();
-    app.querySelectorAll('[data-tipo]').forEach(b => b.addEventListener('click', () => { S.tipo = b.dataset.tipo; pintarTipo(); tx.focus(); }));
-    tx.addEventListener('input', () => { document.getElementById('cCount').textContent = tx.value.length + ' / ' + MAX_CHARS; });
+    app.querySelectorAll('[data-tipo]').forEach(b => b.addEventListener('click', () => { S.tipo = b.dataset.tipo; pintarTipo(); Sonido.unido(); tx.focus(); }));
+    tx.addEventListener('input', () => {
+      const c = document.getElementById('cCount');
+      c.textContent = tx.value.length + ' / ' + MAX_CHARS;
+      c.classList.toggle('warn', tx.value.length > MAX_CHARS - 40);
+    });
     document.getElementById('bSalir').addEventListener('click', () => { store('muroM5_nombre', null); nombre = null; ingreso(); });
-    document.getElementById('bPub').addEventListener('click', publicar);
+    const bPub = document.getElementById('bPub');
+    bPub.addEventListener('click', publicar);
     tx.addEventListener('keydown', e => { if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)) publicar(); });
 
     function publicar(){
       const texto = tx.value.trim();
       if(!abierto()){ toast('El muro está cerrado por ahora.'); return; }
-      if(texto.length < 5){ toast('Escribe un poco más antes de publicar.'); tx.focus(); return; }
+      if(texto.length < 5){ toast('Escribe un poco más antes de publicar.'); tx.classList.remove('shake'); void tx.offsetWidth; tx.classList.add('shake'); tx.focus(); return; }
       const falta = ESPERA_MS - (Date.now() - ultimo);
       if(falta > 0){ toast('Espera ' + Math.ceil(falta / 1000) + ' s para volver a publicar.'); return; }
       ultimo = Date.now();
       db.ref(ROOT + '/posts').push({ autor: nombre, uid, tipo: S.tipo, texto: texto.slice(0, MAX_CHARS), t: firebase.database.ServerValue.TIMESTAMP })
-        .then(() => { tx.value = ''; document.getElementById('cCount').textContent = '0 / ' + MAX_CHARS; toast('¡Publicado! Ahora compártelo en voz alta cuando te den la palabra.'); })
+        .then(() => {
+          tx.value = ''; document.getElementById('cCount').textContent = '0 / ' + MAX_CHARS;
+          Sonido.publicar();
+          const r = bPub.getBoundingClientRect();
+          confeti(60, r.left + r.width / 2, r.top);
+          bPub.classList.add('ok'); bPub.textContent = '✓ ¡Publicado!';
+          setTimeout(() => { bPub.classList.remove('ok'); bPub.textContent = 'Publicar en el muro'; }, 1800);
+          toast('¡Publicado! Compártelo en voz alta cuando te den la palabra.');
+        })
         .catch(() => { ultimo = 0; toast('No se pudo publicar. Revisa tu conexión.'); });
     }
 
@@ -474,7 +728,7 @@ function participante(){
       if(l && !l.disabled){
         const pid = l.dataset.like;
         const di = S.likes[pid] && S.likes[pid][uid];
-        if(!di){ l.classList.add('pop'); }
+        if(!di){ Sonido.like(); corazones(l, 6); l.classList.add('pop'); }
         db.ref(ROOT + '/likes/' + pid + '/' + uid).set(di ? null : true);
       }
       if(d && confirm('¿Eliminar tu publicación?')){
@@ -486,22 +740,52 @@ function participante(){
     actualizar();
   }
 
+  function miTurno(p){
+    document.querySelectorAll('.mi-turno').forEach(e => e.remove());
+    Sonido.palabra();
+    if(navigator.vibrate) navigator.vibrate([200, 80, 200, 80, 400]);
+    const o = document.createElement('div');
+    o.className = 'mi-turno';
+    o.innerHTML = `<div class="mt-card"><div class="mt-ico">📣</div>` +
+      `<h2>¡Tienes la palabra, ${esc(nombre.split(' ')[0])}!</h2>` +
+      `<p>Tu ${p.tipo === 'pregunta' ? 'pregunta' : 'aporte'} está en la pantalla. Activa tu micrófono y ${p.tipo === 'pregunta' ? 'compártela' : 'compártelo'} en voz alta.</p>` +
+      `<blockquote>${esc(p.texto)}</blockquote><button class="btn btn-primary">¡Entendido!</button></div>`;
+    document.body.appendChild(o);
+    setTimeout(() => confeti(150), 950);
+    o.querySelector('button').addEventListener('click', () => { o.classList.add('out'); setTimeout(() => o.remove(), 300); });
+  }
+
+  /* Detecta lo que pasó desde la última actualización */
+  function vigilar(){
+    const ids = Object.keys(S.posts);
+    const misLikes = ids.filter(id => S.posts[id].uid === uid).reduce((a, id) => a + nLikes(id), 0);
+    const dest = S.config.destacado || null;
+    if(previo){
+      if(ids.some(id => !previo.ids.has(id) && S.posts[id].uid !== uid)) sNuevo();
+      if(misLikes > previo.misLikes){ Sonido.likeRecibido(); toast('♥ Alguien apoyó tu publicación.'); }
+      if(dest && dest !== previo.dest && S.posts[dest] && S.posts[dest].uid === uid) miTurno(S.posts[dest]);
+      if(previo.abierto !== abierto()) (abierto() ? Sonido.abrir() : Sonido.cerrar());
+    }
+    previo = { ids: new Set(ids), misLikes, dest, abierto: abierto() };
+  }
+
   function pintarLista(){
     const lista = document.getElementById('lista');
     if(!lista) return;
-    const arr = postsOrdenados();
-    lista.innerHTML = arr.length ? arr.map(p => postHTML(p, { modo:'participante', uid })).join('') : listaVacia();
+    pintarClaves(lista, postsOrdenados(), p => postHTML(p, { modo:'participante', uid }), { vacio: listaVacia() });
   }
   function actualizar(){
     if(!document.getElementById('lista')) return;
     document.getElementById('hTema').textContent = tema();
     document.getElementById('hExp').textContent = S.config.expositores ? 'Exponen: ' + S.config.expositores : 'Muro de preguntas y aportes';
-    document.getElementById('hPers').textContent = totales().personas;
+    const hp = document.getElementById('hPers'), np = String(totales().personas);
+    if(hp.textContent !== np){ hp.textContent = np; bump(hp.parentNode); }
     const ab = abierto();
     document.getElementById('nCerrado').classList.toggle('hidden', ab);
     document.getElementById('bPub').disabled = !ab;
     document.getElementById('tTexto').disabled = !ab;
     pintarLista();
+    vigilar();
   }
 
   if(nombre) muro(); else ingreso();
@@ -513,55 +797,167 @@ function participante(){
    ========================================================= */
 function pantalla(){
   document.body.classList.add('pantalla');
+  Sonido.on = false;   // el navegador exige un clic antes de reproducir audio
   const urlPart = location.origin + location.pathname;
   app.innerHTML =
-    '<div class="scr">' +
-      '<div class="scr-head">' +
-        '<div class="ttl"><div class="kicker">Muro de preguntas y aportes</div><h1 id="sTema"></h1><div class="sub" id="sExp"></div></div>' +
-        '<span class="closed-flag hidden" id="sCerrado">Muro cerrado</span>' +
-        '<div class="stats" id="sStats"></div>' +
-      '</div>' +
-      '<div class="scr-body">' +
-        '<div class="wall" id="sWall"></div>' +
-        '<aside class="side"><h3>Más apoyadas</h3><div class="rank" id="sRank"></div>' +
-          '<div class="join">Entra desde tu celular, tableta o computadora:<br><code>' + esc(urlPart) + '</code></div></aside>' +
-      '</div>' +
-    '</div>' +
-    '<div id="sSpot"></div>';
+    `<div class="bg-fx" id="bgfx">` +
+      `<div class="blob" style="width:520px;height:520px;background:#2a9d8f;top:-140px;left:-120px"></div>` +
+      `<div class="blob" style="width:460px;height:460px;background:#e09f3e;bottom:-160px;right:-100px;animation-delay:-8s"></div>` +
+      `<div class="blob" style="width:360px;height:360px;background:#c8553d;top:40%;left:45%;opacity:.14;animation-delay:-4s"></div>` +
+    `</div>` +
+    `<div class="scr">` +
+      `<div class="scr-head">` +
+        `<div class="ttl"><div class="kicker"><span class="dot"></span>Muro de preguntas y aportes · en vivo</div><h1 id="sTema"></h1><div class="sub" id="sExp"></div></div>` +
+        `<span class="closed-flag hidden" id="sCerrado">🔒 Muro cerrado</span>` +
+        `<div class="stats">` +
+          `<div class="stat"><b id="kP">0</b><span>Conectados</span></div>` +
+          `<div class="stat"><b id="kQ">0</b><span>Preguntas</span></div>` +
+          `<div class="stat"><b id="kA">0</b><span>Aportes</span></div>` +
+          `<div class="stat"><b id="kL">0</b><span>Me gusta</span></div>` +
+        `</div>` +
+      `</div>` +
+      `<div class="scr-body">` +
+        `<div class="wall" id="sWall"></div>` +
+        `<aside class="side"><h3>🏆 Más apoyadas</h3><div class="rank" id="sRank"></div>` +
+          `<div class="join">Entra desde tu celular, tableta o computadora:<br><code>${esc(urlPart)}</code></div></aside>` +
+      `</div>` +
+    `</div>` +
+    `<div class="joins" id="sJoins"></div>` +
+    `<div class="scr-foot"><button class="sound-btn off" id="bSon">🔇 Clic aquí para activar el sonido</button>` +
+      `<span class="scr-credit">Creado por <b>${AUTOR}</b></span></div>` +
+    `<div id="sSpot"></div>`;
+  flotantes(document.getElementById('bgfx'), ['❓','💡','♥','💬','📊','📈','🙋'], 16, 'em');
+
+  const bSon = document.getElementById('bSon');
+  bSon.addEventListener('click', () => {
+    Sonido.on = !Sonido.on;
+    bSon.classList.toggle('off', !Sonido.on);
+    bSon.textContent = Sonido.on ? '🔊 Sonido activado' : '🔇 Sonido apagado';
+    if(Sonido.on) Sonido.entrar();
+  });
+
+  const sNuevo = limitar(() => Sonido.nuevo(), 900);
+  const sLike = limitar(() => Sonido.like(), 250);
+  const sUnido = limitar(() => Sonido.unido(), 600);
+  let previo = null, spotId = null, typer = null;
+
+  function contar(el, valor){
+    const de = Number(el.dataset.v || 0);
+    if(el.dataset.v != null && de === valor) return;
+    const primera = el.dataset.v == null;
+    el.dataset.v = valor;
+    if(primera){ el.textContent = valor; return; }
+    bump(el.parentNode);
+    const t0 = performance.now();
+    const paso = now => { const k = Math.min(1, (now - t0) / 500); el.textContent = Math.round(de + (valor - de) * k); if(k < 1) requestAnimationFrame(paso); };
+    requestAnimationFrame(paso);
+  }
+
+  function pintarRank(todos){
+    const cont = document.getElementById('sRank');
+    const top = todos.filter(p => p.likes > 0).sort((a, b) => b.likes - a.likes || (a.t || 0) - (b.t || 0)).slice(0, 5);
+    const clave = top.map(p => p.id + ':' + p.likes).join('|');
+    if(cont.dataset.k === clave) return;
+    cont.dataset.k = clave;
+    const antes = {};
+    cont.querySelectorAll('.rank-item').forEach(e => { antes[e.dataset.id] = e.getBoundingClientRect().top; });
+    const med = ['🥇','🥈','🥉','4','5'];
+    cont.innerHTML = top.length
+      ? top.map((p, i) => `<div class="rank-item" data-id="${p.id}"><span class="rank-n">${med[i]}</span><span class="rank-t">${esc(p.texto)}<small>${esc(p.autor)}</small></span><span class="rank-l">♥ ${p.likes}</span></div>`).join('')
+      : '<p style="opacity:.7;font-size:14px">Aún no hay «me gusta». ¡Apoyen las ideas de sus compañeros!</p>';
+    cont.querySelectorAll('.rank-item').forEach(e => {
+      const t0 = antes[e.dataset.id], t1 = e.getBoundingClientRect().top;
+      if(t0 == null) e.animate([{ opacity: 0, transform: 'translateX(40px) scale(.9)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: 'cubic-bezier(.2,.9,.3,1.2)' });
+      else if(t0 !== t1) e.animate([{ transform: `translateY(${t0 - t1}px)`, background: 'rgba(224,159,62,.35)' }, { transform: 'none' }], { duration: 650, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    });
+  }
+
+  function saludar(ids){
+    const cont = document.getElementById('sJoins');
+    ids.slice(0, 4).forEach((id, i) => {
+      const p = S.presentes[id]; if(!p) return;
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = 'join-pill';
+        el.innerHTML = `${avatar(p.nombre, id)}👋 ${esc(p.nombre)} se unió`;
+        cont.appendChild(el);
+        while(cont.children.length > 4) cont.firstElementChild.remove();
+        sUnido();
+        setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 500); }, 3500);
+      }, i * 350);
+    });
+  }
+
+  function foco(){
+    const id = S.config.destacado && S.posts[S.config.destacado] ? S.config.destacado : null;
+    const sp = document.getElementById('sSpot');
+    if(id !== spotId){
+      clearInterval(typer);
+      const viejo = sp.firstElementChild;
+      if(viejo){ viejo.classList.add('out'); setTimeout(() => viejo.remove(), 320); }
+      spotId = id;
+      if(!id) return;
+      const d = S.posts[id];
+      const el = document.createElement('div');
+      el.className = 'spotlight';
+      el.innerHTML = `<div class="rays"></div><div class="spot-card ${esc(d.tipo)}">` +
+        `<div class="spot-kicker"><span class="mega">📣</span> Tiene la palabra · ${d.tipo === 'pregunta' ? 'Pregunta' : 'Aporte'}</div>` +
+        `<div class="spot-who">${avatar(d.autor, d.uid)}<b>${esc(d.autor)}</b></div>` +
+        `<div class="spot-text"><span class="typed"></span><span class="caret"></span></div>` +
+        `<div class="spot-foot"><span class="like" id="spLike"><span class="heart">♥</span><span id="spN">${nLikes(id)}</span></span>` +
+          `<span class="chip ok${d.respondida ? '' : ' hidden'}" id="spOk">✓ Respondida</span></div>` +
+      `</div>`;
+      sp.appendChild(el);
+      Sonido.palabra();
+      setTimeout(() => confeti(180), 950);
+      const tgt = el.querySelector('.typed'), txt = d.texto, paso = Math.max(1, Math.ceil(txt.length / 90));
+      let i = 0;
+      setTimeout(() => {
+        typer = setInterval(() => {
+          i = Math.min(txt.length, i + paso); tgt.textContent = txt.slice(0, i);
+          if(i >= txt.length){ clearInterval(typer); setTimeout(() => { const c = el.querySelector('.caret'); if(c) c.remove(); }, 1500); }
+        }, 28);
+      }, 700);
+      return;
+    }
+    if(!id) return;
+    const n = document.getElementById('spN'), v = nLikes(id);
+    if(n && Number(n.textContent) !== v){
+      if(v > Number(n.textContent)){ bump(document.getElementById('spLike')); corazones(document.getElementById('spLike'), 7); sLike(); }
+      n.textContent = v;
+    }
+    const ok = document.getElementById('spOk');
+    if(ok) ok.classList.toggle('hidden', !S.posts[id].respondida);
+  }
 
   return function(){
     document.getElementById('sTema').textContent = tema();
     document.getElementById('sExp').textContent = S.config.expositores ? 'Exponen: ' + S.config.expositores : '';
     document.getElementById('sCerrado').classList.toggle('hidden', abierto());
     const t = totales();
-    const st = (n, l) => '<div class="stat"><b>' + n + '</b><span>' + l + '</span></div>';
-    document.getElementById('sStats').innerHTML = st(t.personas, 'Conectados') + st(t.preguntas, 'Preguntas') + st(t.aportes, 'Aportes') + st(t.likes, 'Me gusta');
+    contar(document.getElementById('kP'), t.personas);
+    contar(document.getElementById('kQ'), t.preguntas);
+    contar(document.getElementById('kA'), t.aportes);
+    contar(document.getElementById('kL'), t.likes);
 
     const todos = Object.entries(S.posts).map(([id, p]) => Object.assign({ id, likes: nLikes(id) }, p));
-    const recientes = todos.slice().sort((a, b) => (b.t || Infinity) - (a.t || Infinity));
-    document.getElementById('sWall').innerHTML = recientes.length
-      ? recientes.map(p => postHTML(p, { modo:'pantalla' })).join('')
-      : '<div class="scr-empty"><b>El muro está listo.</b>Las preguntas y los aportes aparecerán aquí en tiempo real.</div>';
+    const recientes = todos.slice().sort((a, b) => (b.t || 9e15) - (a.t || 9e15));
+    const nuevos = pintarClaves(document.getElementById('sWall'), recientes, p => postHTML(p, { modo:'pantalla' }), {
+      vacio: '<div class="scr-empty"><b>El muro está listo.</b>Las preguntas y los aportes aparecerán aquí en tiempo real.<br><span class="wait"><i></i><i></i><i></i></span></div>',
+      fresco: true,
+      alLike: lk => { corazones(lk, 4); sLike(); }
+    });
+    if(nuevos.length) sNuevo();
+    pintarRank(todos);
 
-    const top = todos.filter(p => p.likes > 0).sort((a, b) => b.likes - a.likes || (a.t || 0) - (b.t || 0)).slice(0, 5);
-    document.getElementById('sRank').innerHTML = top.length
-      ? top.map((p, i) => '<div class="rank-item"><span class="rank-n">' + (i + 1) + '</span><span class="rank-t">' + esc(p.texto) + '<small>' + esc(p.autor) + '</small></span><span class="rank-l">♥ ' + p.likes + '</span></div>').join('')
-      : '<p style="opacity:.7;font-size:14px">Aún no hay «me gusta». ¡Apoyen las ideas de sus compañeros!</p>';
-
-    const sp = document.getElementById('sSpot');
-    const d = S.config.destacado && S.posts[S.config.destacado];
-    const clave = d ? S.config.destacado + ':' + nLikes(S.config.destacado) + ':' + (d.respondida ? 1 : 0) : '';
-    if(sp.dataset.k === clave) return;
-    sp.dataset.k = clave;
-    sp.innerHTML = d
-      ? '<div class="spotlight"><div class="spot-card ' + esc(d.tipo) + '">' +
-          '<div class="spot-kicker">📣 Tiene la palabra · ' + (d.tipo === 'pregunta' ? 'Pregunta' : 'Aporte') + '</div>' +
-          '<div class="spot-who">' + avatar(d.autor, d.uid) + '<b>' + esc(d.autor) + '</b></div>' +
-          '<div class="spot-text">' + esc(d.texto) + '</div>' +
-          '<div class="spot-foot"><span class="like"><span class="heart">♥</span>' + nLikes(S.config.destacado) + '</span>' +
-            (d.respondida ? '<span class="chip ok" style="font-size:15px">✓ Respondida</span>' : '') + '</div>' +
-        '</div></div>'
-      : '';
+    const pres = Object.keys(S.presentes);
+    if(previo){
+      const llegaron = pres.filter(id => !previo.pres.has(id));
+      if(llegaron.length) saludar(llegaron);
+      if(previo.abierto !== abierto()) (abierto() ? Sonido.abrir() : Sonido.cerrar());
+    }
+    previo = { pres: new Set(pres), abierto: abierto() };
+    foco();
   };
 }
 
@@ -572,47 +968,49 @@ function profesor(){
   let pintar = () => {};
   function puerta(){
     app.innerHTML =
-      '<div class="login"><form class="login-card" id="fClave">' +
-        '<span class="login-badge">Facilitador</span><h1>Panel del muro.</h1>' +
-        '<p>Escribe la clave para administrar el muro.</p>' +
-        '<input class="field" id="iClave" type="password" inputmode="numeric" placeholder="Clave" aria-label="Clave">' +
-        '<div class="login-err" id="eClave"></div>' +
-        '<button class="btn btn-primary" type="submit">Entrar</button>' +
-      '</form></div>';
-    document.getElementById('iClave').focus();
+      `<div class="login"><form class="login-card" id="fClave">` +
+        `<span class="login-badge">Facilitador</span><div class="big-ico">🎛️</div><h1>Panel del muro.</h1>` +
+        `<p>Escribe la clave para administrar el muro.</p>` +
+        `<input class="field" id="iClave" type="password" inputmode="numeric" placeholder="Clave" aria-label="Clave">` +
+        `<div class="login-err" id="eClave"></div>` +
+        `<button class="btn btn-primary" type="submit">Entrar</button>` +
+        CREDITO +
+      `</form></div>`;
+    const inp = document.getElementById('iClave');
+    inp.focus();
     document.getElementById('fClave').addEventListener('submit', e => {
       e.preventDefault();
-      if(document.getElementById('iClave').value.trim() === CLAVE){ sstore('muroM5_prof', '1'); panel(); }
-      else document.getElementById('eClave').textContent = 'Clave incorrecta.';
+      if(inp.value.trim() === CLAVE){ sstore('muroM5_prof', '1'); panel(); }
+      else { document.getElementById('eClave').textContent = 'Clave incorrecta.'; inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake'); }
     });
   }
 
   function panel(){
     const base = location.origin + location.pathname;
     app.innerHTML =
-      '<header class="top"><div class="top-in"><div class="top-title"><b>Panel del facilitador.</b><span>Muro de preguntas y aportes</span></div>' +
-        '<span class="live"><span class="dot"></span><span id="pPers">0</span> conectados</span></div></header>' +
-      '<main class="wrap" style="padding-top:20px">' +
-        '<section class="panel"><h2>Datos de la exposición.</h2>' +
-          '<div class="grid2"><div><label class="lbl" for="iTema">Tema</label><input class="field" id="iTema" maxlength="90"></div>' +
-          '<div><label class="lbl" for="iExp">Expositores</label><input class="field" id="iExp" maxlength="120" placeholder="Ej.: Ana Pérez y Luis Gómez"></div></div>' +
-          '<div class="actions" style="align-items:center">' +
-            '<button class="btn btn-primary btn-sm" id="bGuardar">Guardar</button>' +
-            '<label class="switch"><input type="checkbox" id="swAbierto"> <span id="lAbierto">Muro abierto</span></label>' +
-          '</div>' +
-        '</section>' +
-        '<section class="panel"><h2>Enlaces.</h2><div class="links">' +
-          '<div class="link-row"><b>Participantes:</b><span>' + esc(base) + '</span><button class="btn btn-ghost btn-sm" data-copy="' + esc(base) + '">Copiar</button></div>' +
-          '<div class="link-row"><b>Pantalla:</b><span>' + esc(base) + '?modo=pantalla</span><a class="btn btn-ghost btn-sm" href="?modo=pantalla" target="_blank" rel="noopener">Abrir</a></div>' +
-        '</div>' +
-        '<div class="actions">' +
-          '<button class="btn btn-ghost btn-sm" id="bQuitar">Quitar de pantalla</button>' +
-          '<button class="btn btn-ghost btn-sm" id="bCsv">Descargar publicaciones (CSV)</button>' +
-          '<button class="btn btn-danger btn-sm" id="bReset">Reiniciar muro</button>' +
-        '</div></section>' +
+      `<header class="top"><div class="top-in"><div class="top-title"><b>Panel del facilitador.</b><span>Muro de preguntas y aportes</span></div>` +
+        `<span class="live"><span class="dot"></span><span id="pPers">0</span> conectados</span></div></header>` +
+      `<main class="wrap" style="padding-top:20px">` +
+        `<section class="panel"><h2>Datos de la exposición.</h2>` +
+          `<div class="grid2"><div><label class="lbl" for="iTema">Tema</label><input class="field" id="iTema" maxlength="90"></div>` +
+          `<div><label class="lbl" for="iExp">Expositores</label><input class="field" id="iExp" maxlength="120" placeholder="Ej.: Ana Pérez y Luis Gómez"></div></div>` +
+          `<div class="actions" style="align-items:center">` +
+            `<button class="btn btn-primary btn-sm" id="bGuardar">Guardar</button>` +
+            `<label class="switch"><input type="checkbox" id="swAbierto"> <span id="lAbierto">Muro abierto</span></label>` +
+          `</div>` +
+        `</section>` +
+        `<section class="panel"><h2>Enlaces.</h2><div class="links">` +
+          `<div class="link-row"><b>Participantes:</b><span>${esc(base)}</span><button class="btn btn-ghost btn-sm" data-copy="${esc(base)}">Copiar</button></div>` +
+          `<div class="link-row"><b>Pantalla:</b><span>${esc(base)}?modo=pantalla</span><a class="btn btn-ghost btn-sm" href="?modo=pantalla" target="_blank" rel="noopener">Abrir</a></div>` +
+        `</div>` +
+        `<div class="actions">` +
+          `<button class="btn btn-ghost btn-sm" id="bQuitar">Quitar de pantalla</button>` +
+          `<button class="btn btn-ghost btn-sm" id="bCsv">Descargar publicaciones (CSV)</button>` +
+          `<button class="btn btn-danger btn-sm" id="bReset">Reiniciar muro</button>` +
+        `</div></section>` +
         barraHTML() +
-        '<div class="list" id="pLista"></div>' +
-      '</main>';
+        `<div class="list" id="pLista"></div>` +
+      `</main>` + CREDITO;
 
     const iTema = document.getElementById('iTema'), iExp = document.getElementById('iExp');
     iTema.value = tema(); iExp.value = S.config.expositores || '';
@@ -644,13 +1042,11 @@ function profesor(){
     enlazarBarra(app.querySelector('.bar'), pintarLista);
 
     function pintarLista(){
-      const arr = postsOrdenados();
-      document.getElementById('pLista').innerHTML = arr.length ? arr.map(p => postHTML(p, { modo:'profesor' })).join('') : listaVacia();
+      pintarClaves(document.getElementById('pLista'), postsOrdenados(), p => postHTML(p, { modo:'profesor' }), { vacio: listaVacia() });
     }
     pintar = function(){
       document.getElementById('pPers').textContent = totales().personas;
-      const sw = document.getElementById('swAbierto');
-      sw.checked = abierto();
+      document.getElementById('swAbierto').checked = abierto();
       document.getElementById('lAbierto').textContent = abierto() ? 'Muro abierto' : 'Muro cerrado';
       if(document.activeElement !== iTema && !iTema.dataset.touched) iTema.value = tema();
       if(document.activeElement !== iExp && !iExp.dataset.touched) iExp.value = S.config.expositores || '';
@@ -682,14 +1078,11 @@ function profesor(){
    ========================================================= */
 function boot(){
   db = window.EXCEL_DB_READY;
-  let render = null, primera = true;
+  let render = null;
   db.ref(ROOT).on('value', snap => {
     const v = snap.val() || {};
     S.config = v.config || {}; S.posts = v.posts || {}; S.likes = v.likes || {}; S.presentes = v.presentes || {};
-    if(primera){
-      primera = false;
-      render = MODO === 'pantalla' ? pantalla() : MODO === 'profesor' ? profesor() : participante();
-    }
+    if(!render) render = MODO === 'pantalla' ? pantalla() : MODO === 'profesor' ? profesor() : participante();
     render();
   }, () => {
     app.innerHTML = '<div class="wrap"><div class="panel" style="text-align:center;margin-top:12vh"><h2>Sin acceso al muro.</h2><p class="muted">No se pudo leer el muro. Recarga la página.</p></div></div>';
