@@ -85,7 +85,7 @@ h1,h2,h3{font-family:var(--serif);color:var(--ink);line-height:1.2}
 .login::before{background:var(--amber);top:-80px;left:-80px}
 .login::after{background:var(--teal);bottom:-100px;right:-60px;animation-delay:-6s}
 .floaters{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.floaters span{position:absolute;bottom:-60px;font-size:28px;animation:floatUp linear infinite;opacity:0}
+.floaters span{position:absolute;bottom:-60px;font-size:28px;animation:floatUp linear 1 forwards;opacity:0}
 .login-card{position:relative;z-index:2;width:100%;max-width:460px;background:var(--card);border-radius:22px;padding:34px 28px 22px;box-shadow:0 20px 50px rgba(15,76,92,.15);text-align:center;animation:rise .6s cubic-bezier(.2,.9,.3,1.2)}
 .login-badge{display:inline-flex;align-items:center;gap:7px;background:var(--amber-soft);color:#9a6416;font-weight:600;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:5px 12px;border-radius:999px;margin-bottom:16px}
 .login-badge .dot{background:var(--terra)}
@@ -182,7 +182,7 @@ textarea.field{min-height:96px;resize:vertical;font-size:16px;line-height:1.5}
 body.pantalla{background:var(--ink-deep);color:#fff}
 .bg-fx{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
 .bg-fx .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.28;animation:drift 16s ease-in-out infinite}
-.bg-fx .em{position:absolute;bottom:-60px;font-size:30px;animation:floatUp linear infinite;opacity:0;filter:grayscale(.2)}
+.bg-fx .em{position:absolute;bottom:-60px;font-size:30px;animation:floatUp linear 1 forwards;opacity:0;filter:grayscale(.2)}
 .scr{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;padding:22px 26px 60px;gap:18px}
 .scr-head{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;animation:fade .6s}
 .scr-head .ttl{flex:1;min-width:260px}
@@ -501,17 +501,28 @@ function corazones(el, n){
     setTimeout(() => s.remove(), 1600 + i * 80);
   }
 }
+/* Emojis flotantes por oleadas: flotan durante 1 minuto y se repiten cada 3 minutos */
+const OLEADA_MS = 60000, CICLO_MS = 180000;
 function flotantes(cont, emojis, n, cls){
-  for(let i = 0; i < n; i++){
-    const s = document.createElement('span');
-    s.className = cls || '';
-    s.textContent = emojis[i % emojis.length];
-    s.style.left = (Math.random() * 96) + '%';
-    s.style.animationDuration = (14 + Math.random() * 14) + 's';
-    s.style.animationDelay = (-Math.random() * 26) + 's';
-    s.style.fontSize = (20 + Math.random() * 22) + 'px';
-    cont.appendChild(s);
+  function oleada(){
+    if(!cont.isConnected){ clearInterval(reloj); return; }
+    for(let i = 0; i < n; i++){
+      const dur = 14 + Math.random() * 10;
+      setTimeout(() => {
+        if(!cont.isConnected) return;
+        const s = document.createElement('span');
+        s.className = cls || '';
+        s.textContent = emojis[i % emojis.length];
+        s.style.left = (Math.random() * 96) + '%';
+        s.style.animationDuration = dur + 's';
+        s.style.fontSize = (20 + Math.random() * 22) + 'px';
+        s.addEventListener('animationend', () => s.remove());
+        cont.appendChild(s);
+      }, Math.random() * (OLEADA_MS - dur * 1000));
+    }
   }
+  const reloj = setInterval(oleada, CICLO_MS);
+  oleada();
 }
 
 /* Pinta la lista conservando las tarjetas que no cambian:
