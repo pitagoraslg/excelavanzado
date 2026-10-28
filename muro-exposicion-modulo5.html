@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muro de preguntas y aportes · Módulo 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+:root{
+  --bg:#f4ead8;
+  --paper:#fbf0dd;      /* crema */
+  --card:#ffffff;
+  --ink:#0f4c5c;        /* petróleo */
+  --ink-deep:#0a3440;
+  --text:#1d2b30;
+  --muted:#5e6b6f;
+  --line:#e8dcc4;
+  --amber:#e09f3e;
+  --amber-soft:#fbecd2;
+  --terra:#c8553d;
+  --terra-soft:#f8e2dc;
+  --teal:#2a9d8f;
+  --teal-soft:#dff2ef;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,textarea{font:inherit;color:inherit}
+.hidden{display:none !important}
+.loading{min-height:100vh;display:grid;place-items:center;color:var(--muted);font-weight:500}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+.muted{color:var(--muted)}
+h1,h2,h3{font-family:var(--serif);color:var(--ink);line-height:1.2}
+
+/* ---------- Botones ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:12px;font-weight:600;transition:transform .12s, background .15s, box-shadow .15s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--ink);color:#fff;box-shadow:0 4px 14px rgba(15,76,92,.25)}
+.btn-primary:hover{background:var(--ink-deep)}
+.btn-primary:disabled{background:#9aa3a6;box-shadow:none;cursor:not-allowed}
+.btn-ghost{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.btn-ghost:hover{border-color:var(--ink)}
+.btn-danger{background:var(--terra-soft);color:var(--terra)}
+.btn-danger:hover{background:#f2cfc6}
+.btn-sm{padding:7px 12px;font-size:14px;border-radius:10px}
+
+/* ---------- Ingreso ---------- */
+.login{min-height:100vh;display:grid;place-items:center;padding:24px 16px;
+  background:radial-gradient(circle at 15% 20%, rgba(224,159,62,.25), transparent 45%),
+             radial-gradient(circle at 85% 80%, rgba(42,157,143,.22), transparent 45%), var(--bg)}
+.login-card{width:100%;max-width:460px;background:var(--card);border-radius:22px;padding:34px 28px;box-shadow:0 20px 50px rgba(15,76,92,.15);text-align:center}
+.login-badge{display:inline-block;background:var(--amber-soft);color:#9a6416;font-weight:600;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:5px 12px;border-radius:999px;margin-bottom:16px}
+.login-card h1{font-size:30px;margin-bottom:8px}
+.login-card p{color:var(--muted);margin-bottom:22px}
+.field{width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:14px;background:var(--paper);font-size:17px;outline:none;transition:border-color .15s}
+.field:focus{border-color:var(--ink);background:#fff}
+.login-card .btn{width:100%;margin-top:14px;padding:14px;font-size:17px}
+.login-err{color:var(--terra);font-size:14px;margin-top:10px;min-height:20px}
+
+/* ---------- Encabezado ---------- */
+.top{background:var(--ink);color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.top-in{max-width:980px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top-title{flex:1;min-width:200px}
+.top-title b{display:block;font-family:var(--serif);font-size:19px;line-height:1.2}
+.top-title span{font-size:13px;opacity:.8}
+.top-user{display:flex;align-items:center;gap:10px;font-size:14px}
+.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;flex:none}
+.top .btn-sm{background:rgba(255,255,255,.12);color:#fff}
+.top .btn-sm:hover{background:rgba(255,255,255,.22)}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:13px;background:rgba(255,255,255,.12);padding:5px 10px;border-radius:999px}
+.dot{width:8px;height:8px;border-radius:50%;background:#5fe0b0;box-shadow:0 0 0 0 rgba(95,224,176,.7);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(95,224,176,.6)}70%{box-shadow:0 0 0 8px rgba(95,224,176,0)}100%{box-shadow:0 0 0 0 rgba(95,224,176,0)}}
+
+/* ---------- Redactar ---------- */
+.composer{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 6px 22px rgba(15,76,92,.08);margin:20px 0 18px}
+.composer h2{font-size:20px;margin-bottom:12px}
+.tipo-sel{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tipo-btn{flex:1;min-width:140px;padding:11px 14px;border-radius:12px;border:2px solid var(--line);background:var(--paper);font-weight:600;color:var(--muted);transition:all .15s}
+.tipo-btn[aria-pressed="true"].t-pregunta{border-color:var(--terra);background:var(--terra-soft);color:var(--terra)}
+.tipo-btn[aria-pressed="true"].t-aporte{border-color:var(--teal);background:var(--teal-soft);color:#1d7a6f}
+textarea.field{min-height:96px;resize:vertical;font-size:16px;line-height:1.5}
+.composer-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;flex-wrap:wrap}
+.count{font-size:13px;color:var(--muted)}
+.closed-note{background:var(--amber-soft);color:#8a5a12;border-radius:12px;padding:12px 14px;font-weight:500;margin-bottom:10px}
+
+/* ---------- Barra de filtros ---------- */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:3px}
+.seg button{padding:7px 13px;border-radius:9px;font-size:14px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+
+/* ---------- Tarjetas ---------- */
+.list{display:grid;gap:12px}
+.post{background:var(--card);border-radius:16px;padding:16px 18px;box-shadow:0 3px 14px rgba(15,76,92,.07);border-left:5px solid var(--teal);animation:enter .35s ease}
+.post.pregunta{border-left-color:var(--terra)}
+.post.spot{box-shadow:0 0 0 3px var(--amber), 0 6px 20px rgba(224,159,62,.3)}
+@keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.post-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.post-author{font-weight:600;color:var(--ink)}
+.post-time{font-size:13px;color:var(--muted)}
+.chip{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.chip.pregunta{background:var(--terra-soft);color:var(--terra)}
+.chip.aporte{background:var(--teal-soft);color:#1d7a6f}
+.chip.ok{background:#e6f0e9;color:#2f6b52}
+.chip.spot{background:var(--amber-soft);color:#9a6416}
+.post-text{white-space:pre-wrap;word-wrap:break-word;overflow-wrap:anywhere;font-size:16.5px}
+.post-foot{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.like{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;border:2px solid var(--line);font-weight:700;font-size:15px;color:var(--muted);transition:all .15s;background:#fff}
+.like:hover:not(:disabled){border-color:var(--terra);color:var(--terra)}
+.like.on,.like.on:hover:not(:disabled){background:var(--terra);border-color:var(--terra);color:#fff}
+.like:disabled{cursor:default;opacity:.75}
+.like .heart{font-size:17px;line-height:1}
+.like.pop .heart{animation:pop .4s ease}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+.post-foot .grow{flex:1}
+.link-del{font-size:13px;color:var(--muted);text-decoration:underline}
+.link-del:hover{color:var(--terra)}
+.empty{text-align:center;padding:40px 16px;color:var(--muted);background:var(--card);border-radius:16px;border:2px dashed var(--line)}
+.empty b{display:block;font-family:var(--serif);font-size:20px;color:var(--ink);margin-bottom:4px}
+
+/* ---------- Pantalla (proyección) ---------- */
+body.pantalla{background:var(--ink-deep);color:#fff;overflow-x:hidden}
+.scr{min-height:100vh;display:flex;flex-direction:column;padding:22px 26px 26px;gap:18px;
+  background:radial-gradient(circle at 10% 0%, rgba(42,157,143,.25), transparent 40%),
+             radial-gradient(circle at 100% 100%, rgba(224,159,62,.18), transparent 45%), var(--ink-deep)}
+.scr-head{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.scr-head .ttl{flex:1;min-width:260px}
+.scr-head .kicker{font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);font-weight:700}
+.scr-head h1{color:#fff;font-size:clamp(26px,3.2vw,44px);margin-top:4px}
+.scr-head .sub{opacity:.8;font-size:clamp(14px,1.3vw,18px);margin-top:4px}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:10px 16px;min-width:96px;text-align:center}
+.stat b{display:block;font-size:clamp(22px,2.2vw,32px);font-family:var(--serif);line-height:1.1}
+.stat span{font-size:12px;opacity:.75;text-transform:uppercase;letter-spacing:.06em}
+.scr-body{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+.wall{columns:3 300px;column-gap:16px}
+.wall .post{break-inside:avoid;margin-bottom:16px;color:var(--text);display:block}
+.wall .post-text{font-size:clamp(16px,1.25vw,20px)}
+.side{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:18px;position:sticky;top:20px}
+.side h3{color:var(--amber);font-family:var(--sans);font-size:14px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.rank{display:grid;gap:10px}
+.rank-item{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:start;background:rgba(255,255,255,.06);border-radius:12px;padding:10px 12px}
+.rank-n{font-family:var(--serif);font-size:22px;color:var(--amber);line-height:1}
+.rank-t{font-size:14px;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.rank-t small{display:block;opacity:.7;font-size:12px;margin-top:3px}
+.rank-l{font-weight:700;color:#ffb4a3;white-space:nowrap}
+.scr-empty{border:2px dashed rgba(255,255,255,.2);border-radius:18px;padding:60px 20px;text-align:center;opacity:.85}
+.scr-empty b{display:block;font-family:var(--serif);font-size:28px;margin-bottom:6px}
+.join{margin-top:16px;font-size:14px;opacity:.85;word-break:break-all}
+.join code{background:rgba(255,255,255,.1);padding:3px 8px;border-radius:8px;font-family:inherit}
+.closed-flag{background:var(--terra);color:#fff;font-weight:700;padding:6px 14px;border-radius:999px;font-size:14px}
+
+/* Foco: tiene la palabra */
+.spotlight{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:30px;background:rgba(6,30,37,.82);backdrop-filter:blur(4px);animation:fade .3s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.spot-card{width:min(1100px,100%);background:var(--card);color:var(--text);border-radius:28px;padding:clamp(26px,4vw,56px);box-shadow:0 30px 80px rgba(0,0,0,.4);border-top:10px solid var(--teal);animation:rise .45s cubic-bezier(.2,.9,.3,1.2)}
+.spot-card.pregunta{border-top-color:var(--terra)}
+@keyframes rise{from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:none}}
+.spot-kicker{font-size:clamp(14px,1.4vw,18px);letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#9a6416;margin-bottom:10px}
+.spot-who{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.spot-who .avatar{width:64px;height:64px;font-size:24px}
+.spot-who b{font-family:var(--serif);font-size:clamp(26px,3vw,42px);color:var(--ink);line-height:1.1;display:block}
+.spot-text{font-family:var(--serif);font-size:clamp(24px,2.8vw,40px);line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere}
+.spot-foot{margin-top:24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.spot-foot .like{font-size:20px;padding:10px 20px;background:var(--terra);border-color:var(--terra);color:#fff}
+
+/* ---------- Profesor ---------- */
+.panel{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 6px 22px rgba(15,76,92,.08);margin-bottom:18px}
+.panel h2{font-size:20px;margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lbl{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:5px}
+.panel .field{font-size:15px;padding:11px 13px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.switch{display:inline-flex;align-items:center;gap:10px;font-weight:600}
+.switch input{width:46px;height:26px;appearance:none;-webkit-appearance:none;background:#c9c1b1;border-radius:999px;position:relative;cursor:pointer;transition:background .2s}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}
+.switch input:checked{background:var(--teal)}
+.switch input:checked::after{left:23px}
+.links{display:grid;gap:8px}
+.link-row{display:flex;gap:8px;align-items:center;background:var(--paper);border-radius:10px;padding:8px 10px;font-size:14px}
+.link-row span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.link-row b{white-space:nowrap;color:var(--ink)}
+
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink-deep);color:#fff;padding:12px 18px;border-radius:12px;font-weight:500;opacity:0;pointer-events:none;transition:all .25s;z-index:100;max-width:calc(100% - 32px);text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+
+@media (max-width:1100px){
+  .scr-body{grid-template-columns:1fr}
+  .side{position:static}
+}
+@media (max-width:640px){
+  .grid2{grid-template-columns:1fr}
+  .top-title b{font-size:17px}
+  .composer,.panel{padding:15px}
+  .scr{padding:16px}
+}
+</style>
+</head>
+<body>
+<div id="app"><div class="loading">Conectando…</div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* Firebase (mismo proyecto que el Módulo 1) */
+(function(){
+  var firebaseConfig = {
+    apiKey: "AIzaSyCLrT88lr0by0elfhI6bwdbgFN3u3ORCDI",
+    authDomain: "excel-avanzado-icadep.firebaseapp.com",
+    databaseURL: "https://excel-avanzado-icadep-default-rtdb.firebaseio.com",
+    projectId: "excel-avanzado-icadep",
+    storageBucket: "excel-avanzado-icadep.firebasestorage.app",
+    messagingSenderId: "391674719896",
+    appId: "1:391674719896:web:738cc75c1d9720dd7caaed"
+  };
+  var APP_CDNS = [
+    "https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/firebase/10.13.2/firebase-app-compat.min.js"
+  ];
+  var DB_CDNS = [
+    "https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/firebase/10.13.2/firebase-database-compat.min.js"
+  ];
+  function loadScript(src){
+    return new Promise(function(resolve, reject){
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = function(){ resolve(true); };
+      s.onerror = function(){ reject(new Error('load failed: ' + src)); };
+      document.head.appendChild(s);
+    });
+  }
+  function loadWithFallback(urls){
+    var i = 0;
+    function tryNext(){
+      if(i >= urls.length) return Promise.reject(new Error('all sources failed'));
+      return loadScript(urls[i++]).catch(tryNext);
+    }
+    return tryNext();
+  }
+  function showLoadError(){
+    document.getElementById('app').innerHTML =
+      '<div class="wrap"><div class="panel" style="text-align:center;margin-top:12vh">' +
+      '<h2 style="margin-bottom:12px">No se pudo conectar.</h2>' +
+      '<p class="muted">No logramos cargar el servicio en tiempo real. Revisa tu conexión a internet o intenta desde otra red (por ejemplo, datos móviles) y recarga la página.</p>' +
+      '</div></div>';
+  }
+  loadWithFallback(APP_CDNS)
+    .then(function(){ return loadWithFallback(DB_CDNS); })
+    .then(function(){
+      if(typeof firebase === 'undefined'){ showLoadError(); return; }
+      firebase.initializeApp(firebaseConfig);
+      window.EXCEL_DB_READY = firebase.database();
+      window.dispatchEvent(new Event('excel-firebase-ready'));
+    })
+    .catch(showLoadError);
+})();
+</script>
+
+<script>
+(function(){
+'use strict';
+
+/* =========================================================
+   CONFIGURACIÓN
+   ========================================================= */
+const ROOT = 'muroM5';
+const CLAVE = '7319';
+const TEMA_DEF = 'Módulo 5 · Modelado financiero y análisis de escenarios';
+const MAX_CHARS = 400;
+const ESPERA_MS = 8000;               // tiempo mínimo entre publicaciones
+const MODO = (new URLSearchParams(location.search).get('modo') || 'participante').toLowerCase();
+const COLORES = ['#0f4c5c','#2a9d8f','#c8553d','#e09f3e','#6a4c93','#1d7a6f','#9a6416','#3d5a80'];
+
+let db;
+const S = { config:{}, posts:{}, likes:{}, presentes:{}, filtro:'todas', orden:'recientes', tipo:'pregunta' };
+const app = document.getElementById('app');
+
+/* =========================================================
+   UTILIDADES
+   ========================================================= */
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function store(k, v){ try{ if(v === undefined) return localStorage.getItem(k); if(v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); }catch(e){ return null; } }
+function sstore(k, v){ try{ if(v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); }catch(e){ return null; } }
+function uidNuevo(){ return 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function iniciales(n){ const p = String(n).trim().split(/\s+/); return ((p[0] || '?')[0] + (p[1] ? p[1][0] : '')).toUpperCase(); }
+function colorDe(uid){ let h = 0; for(const c of String(uid)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return COLORES[h % COLORES.length]; }
+function avatar(nombre, uid){ return '<div class="avatar" style="background:' + colorDe(uid) + '">' + esc(iniciales(nombre)) + '</div>'; }
+function hace(t){
+  if(!t) return 'ahora';
+  const s = Math.max(0, Math.round((Date.now() - t) / 1000));
+  if(s < 45) return 'hace un momento';
+  const m = Math.round(s / 60);
+  if(m < 60) return 'hace ' + m + ' min';
+  const h = Math.round(m / 60);
+  return 'hace ' + h + ' h';
+}
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove('show'), 2600);
+}
+function nLikes(pid){ return Object.keys(S.likes[pid] || {}).length; }
+function abierto(){ return S.config.abierto !== false; }
+function tema(){ return S.config.tema || TEMA_DEF; }
+
+function postsOrdenados(){
+  let arr = Object.entries(S.posts).map(([id, p]) => Object.assign({ id, likes: nLikes(id) }, p));
+  if(S.filtro === 'preguntas') arr = arr.filter(p => p.tipo === 'pregunta');
+  if(S.filtro === 'aportes') arr = arr.filter(p => p.tipo === 'aporte');
+  if(S.orden === 'apoyadas') arr.sort((a, b) => b.likes - a.likes || (b.t || 0) - (a.t || 0));
+  else arr.sort((a, b) => (b.t || Infinity) - (a.t || Infinity));
+  return arr;
+}
+function totales(){
+  const ps = Object.values(S.posts);
+  return {
+    personas: Object.keys(S.presentes).length,
+    preguntas: ps.filter(p => p.tipo === 'pregunta').length,
+    aportes: ps.filter(p => p.tipo === 'aporte').length,
+    likes: Object.keys(S.posts).reduce((a, id) => a + nLikes(id), 0)
+  };
+}
+
+/* Tarjeta de publicación (participante y profesor) */
+function postHTML(p, opts){
+  const uid = opts.uid;
+  const mio = uid && p.uid === uid;
+  const di = uid && S.likes[p.id] && S.likes[p.id][uid];
+  const spot = S.config.destacado === p.id;
+  let foot = '';
+  if(opts.modo === 'participante'){
+    foot = '<button class="like' + (di ? ' on' : '') + '" data-like="' + p.id + '"' + (mio ? ' disabled title="Es tu publicación"' : '') +
+           ' aria-pressed="' + (di ? 'true' : 'false') + '"><span class="heart">' + (di ? '♥' : '♡') + '</span>' + p.likes + '</button>' +
+           '<span class="grow"></span>' + (mio ? '<button class="link-del" data-del="' + p.id + '">Eliminar</button>' : '');
+  } else if(opts.modo === 'profesor'){
+    foot = '<span class="like" style="cursor:default"><span class="heart">♥</span>' + p.likes + '</span><span class="grow"></span>' +
+           '<button class="btn btn-sm ' + (spot ? 'btn-primary' : 'btn-ghost') + '" data-spot="' + p.id + '">' + (spot ? 'Quitar de pantalla' : '📣 Dar la palabra') + '</button>' +
+           '<button class="btn btn-sm btn-ghost" data-ok="' + p.id + '">' + (p.respondida ? '↺ Pendiente' : '✓ Respondida') + '</button>' +
+           '<button class="btn btn-sm btn-danger" data-del="' + p.id + '">Eliminar</button>';
+  } else {
+    foot = '<span class="like on" style="cursor:default"><span class="heart">♥</span>' + p.likes + '</span>';
+  }
+  return '<article class="post ' + esc(p.tipo) + (spot ? ' spot' : '') + '" data-id="' + p.id + '">' +
+    '<div class="post-head">' + avatar(p.autor, p.uid) +
+      '<span class="post-author">' + esc(p.autor) + (mio ? ' (tú)' : '') + '</span>' +
+      '<span class="chip ' + esc(p.tipo) + '">' + (p.tipo === 'pregunta' ? 'Pregunta' : 'Aporte') + '</span>' +
+      (p.respondida ? '<span class="chip ok">✓ Respondida</span>' : '') +
+      (spot ? '<span class="chip spot">📣 En pantalla</span>' : '') +
+      '<span class="post-time" data-t="' + (p.t || '') + '">' + hace(p.t) + '</span>' +
+    '</div>' +
+    '<div class="post-text">' + esc(p.texto) + '</div>' +
+    '<div class="post-foot">' + foot + '</div>' +
+  '</article>';
+}
+
+function barraHTML(){
+  const b = (grupo, val, txt) => '<button data-' + grupo + '="' + val + '" aria-pressed="' + (S[grupo] === val) + '">' + txt + '</button>';
+  return '<div class="bar">' +
+    '<div class="seg">' + b('filtro','todas','Todas') + b('filtro','preguntas','Preguntas') + b('filtro','aportes','Aportes') + '</div>' +
+    '<div class="seg">' + b('orden','recientes','Recientes') + b('orden','apoyadas','Más apoyadas') + '</div>' +
+  '</div>';
+}
+function enlazarBarra(root, pintar){
+  root.addEventListener('click', e => {
+    const f = e.target.closest('[data-filtro]'), o = e.target.closest('[data-orden]');
+    if(!f && !o) return;
+    if(f) S.filtro = f.dataset.filtro;
+    if(o) S.orden = o.dataset.orden;
+    root.querySelectorAll('[data-filtro],[data-orden]').forEach(x => {
+      const g = x.dataset.filtro ? 'filtro' : 'orden';
+      x.setAttribute('aria-pressed', String(S[g] === x.dataset[g]));
+    });
+    pintar();
+  });
+}
+function listaVacia(){
+  return '<div class="empty"><b>' + (Object.keys(S.posts).length ? 'Nada en este filtro.' : 'El muro está esperando.') + '</b>' +
+         (Object.keys(S.posts).length ? 'Prueba con otro filtro.' : 'Sé la primera persona en publicar una pregunta o un aporte.') + '</div>';
+}
+
+/* =========================================================
+   MODO PARTICIPANTE
+   ========================================================= */
+function participante(){
+  let uid = store('muroM5_uid');
+  if(!uid){ uid = uidNuevo(); store('muroM5_uid', uid); }
+  let nombre = store('muroM5_nombre');
+  let presRef = null;
+  let ultimo = 0;
+
+  function ingreso(){
+    if(presRef){ presRef.remove(); presRef = null; }
+    app.innerHTML =
+      '<div class="login"><form class="login-card" id="fLogin" autocomplete="off">' +
+        '<span class="login-badge">Muro en vivo</span>' +
+        '<h1>Preguntas y aportes.</h1>' +
+        '<p>' + esc(tema()) + '<br>Escribe tu nombre para entrar al muro de la clase.</p>' +
+        '<input class="field" id="iNombre" maxlength="40" placeholder="Nombre y apellido" aria-label="Nombre y apellido">' +
+        '<div class="login-err" id="eNombre"></div>' +
+        '<button class="btn btn-primary" type="submit">Entrar al muro</button>' +
+      '</form></div>';
+    const inp = document.getElementById('iNombre');
+    inp.focus();
+    document.getElementById('fLogin').addEventListener('submit', e => {
+      e.preventDefault();
+      const v = inp.value.trim().replace(/\s+/g, ' ');
+      if(v.length < 3){ document.getElementById('eNombre').textContent = 'Escribe tu nombre (al menos 3 letras).'; return; }
+      nombre = v; store('muroM5_nombre', v);
+      muro();
+    });
+  }
+
+  function muro(){
+    presRef = db.ref(ROOT + '/presentes/' + uid);
+    presRef.onDisconnect().remove();
+    presRef.set({ nombre, t: firebase.database.ServerValue.TIMESTAMP });
+
+    app.innerHTML =
+      '<header class="top"><div class="top-in">' +
+        '<div class="top-title"><b id="hTema"></b><span id="hExp"></span></div>' +
+        '<span class="live"><span class="dot"></span><span id="hPers">0</span> conectados</span>' +
+        '<div class="top-user">' + avatar(nombre, uid) + '<span>' + esc(nombre) + '</span>' +
+          '<button class="btn btn-sm" id="bSalir">Cambiar nombre</button></div>' +
+      '</div></header>' +
+      '<main class="wrap">' +
+        '<section class="composer">' +
+          '<h2>¿Qué quieres compartir?</h2>' +
+          '<div class="closed-note hidden" id="nCerrado">El facilitador cerró el muro por ahora. Puedes seguir leyendo y dando «me gusta».</div>' +
+          '<div class="tipo-sel">' +
+            '<button class="tipo-btn t-pregunta" data-tipo="pregunta">❓ Pregunta</button>' +
+            '<button class="tipo-btn t-aporte" data-tipo="aporte">💡 Aporte</button>' +
+          '</div>' +
+          '<textarea class="field" id="tTexto" maxlength="' + MAX_CHARS + '" placeholder="Escribe tu pregunta para el grupo expositor…"></textarea>' +
+          '<div class="composer-foot"><span class="count" id="cCount">0 / ' + MAX_CHARS + '</span>' +
+            '<button class="btn btn-primary" id="bPub">Publicar en el muro</button></div>' +
+        '</section>' +
+        barraHTML() +
+        '<div class="list" id="lista"></div>' +
+      '</main>';
+
+    const tx = document.getElementById('tTexto');
+    const pintarTipo = () => {
+      app.querySelectorAll('[data-tipo]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tipo === S.tipo)));
+      tx.placeholder = S.tipo === 'pregunta' ? 'Escribe tu pregunta para el grupo expositor…' : 'Comparte un aporte, un ejemplo o una idea sobre el tema…';
+    };
+    pintarTipo();
+    app.querySelectorAll('[data-tipo]').forEach(b => b.addEventListener('click', () => { S.tipo = b.dataset.tipo; pintarTipo(); tx.focus(); }));
+    tx.addEventListener('input', () => { document.getElementById('cCount').textContent = tx.value.length + ' / ' + MAX_CHARS; });
+    document.getElementById('bSalir').addEventListener('click', () => { store('muroM5_nombre', null); nombre = null; ingreso(); });
+    document.getElementById('bPub').addEventListener('click', publicar);
+    tx.addEventListener('keydown', e => { if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)) publicar(); });
+
+    function publicar(){
+      const texto = tx.value.trim();
+      if(!abierto()){ toast('El muro está cerrado por ahora.'); return; }
+      if(texto.length < 5){ toast('Escribe un poco más antes de publicar.'); tx.focus(); return; }
+      const falta = ESPERA_MS - (Date.now() - ultimo);
+      if(falta > 0){ toast('Espera ' + Math.ceil(falta / 1000) + ' s para volver a publicar.'); return; }
+      ultimo = Date.now();
+      db.ref(ROOT + '/posts').push({ autor: nombre, uid, tipo: S.tipo, texto: texto.slice(0, MAX_CHARS), t: firebase.database.ServerValue.TIMESTAMP })
+        .then(() => { tx.value = ''; document.getElementById('cCount').textContent = '0 / ' + MAX_CHARS; toast('¡Publicado! Ahora compártelo en voz alta cuando te den la palabra.'); })
+        .catch(() => { ultimo = 0; toast('No se pudo publicar. Revisa tu conexión.'); });
+    }
+
+    const lista = document.getElementById('lista');
+    lista.addEventListener('click', e => {
+      const l = e.target.closest('[data-like]'), d = e.target.closest('[data-del]');
+      if(l && !l.disabled){
+        const pid = l.dataset.like;
+        const di = S.likes[pid] && S.likes[pid][uid];
+        if(!di){ l.classList.add('pop'); }
+        db.ref(ROOT + '/likes/' + pid + '/' + uid).set(di ? null : true);
+      }
+      if(d && confirm('¿Eliminar tu publicación?')){
+        const pid = d.dataset.del;
+        db.ref(ROOT).update({ ['posts/' + pid]: null, ['likes/' + pid]: null });
+      }
+    });
+    enlazarBarra(app.querySelector('.bar'), pintarLista);
+    actualizar();
+  }
+
+  function pintarLista(){
+    const lista = document.getElementById('lista');
+    if(!lista) return;
+    const arr = postsOrdenados();
+    lista.innerHTML = arr.length ? arr.map(p => postHTML(p, { modo:'participante', uid })).join('') : listaVacia();
+  }
+  function actualizar(){
+    if(!document.getElementById('lista')) return;
+    document.getElementById('hTema').textContent = tema();
+    document.getElementById('hExp').textContent = S.config.expositores ? 'Exponen: ' + S.config.expositores : 'Muro de preguntas y aportes';
+    document.getElementById('hPers').textContent = totales().personas;
+    const ab = abierto();
+    document.getElementById('nCerrado').classList.toggle('hidden', ab);
+    document.getElementById('bPub').disabled = !ab;
+    document.getElementById('tTexto').disabled = !ab;
+    pintarLista();
+  }
+
+  if(nombre) muro(); else ingreso();
+  return () => { if(nombre) actualizar(); };
+}
+
+/* =========================================================
+   MODO PANTALLA (lo que comparte el facilitador)
+   ========================================================= */
+function pantalla(){
+  document.body.classList.add('pantalla');
+  const urlPart = location.origin + location.pathname;
+  app.innerHTML =
+    '<div class="scr">' +
+      '<div class="scr-head">' +
+        '<div class="ttl"><div class="kicker">Muro de preguntas y aportes</div><h1 id="sTema"></h1><div class="sub" id="sExp"></div></div>' +
+        '<span class="closed-flag hidden" id="sCerrado">Muro cerrado</span>' +
+        '<div class="stats" id="sStats"></div>' +
+      '</div>' +
+      '<div class="scr-body">' +
+        '<div class="wall" id="sWall"></div>' +
+        '<aside class="side"><h3>Más apoyadas</h3><div class="rank" id="sRank"></div>' +
+          '<div class="join">Entra desde tu celular, tableta o computadora:<br><code>' + esc(urlPart) + '</code></div></aside>' +
+      '</div>' +
+    '</div>' +
+    '<div id="sSpot"></div>';
+
+  return function(){
+    document.getElementById('sTema').textContent = tema();
+    document.getElementById('sExp').textContent = S.config.expositores ? 'Exponen: ' + S.config.expositores : '';
+    document.getElementById('sCerrado').classList.toggle('hidden', abierto());
+    const t = totales();
+    const st = (n, l) => '<div class="stat"><b>' + n + '</b><span>' + l + '</span></div>';
+    document.getElementById('sStats').innerHTML = st(t.personas, 'Conectados') + st(t.preguntas, 'Preguntas') + st(t.aportes, 'Aportes') + st(t.likes, 'Me gusta');
+
+    const todos = Object.entries(S.posts).map(([id, p]) => Object.assign({ id, likes: nLikes(id) }, p));
+    const recientes = todos.slice().sort((a, b) => (b.t || Infinity) - (a.t || Infinity));
+    document.getElementById('sWall').innerHTML = recientes.length
+      ? recientes.map(p => postHTML(p, { modo:'pantalla' })).join('')
+      : '<div class="scr-empty"><b>El muro está listo.</b>Las preguntas y los aportes aparecerán aquí en tiempo real.</div>';
+
+    const top = todos.filter(p => p.likes > 0).sort((a, b) => b.likes - a.likes || (a.t || 0) - (b.t || 0)).slice(0, 5);
+    document.getElementById('sRank').innerHTML = top.length
+      ? top.map((p, i) => '<div class="rank-item"><span class="rank-n">' + (i + 1) + '</span><span class="rank-t">' + esc(p.texto) + '<small>' + esc(p.autor) + '</small></span><span class="rank-l">♥ ' + p.likes + '</span></div>').join('')
+      : '<p style="opacity:.7;font-size:14px">Aún no hay «me gusta». ¡Apoyen las ideas de sus compañeros!</p>';
+
+    const sp = document.getElementById('sSpot');
+    const d = S.config.destacado && S.posts[S.config.destacado];
+    const clave = d ? S.config.destacado + ':' + nLikes(S.config.destacado) + ':' + (d.respondida ? 1 : 0) : '';
+    if(sp.dataset.k === clave) return;
+    sp.dataset.k = clave;
+    sp.innerHTML = d
+      ? '<div class="spotlight"><div class="spot-card ' + esc(d.tipo) + '">' +
+          '<div class="spot-kicker">📣 Tiene la palabra · ' + (d.tipo === 'pregunta' ? 'Pregunta' : 'Aporte') + '</div>' +
+          '<div class="spot-who">' + avatar(d.autor, d.uid) + '<b>' + esc(d.autor) + '</b></div>' +
+          '<div class="spot-text">' + esc(d.texto) + '</div>' +
+          '<div class="spot-foot"><span class="like"><span class="heart">♥</span>' + nLikes(S.config.destacado) + '</span>' +
+            (d.respondida ? '<span class="chip ok" style="font-size:15px">✓ Respondida</span>' : '') + '</div>' +
+        '</div></div>'
+      : '';
+  };
+}
+
+/* =========================================================
+   MODO PROFESOR (panel de control)
+   ========================================================= */
+function profesor(){
+  let pintar = () => {};
+  function puerta(){
+    app.innerHTML =
+      '<div class="login"><form class="login-card" id="fClave">' +
+        '<span class="login-badge">Facilitador</span><h1>Panel del muro.</h1>' +
+        '<p>Escribe la clave para administrar el muro.</p>' +
+        '<input class="field" id="iClave" type="password" inputmode="numeric" placeholder="Clave" aria-label="Clave">' +
+        '<div class="login-err" id="eClave"></div>' +
+        '<button class="btn btn-primary" type="submit">Entrar</button>' +
+      '</form></div>';
+    document.getElementById('iClave').focus();
+    document.getElementById('fClave').addEventListener('submit', e => {
+      e.preventDefault();
+      if(document.getElementById('iClave').value.trim() === CLAVE){ sstore('muroM5_prof', '1'); panel(); }
+      else document.getElementById('eClave').textContent = 'Clave incorrecta.';
+    });
+  }
+
+  function panel(){
+    const base = location.origin + location.pathname;
+    app.innerHTML =
+      '<header class="top"><div class="top-in"><div class="top-title"><b>Panel del facilitador.</b><span>Muro de preguntas y aportes</span></div>' +
+        '<span class="live"><span class="dot"></span><span id="pPers">0</span> conectados</span></div></header>' +
+      '<main class="wrap" style="padding-top:20px">' +
+        '<section class="panel"><h2>Datos de la exposición.</h2>' +
+          '<div class="grid2"><div><label class="lbl" for="iTema">Tema</label><input class="field" id="iTema" maxlength="90"></div>' +
+          '<div><label class="lbl" for="iExp">Expositores</label><input class="field" id="iExp" maxlength="120" placeholder="Ej.: Ana Pérez y Luis Gómez"></div></div>' +
+          '<div class="actions" style="align-items:center">' +
+            '<button class="btn btn-primary btn-sm" id="bGuardar">Guardar</button>' +
+            '<label class="switch"><input type="checkbox" id="swAbierto"> <span id="lAbierto">Muro abierto</span></label>' +
+          '</div>' +
+        '</section>' +
+        '<section class="panel"><h2>Enlaces.</h2><div class="links">' +
+          '<div class="link-row"><b>Participantes:</b><span>' + esc(base) + '</span><button class="btn btn-ghost btn-sm" data-copy="' + esc(base) + '">Copiar</button></div>' +
+          '<div class="link-row"><b>Pantalla:</b><span>' + esc(base) + '?modo=pantalla</span><a class="btn btn-ghost btn-sm" href="?modo=pantalla" target="_blank" rel="noopener">Abrir</a></div>' +
+        '</div>' +
+        '<div class="actions">' +
+          '<button class="btn btn-ghost btn-sm" id="bQuitar">Quitar de pantalla</button>' +
+          '<button class="btn btn-ghost btn-sm" id="bCsv">Descargar publicaciones (CSV)</button>' +
+          '<button class="btn btn-danger btn-sm" id="bReset">Reiniciar muro</button>' +
+        '</div></section>' +
+        barraHTML() +
+        '<div class="list" id="pLista"></div>' +
+      '</main>';
+
+    const iTema = document.getElementById('iTema'), iExp = document.getElementById('iExp');
+    iTema.value = tema(); iExp.value = S.config.expositores || '';
+    document.getElementById('bGuardar').addEventListener('click', () => {
+      db.ref(ROOT + '/config').update({ tema: iTema.value.trim() || TEMA_DEF, expositores: iExp.value.trim() }).then(() => toast('Datos guardados.'));
+    });
+    document.getElementById('swAbierto').addEventListener('change', e => db.ref(ROOT + '/config/abierto').set(e.target.checked));
+    document.getElementById('bQuitar').addEventListener('click', () => db.ref(ROOT + '/config/destacado').set(null));
+    document.getElementById('bCsv').addEventListener('click', csv);
+    document.getElementById('bReset').addEventListener('click', () => {
+      if(!confirm('Se borrarán todas las publicaciones y los «me gusta». ¿Continuar?')) return;
+      db.ref(ROOT).update({ posts: null, likes: null, 'config/destacado': null }).then(() => toast('Muro reiniciado.'));
+    });
+    app.querySelector('[data-copy]').addEventListener('click', e => {
+      const t = e.currentTarget.dataset.copy;
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Enlace copiado.'), () => prompt('Copia el enlace:', t));
+    });
+    document.getElementById('pLista').addEventListener('click', e => {
+      const s = e.target.closest('[data-spot]'), o = e.target.closest('[data-ok]'), d = e.target.closest('[data-del]');
+      if(s){ const id = s.dataset.spot; db.ref(ROOT + '/config/destacado').set(S.config.destacado === id ? null : id); }
+      if(o){ const id = o.dataset.ok; db.ref(ROOT + '/posts/' + id + '/respondida').set(S.posts[id] && S.posts[id].respondida ? null : true); }
+      if(d && confirm('¿Eliminar esta publicación?')){
+        const id = d.dataset.del;
+        const up = { ['posts/' + id]: null, ['likes/' + id]: null };
+        if(S.config.destacado === id) up['config/destacado'] = null;
+        db.ref(ROOT).update(up);
+      }
+    });
+    enlazarBarra(app.querySelector('.bar'), pintarLista);
+
+    function pintarLista(){
+      const arr = postsOrdenados();
+      document.getElementById('pLista').innerHTML = arr.length ? arr.map(p => postHTML(p, { modo:'profesor' })).join('') : listaVacia();
+    }
+    pintar = function(){
+      document.getElementById('pPers').textContent = totales().personas;
+      const sw = document.getElementById('swAbierto');
+      sw.checked = abierto();
+      document.getElementById('lAbierto').textContent = abierto() ? 'Muro abierto' : 'Muro cerrado';
+      if(document.activeElement !== iTema && !iTema.dataset.touched) iTema.value = tema();
+      if(document.activeElement !== iExp && !iExp.dataset.touched) iExp.value = S.config.expositores || '';
+      pintarLista();
+    };
+    [iTema, iExp].forEach(i => i.addEventListener('input', () => { i.dataset.touched = '1'; }));
+    pintar();
+  }
+
+  function csv(){
+    const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+    const filas = [['Hora','Participante','Tipo','Texto','Me gusta','Respondida'].map(q).join(';')];
+    Object.entries(S.posts).sort((a, b) => (a[1].t || 0) - (b[1].t || 0)).forEach(([id, p]) => {
+      const h = p.t ? new Date(p.t).toLocaleTimeString('es-DO', { hour:'2-digit', minute:'2-digit' }) : '';
+      filas.push([h, p.autor, p.tipo === 'pregunta' ? 'Pregunta' : 'Aporte', p.texto, nLikes(id), p.respondida ? 'Sí' : 'No'].map(q).join(';'));
+    });
+    const blob = new Blob(['﻿' + filas.join('\r\n')], { type:'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'muro-modulo5.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  if(sstore('muroM5_prof') === '1') panel(); else puerta();
+  return () => pintar();
+}
+
+/* =========================================================
+   ARRANQUE
+   ========================================================= */
+function boot(){
+  db = window.EXCEL_DB_READY;
+  let render = null, primera = true;
+  db.ref(ROOT).on('value', snap => {
+    const v = snap.val() || {};
+    S.config = v.config || {}; S.posts = v.posts || {}; S.likes = v.likes || {}; S.presentes = v.presentes || {};
+    if(primera){
+      primera = false;
+      render = MODO === 'pantalla' ? pantalla() : MODO === 'profesor' ? profesor() : participante();
+    }
+    render();
+  }, () => {
+    app.innerHTML = '<div class="wrap"><div class="panel" style="text-align:center;margin-top:12vh"><h2>Sin acceso al muro.</h2><p class="muted">No se pudo leer el muro. Recarga la página.</p></div></div>';
+  });
+  // Mantiene al día los «hace n min»
+  setInterval(() => document.querySelectorAll('.post-time[data-t]').forEach(el => { el.textContent = hace(Number(el.dataset.t) || 0); }), 30000);
+}
+if(window.EXCEL_DB_READY) boot();
+else window.addEventListener('excel-firebase-ready', boot);
+
+})();
+</script>
+</body>
+</html>
