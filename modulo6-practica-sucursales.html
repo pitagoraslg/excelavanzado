@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="img/icadep-escudo.png">
-<title>Ejercicio · Módulo 6</title>
+<title>Práctica guiada · Módulo 6</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
-/* Láminas de 1280×720. Cada tarea = consigna + resultado esperado. Paleta del Módulo 6: índigo + mandarina. */
+/* Láminas de 1280×720. Cada paso = instrucciones + resultado esperado. Paleta del Módulo 6: índigo + mandarina. */
 :root{
   --bg:#e6e5ee; --paper:#f7f6f3; --card:#ffffff; --ink:#2f3a8f; --text:#1f2233; --muted:#5f6275; --line:#e2e0ea; --grid:#cbc8d8;
   --acc:#f2994a; --acc-d:#b8641c; --acc-soft:#fdeedd; --pos:#23826f; --pos-soft:#e2f3f0; --neg:#c8553d; --neg-soft:#f8e4df; --ink-soft:#e7e9f6;
@@ -208,7 +208,7 @@ table.vals td.ok{background:var(--pos-soft)}
 </head>
 <body>
 <div id="stage">
-  <div class="top"><span id="topL">MÓDULO 6 · EJERCICIO.</span><div class="dots" id="dots"></div></div>
+  <div class="top"><span id="topL">MÓDULO 6 · PRÁCTICA GUIADA.</span><div class="dots" id="dots"></div></div>
   <div id="slides"></div>
   <div class="bottom">
     <span>Jarlin Figueroa, MA</span>
@@ -238,18 +238,18 @@ const fix = (...li) => `<div class="fixbox"><span class="t">✋ ¿Le salió dist
 const file = (n,s,cl="",ic="X") => `<div class="file ${cl}"><span class="ic">${ic}</span><span>${n}</span><small>${s}</small></div>`;
 
 const S = [];
-const tarea = (n,titulo,repaso,pasos,pista,cuerpo) => S.push({t:n, l:`EJERCICIO · TAREA ${n} DE 5.`, h:`<div class="slide">
-  <div class="eyebrow"><span class="tag">Tarea ${n} de 5</span>Hágalo usted.</div><h2>${titulo}</h2>
-  <div class="why"><b>Repase</b><span>${repaso}</span></div>
+const paso = (n,titulo,repaso,pasos,pista,cuerpo) => S.push({t:n, l:`PRÁCTICA GUIADA · PASO ${n} DE 5.`, h:`<div class="slide">
+  <div class="eyebrow"><span class="tag">Paso ${n} de 5</span>Haga esto.</div><h2>${titulo}</h2>
+  <div class="why"><b>Teoría</b><span>${repaso}</span></div>
   <div class="cols" style="grid-template-columns:1fr 1fr"><div class="col">${doL(pasos)}<div class="tip">💡 ${pista}</div></div><div class="col">${cuerpo}</div></div></div>`});
 
 /* ---------- Introducción ---------- */
-S.push({t:0, l:"MÓDULO 6 · EJERCICIO.", h:`<div class="slide cover">
+S.push({t:0, l:"MÓDULO 6 · PRÁCTICA GUIADA.", h:`<div class="slide cover">
   <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
-  <div class="mod">Módulo 6 · Ejercicio.</div>
+  <div class="mod">Módulo 6 · Práctica guiada.</div>
   <h1>Las ventas de tres sucursales.</h1>
-  <p class="lead">Ya hizo la práctica guiada. Ahora aplique lo aprendido por su cuenta, con otro caso y menos ayuda.</p>
-  <div class="cover-tags"><span>⏱ Unos 20 minutos</span><span>💻 Excel de escritorio para Windows</span><span>👤 Individual</span><span>🧰 Power Query</span></div>
+  <p class="lead">Cinco pasos, uno por cada fundamento de la teoría: unir, convertir el monto, convertir la fecha, cargar y actualizar.</p>
+  <div class="cover-tags"><span>⏱ Unos 30 minutos</span><span>💻 Excel de escritorio para Windows</span><span>👤 Individual</span><span>🧰 Power Query</span></div>
   <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
   <div class="hint">Use las flechas ← → del teclado o los botones de abajo · M = sonido.</div>
   <svg class="cover-art" viewBox="0 0 500 430" aria-hidden="true">
@@ -264,7 +264,7 @@ S.push({t:0, l:"MÓDULO 6 · EJERCICIO.", h:`<div class="slide cover">
     <g class="bob" style="animation-delay:.8s"><rect x="330" y="335" width="130" height="32" rx="16" fill="#fdeedd" stroke="#f2994a"/><text x="395" y="356" text-anchor="middle" font-size="13" fill="#2f3a8f" font-family="IBM Plex Mono">↻ Actualizar</text></g>
   </svg></div>`});
 
-S.push({t:0, l:"EJERCICIO · EL CASO.", h:`<div class="slide" style="gap:16px">
+S.push({t:0, l:"PRÁCTICA GUIADA · EL CASO.", h:`<div class="slide" style="gap:16px">
   <div class="eyebrow"><span class="tag go">El caso</span></div>
   <h2>Tres sucursales, las mismas columnas y formatos distintos.</h2>
   <p class="q">Comercial Las Palmas vende artículos para el hogar. Cada sucursal envió sus ventas de enero en un archivo, pero <b>no todas registran igual</b> la fecha y el monto.</p>
@@ -275,41 +275,43 @@ S.push({t:0, l:"EJERCICIO · EL CASO.", h:`<div class="slide" style="gap:16px">
   <p class="lead" style="font-size:17.5px">Las tres tienen las columnas <code>Fecha</code>, <code>Descripción</code>, <code>Categoría</code>, <code>Cantidad</code> y <code>Monto</code>, y ninguna tiene celdas vacías. Su misión es dejar <b>una sola tabla</b>, con la fecha como fecha y el monto como moneda.</p>
   <p class="note">Comercial Las Palmas y sus ventas son <b>ficticias</b>, creadas con fines didácticos.</p></div>`});
 
-S.push({t:0, l:"EJERCICIO · PREPARE SUS ARCHIVOS.", h:`<div class="slide">
+S.push({t:0, l:"PRÁCTICA GUIADA · PREPARE SUS ARCHIVOS.", h:`<div class="slide">
   <div class="eyebrow"><span class="tag go">Antes de empezar</span>Prepare sus archivos.</div>
   <h2>Descargue dos archivos y deje lista la carpeta.</h2>
   <div class="cols" style="grid-template-columns:1fr 1fr">
     <div class="col">
       ${doL([`Descargue los <b>dos archivos</b> de la derecha.`,
         `Clic derecho en <code>Modulo6-Ventas-Sucursales.zip</code> › <b>Extraer todo…</b><span class="h">Debe quedar una carpeta «Ventas Sucursales» con los 3 archivos.</span>`,
-        `Abra Excel, cree un <b>libro en blanco</b> y guárdelo <b>fuera</b> de esa carpeta como <code>Modulo6_Ejercicio_Apellido_Nombre.xlsx</code>.`,
-        `Guarde <code>Modulo6-Sucursal-Sur.zip</code> sin abrirlo: llega en la tarea 5.`])}
+        `Abra Excel, cree un <b>libro en blanco</b> y guárdelo <b>fuera</b> de esa carpeta como <code>Modulo6_Apellido_Nombre.xlsx</code>.`,
+        `Guarde <code>Modulo6-Sucursal-Sur.zip</code> sin abrirlo: llega en el paso 5.`])}
       <div class="warn">⚠️ En «Ventas Sucursales» van <b>solo los archivos de ventas</b>.</div>
     </div>
     <div class="col">
       <div class="dlbs">
-        <a class="dlbtn" href="Modulo6-Ventas-Sucursales.zip" download><span class="ic">⬇</span><span><b>Ventas de las sucursales.</b><small>Modulo6-Ventas-Sucursales.zip · 3 archivos · tareas 1 a 4</small></span></a>
-        <a class="dlbtn" href="Modulo6-Sucursal-Sur.zip" download><span class="ic">⬇</span><span><b>Archivo nuevo: Sucursal Sur.</b><small>Modulo6-Sucursal-Sur.zip · tarea 5</small></span></a>
+        <a class="dlbtn" href="Modulo6-Ventas-Sucursales.zip" download><span class="ic">⬇</span><span><b>Ventas de las sucursales.</b><small>Modulo6-Ventas-Sucursales.zip · 3 archivos · pasos 1 a 4</small></span></a>
+        <a class="dlbtn" href="Modulo6-Sucursal-Sur.zip" download><span class="ic">⬇</span><span><b>Archivo nuevo: Sucursal Sur.</b><small>Modulo6-Sucursal-Sur.zip · paso 5</small></span></a>
       </div>
       <span class="cap">Así debe quedar</span>
       <div class="files">
         ${file("Ventas Sucursales","Carpeta","dir","📁")}
         ${file("&nbsp;&nbsp;Sucursal Centro.xlsx","30 ventas")}${file("&nbsp;&nbsp;Sucursal Este.xlsx","30 ventas")}${file("&nbsp;&nbsp;Sucursal Norte.xlsx","30 ventas")}
-        ${file("Modulo6_Ejercicio_Apellido_Nombre.xlsx","Su libro, fuera de la carpeta","new")}
+        ${file("Modulo6_Apellido_Nombre.xlsx","Su libro, fuera de la carpeta","new")}
       </div>
     </div>
   </div></div>`});
 
-/* ---------- Tareas ---------- */
-tarea(1,"Una los tres archivos en una sola consulta.","Paso 1 de la práctica guiada.",[
-  `Conéctese a la carpeta <b>Ventas Sucursales</b> con <b>Datos › Obtener datos › Desde un archivo › Desde una carpeta</b>.`,
-  `Elija <b>Combinar y transformar datos</b> y la hoja <b>Ventas</b>.`,
-  `Nombre la consulta <code>Consolidado</code>.`],
-  `Aquí la hoja de cada archivo se llama <b>Ventas</b> y no hay hoja «Nota».`,
+/* ---------- Pasos ---------- */
+paso(1,"Una los tres archivos en una sola consulta.","Fundamento 1: conectarse a una carpeta.",[
+  `En su libro en blanco, vaya a <b>Datos › Obtener datos › Desde un archivo › Desde una carpeta</b>.`,
+  `Busque la carpeta <b>Ventas Sucursales</b>, selecciónela y pulse <b>Abrir</b>.`,
+  `Pulse la flecha de <b>Combinar</b> y elija <b>Combinar y transformar datos</b>.`,
+  `Deje <b>Primer archivo</b>, seleccione la hoja <b>Ventas</b> y pulse <b>Aceptar</b>.`,
+  `A la derecha, en <b>Nombre</b>, escriba <code>Consolidado</code> y pulse Entrar.`],
+  `En Excel 2016, «Combinar y transformar datos» puede decir «Combinar y editar».`,
   `${ok("Abajo a la izquierda dice <b>6 columnas, 90 filas</b>.","<code>Source.Name</code> muestra los 3 archivos.")}
   ${fix(`<b>Vio una tabla con 3 filas:</b> pulsó «Transformar datos». Cierre el editor sin guardar y repita.`,`<b>Faltan o sobran filas:</b> revise que la carpeta tenga solo los 3 archivos.`)}`);
 
-tarea(2,"Convierta el monto en número.","Paso 3 de la práctica guiada.",[
+paso(2,"Convierta el monto en número.","Fundamento 2: tipos de datos, el monto.",[
   `Seleccione la columna <code>Monto</code>.`,
   `Con <b>Inicio › Reemplazar los valores</b>, quite <code>RD$</code>. Deje vacío <b>Reemplazar con</b>.`,
   `Cambie el tipo de la columna a <b>Número entero</b> con el icono del encabezado.`],
@@ -318,7 +320,7 @@ tarea(2,"Convierta el monto en número.","Paso 3 de la práctica guiada.",[
   <table class="vals"><tr><th>Así llega</th><th class="r">Así queda</th></tr><tr><td class="bad">RD$ 5550</td><td class="ok r">5550</td></tr><tr><td class="bad">4400 RD$</td><td class="ok r">4400</td></tr><tr><td class="bad">RD$4800</td><td class="ok r">4800</td></tr></table>
   ${fix(`<b>Ve «Error»:</b> quedó algún «RD$». Pulse la ✕ del último paso, repita el reemplazo y vuelva a convertir.`)}`);
 
-tarea(3,"Deje la fecha como fecha.","El tema de los tipos de datos en la teoría.",[
+paso(3,"Deje la fecha como fecha.","Fundamento 3: tipos de datos, la fecha.",[
   `Busque la columna <code>Fecha</code> y mire el icono de su encabezado.`,
   `Si no tiene el calendario 📅, púlselo y elija <b>Fecha</b>.`,
   `Baje por la tabla y compare las filas de las tres sucursales.`],
@@ -327,7 +329,7 @@ tarea(3,"Deje la fecha como fecha.","El tema de los tipos de datos en la teoría
   <table class="vals"><tr><th>Así llega</th><th class="r">Así queda</th></tr><tr><td class="bad">15-ene-26</td><td class="ok r">15/1/2026</td></tr><tr><td class="bad">14/01/2026</td><td class="ok r">14/1/2026</td></tr><tr><td class="bad">2026-01-15</td><td class="ok r">15/1/2026</td></tr></table>
   ${fix(`<b>Ve «Error» o fechas de otro mes:</b> su Windows no está en español. Pulse la ✕ del paso, abra el icono de Fecha › <b>Usando configuración regional…</b> y elija <b>Fecha</b> y <b>Español (República Dominicana)</b>.`)}`);
 
-tarea(4,"Cargue la tabla y dé formato de moneda.","Paso 4 de la práctica guiada.",[
+paso(4,"Cargue la tabla y dé formato de moneda.","Fundamento 4: cargar y dar formato.",[
   `Pulse <b>Inicio › Cerrar y cargar</b>.`,
   `En la tabla, seleccione los valores de <code>Monto</code>.`,
   `Pulse <b>Ctrl + 1</b> › <b>Personalizada</b>, escriba <code>"RD$" #,##0.00</code> y pulse <b>Aceptar</b>.`],
@@ -335,7 +337,7 @@ tarea(4,"Cargue la tabla y dé formato de moneda.","Paso 4 de la práctica guiad
   `<table class="vals"><tr><th>Sucursal</th><th class="r">Filas</th><th class="r">Monto</th></tr>${VENTAS.map(a=>`<tr><td>${a[0]}</td><td class="r">${a[1]}</td><td class="r">${fmt(a[2])}</td></tr>`).join("")}<tr class="tot"><td>Consolidado</td><td class="r">90</td><td class="r">${fmt(TOT3)}</td></tr></table>
   ${ok(`La tabla tiene <b>90 filas</b> y los montos se ven como <b>RD$ 450.00</b>.`,`Con la columna seleccionada, la barra inferior muestra <b>Suma: ${fmt(TOT3)}</b>.`)}`);
 
-tarea(5,"Abrió la Sucursal Sur: actualice con un clic.","Paso 5 de la práctica guiada.",[
+paso(5,"Abrió la Sucursal Sur: actualice con un clic.","Fundamento 5: actualizar con un clic.",[
   `Guarde su libro y cierre cualquier archivo de ventas.`,
   `Extraiga <code>Modulo6-Sucursal-Sur.zip</code>.`,
   `Copie <code>Sucursal Sur.xlsx</code> <b>dentro</b> de la carpeta <b>Ventas Sucursales</b>.`,
@@ -347,19 +349,20 @@ tarea(5,"Abrió la Sucursal Sur: actualice con un clic.","Paso 5 de la práctica
 S[S.length-1].ok=1;
 
 /* ---------- Cierre ---------- */
-S.push({t:6, ok:2, l:"EJERCICIO · ANTES DE TERMINAR.", h:`<div class="slide final">
+S.push({t:6, ok:2, l:"PRÁCTICA GUIADA · ANTES DE TERMINAR.", h:`<div class="slide final">
   <div class="eyebrow"><span class="tag go">¡Lo logró!</span></div>
   <h2>Lo que su libro debe tener ahora.</h2>
   <div class="cols" style="grid-template-columns:1fr 1fr">
     <ul class="chk"><li>Una consulta llamada Consolidado, conectada a la carpeta Ventas Sucursales.</li><li>La fecha como fecha y el monto como número, con formato de moneda en la hoja.</li><li>Una tabla de 120 filas con ${fmt(TOT4)}.</li></ul>
-    <div class="save"><b style="font-size:19px">Guarde su libro.</b><span>Use <b>Archivo › Guardar</b>, con este nombre:</span><code>Modulo6_Ejercicio_Apellido_Nombre.xlsx</code><span style="color:#d5d8ef">Si mueve la carpeta «Ventas Sucursales», recuerde corregir la ruta en el paso <b style="color:#fff">Origen</b>.</span></div>
+    <div class="save"><b style="font-size:19px">Guarde su libro.</b><span>Use <b>Archivo › Guardar</b>, con este nombre:</span><code>Modulo6_Apellido_Nombre.xlsx</code><span style="color:#d5d8ef">Si mueve la carpeta «Ventas Sucursales», recuerde corregir la ruta en el paso <b style="color:#fff">Origen</b>.</span></div>
   </div>
-  <p class="think">Para pensar: ¿en su trabajo, quién registra los mismos datos de una forma distinta?</p></div>`});
+  <p class="think">Para pensar: ¿en su trabajo, quién registra los mismos datos de una forma distinta?</p>
+  <div class="dlbs" style="flex-direction:row"><a class="dlbtn alt" href="modulo6-practica-guiada.html" target="_blank" rel="noopener"><span class="ic">➕</span><span><b>Práctica adicional.</b><small>Limpiar reportes de las ARS</small></span></a></div></div>`});
 
 /* ---------- Motor ---------- */
 const wrap=document.getElementById("slides"); wrap.innerHTML=S.map(s=>s.h).join("");
 const els=[...wrap.children];
-const SECC=["Introducción",...Array.from({length:5},(_,i)=>"Tarea "+(i+1)),"Cierre"];
+const SECC=["Introducción",...Array.from({length:5},(_,i)=>"Paso "+(i+1)),"Cierre"];
 const INI=SECC.map((_,i)=>S.findIndex(s=>s.t===i));
 const dots=document.getElementById("dots");
 dots.innerHTML=SECC.map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");

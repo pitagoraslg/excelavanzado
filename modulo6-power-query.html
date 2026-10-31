@@ -137,6 +137,17 @@ tr.blank td{background:repeating-linear-gradient(45deg,#f6e7e3,#f6e7e3 6px,#fff 
 .cover-tags span{font-family:var(--mono);font-size:13px;border:1px solid var(--ink);color:var(--ink);padding:5px 10px;background:var(--card)}
 .enprac{display:flex;gap:14px;align-items:baseline;background:var(--ink);color:#fff;padding:8px 14px;font-size:16px}
 .enprac b{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#f8c9a0;flex:none}
+.rec{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--ink);padding:16px 20px;display:flex;flex-direction:column;gap:12px;align-self:start;width:100%;box-sizing:border-box}
+.rec .t{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.rec ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.rec li{display:grid;grid-template-columns:24px 1fr;gap:8px;font-size:17.5px;line-height:1.42}
+.rec.haga{border-top-color:var(--pos)}.rec.haga .t{color:#1f7a6e}.rec.haga li::before{content:"✓";color:var(--pos);font-weight:700}
+.rec.evite{border-top-color:var(--neg)}.rec.evite .t{color:var(--neg)}.rec.evite li::before{content:"✕";color:var(--neg);font-weight:700}
+.consejo{background:var(--acc-soft);border-left:4px solid var(--acc);padding:14px 18px;display:flex;flex-direction:column;gap:6px;font-size:17px;line-height:1.42}
+.consejo b{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-d)}
+.habitos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;flex:1;align-content:start}
+.habitos div{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--acc);padding:16px 18px;display:flex;flex-direction:column;gap:8px;font-size:16.5px;line-height:1.42}
+.habitos b{font-family:var(--serif);font-size:21px;color:var(--ink);font-weight:600}
 </style>
 </head>
 <body>
@@ -155,73 +166,89 @@ tr.blank td{background:repeating-linear-gradient(45deg,#f6e7e3,#f6e7e3 6px,#fff 
   </div>
 </div>
 <script>
-/* ---------- Datos del ejemplo: reportes de reclamaciones de enero 2026 (datos ficticios con fines didácticos) ---------- */
+/* ---------- Datos del ejemplo: ventas de enero 2026 de Comercial Las Palmas (datos ficticios con fines didácticos) ---------- */
 const fmt = n => "RD$ " + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
-const ARS = [{k:"ARS Humano",n:40,m:689000},{k:"ARS Universal",n:40,m:655250},{k:"ARS Primera",n:40,m:472300}];
-const NUEVA = {k:"ARS Senasa",n:40,m:591650};
-const TOT3 = ARS.reduce((s,a)=>s+a.m,0), TOT4 = TOT3 + NUEVA.m;   // 1,816,550 y 2,408,200
+const VENTAS = [{k:"Sucursal Centro",n:30,m:65000},{k:"Sucursal Este",n:30,m:104100},{k:"Sucursal Norte",n:30,m:110750}];
+const NUEVA = {k:"Sucursal Sur",n:30,m:98200};
+const TOT3 = VENTAS.reduce((s,a)=>s+a.m,0), TOT4 = TOT3 + NUEVA.m;   // 279,850 y 378,050
 
-/* Barras horizontales: monto por ARS */
+/* Barras horizontales: ventas por sucursal */
 function barChart(items, W=560){
   const H=items.length*58+8, max=Math.max(...items.map(i=>i.m)), sc=(W-150)/max;
-  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Monto de reclamaciones por ARS">`;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Ventas por sucursal">`;
   items.forEach((it,i)=>{ const y=6+i*58, w=it.m*sc;
     s+=`<text x="0" y="${y+14}" font-size="14" fill="#1f2233">${it.k}${it.nuevo?' <tspan fill="#b8641c" font-weight="700">· nuevo</tspan>':''}</text>`
       +`<rect class="grow" x="0" y="${y+22}" width="${w}" height="22" rx="3" fill="${it.nuevo?'#f2994a':'#2f3a8f'}" style="animation-delay:${i*.12}s"/>`
       +`<text x="${w+8}" y="${y+38}" font-size="13.5" font-weight="700" fill="#1f2233">${fmt(it.m)}</text>`; });
   return s+"</svg>";
 }
-const exBox = (sub, body, cap) => `<div class="ex"><div class="ex-h"><span>Ejemplo · Reportes de las ARS.</span><span>${sub}</span></div><div class="ex-b">${body}</div>${cap?`<p class="ex-c">${cap}</p>`:""}</div>`;
-const fileRow = (name, sub, nuevo) => `<div class="file${nuevo?' new':''}"><span class="ic">X</span><span>${name}<br><small>${sub}</small></span>${nuevo?'<b style="color:var(--acc-d);font-size:13px">NUEVO</b>':'<small>Hoja «Reporte»</small>'}</div>`;
-const pqEditor = (cols, rows, steps, cur) => `<div class="pq"><div class="bar">Reportes ARS · Editor de Power Query</div>
+const exBox = (sub, body, cap) => `<div class="ex"><div class="ex-h"><span>Ejemplo · Comercial Las Palmas.</span><span>${sub}</span></div><div class="ex-b">${body}</div>${cap?`<p class="ex-c">${cap}</p>`:""}</div>`;
+const fileRow = (name, sub, nuevo) => `<div class="file${nuevo?' new':''}"><span class="ic">X</span><span>${name}<br><small>${sub}</small></span>${nuevo?'<b style="color:var(--acc-d);font-size:13px">NUEVO</b>':'<small>Hoja «Ventas»</small>'}</div>`;
+const pqEditor = (cols, rows, steps, cur) => `<div class="pq"><div class="bar">Consolidado · Editor de Power Query</div>
   <div class="rib"><span>Inicio</span><span>Transformar</span><span>Agregar columna</span><span>Vista</span></div>
   <div class="body"><div class="grid"><table><tr>${cols.map(([t,c])=>`<th><i>${t}</i>${c}</th>`).join("")}</tr>${rows.map(r=>`<tr>${r.map(v=>`<td>${v}</td>`).join("")}</tr>`).join("")}</table></div>
   <div class="steps"><b>Pasos aplicados</b>${steps.map((s,i)=>`<span class="${i===cur?'cur':''} slideR" style="animation-delay:${i*.08}s">${s}</span>`).join("")}</div></div></div>`;
 
 /* ---------- Fundamentos: cada uno se aplica en un paso de la práctica guiada ---------- */
 const T = [
-{ k:"Conectarse a una carpeta", d:"Unir sin copiar.", q:"¿Cómo se traen varios archivos a la vez?",
-  def:"Power Query no copia los archivos: crea una <b>conexión</b> que recuerda dónde están los datos. Si varios archivos tienen la misma estructura, se guardan en una <b>carpeta</b> y Power Query los une todos en una sola consulta.",
+{ k:"Conectarse a una carpeta", d:"Unir sin copiar.", q:"¿Cómo se unen varios archivos a la vez?",
+  def:"Power Query no copia los archivos: crea una <b>conexión</b> que recuerda dónde están los datos. Si varios archivos tienen las mismas columnas, se guardan en una <b>carpeta</b> y Power Query los une en una sola consulta.",
   ana:"Es como una tubería conectada a un tanque: no se carga el agua en cubetas; se abre la llave cada vez que se necesita.",
   xl:`<span class="path">Datos › Obtener datos › Desde un archivo › Desde una carpeta</span>, y luego <span class="path">Combinar y transformar datos</span>.`,
-  prac:["Paso 1","Unirá los 3 reportes y verá 138 filas en el editor."],
-  ex:()=>exBox("La carpeta «Reportes ARS».",`<div class="files">${ARS.map(a=>fileRow(a.k+".xlsx","Mismas columnas, en el mismo orden")).join("")}</div>
-     <table class="m"><tr><th>Source.Name</th><th>NUM_RECL</th><th>PROVINCIA</th></tr><tr><td>ARS Humano.xlsx</td><td>HUM-26-0016</td><td>La Vega</td></tr><tr><td>ARS Universal.xlsx</td><td>UNI-26-0011</td><td>Santo Domingo</td></tr><tr><td>ARS Primera.xlsx</td><td>PRI-26-0001</td><td>Santiago</td></tr></table>`,"Power Query agrega <b>Source.Name</b> para saber de qué archivo viene cada fila. En la carpeta van solo los reportes.") },
-{ k:"Dejar solo filas útiles", d:"Sin vacías ni repetidas.", q:"¿Qué filas sobran?",
-  def:"Una tabla para analizar tiene <b>una fila por cada registro</b>. Sobran las filas vacías, las filas de <b>totales</b> y las <b>duplicadas</b>, porque una reclamación repetida se cuenta y se paga dos veces.",
-  ana:"Es como ordenar un clóset: se saca lo que no sirve y lo que está repetido, y solo queda lo que se usa.",
-  xl:`Flecha del filtro en el encabezado para quitar filas · <span class="path">Inicio › Quitar filas › Quitar duplicados</span>, con todas las columnas seleccionadas.`,
-  prac:["Paso 2","Pasará de 138 a 120 filas."],
-  ex:()=>exBox("De 138 filas a 120.",`<table class="m"><tr><th>Lo que llega en los 3 archivos</th><th class="r">Filas</th></tr>
-     <tr><td>Filas en total</td><td class="r">138</td></tr><tr><td>− Filas vacías</td><td class="r neg">6</td></tr>
-     <tr><td>− Filas de TOTAL</td><td class="r neg">3</td></tr><tr><td>− Reclamaciones duplicadas</td><td class="r neg">9</td></tr>
-     <tr class="tot"><td>Reclamaciones únicas</td><td class="r pos">120</td></tr></table>`,"Se filtra para quitar: cuando llegue otro reporte, la misma regla sacará su TOTAL y sus filas vacías.") },
-{ k:"Tipos de datos", d:"Texto que se vuelve número.", q:"¿Por qué importan los tipos de datos?",
-  def:"Cada columna debe tener su <b>tipo</b>: texto, número o fecha. Si un monto llega como texto («RD$ 8500»), Excel no lo puede sumar. El icono del encabezado dice qué tipo tiene la columna.",
+  prac:["Paso 1","Unirá los 3 archivos y verá 90 filas en el editor."],
+  ex:()=>exBox("La carpeta «Ventas Sucursales».",`<div class="files">${VENTAS.map(a=>fileRow(a.k+".xlsx","30 ventas · mismas columnas")).join("")}</div>
+     <table class="m"><tr><th>Source.Name</th><th>Descripción</th><th>Monto</th></tr><tr><td>Sucursal Centro.xlsx</td><td>Ventilador de mesa</td><td>RD$ 5550</td></tr><tr><td>Sucursal Este.xlsx</td><td>Mesa plegable</td><td>4400 RD$</td></tr><tr><td>Sucursal Norte.xlsx</td><td>Licuadora</td><td>RD$4800</td></tr></table>`,"Power Query agrega <b>Source.Name</b> para saber de qué archivo viene cada fila."),
+  rec:{haga:["Use una carpeta exclusiva: Power Query toma todo lo que esté adentro.","Mantenga las mismas columnas y el mismo nombre de hoja en todos los archivos.","Guarde su libro de trabajo fuera de esa carpeta."],
+       evite:["Mover la carpeta sin corregir el paso Origen.","Dejar abiertos los archivos: crean copias ~$ que pueden dar error."],
+       consejo:"Antes de conectar, abra un archivo y revise los encabezados. Un minuto aquí ahorra muchos errores después."} },
+{ k:"Tipos de datos: el monto", d:"Texto que se vuelve número.", q:"¿Por qué Excel no suma estos montos?",
+  def:"Cada columna tiene un <b>tipo</b>: texto, número o fecha. Mientras un monto diga «RD$ 5550», es texto y Excel no lo puede sumar. Primero se quita lo que sobra y después se cambia el tipo.",
   ana:"Es como clasificar la correspondencia: cartas con cartas y facturas con facturas. Si una factura queda entre las cartas, nadie la paga.",
-  xl:`<span class="path">Inicio › Reemplazar los valores</span> para quitar «RD$», y el icono del encabezado (<b style="display:inline;color:var(--ink);font-family:var(--mono);font-size:13px;letter-spacing:0">ABC 123 📅</b>) para cambiar el tipo.`,
-  prac:["Paso 3","Convertirá el monto en número y aparecerá el icono 123."],
-  ex:()=>exBox("El monto, de texto a número.",`<table class="m"><tr><th>Archivo</th><th>Así llega</th><th class="r">Así queda</th></tr>
-     <tr><td>ARS Humano</td><td class="bad mono">RD$ 8500</td><td class="ok r">8,500</td></tr>
-     <tr><td>ARS Universal</td><td class="bad mono">RD$4450</td><td class="ok r">4,450</td></tr>
-     <tr><td>ARS Primera</td><td class="bad mono">10600 RD$</td><td class="ok r">10,600</td></tr></table>
-     <div class="flow" style="grid-template-columns:1fr 26px 1fr"><div class="f"><b>1 · Reemplazar</b>«RD$» por nada</div><div class="a">→</div><div class="r"><b>2 · Número</b>Tipo número entero</div></div>`,"El orden importa: si convierte antes de quitar «RD$», la celda mostrará <b>Error</b>.") },
-{ k:"Cargar el resultado", d:"Una tabla en Excel.", q:"¿Cómo llega el resultado a Excel?",
-  def:"Mientras se trabaja, los datos están en el editor. Con <b>Cerrar y cargar</b> el resultado llega a una hoja como una <b>tabla</b>, lista para filtrar, sumar o hacer tablas dinámicas. Los archivos de origen no cambian.",
-  ana:"Es como servir el plato: lo que pasó en la cocina queda atrás y a la mesa llega la comida lista.",
-  xl:`<span class="path">Inicio › Cerrar y cargar</span> en el editor. La consulta queda en <span class="path">Datos › Consultas y conexiones</span>.`,
-  prac:["Paso 4","Cargará 120 filas y comprobará RD$ 1,816,550.00."],
-  ex:()=>exBox("Monto reclamado por ARS.",`${barChart(ARS)}<table class="m"><tr><th></th><th class="r">Filas</th><th class="r">Monto</th></tr><tr class="tot"><td>Consolidado</td><td class="r">120</td><td class="r">${fmt(TOT3)}</td></tr></table>`) },
+  xl:`<span class="path">Inicio › Reemplazar los valores</span> para quitar «RD$», y el icono del encabezado (<b style="display:inline;color:var(--ink);font-family:var(--mono);font-size:13px;letter-spacing:0">ABC 123</b>) para cambiar el tipo.`,
+  prac:["Paso 2","Convertirá el monto en número y aparecerá el icono 123."],
+  ex:()=>exBox("Tres formas de escribir un monto.",`<table class="m"><tr><th>Sucursal</th><th>Así llega</th><th class="r">Así queda</th></tr>
+     <tr><td>Centro</td><td class="bad mono">RD$ 5550</td><td class="ok r">5550</td></tr>
+     <tr><td>Este</td><td class="bad mono">4400 RD$</td><td class="ok r">4400</td></tr>
+     <tr><td>Norte</td><td class="bad mono">RD$4800</td><td class="ok r">4800</td></tr></table>
+     <div class="flow" style="grid-template-columns:1fr 26px 1fr"><div class="f"><b>1 · Reemplazar</b>«RD$» por nada</div><div class="a">→</div><div class="r"><b>2 · Número</b>Tipo número entero</div></div>`,"Un solo reemplazo resuelve las tres formas. El orden importa: si convierte antes, la celda mostrará <b>Error</b>."),
+  rec:{haga:["Quite primero el texto y cambie el tipo después.","Use Número entero solo si no hay centavos. Con centavos use Número decimal, porque el entero redondea.","Mire el icono del encabezado después de cada cambio."],
+       evite:["Corregir los montos en los archivos originales.","Pasar por alto un Error: revise qué valor no se pudo convertir."],
+       consejo:"En el editor, un número se alinea a la derecha. Si un monto sigue a la izquierda, todavía es texto."} },
+{ k:"Tipos de datos: la fecha", d:"Un mismo día, tres formas.", q:"¿Por qué una fecha también puede fallar?",
+  def:"Cada sucursal escribe la fecha a su manera y algunas son <b>texto</b>, aunque parezcan fechas. Al cambiar la columna al tipo <b>Fecha</b>, Power Query convierte todas al mismo dato. Así se pueden ordenar, filtrar y agrupar por mes.",
+  ana:"Es como decir «mañana», «el lunes» o «el día 15»: puede ser el mismo día, pero para ponerlo en la agenda hay que escribirlo de una sola forma.",
+  xl:`El icono del encabezado › <span class="path">Fecha</span>. Si la región no coincide: icono › <span class="path">Usando configuración regional…</span>`,
+  prac:["Paso 3","Dejará todas las fechas de enero en un solo tipo."],
+  ex:()=>exBox("Tres formas de escribir una fecha.",`<table class="m"><tr><th>Sucursal</th><th>Así llega</th><th class="r">Así queda</th></tr>
+     <tr><td>Centro</td><td class="bad mono">15-ene-26</td><td class="ok r">15/1/2026</td></tr>
+     <tr><td>Este</td><td class="bad mono">14/01/2026</td><td class="ok r">14/1/2026</td></tr>
+     <tr><td>Norte</td><td class="bad mono">2026-01-15</td><td class="ok r">15/1/2026</td></tr></table>`,"Power Query puede convertir la columna solo al combinar. Aun así, compruebe siempre que todas las fechas sean del mes correcto."),
+  rec:{haga:["Compruebe que todas las fechas caigan en el mes correcto.","Use el tipo Fecha, no Fecha/hora, si la hora no hace falta.","Si los datos vienen de otro país, use «Usando configuración regional»."],
+       evite:["Confiar solo en la vista: 03/01/2026 es 3 de enero o 1 de marzo, según la región.","Dejar fechas como texto: no se podrán agrupar por mes."],
+       consejo:"Si puede elegir cómo le envían los datos, pida las fechas como año-mes-día (2026-01-15): así no hay confusión."} },
+{ k:"Cargar y dar formato", d:"Tipo y formato no son lo mismo.", q:"¿Cómo llega a Excel y cómo se ve como moneda?",
+  def:"Con <b>Cerrar y cargar</b> el resultado llega a una hoja como una <b>tabla</b>. El <b>tipo</b> dice qué es el dato y el <b>formato</b> dice cómo se ve: Power Query deja el monto como número y el formato de moneda se da en la hoja.",
+  ana:"Es como servir el plato: lo que pasó en la cocina queda atrás. A la mesa llega la comida lista y ahí se presenta bien.",
+  xl:`<span class="path">Inicio › Cerrar y cargar</span> en el editor. En la hoja: <b style="display:inline;color:var(--ink);font-family:var(--mono);font-size:13px;letter-spacing:0">Ctrl + 1</b> › Personalizada › <span class="path">"RD$" #,##0.00</span>`,
+  prac:["Paso 4","Cargará 90 filas, dará formato de moneda y comprobará RD$ 279,850.00."],
+  ex:()=>exBox("Ventas de enero por sucursal.",`${barChart(VENTAS)}<table class="m"><tr><th></th><th class="r">Filas</th><th class="r">Monto</th></tr><tr class="tot"><td>Consolidado</td><td class="r">90</td><td class="r">${fmt(TOT3)}</td></tr></table>`),
+  rec:{haga:["Dé formato a la columna una vez: se conserva al actualizar.","Ponga un nombre claro a la consulta: «Consolidado», no «Consulta1».","Analice desde la tabla cargada, con filtros y tablas dinámicas."],
+       evite:["Escribir datos dentro de la tabla cargada: Actualizar los reemplaza.","Corregir en la hoja lo que debe corregirse en la consulta."],
+       consejo:"Si un dato sale mal, vuelva a la consulta: Datos › Consultas y conexiones › clic derecho › Editar."} },
 { k:"Actualizar con un clic", d:"La receta se repite.", q:"¿Qué pasa cuando llegan datos nuevos?",
   def:"Aquí está el valor de Power Query. Cuando llega un archivo nuevo a la carpeta, basta con pulsar <b>Actualizar todo</b>: se repiten todos los pasos aplicados, sin que nadie los vuelva a hacer.",
   ana:"Es como una lavadora con un programa guardado: se pone la ropa nueva, se pulsa un botón y el ciclo completo se repite igual.",
-  xl:`<span class="path">Datos › Actualizar todo</span> o <b style="display:inline;color:var(--ink);font-family:var(--mono);font-size:13px;letter-spacing:0">Ctrl + Alt + F5</b>. Cierre los reportes antes de actualizar.`,
-  prac:["Paso 5","Llegará ARS Senasa y subirá a 160 filas con un clic."],
-  ex:()=>exBox("Llega ARS Senasa.",`<div class="files">${ARS.map(a=>fileRow(a.k+".xlsx","46 filas tal como llegan")).join("")}${fileRow("ARS Senasa.xlsx","Se copia en la carpeta",true)}</div>
+  xl:`<span class="path">Datos › Actualizar todo</span> o <b style="display:inline;color:var(--ink);font-family:var(--mono);font-size:13px;letter-spacing:0">Ctrl + Alt + F5</b>.`,
+  prac:["Paso 5","Abrirá la Sucursal Sur y la tabla subirá a 120 filas con un clic."],
+  ex:()=>exBox("Abre la Sucursal Sur.",`<div class="files">${VENTAS.map(a=>fileRow(a.k+".xlsx","30 ventas")).join("")}${fileRow("Sucursal Sur.xlsx","Se copia en la carpeta",true)}</div>
      <table class="m"><tr><th></th><th class="r">Filas</th><th class="r">Monto</th></tr>
-     <tr><td>Antes de actualizar</td><td class="r">120</td><td class="r">${fmt(TOT3)}</td></tr>
-     <tr class="tot"><td>Después de Actualizar todo</td><td class="r pos">160</td><td class="r pos">${fmt(TOT4)}</td></tr></table>`,"No se repitió ningún paso: la consulta aplicó la misma receta al archivo nuevo.") }
+     <tr><td>Antes de actualizar</td><td class="r">90</td><td class="r">${fmt(TOT3)}</td></tr>
+     <tr class="tot"><td>Después de Actualizar todo</td><td class="r pos">120</td><td class="r pos">${fmt(TOT4)}</td></tr></table>`,"No se repitió ningún paso: la consulta aplicó la misma receta al archivo nuevo."),
+  rec:{haga:["Cierre los archivos de origen antes de actualizar.","Compruebe las filas y el total después de actualizar.","Si necesita los datos siempre al día, active la actualización al abrir en las propiedades de la consulta."],
+       evite:["Repetir los pasos a mano: la receta ya los hace.","Agregar archivos con otras columnas o con otro nombre de hoja."],
+       consejo:"Anote cuántas filas y qué total espera. Si el número no coincide, verá el problema enseguida."} }
 ];
+const recBox = (titulo,cl,items) => `<div class="rec ${cl}"><span class="t">${titulo}</span><ul>${items.map(x=>`<li>${x}</li>`).join("")}</ul></div>`;
 
 /* ---------- Diapositivas ---------- */
 const S = [], INI = [];
@@ -230,75 +257,112 @@ S.push({t:-1, h:`<div class="slide cover">
   <div class="mod">Módulo 6.</div>
   <h1>Power Query y consolidación de datos.</h1>
   <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
-  <div class="cover-tags"><span>Conectar</span><span>Limpiar</span><span>Convertir</span><span>Cargar</span><span>Actualizar</span></div>
+  <div class="cover-tags"><span>Conectar</span><span>Convertir</span><span>Cargar</span><span>Actualizar</span></div>
   <div class="hint">Excel 2016 en adelante · use ← → para avanzar</div>
   <svg class="cover-art" viewBox="0 0 500 430" aria-hidden="true">
     <rect x="20" y="30" width="460" height="350" rx="22" fill="#2f3a8f"/>
-    ${["Humano","Universal","Primera"].map((n,i)=>`<g class="bob" style="animation-delay:${i*.4}s"><rect x="50" y="${70+i*95}" width="120" height="70" rx="8" fill="#ffffff"/><rect x="50" y="${70+i*95}" width="120" height="18" rx="8" fill="#1d6f42"/><text x="110" y="${84+i*95}" text-anchor="middle" font-size="11" fill="#fff" font-family="IBM Plex Mono">ARS ${n}</text>
+    ${["Centro","Este","Norte"].map((n,i)=>`<g class="bob" style="animation-delay:${i*.4}s"><rect x="50" y="${70+i*95}" width="120" height="70" rx="8" fill="#ffffff"/><rect x="50" y="${70+i*95}" width="120" height="18" rx="8" fill="#1d6f42"/><text x="110" y="${84+i*95}" text-anchor="middle" font-size="11" fill="#fff" font-family="IBM Plex Mono">Sucursal ${n}</text>
       ${[0,1,2].map(r=>`<rect x="60" y="${96+i*95+r*12}" width="${[90,70,80][r]}" height="7" rx="2" fill="${r===1?'#f8c9a0':'#d9d7e4'}"/>`).join("")}</g>`).join("")}
     ${[105,200,295].map(y=>`<path class="draw" d="M175 ${y} C 230 ${y} 230 205 268 205" fill="none" stroke="#f2994a" stroke-width="4" stroke-linecap="round"/>`).join("")}
     <polygon points="262,165 300,205 262,245" fill="#f2994a"/>
     <g><rect x="310" y="120" width="150" height="170" rx="10" fill="#ffffff"/>
       ${[0,1,2,3,4,5,6].map(r=>`<rect class="grow" x="322" y="${134+r*21}" width="126" height="13" rx="2" fill="${r===0?'#2f3a8f':'#e7e9f6'}" style="animation-delay:${1+r*.12}s"/>`).join("")}</g>
-    <text x="385" y="315" text-anchor="middle" font-size="14" fill="#fff" font-family="IBM Plex Mono">1 tabla limpia</text>
+    <text x="385" y="315" text-anchor="middle" font-size="14" fill="#fff" font-family="IBM Plex Mono">1 tabla de ventas</text>
     <g class="bob" style="animation-delay:.8s"><rect x="330" y="335" width="130" height="32" rx="16" fill="#fdeedd" stroke="#f2994a"/><text x="395" y="356" text-anchor="middle" font-size="13" fill="#2f3a8f" font-family="IBM Plex Mono">↻ Actualizar</text></g>
   </svg>
 </div>`});
 
 S.push({t:-1, h:`<div class="slide" style="gap:18px">
   <div class="eyebrow">Punto de partida.</div>
-  <h2>Cada ARS envía su reporte… a su manera.</h2>
+  <h2>Tres sucursales, las mismas columnas y formatos distintos.</h2>
   <div class="cols"><div class="col">
-    <p class="lead">Cada mes, la Superintendencia recibe el <b>reporte de reclamaciones</b> de varias ARS. Todos traen la misma información, pero ninguno llega igual:</p>
-    <div class="chips"><div class="chip"><i>🏷️</i>Columnas con nombres en código: <b>MTO_RECL</b>, <b>FEC_SERV</b>.</div><div class="chip"><i>💲</i>Montos escritos como texto: «RD$ 8500», «8500 RD$».</div><div class="chip"><i>🧹</i>Filas vacías, totales, espacios de más y filas repetidas.</div></div>
+    <p class="lead">Comercial Las Palmas vende artículos para el hogar. Cada mes, cada sucursal envía sus ventas en un archivo, pero <b>no todas registran igual</b>:</p>
+    <table class="m"><tr><th>Sucursal</th><th>Fecha</th><th>Monto</th></tr><tr><td>Centro</td><td class="bad mono">15-ene-26</td><td class="bad mono">RD$ 5550</td></tr><tr><td>Este</td><td class="bad mono">14/01/2026</td><td class="bad mono">4400 RD$</td></tr><tr><td>Norte</td><td class="bad mono">2026-01-15</td><td class="bad mono">RD$4800</td></tr></table>
   </div><div class="col" style="justify-content:center">
-    <div class="ex"><div class="ex-h"><span>La respuesta.</span><span>Una vez, para siempre.</span></div><div class="ex-b"><p class="lead" style="font-size:22px">Con <b>Power Query</b> se graba una sola vez cómo limpiar y unir los reportes. Cuando llega uno nuevo, basta un clic.</p><p class="note">Los reportes de ARS Humano, ARS Universal, ARS Primera y ARS Senasa de este módulo contienen <b>datos ficticios</b> creados con fines didácticos.</p></div></div>
+    <div class="ex"><div class="ex-h"><span>La respuesta.</span><span>Una vez, para siempre.</span></div><div class="ex-b"><p class="lead" style="font-size:22px">Con <b>Power Query</b> se graba una sola vez cómo unir y corregir los archivos. Cuando llega uno nuevo, basta un clic.</p><p class="note">Comercial Las Palmas y sus ventas son <b>ficticias</b>, creadas con fines didácticos.</p></div></div>
   </div></div></div>`});
 
 S.push({t:-1, h:`<div class="slide">
   <div class="eyebrow">Contenido.</div>
   <h2>Cinco fundamentos, cinco pasos.</h2>
-  <p class="lead">Cada fundamento se aplica después en un paso de la práctica guiada, con los mismos reportes de las ARS.</p>
+  <p class="lead">Cada fundamento trae sus recomendaciones y se aplica después en un paso de la práctica guiada.</p>
   <div class="idx" data-idx></div>
   <div class="dl"><p class="note"><b style="color:var(--ink)">Objetivo:</b> utilizar Power Query y el modelo de datos para automatizar la transformación y consolidación de información.</p></div>
-</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = T.map((t,i)=>`<button data-go="${INI[i]}"><span class="n">${i+1}</span><span class="k">${t.k}.</span><span class="d">${t.prac[0]} de la práctica.</span></button>`).join("")+`<button class="res" data-go="${INI[T.length]}"><span class="n">★</span><span class="k">Para seguir explorando.</span><span class="d">Otras herramientas, a su ritmo.</span></button>`; }});
+</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = T.map((t,i)=>`<button data-go="${INI[i]}"><span class="n">${i+1}</span><span class="k">${t.k}.</span><span class="d">${t.prac[0]} de la práctica.</span></button>`).join("")+`<button class="res" data-go="${INI[T.length]}"><span class="n">★</span><span class="k">Errores y buenas prácticas.</span><span class="d">Cómo resolver y seguir explorando.</span></button>`; }});
 
 S.push({t:-1, h:`<div class="slide" style="gap:16px">
   <div class="eyebrow">La idea central.</div>
   <div class="cols"><div class="col"><h2>¿Qué es Power Query?</h2>
     <p class="lead">Es la herramienta de Excel para <b>obtener</b> datos, <b>transformarlos</b> y <b>cargarlos</b> en una hoja, listos para analizar. Viene incluida desde Excel 2016, en <span class="path">Datos › Obtener y transformar datos</span>.</p>
     <p class="analogy">Es como una receta grabada: la primera vez se cocina paso a paso; las siguientes, la cocina la repite sola con los ingredientes nuevos.</p></div>
-  ${exBox("Cada mes, dos caminos.",`<div class="flow"><div class="s"><b>Obtener</b>3 reportes en una carpeta</div><div class="a">→</div><div class="f"><b>Transformar</b>Limpiar y convertir</div><div class="a">→</div><div class="r"><b>Cargar</b>1 tabla limpia</div></div>
+  ${exBox("Cada mes, dos caminos.",`<div class="flow"><div class="s"><b>Obtener</b>3 archivos en una carpeta</div><div class="a">→</div><div class="f"><b>Transformar</b>Monto y fecha</div><div class="a">→</div><div class="r"><b>Cargar</b>1 tabla de ventas</div></div>
     <table class="m"><tr><th>Tarea</th><th>A mano</th><th>Power Query</th></tr>
      <tr><td>Unir 3 archivos</td><td class="bad">Copiar y pegar</td><td class="ok">Automático</td></tr>
-     <tr><td>Revisar 138 filas</td><td class="bad">Fila por fila</td><td class="ok">Reglas fijas</td></tr>
+     <tr><td>Corregir 90 montos</td><td class="bad">Celda por celda</td><td class="ok">Un paso</td></tr>
      <tr><td>Llega un archivo nuevo</td><td class="bad">Empezar de nuevo</td><td class="ok">Actualizar todo</td></tr></table>`,"Los archivos de origen no se modifican: Power Query trabaja sobre una copia de los datos.")}</div></div>`});
+
+S.push({t:-1, h:`<div class="slide" style="gap:16px">
+  <div class="eyebrow">La idea central.</div>
+  <h2>¿Cuándo conviene usarlo?</h2>
+  <p class="lead" style="font-size:18.5px">Power Query no reemplaza las fórmulas: se encarga de <b>preparar</b> los datos. Las fórmulas y las tablas dinámicas los analizan después.</p>
+  <div class="cols" style="grid-template-columns:1fr 1fr">
+    ${recBox("Conviene cuando…","haga",["El mismo trabajo se repite cada semana o cada mes.","La información llega en varios archivos.","Los datos necesitan los mismos arreglos siempre.","Otra persona debe poder revisar lo que se hizo."])}
+    ${recBox("Puede no hacer falta cuando…","evite",["Es un arreglo pequeño que se hará una sola vez.","Los datos ya están limpios y en una sola tabla.","Solo necesita un cálculo: una fórmula basta."])}
+  </div></div>`});
 
 S.push({t:-1, h:`<div class="slide" style="gap:16px">
   <div class="eyebrow">La idea central.</div>
   <div class="cols"><div class="col"><h2>La receta: los pasos aplicados.</h2>
     <p class="lead" style="font-size:18.5px">En el <b>Editor de Power Query</b> los datos se transforman con botones, sin fórmulas. Cada acción se guarda como un <b>paso aplicado</b>. La lista completa es la receta de la consulta.</p>
     <div class="pts"><div><b>El orden importa.</b><span>Cada paso trabaja sobre el resultado del anterior.</span></div><div><b>Se puede volver.</b><span>Clic en un paso para ver los datos en ese momento.</span></div><div><b>Se puede corregir.</b><span>La ✕ quita un paso, sin empezar de nuevo.</span></div></div></div>
-  ${exBox("Así se ve el editor.",pqEditor([["ABC","Source.Name"],["ABC","NUM_RECL"],["123","MTO_RECL"]],[["ARS Humano.xlsx","HUM-26-0016","8500"],["ARS Humano.xlsx","HUM-26-0022","7700"],["ARS Humano.xlsx","HUM-26-0040","8150"],["ARS Humano.xlsx","HUM-26-0039","2250"]],["Origen","Filas filtradas","Duplicados quitados","Valor reemplazado","Tipo cambiado"],4),"Son los mismos pasos que hará en la práctica guiada.")}</div></div>`});
+  ${exBox("Así se ve el editor.",pqEditor([["ABC","Source.Name"],["📅","Fecha"],["123","Monto"]],[["Sucursal Centro.xlsx","15/1/2026","5550"],["Sucursal Este.xlsx","14/1/2026","4400"],["Sucursal Norte.xlsx","15/1/2026","4800"]],["Origen","Valor reemplazado","Tipo cambiado","Tipo cambiado1"],3),"Son los mismos pasos que hará en la práctica guiada.")}</div></div>`});
 
 T.forEach((t,i)=>{ INI[i]=S.length; S.push({t:i, h:`<div class="slide" style="gap:14px">
   <div class="eyebrow"><span class="n">${i+1}</span><span>${t.k}.</span><span class="tag">Fundamento.</span></div>
   <div class="cols"><div class="col" style="gap:14px"><h2 style="font-size:38px">${t.q}</h2><p class="lead" style="font-size:18.5px">${t.def}</p><p class="analogy" style="font-size:18px">${t.ana}</p><p class="exl"><b>En Excel</b>${t.xl}</p></div>${t.ex()}</div>
-  <div class="enprac"><b>En la práctica · ${t.prac[0]}</b><span>${t.prac[1]}</span></div></div>`}); });
+  <div class="enprac"><b>En la práctica · ${t.prac[0]}</b><span>${t.prac[1]}</span></div></div>`});
+  S.push({t:i, h:`<div class="slide" style="gap:16px">
+  <div class="eyebrow"><span class="n">${i+1}</span><span>${t.k}.</span><span class="tag">Recomendaciones y consejos.</span></div>
+  <div class="cols" style="grid-template-columns:1.1fr 1fr">${recBox("Se recomienda","haga",t.rec.haga)}<div class="col">${recBox("Evite","evite",t.rec.evite)}<div class="consejo"><b>💡 Consejo</b><span>${t.rec.consejo}</span></div></div></div></div>`}); });
 
 INI[T.length]=S.length;
+S.push({t:T.length, h:`<div class="slide" style="gap:14px">
+  <div class="eyebrow"><span class="n">★</span><span>Errores comunes.</span></div>
+  <h2 style="font-size:38px">Si algo sale mal, casi siempre es uno de estos casos.</h2>
+  <div class="ex"><div class="ex-b" style="padding:6px 14px"><table class="m"><tr><th>Lo que ve</th><th>Por qué pasa</th><th>Qué hacer</th></tr>
+    <tr><td>Aparece <b>Error</b> en una celda</td><td>Un valor no se pudo convertir</td><td>Revise el paso anterior y quite lo que sobra</td></tr>
+    <tr><td>La tabla no sube al actualizar</td><td>El archivo no quedó en la carpeta</td><td>Cópielo en la carpeta, fuera del .zip</td></tr>
+    <tr><td>No se encuentra la carpeta</td><td>La carpeta cambió de lugar</td><td>Editar › paso Origen › corrija la ruta</td></tr>
+    <tr><td>Error con un archivo <b>~$</b></td><td>Un archivo de origen está abierto</td><td>Ciérrelo y actualice otra vez</td></tr>
+    <tr><td>Una columna sale vacía</td><td>El encabezado se escribió distinto</td><td>Use el mismo nombre en todos los archivos</td></tr>
+    <tr><td>Fechas de otro mes o con Error</td><td>La región del equipo es distinta</td><td>Use «Usando configuración regional»</td></tr></table></div></div>
+</div>`});
+
+S.push({t:T.length, h:`<div class="slide" style="gap:14px">
+  <div class="eyebrow"><span class="n">★</span><span>Buenas prácticas.</span></div>
+  <h2 style="font-size:38px">Seis hábitos para trabajar con Power Query.</h2>
+  <div class="habitos">
+    <div><b>Mire los datos antes.</b><span>Identifique qué cambia entre un archivo y otro.</span></div>
+    <div><b>Un cambio a la vez.</b><span>Revise el resultado antes de pasar al siguiente paso.</span></div>
+    <div><b>No toque los originales.</b><span>Toda corrección se hace en la consulta.</span></div>
+    <div><b>Use nombres claros.</b><span>En consultas y columnas, para que otros entiendan.</span></div>
+    <div><b>Compruebe el total.</b><span>Compare filas y sumas con lo que esperaba.</span></div>
+    <div><b>Pida un formato único.</b><span>Si puede, acuerde con quien envía los datos cómo registrarlos.</span></div>
+  </div></div>`});
+
 S.push({t:T.length, h:`<div class="slide" style="gap:14px">
   <div class="eyebrow"><span class="n">★</span><span>Para seguir explorando.</span></div>
   <h2 style="font-size:38px">Después de la práctica, Power Query tiene mucho más.</h2>
   <div class="ex"><div class="ex-b" style="padding:6px 14px"><table class="m"><tr><th>Si quiere…</th><th>Explore</th><th>Dónde está</th></tr>
-    <tr><td>Encabezados que se entiendan</td><td><b>Cambiar el nombre</b></td><td>Doble clic en el encabezado</td></tr>
+    <tr><td>Encabezados más claros</td><td><b>Cambiar el nombre</b></td><td>Doble clic en el encabezado</td></tr>
+    <tr><td>Quitar filas que sobran</td><td><b>Filtros y Quitar duplicados</b></td><td>Encabezado · Inicio › Quitar filas</td></tr>
     <tr><td>Textos escritos siempre igual</td><td><b>Recortar y mayúsculas</b></td><td>Transformar › Formato</td></tr>
     <tr><td>Traer columnas de otra tabla, como BUSCARV</td><td><b>Combinar consultas</b></td><td>Inicio › Combinar</td></tr>
-    <tr><td>Apilar tablas sin usar una carpeta</td><td><b>Anexar consultas</b></td><td>Inicio › Combinar</td></tr>
-    <tr><td>Relacionar varias tablas o superar un millón de filas</td><td><b>Modelo de datos</b></td><td>Cerrar y cargar en…</td></tr></table></div></div>
-  <div class="dl" style="margin-top:auto"><p class="note">El documento de estudio explica cada una con su ruta y un ejemplo.</p><div class="dlbs">
+    <tr><td>Relacionar varias tablas</td><td><b>Modelo de datos</b></td><td>Cerrar y cargar en…</td></tr></table></div></div>
+  <div class="dl" style="margin-top:auto"><div class="dlbs">
     <a class="dlbtn alt" href="Conceptos-Power-Query-Modulo6.pdf" target="_blank" rel="noopener"><span class="ic">📘</span><span><b>Documento de estudio.</b><small>PDF</small></span></a>
-    <a class="dlbtn" href="modulo6-practica-guiada.html" target="_blank" rel="noopener"><span class="ic">▶</span><span><b>Práctica guiada.</b><small>5 pasos</small></span></a></div></div>
+    <a class="dlbtn alt" href="modulo6-practica-guiada.html" target="_blank" rel="noopener"><span class="ic">➕</span><span><b>Práctica adicional.</b><small>Limpiar reportes de las ARS</small></span></a>
+    <a class="dlbtn" href="modulo6-practica-sucursales.html" target="_blank" rel="noopener"><span class="ic">▶</span><span><b>Práctica guiada.</b><small>Ventas de tres sucursales · 5 pasos</small></span></a></div></div>
 </div>`});
 
 const MS = (l,t,u) => `Microsoft. (s. f.-${l}). <i>${t}</i>. Microsoft Support. <a href="${u}" target="_blank" rel="noopener">${u}</a>`;
@@ -306,7 +370,7 @@ S.push({t:-1, h:`<div class="slide" style="gap:12px">
   <div class="eyebrow">Bibliografía.</div>
   <h2 style="font-size:40px">Referencias.</h2>
   <ul class="refs">
-    <li>Figueroa, J. (2026). <i>Modulo6-Reportes-ARS.zip</i> [Conjunto de datos ficticio con fines didácticos]. Instituto de Capacitación y Desarrollo Profesional Siglo XXI (ICADEP-XXI).</li>
+    <li>Figueroa, J. (2026). <i>Modulo6-Ventas-Sucursales.zip</i> [Conjunto de datos ficticio con fines didácticos]. Instituto de Capacitación y Desarrollo Profesional Siglo XXI (ICADEP-XXI).</li>
     <li>${MS("a","Acerca de Power Query en Excel","https://support.microsoft.com/es-es/Excel/about-power-query-in-excel")}</li>
     <li>${MS("b","Anexar consultas (Power Query)","https://support.microsoft.com/es-es/Excel/append-queries-power-query")}</li>
     <li>${MS("c","Combinar las consultas (Power Query)","https://support.microsoft.com/es-es/Excel/merge-queries-power-query")}</li>
@@ -322,7 +386,7 @@ const wrap=document.getElementById("slides"); wrap.innerHTML=S.map(s=>s.h).join(
 const els=[...wrap.children]; els.forEach((el,i)=>S[i].init&&S[i].init(el));
 wrap.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(+b.dataset.go));
 const dots=document.getElementById("dots");
-dots.innerHTML=T.map(t=>t.k).concat(["Para seguir explorando"]).map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
+dots.innerHTML=T.map(t=>t.k).concat(["Errores y buenas prácticas"]).map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
 dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.t]));
 const SND={on:true,ctx:null,ready:false}; try{ SND.on=localStorage.getItem("m6sonido")!=="0"; }catch(e){}
 function sonar(dir){ if(!SND.on||!SND.ready) return; try{ const A=window.AudioContext||window.webkitAudioContext; if(!A) return; const c=SND.ctx||(SND.ctx=new A()); if(c.state==="suspended") c.resume();
@@ -337,7 +401,7 @@ function go(i){ const prev=cur; cur=Math.max(0,Math.min(els.length-1,i)); if(cur
   els.forEach((e,j)=>e.classList.toggle("on",j===cur)); const tp=S[cur].t;
   dots.querySelectorAll("button").forEach((b,j)=>{ b.classList.toggle("cur",j===tp); b.classList.toggle("done",tp>j); });
   document.getElementById("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
-  document.getElementById("topL").textContent=tp<0?"MÓDULO 6 · POWER QUERY Y CONSOLIDACIÓN DE DATOS.":tp===T.length?"MÓDULO 6 · PARA SEGUIR EXPLORANDO.":`MÓDULO 6 · FUNDAMENTO ${tp+1} DE ${T.length} · ${T[tp].k.toUpperCase()}.`;
+  document.getElementById("topL").textContent=tp<0?"MÓDULO 6 · POWER QUERY Y CONSOLIDACIÓN DE DATOS.":tp===T.length?"MÓDULO 6 · ERRORES Y BUENAS PRÁCTICAS.":`MÓDULO 6 · FUNDAMENTO ${tp+1} DE ${T.length} · ${T[tp].k.toUpperCase()}.`;
   document.getElementById("prev").disabled=cur===0; document.getElementById("next").disabled=cur===els.length-1; }
 document.getElementById("prev").onclick=()=>go(cur-1); document.getElementById("next").onclick=()=>go(cur+1);
 document.getElementById("fs").onclick=e=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(_){} e.currentTarget.blur(); };

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="img/icadep-escudo.png">
-<title>Práctica guiada · Módulo 6</title>
+<title>Práctica adicional · Módulo 6</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
@@ -208,7 +208,7 @@ table.vals td.ok{background:var(--pos-soft)}
 </head>
 <body>
 <div id="stage">
-  <div class="top"><span id="topL">MÓDULO 6 · PRÁCTICA GUIADA.</span><div class="dots" id="dots"></div></div>
+  <div class="top"><span id="topL">MÓDULO 6 · PRÁCTICA ADICIONAL.</span><div class="dots" id="dots"></div></div>
   <div id="slides"></div>
   <div class="bottom">
     <span>Jarlin Figueroa, MA</span>
@@ -230,7 +230,7 @@ const TOT3 = 1816550, TOT4 = 2408200, CON_DUP = 1917400;
 
 /* ---------- Piezas de las láminas ---------- */
 const CONC = {1:"Conectarse a una carpeta",2:"Dejar solo filas útiles",3:"Tipos de datos",4:"Cargar el resultado",5:"Actualizar con un clic"};
-const con = n => `<span class="con">Fundamento ${n} · ${CONC[n]}</span>`;
+const con = n => `<span class="con">${CONC[n]}</span>`;
 const path = (...a) => `<div class="path">${a.map(x=>`<span>${x}</span>`).join("<i>›</i>")}</div>`;
 const doL = (items,st="") => `<ol class="do" style="${st}">${items.map((t,i)=>`<li><span class="m">${i+1}</span><span>${t}</span></li>`).join("")}</ol>`;
 const pin = n => `<span class="m pin">${n}</span>`;
@@ -252,18 +252,18 @@ const rib = (tabs,on,grupos,drop="") => `<div class="ribbon"><div class="tabsr">
 const TABS_X = ["Archivo","Inicio","Insertar","Fórmulas","Datos","Revisar","Vista"], TABS_Q = ["Archivo","Inicio","Transformar","Agregar columna","Vista"];
 
 const S = [];
-const paso = (n,c,titulo,para,cuerpo) => S.push({t:n, l:`PRÁCTICA GUIADA · PASO ${n} DE 5 · HAGA ESTO.`, h:`<div class="slide">
+const paso = (n,c,titulo,para,cuerpo) => S.push({t:n, l:`PRÁCTICA ADICIONAL · PASO ${n} DE 5 · HAGA ESTO.`, h:`<div class="slide">
   <div class="eyebrow"><span class="tag">Paso ${n} de 5</span>Haga esto.${con(c)}</div><h2>${titulo}</h2>
   <div class="why"><b>Para qué</b><span>${para}</span></div>${cuerpo}</div>`});
-const comp = (n,c,titulo,cuerpo) => S.push({t:n, ok:1, l:`PRÁCTICA GUIADA · PASO ${n} DE 5 · COMPRUEBE.`, h:`<div class="slide">
+const comp = (n,c,titulo,cuerpo) => S.push({t:n, ok:1, l:`PRÁCTICA ADICIONAL · PASO ${n} DE 5 · COMPRUEBE.`, h:`<div class="slide">
   <div class="eyebrow"><span class="tag ok">Paso ${n} de 5</span>Compruebe.${con(c)}</div><h2>${titulo}</h2>${cuerpo}</div>`});
 
 /* ---------- Introducción ---------- */
-S.push({t:0, l:"MÓDULO 6 · PRÁCTICA GUIADA.", h:`<div class="slide cover">
+S.push({t:0, l:"MÓDULO 6 · PRÁCTICA ADICIONAL.", h:`<div class="slide cover">
   <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
-  <div class="mod">Módulo 6 · Práctica guiada.</div>
+  <div class="mod">Módulo 6 · Práctica adicional.</div>
   <h1>De tres reportes sucios a una sola tabla.</h1>
-  <p class="lead">Cinco pasos, uno por cada fundamento de la teoría: conectar, limpiar, convertir, cargar y actualizar.</p>
+  <p class="lead">Otro caso para seguir practicando, ahora con filas que sobran: conectar, limpiar, convertir, cargar y actualizar.</p>
   <div class="cover-tags"><span>⏱ Unos 30 minutos</span><span>💻 Excel de escritorio para Windows</span><span>👤 Individual</span><span>🧰 Power Query</span></div>
   <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
   <div class="hint">Use las flechas ← → del teclado o los botones de abajo · M = sonido.</div>
@@ -279,7 +279,7 @@ S.push({t:0, l:"MÓDULO 6 · PRÁCTICA GUIADA.", h:`<div class="slide cover">
     <g class="bob" style="animation-delay:.8s"><rect x="330" y="335" width="130" height="32" rx="16" fill="#fdeedd" stroke="#f2994a"/><text x="395" y="356" text-anchor="middle" font-size="13" fill="#2f3a8f" font-family="IBM Plex Mono">↻ Actualizar</text></g>
   </svg></div>`});
 
-S.push({t:0, l:"PRÁCTICA GUIADA · LA MISIÓN.", h:`<div class="slide" style="gap:18px">
+S.push({t:0, l:"PRÁCTICA ADICIONAL · LA MISIÓN.", h:`<div class="slide" style="gap:18px">
   <div class="eyebrow"><span class="tag go">La misión</span></div>
   <h2>La Superintendencia quiere un solo consolidado de reclamaciones de enero.</h2>
   <p class="q">Llegaron los reportes de tres ARS, cada uno con sus defectos. Usted los unirá <b>una sola vez</b> y dejará lista la consulta para el reporte que falta.</p>
@@ -291,10 +291,10 @@ S.push({t:0, l:"PRÁCTICA GUIADA · LA MISIÓN.", h:`<div class="slide" style="g
   </div>
   <p class="note">Los reportes de ARS Humano, ARS Universal, ARS Primera y ARS Senasa contienen <b>datos ficticios</b> creados con fines didácticos.</p></div>`});
 
-S.push({t:0, l:"PRÁCTICA GUIADA · LOS FUNDAMENTOS.", h:`<div class="slide" style="gap:18px">
-  <div class="eyebrow"><span class="tag go">Teoría y práctica</span></div>
-  <h2>Cinco fundamentos, cinco pasos.</h2>
-  <p class="lead">Cada paso aplica un fundamento de la teoría. Arriba, a la derecha, verá cuál.</p>
+S.push({t:0, l:"PRÁCTICA ADICIONAL · LOS FUNDAMENTOS.", h:`<div class="slide" style="gap:18px">
+  <div class="eyebrow"><span class="tag go">Lo que practicará</span></div>
+  <h2>Cinco pasos, con un tema nuevo.</h2>
+  <p class="lead">Repasará lo de las sucursales y agregará algo nuevo: quitar filas vacías, totales y repetidas.</p>
   <div class="mapa">
     <div><span class="n">1</span><span><b>Conectarse a una carpeta.</b> Unir sin copiar.</span><small>Paso 1</small></div>
     <div><span class="n">2</span><span><b>Dejar solo filas útiles.</b> Sin vacías ni repetidas.</span><small>Paso 2</small></div>
@@ -304,14 +304,14 @@ S.push({t:0, l:"PRÁCTICA GUIADA · LOS FUNDAMENTOS.", h:`<div class="slide" sty
     <div style="background:var(--ink-soft)"><span class="n">★</span><span><b>Siga explorando.</b> Otras herramientas, a su ritmo.</span><small>Al final</small></div>
   </div></div>`});
 
-S.push({t:0, l:"PRÁCTICA GUIADA · PREPARE SUS ARCHIVOS.", h:`<div class="slide">
+S.push({t:0, l:"PRÁCTICA ADICIONAL · PREPARE SUS ARCHIVOS.", h:`<div class="slide">
   <div class="eyebrow"><span class="tag go">Antes de empezar</span>Prepare sus archivos.</div>
   <h2>Descargue dos archivos y deje lista la carpeta.</h2>
   <div class="cols" style="grid-template-columns:1fr 1fr">
     <div class="col">
       ${doL([`Descargue los <b>dos archivos</b> de la derecha.`,
         `Clic derecho en <code>Modulo6-Reportes-ARS.zip</code> › <b>Extraer todo…</b><span class="h">Debe quedar una carpeta «Reportes ARS» con los 3 reportes. Si la deja dentro del .zip, Excel no podrá leerla.</span>`,
-        `Abra Excel, cree un <b>libro en blanco</b> y guárdelo <b>fuera</b> de esa carpeta como <code>Modulo6_Apellido_Nombre.xlsx</code>.`,
+        `Abra Excel, cree un <b>libro en blanco</b> y guárdelo <b>fuera</b> de esa carpeta como <code>Modulo6_ARS_Apellido_Nombre.xlsx</code>.`,
         `Guarde el archivo de <b>ARS Senasa</b> sin abrirlo: llega en el paso 5.`])}
       <div class="warn">⚠️ En «Reportes ARS» van <b>solo los reportes</b>. Power Query toma todo lo que encuentre en esa carpeta.</div>
     </div>
@@ -324,7 +324,7 @@ S.push({t:0, l:"PRÁCTICA GUIADA · PREPARE SUS ARCHIVOS.", h:`<div class="slide
       <div class="files">
         ${file("Reportes ARS","Carpeta","dir","📁")}
         ${file("&nbsp;&nbsp;ARS Humano.xlsx","46 filas")}${file("&nbsp;&nbsp;ARS Primera.xlsx","46 filas")}${file("&nbsp;&nbsp;ARS Universal.xlsx","46 filas")}
-        ${file("Modulo6_Apellido_Nombre.xlsx","Su libro, fuera de la carpeta","new")}
+        ${file("Modulo6_ARS_Apellido_Nombre.xlsx","Su libro, fuera de la carpeta","new")}
       </div>
     </div>
   </div></div>`});
@@ -384,7 +384,7 @@ comp(5,5,"¿Subió a 160 filas y RD$ 2,408,200.00?",`<div class="cols" style="gr
   ${fix(`<b>Sigue en 120:</b> <code>ARS Senasa.xlsx</code> no quedó dentro de «Reportes ARS», o sigue dentro del .zip.`,`<b>Error de archivo o de ruta:</b> movió la carpeta. Clic derecho en Consolidado › <b>Editar</b>, paso <b>Origen</b>, y corrija la ruta.`,`<b>Error con un archivo ~$:</b> hay un reporte abierto. Ciérrelo y actualice otra vez.`)}</div>`);
 
 /* ---------- Exploración y cierre ---------- */
-S.push({t:6, ok:1, l:"PRÁCTICA GUIADA · SIGA EXPLORANDO.", h:`<div class="slide" style="gap:15px">
+S.push({t:6, ok:1, l:"PRÁCTICA ADICIONAL · SIGA EXPLORANDO.", h:`<div class="slide" style="gap:15px">
   <div class="eyebrow"><span class="tag go">Siga explorando</span>A su ritmo.</div>
   <h2>Su tabla funciona, pero todavía se puede mejorar.</h2>
   <p class="lead" style="font-size:17.5px">Mírela: tiene <b>28 formas de escribir 7 provincias</b> y encabezados en código. Abra la consulta con <b>Datos › Consultas y conexiones › clic derecho en Consolidado › Editar</b> y pruebe:</p>
@@ -397,15 +397,14 @@ S.push({t:6, ok:1, l:"PRÁCTICA GUIADA · SIGA EXPLORANDO.", h:`<div class="slid
     <div><span class="n">F</span><span><b>Más tablas.</b> Agregue la consulta al modelo de datos.</span></div>
   </div>
   <div class="dlbs" style="flex-direction:row"><a class="dlbtn" href="Modulo6-Regiones.xlsx" download><span class="ic">⬇</span><span><b>Tabla de regiones.</b><small>Modulo6-Regiones.xlsx · para la idea D</small></span></a>
-  <a class="dlbtn alt" href="Conceptos-Power-Query-Modulo6.pdf" target="_blank" rel="noopener"><span class="ic">📘</span><span><b>Documento de estudio.</b><small>PDF · explica cada herramienta con su ruta</small></span></a>
-  <a class="dlbtn" href="modulo6-ejercicio-sucursales.html" target="_blank" rel="noopener"><span class="ic">▶</span><span><b>Ejercicio.</b><small>Las ventas de tres sucursales</small></span></a></div></div>`});
+  <a class="dlbtn alt" href="Conceptos-Power-Query-Modulo6.pdf" target="_blank" rel="noopener"><span class="ic">📘</span><span><b>Documento de estudio.</b><small>PDF · explica cada herramienta con su ruta</small></span></a></div></div>`});
 
-S.push({t:6, ok:2, l:"PRÁCTICA GUIADA · ANTES DE TERMINAR.", h:`<div class="slide final">
+S.push({t:6, ok:2, l:"PRÁCTICA ADICIONAL · ANTES DE TERMINAR.", h:`<div class="slide final">
   <div class="eyebrow"><span class="tag go">¡Lo logró!</span></div>
   <h2>Lo que su libro debe tener ahora.</h2>
   <div class="cols" style="grid-template-columns:1fr 1fr">
     <ul class="chk"><li>Una consulta llamada Consolidado, conectada a la carpeta Reportes ARS.</li><li>Sus pasos aplicados: filas filtradas, duplicados quitados y monto como número.</li><li>Una tabla de 160 filas con ${fmt(TOT4)}.</li></ul>
-    <div class="save"><b style="font-size:19px">Guarde su libro.</b><span>Use <b>Archivo › Guardar</b>, con este nombre:</span><code>Modulo6_Apellido_Nombre.xlsx</code><span style="color:#d5d8ef">Si mueve la carpeta «Reportes ARS», recuerde corregir la ruta en el paso <b style="color:#fff">Origen</b>.</span></div>
+    <div class="save"><b style="font-size:19px">Guarde su libro.</b><span>Use <b>Archivo › Guardar</b>, con este nombre:</span><code>Modulo6_ARS_Apellido_Nombre.xlsx</code><span style="color:#d5d8ef">Si mueve la carpeta «Reportes ARS», recuerde corregir la ruta en el paso <b style="color:#fff">Origen</b>.</span></div>
   </div>
   <p class="think">Para pensar: ¿qué reporte que usted recibe cada mes podría resolver con una consulta como esta?</p></div>`});
 
