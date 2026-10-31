@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
-/* Escenario fijo 1280×720 escalado a la pantalla. Solo teoría. Paleta del Módulo 6: índigo + mandarina. */
+/* Escenario fijo 1280×720 escalado a la pantalla. Fundamentos conectados con la práctica guiada. Paleta del Módulo 6: índigo + mandarina. */
 :root{
   --bg:#e6e5ee; --paper:#f7f6f3; --card:#ffffff; --ink:#2f3a8f; --text:#1f2233; --muted:#5f6275; --line:#e2e0ea; --grid:#cbc8d8;
   --acc:#f2994a; --acc-d:#b8641c; --acc-soft:#fdeedd; --pos:#2a9d8f; --pos-soft:#e2f3f0; --neg:#c8553d; --neg-soft:#f8e4df; --ink-soft:#e7e9f6;
@@ -96,13 +96,9 @@ tr.blank td{background:repeating-linear-gradient(45deg,#f6e7e3,#f6e7e3 6px,#fff 
 .dlg .o i.sq{border-radius:2px}
 .dlg .o i.sq.on{background:#1d6f42}
 .dlg .k{display:flex;justify-content:flex-end;gap:8px}.dlg .k span{border:1px solid #9aa3a6;background:#fff;padding:3px 16px}
-.sum{display:grid;grid-template-columns:repeat(2,1fr);border-top:2px solid var(--ink)}
-.sum>div{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:12px 10px;border-bottom:1px solid var(--line);align-items:baseline}
-.sum .n{font-family:var(--serif);font-size:26px;color:var(--acc)}
-.sum p{font-size:16px;color:var(--muted)} .sum code{font-family:var(--mono);font-size:14px;display:block;color:var(--ink);margin-top:3px;font-weight:500}
-.idx{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink)}
+.idx{display:grid;grid-template-columns:repeat(3,1fr);border-top:2px solid var(--ink)}
 .idx button{all:unset;cursor:pointer;padding:16px 18px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
-.idx button:nth-child(4n){border-right:0}
+.idx button:nth-child(3n){border-right:0}
 .idx button:hover{background:var(--card)}
 .idx .n{font-family:var(--serif);font-size:38px;color:var(--acc);line-height:1}
 .idx .k{font-family:var(--mono);font-size:15px;color:var(--ink);font-weight:500}
@@ -139,44 +135,11 @@ tr.blank td{background:repeating-linear-gradient(45deg,#f6e7e3,#f6e7e3 6px,#fff 
 @keyframes bob{50%{transform:translateY(-6px)}}
 .cover-tags{display:flex;gap:10px;flex-wrap:wrap}
 .cover-tags span{font-family:var(--mono);font-size:13px;border:1px solid var(--ink);color:var(--ink);padding:5px 10px;background:var(--card)}
-#gate{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px;font-family:var(--sans)}
-#gate[hidden]{display:none}
-#gate form{background:var(--paper);border-top:4px solid var(--ink);box-shadow:0 10px 40px rgba(47,58,143,.18);padding:34px 36px;width:min(420px,100%);display:flex;flex-direction:column;gap:14px;box-sizing:border-box}
-#gate .mod{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-d)}
-#gate h1{font-family:var(--serif);font-weight:600;font-size:32px;line-height:1.1;margin:0;color:var(--ink)}
-#gate p{margin:0;color:var(--muted);font-size:15px;line-height:1.45}
-#gate input{font-family:var(--mono);font-size:20px;padding:10px 12px;border:1px solid var(--grid);background:#fff;color:var(--ink);letter-spacing:.3em}
-#gate .err{color:var(--neg);font-size:14px;min-height:1.2em}
-#gate button{font-family:var(--mono);font-size:14px;padding:11px;border:0;background:var(--ink);color:#fff;cursor:pointer}
+.enprac{display:flex;gap:14px;align-items:baseline;background:var(--ink);color:#fff;padding:8px 14px;font-size:16px}
+.enprac b{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#f8c9a0;flex:none}
 </style>
 </head>
 <body>
-<div id="gate" hidden>
-  <form id="gateForm" autocomplete="off">
-    <div class="mod">Módulo 6.</div>
-    <h1>Power Query y consolidación de datos.</h1>
-    <p>Este contenido está protegido. Escriba la clave de acceso para continuar.</p>
-    <input id="gateIn" type="password" inputmode="numeric" maxlength="12" aria-label="Clave de acceso" placeholder="Clave">
-    <div class="err" id="gateErr" role="alert"></div>
-    <button type="submit">Entrar</button>
-  </form>
-</div>
-<script>
-(function(){
-  var CLAVE="1022", KEY="m6-acceso", gate=document.getElementById("gate"), locked;
-  function valido(){ try{ var t=+localStorage.getItem(KEY); return t && Date.now()-t < 12*3600e3; }catch(e){ return false; } }
-  locked=!valido();
-  if(locked){ gate.hidden=false; setTimeout(function(){ document.getElementById("gateIn").focus(); },50); }
-  // Mientras está bloqueado, las teclas no mueven la presentación
-  document.addEventListener("keydown",function(e){ if(locked) e.stopImmediatePropagation(); },true);
-  document.getElementById("gateForm").addEventListener("submit",function(e){
-    e.preventDefault();
-    var inp=document.getElementById("gateIn");
-    if(inp.value.trim()===CLAVE){ try{ localStorage.setItem(KEY,String(Date.now())); }catch(err){} locked=false; gate.hidden=true; }
-    else { document.getElementById("gateErr").textContent="Clave incorrecta. Inténtelo de nuevo."; inp.select(); }
-  });
-})();
-</script>
 <div id="stage">
   <div class="top"><span id="topL">MÓDULO 6 · POWER QUERY Y CONSOLIDACIÓN DE DATOS.</span><div class="dots" id="dots"></div></div>
   <div id="slides"></div>
@@ -215,141 +178,49 @@ const pqEditor = (cols, rows, steps, cur) => `<div class="pq"><div class="bar">R
   <div class="body"><div class="grid"><table><tr>${cols.map(([t,c])=>`<th><i>${t}</i>${c}</th>`).join("")}</tr>${rows.map(r=>`<tr>${r.map(v=>`<td>${v}</td>`).join("")}</tr>`).join("")}</table></div>
   <div class="steps"><b>Pasos aplicados</b>${steps.map((s,i)=>`<span class="${i===cur?'cur':''} slideR" style="animation-delay:${i*.08}s">${s}</span>`).join("")}</div></div></div>`;
 
-/* ---------- Conceptos ---------- */
+/* ---------- Fundamentos: cada uno se aplica en un paso de la práctica guiada ---------- */
 const T = [
-{ k:"Power Query", d:"Obtener, transformar y cargar.", q:"¿Qué es Power Query?",
-  def:"Es la herramienta de Excel para <b>obtener</b> datos de distintas fuentes, <b>transformarlos</b> (limpiarlos y ordenarlos) y <b>cargarlos</b> en una hoja, listos para analizar. Cada paso queda grabado y se repite solo cuando llegan datos nuevos.",
-  ana:"Es como una receta grabada: la primera vez se cocina paso a paso; las siguientes, la cocina la repite sola con los ingredientes nuevos.",
-  xl:`<span class="path">Datos › Obtener y transformar datos</span>. Viene incluido en Excel desde la versión 2016; en Excel 2010 y 2013 era un complemento aparte.`,
-  ex:()=>exBox("Del correo a la tabla.",`<div class="flow"><div class="s"><b>Obtener</b>3 reportes de ARS en una carpeta</div><div class="a">→</div><div class="f"><b>Transformar</b>Limpiar, corregir y unir</div><div class="a">→</div><div class="r"><b>Cargar</b>1 tabla de 120 filas</div></div>
-     <p style="font-size:16px;line-height:1.5">Cada mes llegan los reportes de <b>ARS Humano</b>, <b>ARS Universal</b> y <b>ARS Primera</b>. Traen la misma información, pero con títulos en código, montos escritos como texto, filas vacías y repetidas. Power Query los convierte en <b>una sola tabla limpia</b>.</p>`,"Los archivos de origen no se modifican: Power Query trabaja sobre una copia de los datos.") },
-{ k:"Importar datos", d:"Conectarse al origen.", q:"¿De dónde puede traer datos?",
-  def:"El primer paso es conectarse al <b>origen</b>: un libro de Excel, un archivo de texto o CSV, una tabla de la misma hoja o <b>una carpeta completa</b>. Power Query no copia el archivo: crea una <b>conexión</b> que recuerda dónde están los datos.",
+{ k:"Conectarse a una carpeta", d:"Unir sin copiar.", q:"¿Cómo se traen varios archivos a la vez?",
+  def:"Power Query no copia los archivos: crea una <b>conexión</b> que recuerda dónde están los datos. Si varios archivos tienen la misma estructura, se guardan en una <b>carpeta</b> y Power Query los une todos en una sola consulta.",
   ana:"Es como una tubería conectada a un tanque: no se carga el agua en cubetas; se abre la llave cada vez que se necesita.",
-  xl:`<span class="path">Datos › Obtener datos › Desde un archivo</span> › Desde un libro, Desde texto o CSV o <b style="display:inline;color:var(--ink);font-family:var(--sans);font-size:15px;letter-spacing:0;text-transform:none">Desde una carpeta</b>.`,
-  ex:()=>exBox("Los orígenes más usados.",`<table class="m"><tr><th>Origen</th><th>Cuándo se usa</th></tr>
-     <tr><td><b>Desde un libro</b></td><td>Un solo archivo de Excel.</td></tr>
-     <tr><td><b>Desde texto o CSV</b></td><td>Datos exportados de un sistema.</td></tr>
-     <tr><td><b>Desde tabla o rango</b></td><td>Datos que ya están en el mismo libro.</td></tr>
-     <tr><td style="background:var(--acc-soft)"><b>Desde una carpeta</b></td><td style="background:var(--acc-soft)">Varios archivos con la misma estructura, como los reportes de las ARS.</td></tr></table>`,"Una conexión se puede actualizar: si el origen cambia, la consulta trae los datos nuevos.") },
-{ k:"Editor y pasos aplicados", d:"Cada cambio queda grabado.", q:"¿Qué son los pasos aplicados?",
-  def:"En el <b>Editor de Power Query</b> los datos se transforman con botones, sin escribir fórmulas. Cada acción se guarda como un <b>paso aplicado</b> en el panel de la derecha. La lista completa de pasos es la receta de la consulta.",
-  ana:"Es como el historial de un GPS: muestra cada giro del recorrido y permite volver a cualquier punto del camino.",
-  xl:`<span class="path">Datos › Obtener datos › Iniciar el Editor de Power Query</span>. Los pasos están en <span class="path">Configuración de la consulta › Pasos aplicados</span>.`,
-  ex:()=>exBox("Así se ve el editor.",pqEditor([["ABC","ARS"],["ABC","Reclamación"],["📅","Fecha"],["123","Monto"]],[["ARS Humano","HUM-26-0016","01/01/2026","8,500"],["ARS Humano","HUM-26-0022","01/01/2026","7,700"],["ARS Humano","HUM-26-0040","01/01/2026","8,150"],["ARS Humano","HUM-26-0039","02/01/2026","2,250"]],["Origen","Filas filtradas","Columnas quitadas","Columnas con nombre cambiado","Texto recortado","Tipo cambiado","Duplicados quitados"],5),"Al hacer clic en un paso, el editor muestra los datos como estaban en ese momento.") },
-{ k:"Limpiar los datos", d:"Quitar lo que sobra.", q:"¿Cómo se limpian los datos?",
-  def:"Limpiar es dejar solo lo útil y escrito de la misma forma: quitar filas vacías y filas de totales, quitar columnas que no se usan, poner <b>nombres claros</b> a las columnas y corregir el texto con <b>espacios de más</b> o <b>mayúsculas mezcladas</b>.",
-  ana:"Es como ordenar un clóset: se saca lo que no sirve, todo se dobla igual y cada gaveta lleva su etiqueta.",
-  xl:`<span class="path">Inicio › Quitar columnas</span> · filtro del encabezado para quitar filas · doble clic en el encabezado para cambiar el nombre · <span class="path">Transformar › Formato › Recortar</span> y <span class="path">Poner En Mayúsculas Cada Palabra</span>.`,
-  ex:()=>exBox("Antes y después.",`<table class="m"><tr><th>Así llega</th><th>Así queda</th></tr>
-     <tr><td class="bad mono"><span class="sp">·</span>san cristóbal</td><td class="ok">San Cristóbal</td></tr>
-     <tr><td class="bad mono">LA VEGA<span class="sp">·</span></td><td class="ok">La Vega</td></tr>
-     <tr><td class="bad mono"><span class="sp">·</span>consulta</td><td class="ok">Consulta</td></tr>
-     <tr><td class="bad mono">puerto plata</td><td class="ok">Puerto Plata</td></tr>
-     <tr><td class="bad mono">HOSPITALIZACIÓN<span class="sp">·</span></td><td class="ok">Hospitalización</td></tr>
-     <tr class="blank"><td></td><td></td></tr>
-     <tr><td class="bad mono">TOTAL · RD$ 689000</td><td class="ok">(se quita: no es una reclamación)</td></tr></table>`,"Cada <span class=\"sp\">·</span> es un espacio de más. Para Excel, «La Vega» y «LA VEGA·» son dos provincias distintas.") },
-{ k:"Tipos de datos y duplicados", d:"Cada columna, su tipo.", q:"¿Por qué importan los tipos de datos?",
-  def:"Cada columna debe tener su <b>tipo</b>: texto, número entero, número decimal o fecha. Si un monto llega como texto («RD$ 8500»), Excel no lo puede sumar. Además, se quitan las filas <b>duplicadas</b> para no contar dos veces la misma reclamación.",
+  xl:`<span class="path">Datos › Obtener datos › Desde un archivo › Desde una carpeta</span>, y luego <span class="path">Combinar y transformar datos</span>.`,
+  prac:["Paso 1","Unirá los 3 reportes y verá 138 filas en el editor."],
+  ex:()=>exBox("La carpeta «Reportes ARS».",`<div class="files">${ARS.map(a=>fileRow(a.k+".xlsx","Mismas columnas, en el mismo orden")).join("")}</div>
+     <table class="m"><tr><th>Source.Name</th><th>NUM_RECL</th><th>PROVINCIA</th></tr><tr><td>ARS Humano.xlsx</td><td>HUM-26-0016</td><td>La Vega</td></tr><tr><td>ARS Universal.xlsx</td><td>UNI-26-0011</td><td>Santo Domingo</td></tr><tr><td>ARS Primera.xlsx</td><td>PRI-26-0001</td><td>Santiago</td></tr></table>`,"Power Query agrega <b>Source.Name</b> para saber de qué archivo viene cada fila. En la carpeta van solo los reportes.") },
+{ k:"Dejar solo filas útiles", d:"Sin vacías ni repetidas.", q:"¿Qué filas sobran?",
+  def:"Una tabla para analizar tiene <b>una fila por cada registro</b>. Sobran las filas vacías, las filas de <b>totales</b> y las <b>duplicadas</b>, porque una reclamación repetida se cuenta y se paga dos veces.",
+  ana:"Es como ordenar un clóset: se saca lo que no sirve y lo que está repetido, y solo queda lo que se usa.",
+  xl:`Flecha del filtro en el encabezado para quitar filas · <span class="path">Inicio › Quitar filas › Quitar duplicados</span>, con todas las columnas seleccionadas.`,
+  prac:["Paso 2","Pasará de 138 a 120 filas."],
+  ex:()=>exBox("De 138 filas a 120.",`<table class="m"><tr><th>Lo que llega en los 3 archivos</th><th class="r">Filas</th></tr>
+     <tr><td>Filas en total</td><td class="r">138</td></tr><tr><td>− Filas vacías</td><td class="r neg">6</td></tr>
+     <tr><td>− Filas de TOTAL</td><td class="r neg">3</td></tr><tr><td>− Reclamaciones duplicadas</td><td class="r neg">9</td></tr>
+     <tr class="tot"><td>Reclamaciones únicas</td><td class="r pos">120</td></tr></table>`,"Se filtra para quitar: cuando llegue otro reporte, la misma regla sacará su TOTAL y sus filas vacías.") },
+{ k:"Tipos de datos", d:"Texto que se vuelve número.", q:"¿Por qué importan los tipos de datos?",
+  def:"Cada columna debe tener su <b>tipo</b>: texto, número o fecha. Si un monto llega como texto («RD$ 8500»), Excel no lo puede sumar. El icono del encabezado dice qué tipo tiene la columna.",
   ana:"Es como clasificar la correspondencia: cartas con cartas y facturas con facturas. Si una factura queda entre las cartas, nadie la paga.",
-  xl:`El icono a la izquierda de cada encabezado (<b style="display:inline;color:var(--ink);font-family:var(--mono);font-size:13px;letter-spacing:0">ABC 123 📅</b>) cambia el tipo. Duplicados: <span class="path">Inicio › Quitar filas › Quitar duplicados</span>.`,
+  xl:`<span class="path">Inicio › Reemplazar los valores</span> para quitar «RD$», y el icono del encabezado (<b style="display:inline;color:var(--ink);font-family:var(--mono);font-size:13px;letter-spacing:0">ABC 123 📅</b>) para cambiar el tipo.`,
+  prac:["Paso 3","Convertirá el monto en número y aparecerá el icono 123."],
   ex:()=>exBox("El monto, de texto a número.",`<table class="m"><tr><th>Archivo</th><th>Así llega</th><th class="r">Así queda</th></tr>
      <tr><td>ARS Humano</td><td class="bad mono">RD$ 8500</td><td class="ok r">8,500</td></tr>
      <tr><td>ARS Universal</td><td class="bad mono">RD$4450</td><td class="ok r">4,450</td></tr>
      <tr><td>ARS Primera</td><td class="bad mono">10600 RD$</td><td class="ok r">10,600</td></tr></table>
-     <div class="flow" style="grid-template-columns:1fr 26px 1fr 26px 1fr"><div class="s"><b>1 · Texto</b>Cambie el tipo a texto</div><div class="a">→</div><div class="f"><b>2 · Reemplazar</b>«RD$» por nada y recortar</div><div class="a">→</div><div class="r"><b>3 · Número</b>Tipo número entero</div></div>`,"Cada reporte trae además 3 reclamaciones repetidas: 9 en total que se eliminan.") },
-{ k:"Combinar información", d:"Anexar o combinar.", q:"¿Cómo se une información de varias fuentes?",
-  def:"Hay dos formas. <b>Anexar</b> pone las filas de una tabla debajo de las de otra: mismas columnas, más filas. <b>Combinar</b> agrega columnas de otra tabla mediante una columna en común, como hace BUSCARV. Desde una carpeta, Power Query anexa todos los archivos automáticamente.",
-  ana:"Anexar es apilar en una sola pila los expedientes de tres oficinas. Combinar es engrapar a cada expediente su ficha del directorio.",
-  xl:`<span class="path">Inicio › Combinar › Anexar consultas</span> o <span class="path">Combinar consultas</span>. En una carpeta: botón <span class="path">Combinar y transformar datos</span>.`,
-  ex:()=>exBox("Las dos operaciones.",`<table class="m"><tr><th>Anexar (más filas)</th><th class="r">Filas</th></tr>
-     ${ARS.map(a=>`<tr><td>${a.k}</td><td class="r">${a.n}</td></tr>`).join("")}<tr class="tot"><td>Una sola tabla</td><td class="r">120</td></tr></table>
-     <table class="m"><tr><th>Combinar (más columnas)</th><th>Columna en común</th><th>Agrega</th></tr>
-     <tr><td>Reclamaciones + tabla Regiones</td><td>Provincia</td><td>Región</td></tr></table>`,"Ejemplo de combinar: a cada reclamación se le agrega su región (Ozama, Cibao Norte…) buscando la provincia en otra tabla.") },
-{ k:"Cargar y actualizar", d:"Un clic para lo nuevo.", q:"¿Cómo se cargan y actualizan los datos?",
-  def:"Con <b>Cerrar y cargar</b> el resultado llega a Excel como una tabla. Cuando llega un archivo nuevo a la carpeta, basta con pulsar <b>Actualizar todo</b>: Power Query repite todos los pasos sin que nadie los vuelva a hacer.",
+     <div class="flow" style="grid-template-columns:1fr 26px 1fr"><div class="f"><b>1 · Reemplazar</b>«RD$» por nada</div><div class="a">→</div><div class="r"><b>2 · Número</b>Tipo número entero</div></div>`,"El orden importa: si convierte antes de quitar «RD$», la celda mostrará <b>Error</b>.") },
+{ k:"Cargar el resultado", d:"Una tabla en Excel.", q:"¿Cómo llega el resultado a Excel?",
+  def:"Mientras se trabaja, los datos están en el editor. Con <b>Cerrar y cargar</b> el resultado llega a una hoja como una <b>tabla</b>, lista para filtrar, sumar o hacer tablas dinámicas. Los archivos de origen no cambian.",
+  ana:"Es como servir el plato: lo que pasó en la cocina queda atrás y a la mesa llega la comida lista.",
+  xl:`<span class="path">Inicio › Cerrar y cargar</span> en el editor. La consulta queda en <span class="path">Datos › Consultas y conexiones</span>.`,
+  prac:["Paso 4","Cargará 120 filas y comprobará RD$ 1,816,550.00."],
+  ex:()=>exBox("Monto reclamado por ARS.",`${barChart(ARS)}<table class="m"><tr><th></th><th class="r">Filas</th><th class="r">Monto</th></tr><tr class="tot"><td>Consolidado</td><td class="r">120</td><td class="r">${fmt(TOT3)}</td></tr></table>`) },
+{ k:"Actualizar con un clic", d:"La receta se repite.", q:"¿Qué pasa cuando llegan datos nuevos?",
+  def:"Aquí está el valor de Power Query. Cuando llega un archivo nuevo a la carpeta, basta con pulsar <b>Actualizar todo</b>: se repiten todos los pasos aplicados, sin que nadie los vuelva a hacer.",
   ana:"Es como una lavadora con un programa guardado: se pone la ropa nueva, se pulsa un botón y el ciclo completo se repite igual.",
-  xl:`<span class="path">Inicio › Cerrar y cargar</span> en el editor. Para actualizar: <span class="path">Datos › Actualizar todo</span> o <b style="display:inline;color:var(--ink);font-family:var(--mono);font-size:13px;letter-spacing:0">Ctrl + Alt + F5</b>.`,
+  xl:`<span class="path">Datos › Actualizar todo</span> o <b style="display:inline;color:var(--ink);font-family:var(--mono);font-size:13px;letter-spacing:0">Ctrl + Alt + F5</b>. Cierre los reportes antes de actualizar.`,
+  prac:["Paso 5","Llegará ARS Senasa y subirá a 160 filas con un clic."],
   ex:()=>exBox("Llega ARS Senasa.",`<div class="files">${ARS.map(a=>fileRow(a.k+".xlsx","46 filas tal como llegan")).join("")}${fileRow("ARS Senasa.xlsx","Se copia en la carpeta",true)}</div>
      <table class="m"><tr><th></th><th class="r">Filas</th><th class="r">Monto</th></tr>
      <tr><td>Antes de actualizar</td><td class="r">120</td><td class="r">${fmt(TOT3)}</td></tr>
      <tr class="tot"><td>Después de Actualizar todo</td><td class="r pos">160</td><td class="r pos">${fmt(TOT4)}</td></tr></table>`,"No se repitió ningún paso: la consulta aplicó la misma receta al archivo nuevo.") }
-];
-
-/* ---------- Segunda lámina de cada concepto («A fondo») ---------- */
-const FONDO = [
-{ q:"¿Por qué no hacerlo a mano?",
-  lead:"Copiar y pegar los reportes cada mes funciona, pero tiene un costo que se repite. Power Query lo resuelve una sola vez.",
-  pts:[["Se hace una vez.","Los pasos se graban y se repiten cada mes con un clic."],
-       ["Menos errores.","No hay copiar y pegar; las mismas reglas se aplican a todos los archivos."],
-       ["No daña el original.","Los archivos de las ARS quedan intactos; se trabaja sobre una copia."],
-       ["Queda documentado.","Cualquiera puede revisar los pasos aplicados y saber qué se hizo."]],
-  ex:()=>exBox("Cada mes, dos caminos.",`<table class="m"><tr><th>Tarea</th><th>A mano</th><th>Power Query</th></tr>
-     <tr><td>Unir 3 archivos</td><td class="bad">Copiar y pegar</td><td class="ok">Automático</td></tr>
-     <tr><td>Revisar 138 filas</td><td class="bad">Fila por fila</td><td class="ok">Reglas fijas</td></tr>
-     <tr><td>Corregir textos y montos</td><td class="bad">Celda por celda</td><td class="ok">Un paso por columna</td></tr>
-     <tr><td>Llega un archivo nuevo</td><td class="bad">Empezar de nuevo</td><td class="ok">Actualizar todo</td></tr></table>`,"El tiempo que se invierte en armar la consulta se recupera desde el segundo mes.") },
-{ q:"Desde una carpeta: varios archivos a la vez.",
-  lead:"Cuando varios archivos tienen la misma estructura, se guardan en una carpeta y Power Query los une todos en una sola consulta.",
-  pts:[["Misma estructura.","Mismas columnas, en el mismo orden y en una hoja con el mismo nombre."],
-       ["Archivo de ejemplo.","Power Query usa el primer archivo como modelo y aplica lo mismo a los demás."],
-       ["Columna de origen.","Agrega el nombre del archivo a cada fila: así se sabe de qué ARS viene."],
-       ["Carpeta exclusiva.","Solo los reportes. Su libro de trabajo se guarda fuera de esa carpeta."]],
-  ex:()=>exBox("La carpeta «Reportes ARS».",`<div class="files">${ARS.map(a=>fileRow(a.k+".xlsx","Columnas: NUM_RECL · FEC_SERV · PROVINCIA · TIPO_SERV · MTO_RECL · ESTADO · OBSERV")).join("")}</div>
-     <table class="m"><tr><th>Source.Name</th><th>NUM_RECL</th><th>PROVINCIA</th></tr><tr><td>ARS Humano.xlsx</td><td>HUM-26-0016</td><td>La Vega</td></tr><tr><td>ARS Universal.xlsx</td><td>UNI-26-0011</td><td>Santo Domingo</td></tr><tr><td>ARS Primera.xlsx</td><td>PRI-26-0001</td><td>Santiago</td></tr></table>`,"Cierre los reportes antes de actualizar: un archivo abierto crea una copia temporal (~$) que puede dar error.") },
-{ q:"Reglas para trabajar en el editor.",
-  lead:"Los pasos se ejecutan en orden, de arriba hacia abajo. Entender eso evita la mayoría de los errores.",
-  pts:[["El orden importa.","Cada paso trabaja sobre el resultado del anterior."],
-       ["Revise antes de seguir.","Haga clic en un paso para ver los datos como estaban en ese momento."],
-       ["Cuidado al borrar.","Quitar un paso del medio puede romper los que vienen después."],
-       ["Nombre claro.","Cambie el nombre de la consulta: «Consolidado», no «Consulta1»."]],
-  ex:()=>exBox("Los pasos principales.",`<table class="m"><tr><th>#</th><th>Paso aplicado</th><th>Qué hace</th></tr>
-     <tr><td>1</td><td>Origen</td><td>Se conecta a la carpeta.</td></tr><tr><td>2</td><td>Filas filtradas</td><td>Quita vacías y TOTAL.</td></tr>
-     <tr><td>3</td><td>Columnas quitadas</td><td>Quita OBSERV.</td></tr><tr><td>4</td><td>Columnas con nombre cambiado</td><td>Pone nombres claros.</td></tr>
-     <tr><td>5</td><td>Texto recortado</td><td>Quita espacios de más.</td></tr><tr><td>6</td><td>Tipo cambiado</td><td>Fecha y número.</td></tr>
-     <tr><td>7</td><td>Duplicados quitados</td><td>Deja una sola vez cada fila.</td></tr></table>`,"Power Query nombra cada paso solo; puede cambiarle el nombre con clic derecho › Cambiar nombre.") },
-{ q:"Nombres de columnas estándar.",
-  lead:"Los sistemas exportan columnas con códigos. Para analizar y para combinar con otras tablas, conviene un nombre claro y siempre igual.",
-  pts:[["Claros.","«Monto», no «MTO_RECL». Cualquiera entiende la tabla sin preguntar."],
-       ["Iguales siempre.","El mismo nombre en todas las consultas: así se pueden anexar y combinar."],
-       ["Sin espacios extra.","Un espacio al final crea una columna distinta para Power Query."],
-       ["Solo lo útil.","Las columnas vacías o que no se analizan se quitan."]],
-  ex:()=>exBox("De código a nombre claro.",`<table class="m"><tr><th>Así llega</th><th>Así queda</th></tr>
-     <tr><td class="mono">Source.Name</td><td>ARS</td></tr><tr><td class="mono">NUM_RECL</td><td>Reclamación</td></tr><tr><td class="mono">FEC_SERV</td><td>Fecha</td></tr>
-     <tr><td class="mono">PROVINCIA</td><td>Provincia</td></tr><tr><td class="mono">TIPO_SERV</td><td>Tipo de servicio</td></tr><tr><td class="mono">MTO_RECL</td><td>Monto</td></tr>
-     <tr><td class="mono">ESTADO</td><td>Estado</td></tr><tr><td class="mono">OBSERV</td><td class="bad">Se quita: siempre está vacía.</td></tr></table>`,"En la columna ARS, además, se reemplaza «.xlsx» por nada: «ARS Humano.xlsx» pasa a «ARS Humano».") },
-{ q:"Los iconos de tipo y los errores.",
-  lead:"El icono del encabezado dice qué tipo tiene la columna. Si un valor no se puede convertir, Power Query lo marca como Error.",
-  pts:[["ABC · Texto.","Nombres, códigos, provincias."],
-       ["123 · Número entero.","Montos sin centavos, cantidades."],
-       ["📅 · Fecha.","Fecha del servicio. Permite agrupar por mes."],
-       ["Error.","Aparece si un texto no se puede volver número. Revise el paso anterior."]],
-  ex:()=>exBox("De 138 filas a 120.",`<table class="m"><tr><th>Lo que llega en los 3 archivos</th><th class="r">Filas</th></tr>
-     <tr><td>Filas en total</td><td class="r">138</td></tr><tr><td>− Filas vacías</td><td class="r neg">6</td></tr>
-     <tr><td>− Filas de TOTAL</td><td class="r neg">3</td></tr><tr><td>− Reclamaciones duplicadas</td><td class="r neg">9</td></tr>
-     <tr class="tot"><td>Reclamaciones únicas y limpias</td><td class="r pos">120</td></tr></table>`,"Quitar duplicados compara las columnas seleccionadas. Seleccione todas para quitar solo las filas idénticas.") },
-{ q:"Anexar o combinar: ¿cuál usar?",
-  lead:"La pregunta clave es si necesita más filas o más columnas.",
-  pts:[["Anexar.","Mismas columnas, más filas. Ejemplo: los reportes de varias ARS."],
-       ["Combinar.","Columna en común, más columnas. Ejemplo: agregar la región de cada provincia."],
-       ["Externa izquierda.","El tipo de combinación más usado: conserva todas las filas de la primera tabla."],
-       ["Nombres iguales.","Al anexar, las columnas se emparejan por nombre: deben llamarse igual."]],
-  ex:()=>exBox("Comparación rápida.",`<table class="m"><tr><th></th><th>Anexar</th><th>Combinar</th></tr>
-     <tr><td>Resultado</td><td>Más filas</td><td>Más columnas</td></tr>
-     <tr><td>Requisito</td><td>Mismas columnas</td><td>Una columna en común</td></tr>
-     <tr><td>Se parece a</td><td>Pegar debajo</td><td>BUSCARV</td></tr>
-     <tr><td>Caso</td><td>3 ARS en una tabla</td><td>Provincia → Región</td></tr></table>`,"Desde una carpeta no hace falta anexar a mano: Power Query lo hace con todos los archivos.") },
-{ q:"Opciones de carga y el modelo de datos.",
-  lead:"Al cargar se elige dónde llega el resultado. Para varias tablas relacionadas existe el modelo de datos.",
-  pts:[["Tabla.","El resultado se ve en una hoja nueva, listo para filtrar o hacer tablas dinámicas."],
-       ["Solo crear conexión.","Para consultas intermedias que no necesitan una hoja."],
-       ["Modelo de datos.","Guarda varias tablas relacionadas y admite más de un millón de filas."],
-       ["Actualizar al abrir.","En las propiedades de la consulta, para que los datos estén al día siempre."]],
-  ex:()=>exBox("Ventana «Importar datos».",`<div class="dlg"><div class="t">Importar datos</div><div class="b">
-     <span style="font-weight:600">Seleccione cómo desea ver estos datos en el libro.</span>
-     <div class="o"><i class="on"></i>Tabla</div><div class="o"><i></i>Informe de tabla dinámica</div><div class="o"><i></i>Solo crear conexión</div>
-     <span style="font-weight:600;margin-top:4px">¿Dónde desea situar los datos?</span><div class="o"><i class="on"></i>Hoja de cálculo nueva</div>
-     <div class="o"><i class="sq"></i>Agregar estos datos al modelo de datos</div><div class="k"><span>Aceptar</span><span>Cancelar</span></div></div></div>`,`Se abre con <span class="path">Inicio › Cerrar y cargar › Cerrar y cargar en…</span>`) }
 ];
 
 /* ---------- Diapositivas ---------- */
@@ -359,7 +230,7 @@ S.push({t:-1, h:`<div class="slide cover">
   <div class="mod">Módulo 6.</div>
   <h1>Power Query y consolidación de datos.</h1>
   <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
-  <div class="cover-tags"><span>Importar</span><span>Transformar</span><span>Combinar</span><span>Actualizar</span></div>
+  <div class="cover-tags"><span>Conectar</span><span>Limpiar</span><span>Convertir</span><span>Cargar</span><span>Actualizar</span></div>
   <div class="hint">Excel 2016 en adelante · use ← → para avanzar</div>
   <svg class="cover-art" viewBox="0 0 500 430" aria-hidden="true">
     <rect x="20" y="30" width="460" height="350" rx="22" fill="#2f3a8f"/>
@@ -386,38 +257,48 @@ S.push({t:-1, h:`<div class="slide" style="gap:18px">
 
 S.push({t:-1, h:`<div class="slide">
   <div class="eyebrow">Contenido.</div>
-  <h2>Siete conceptos y un ejemplo.</h2>
-  <p class="lead">Cada concepto se explica con el mismo caso: los reportes de reclamaciones de las ARS.</p>
+  <h2>Cinco fundamentos, cinco pasos.</h2>
+  <p class="lead">Cada fundamento se aplica después en un paso de la práctica guiada, con los mismos reportes de las ARS.</p>
   <div class="idx" data-idx></div>
   <div class="dl"><p class="note"><b style="color:var(--ink)">Objetivo:</b> utilizar Power Query y el modelo de datos para automatizar la transformación y consolidación de información.</p></div>
-</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = T.map((t,i)=>`<button data-go="${INI[i]}"><span class="n">0${i+1}</span><span class="k">${t.k}.</span><span class="d">${t.d}</span></button>`).join("")+`<button class="res" data-go="${INI[T.length]}"><span class="n">★</span><span class="k">Ejemplo integrador.</span><span class="d">Del correo al reporte.</span></button>`; }});
+</div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = T.map((t,i)=>`<button data-go="${INI[i]}"><span class="n">${i+1}</span><span class="k">${t.k}.</span><span class="d">${t.prac[0]} de la práctica.</span></button>`).join("")+`<button class="res" data-go="${INI[T.length]}"><span class="n">★</span><span class="k">Para seguir explorando.</span><span class="d">Otras herramientas, a su ritmo.</span></button>`; }});
 
-T.forEach((t,i)=>{ INI[i]=S.length; S.push({t:i, h:`<div class="slide">
-  <div class="eyebrow"><span class="n">0${i+1}</span><span>${t.k}.</span><span class="tag">Concepto.</span></div>
-  <div class="cols"><div class="col"><h2>${t.q}</h2><p class="lead">${t.def}</p><p class="analogy">${t.ana}</p><p class="exl"><b>En Excel</b>${t.xl}</p></div>${t.ex()}</div></div>`});
-  const f=FONDO[i]; S.push({t:i, h:`<div class="slide" style="gap:16px">
-  <div class="eyebrow"><span class="n">0${i+1}</span><span>${t.k}.</span><span class="tag">A fondo.</span></div>
-  <div class="cols" style="align-items:start"><div class="col" style="gap:14px"><h2 style="font-size:36px">${f.q}</h2><p class="lead" style="font-size:18px">${f.lead}</p>
-    <div class="pts">${f.pts.map(([h,p])=>`<div><b>${h}</b><span>${p}</span></div>`).join("")}</div></div>${f.ex()}</div></div>`}); });
+S.push({t:-1, h:`<div class="slide" style="gap:16px">
+  <div class="eyebrow">La idea central.</div>
+  <div class="cols"><div class="col"><h2>¿Qué es Power Query?</h2>
+    <p class="lead">Es la herramienta de Excel para <b>obtener</b> datos, <b>transformarlos</b> y <b>cargarlos</b> en una hoja, listos para analizar. Viene incluida desde Excel 2016, en <span class="path">Datos › Obtener y transformar datos</span>.</p>
+    <p class="analogy">Es como una receta grabada: la primera vez se cocina paso a paso; las siguientes, la cocina la repite sola con los ingredientes nuevos.</p></div>
+  ${exBox("Cada mes, dos caminos.",`<div class="flow"><div class="s"><b>Obtener</b>3 reportes en una carpeta</div><div class="a">→</div><div class="f"><b>Transformar</b>Limpiar y convertir</div><div class="a">→</div><div class="r"><b>Cargar</b>1 tabla limpia</div></div>
+    <table class="m"><tr><th>Tarea</th><th>A mano</th><th>Power Query</th></tr>
+     <tr><td>Unir 3 archivos</td><td class="bad">Copiar y pegar</td><td class="ok">Automático</td></tr>
+     <tr><td>Revisar 138 filas</td><td class="bad">Fila por fila</td><td class="ok">Reglas fijas</td></tr>
+     <tr><td>Llega un archivo nuevo</td><td class="bad">Empezar de nuevo</td><td class="ok">Actualizar todo</td></tr></table>`,"Los archivos de origen no se modifican: Power Query trabaja sobre una copia de los datos.")}</div></div>`});
+
+S.push({t:-1, h:`<div class="slide" style="gap:16px">
+  <div class="eyebrow">La idea central.</div>
+  <div class="cols"><div class="col"><h2>La receta: los pasos aplicados.</h2>
+    <p class="lead" style="font-size:18.5px">En el <b>Editor de Power Query</b> los datos se transforman con botones, sin fórmulas. Cada acción se guarda como un <b>paso aplicado</b>. La lista completa es la receta de la consulta.</p>
+    <div class="pts"><div><b>El orden importa.</b><span>Cada paso trabaja sobre el resultado del anterior.</span></div><div><b>Se puede volver.</b><span>Clic en un paso para ver los datos en ese momento.</span></div><div><b>Se puede corregir.</b><span>La ✕ quita un paso, sin empezar de nuevo.</span></div></div></div>
+  ${exBox("Así se ve el editor.",pqEditor([["ABC","Source.Name"],["ABC","NUM_RECL"],["123","MTO_RECL"]],[["ARS Humano.xlsx","HUM-26-0016","8500"],["ARS Humano.xlsx","HUM-26-0022","7700"],["ARS Humano.xlsx","HUM-26-0040","8150"],["ARS Humano.xlsx","HUM-26-0039","2250"]],["Origen","Filas filtradas","Duplicados quitados","Valor reemplazado","Tipo cambiado"],4),"Son los mismos pasos que hará en la práctica guiada.")}</div></div>`});
+
+T.forEach((t,i)=>{ INI[i]=S.length; S.push({t:i, h:`<div class="slide" style="gap:14px">
+  <div class="eyebrow"><span class="n">${i+1}</span><span>${t.k}.</span><span class="tag">Fundamento.</span></div>
+  <div class="cols"><div class="col" style="gap:14px"><h2 style="font-size:38px">${t.q}</h2><p class="lead" style="font-size:18.5px">${t.def}</p><p class="analogy" style="font-size:18px">${t.ana}</p><p class="exl"><b>En Excel</b>${t.xl}</p></div>${t.ex()}</div>
+  <div class="enprac"><b>En la práctica · ${t.prac[0]}</b><span>${t.prac[1]}</span></div></div>`}); });
 
 INI[T.length]=S.length;
-S.push({t:T.length, h:`<div class="slide" style="gap:16px">
-  <div class="eyebrow"><span class="n">★</span><span>Ejemplo integrador.</span><span class="tag">Todos los conceptos juntos.</span></div>
-  <h2>Del correo al reporte en un clic.</h2>
-  <div class="cols" style="grid-template-columns:1.1fr 1fr"><div class="ex"><div class="ex-h"><span>Monto reclamado por ARS.</span><span>Enero 2026.</span></div><div class="ex-b">${barChart(ARS.concat([{...NUEVA,nuevo:true}]))}
-    <table class="m"><tr><th></th><th class="r">Reclamaciones</th><th class="r">Monto</th></tr><tr class="tot"><td>Consolidado</td><td class="r">160</td><td class="r">${fmt(TOT4)}</td></tr></table></div></div>
-  <div class="col"><div class="chips">
-    <div class="chip"><i>📂</i><span><b>Importar</b> desde una carpeta los reportes de las ARS.</span></div>
-    <div class="chip"><i>🧹</i><span><b>Limpiar</b>: nombres claros, textos uniformes, montos como número.</span></div>
-    <div class="chip"><i>🧩</i><span><b>Unir</b> 138 filas sucias en 120 reclamaciones únicas.</span></div>
-    <div class="chip" style="border-left-color:var(--pos)"><i>↻</i><span>Llega ARS Senasa: <b>Actualizar todo</b> y son <b class="pos">160</b>.</span></div></div>
-    <p class="analogy" style="font-size:17px">El trabajo se hace una sola vez. Los meses siguientes, solo se copian los archivos nuevos y se actualiza.</p></div></div>
-</div>`});
-
-S.push({t:-1, h:`<div class="slide">
-  <div class="eyebrow">Resumen.</div>
-  <h2>Lo que aprendimos hoy.</h2>
-  <div class="sum">${T.map((t,i)=>`<div><span class="n">0${i+1}</span><div><p>${t.d}</p><code>${t.k}.</code></div></div>`).join("")}<div><span class="n">★</span><div><p>Se graba una vez, se repite siempre.</p><code>Menos copiar y pegar, más analizar.</code></div></div></div>
+S.push({t:T.length, h:`<div class="slide" style="gap:14px">
+  <div class="eyebrow"><span class="n">★</span><span>Para seguir explorando.</span></div>
+  <h2 style="font-size:38px">Después de la práctica, Power Query tiene mucho más.</h2>
+  <div class="ex"><div class="ex-b" style="padding:6px 14px"><table class="m"><tr><th>Si quiere…</th><th>Explore</th><th>Dónde está</th></tr>
+    <tr><td>Encabezados que se entiendan</td><td><b>Cambiar el nombre</b></td><td>Doble clic en el encabezado</td></tr>
+    <tr><td>Textos escritos siempre igual</td><td><b>Recortar y mayúsculas</b></td><td>Transformar › Formato</td></tr>
+    <tr><td>Traer columnas de otra tabla, como BUSCARV</td><td><b>Combinar consultas</b></td><td>Inicio › Combinar</td></tr>
+    <tr><td>Apilar tablas sin usar una carpeta</td><td><b>Anexar consultas</b></td><td>Inicio › Combinar</td></tr>
+    <tr><td>Relacionar varias tablas o superar un millón de filas</td><td><b>Modelo de datos</b></td><td>Cerrar y cargar en…</td></tr></table></div></div>
+  <div class="dl" style="margin-top:auto"><p class="note">El documento de estudio explica cada una con su ruta y un ejemplo.</p><div class="dlbs">
+    <a class="dlbtn alt" href="Conceptos-Power-Query-Modulo6.pdf" target="_blank" rel="noopener"><span class="ic">📘</span><span><b>Documento de estudio.</b><small>PDF</small></span></a>
+    <a class="dlbtn" href="modulo6-practica-guiada.html" target="_blank" rel="noopener"><span class="ic">▶</span><span><b>Práctica guiada.</b><small>5 pasos</small></span></a></div></div>
 </div>`});
 
 const MS = (l,t,u) => `Microsoft. (s. f.-${l}). <i>${t}</i>. Microsoft Support. <a href="${u}" target="_blank" rel="noopener">${u}</a>`;
@@ -441,7 +322,7 @@ const wrap=document.getElementById("slides"); wrap.innerHTML=S.map(s=>s.h).join(
 const els=[...wrap.children]; els.forEach((el,i)=>S[i].init&&S[i].init(el));
 wrap.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(+b.dataset.go));
 const dots=document.getElementById("dots");
-dots.innerHTML=T.map(t=>t.k).concat(["Ejemplo integrador"]).map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
+dots.innerHTML=T.map(t=>t.k).concat(["Para seguir explorando"]).map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
 dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.t]));
 const SND={on:true,ctx:null,ready:false}; try{ SND.on=localStorage.getItem("m6sonido")!=="0"; }catch(e){}
 function sonar(dir){ if(!SND.on||!SND.ready) return; try{ const A=window.AudioContext||window.webkitAudioContext; if(!A) return; const c=SND.ctx||(SND.ctx=new A()); if(c.state==="suspended") c.resume();
@@ -456,7 +337,7 @@ function go(i){ const prev=cur; cur=Math.max(0,Math.min(els.length-1,i)); if(cur
   els.forEach((e,j)=>e.classList.toggle("on",j===cur)); const tp=S[cur].t;
   dots.querySelectorAll("button").forEach((b,j)=>{ b.classList.toggle("cur",j===tp); b.classList.toggle("done",tp>j); });
   document.getElementById("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
-  document.getElementById("topL").textContent=tp<0?"MÓDULO 6 · POWER QUERY Y CONSOLIDACIÓN DE DATOS.":tp===T.length?"MÓDULO 6 · EJEMPLO INTEGRADOR.":`MÓDULO 6 · CONCEPTO 0${tp+1} DE 0${T.length} · ${T[tp].k.toUpperCase()}.`;
+  document.getElementById("topL").textContent=tp<0?"MÓDULO 6 · POWER QUERY Y CONSOLIDACIÓN DE DATOS.":tp===T.length?"MÓDULO 6 · PARA SEGUIR EXPLORANDO.":`MÓDULO 6 · FUNDAMENTO ${tp+1} DE ${T.length} · ${T[tp].k.toUpperCase()}.`;
   document.getElementById("prev").disabled=cur===0; document.getElementById("next").disabled=cur===els.length-1; }
 document.getElementById("prev").onclick=()=>go(cur-1); document.getElementById("next").onclick=()=>go(cur+1);
 document.getElementById("fs").onclick=e=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(_){} e.currentTarget.blur(); };
