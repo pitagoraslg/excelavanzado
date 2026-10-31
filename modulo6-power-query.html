@@ -389,9 +389,7 @@ S.push({t:-1, h:`<div class="slide">
   <h2>Siete conceptos y un ejemplo.</h2>
   <p class="lead">Cada concepto se explica con el mismo caso: los reportes de reclamaciones de las ARS.</p>
   <div class="idx" data-idx></div>
-  <div class="dl"><p class="note" style="max-width:520px"><b style="color:var(--ink)">Objetivo:</b> utilizar Power Query y el modelo de datos para automatizar la transformación y consolidación de información.</p>
-    <div class="dlbs"><a class="dlbtn" href="Modulo6-Reportes-ARS.zip" download><span class="ic">⬇</span><span><b>Reportes de las ARS.</b><small>Carpeta con 3 archivos (.zip)</small></span></a>
-    <a class="dlbtn alt" href="Modulo6-Archivo-Nuevo-ARS-Senasa.zip" download><span class="ic">⬇</span><span><b>Archivo nuevo.</b><small>ARS Senasa (.zip)</small></span></a></div></div>
+  <div class="dl"><p class="note"><b style="color:var(--ink)">Objetivo:</b> utilizar Power Query y el modelo de datos para automatizar la transformación y consolidación de información.</p></div>
 </div>`, init:el=>{ el.querySelector("[data-idx]").innerHTML = T.map((t,i)=>`<button data-go="${INI[i]}"><span class="n">0${i+1}</span><span class="k">${t.k}.</span><span class="d">${t.d}</span></button>`).join("")+`<button class="res" data-go="${INI[T.length]}"><span class="n">★</span><span class="k">Ejemplo integrador.</span><span class="d">Del correo al reporte.</span></button>`; }});
 
 T.forEach((t,i)=>{ INI[i]=S.length; S.push({t:i, h:`<div class="slide">

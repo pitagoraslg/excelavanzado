@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>Práctica guiada · Módulo 6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Láminas de 1280×720. Cada paso = «Haga esto» + «Compruebe». Paleta del Módulo 6: índigo + mandarina. */
+:root{
+  --bg:#e6e5ee; --paper:#f7f6f3; --card:#ffffff; --ink:#2f3a8f; --text:#1f2233; --muted:#5f6275; --line:#e2e0ea; --grid:#cbc8d8;
+  --acc:#f2994a; --acc-d:#b8641c; --acc-soft:#fdeedd; --pos:#23826f; --pos-soft:#e2f3f0; --neg:#c8553d; --neg-soft:#f8e4df; --ink-soft:#e7e9f6;
+  --xl:#217346; --serif:"Source Serif 4",Georgia,serif; --sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif; --mono:"IBM Plex Mono",Consolas,monospace; --win:"Segoe UI",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;background:var(--paper);transform-origin:center;transform:translate(-50%,-50%);box-shadow:0 10px 40px rgba(47,58,143,.18);border-top:4px solid var(--ink)}
+.slide{position:absolute;inset:0;padding:56px 72px 66px;display:none;flex-direction:column;gap:13px}
+.slide.on{display:flex;animation:in .4s ease}
+@keyframes in{from{opacity:.3;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.slide.on,.pop,.grow,.draw,.bob{animation:none!important}}
+.top{position:absolute;top:20px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;z-index:3}
+.dots{display:flex;gap:6px}.dots button{width:24px;height:6px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dots button.done{background:var(--grid)}.dots button.cur{background:var(--acc)}
+.bottom{position:absolute;bottom:16px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);z-index:3}
+.navb{display:flex;gap:8px;align-items:center}
+.btn{font-family:var(--mono);font-size:13px;border:1px solid var(--grid);background:var(--card);color:var(--ink);padding:7px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink)} .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+button:focus-visible,a:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+h1,h2{font-family:var(--serif);font-weight:600;margin:0;color:var(--ink);line-height:1.08;text-wrap:balance}
+h2{font-size:33px}
+p{margin:0}
+b{font-weight:600}
+code{font-family:var(--mono);font-size:.9em;background:var(--ink-soft);color:var(--ink);padding:1px 6px;font-weight:600;white-space:nowrap}
+.eyebrow{font-family:var(--mono);font-size:13.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);display:flex;gap:12px;align-items:center}
+.eyebrow .tag{background:var(--ink);color:#fff;padding:3px 10px;font-size:12.5px}
+.eyebrow .tag.ok{background:var(--pos)}
+.eyebrow .tag.go{background:var(--acc);color:#2a1a00}
+.eyebrow .con{margin-left:auto;font-size:11.5px;letter-spacing:.06em;border:1px solid var(--acc);color:var(--acc-d);background:var(--acc-soft);padding:3px 9px}
+.lead{font-size:19px;line-height:1.5}
+.why{display:flex;gap:12px;align-items:baseline;font-size:16px;color:var(--ink);background:var(--ink-soft);padding:7px 14px}
+.why b{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.cols{display:grid;grid-template-columns:430px 1fr;gap:30px;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;gap:11px;min-width:0}
+.note{font-size:14.5px;color:var(--muted);line-height:1.45}
+.cap{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tip{border-left:4px solid var(--acc);background:var(--acc-soft);padding:8px 13px;font-size:15px;line-height:1.42}
+.warn{border-left:4px solid var(--neg);background:var(--neg-soft);padding:8px 13px;font-size:15px;line-height:1.42}
+.q{font-family:var(--serif);font-size:23px;line-height:1.35;color:var(--ink);border-left:4px solid var(--acc);padding-left:18px}
+
+/* Instrucciones numeradas */
+.do{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.do li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;font-size:16.5px;line-height:1.38}
+.do li .h{display:block;font-size:13.5px;color:var(--muted);margin-top:2px;line-height:1.35}
+.m{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:50%;background:var(--acc);color:#2a1a00;font-family:var(--mono);font-size:13.5px;font-weight:700;flex:none;box-shadow:0 0 0 2px #fff}
+.pin{position:absolute;top:-11px;right:-11px;z-index:2}
+.rel{position:relative}
+.path{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px;font-family:var(--win);font-size:13.5px}
+.path span{background:var(--card);border:1px solid var(--grid);padding:1px 8px;font-weight:600}
+.path i{font-style:normal;color:var(--acc-d);font-weight:700}
+
+/* Cinta de Excel y del editor */
+.ribbon{border:1px solid #c6c6c6;background:#fff;font-family:var(--win);font-size:13px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.ribbon .tabsr{display:flex;background:var(--xl);color:#fff}
+.ribbon .tabsr span{padding:6px 12px;opacity:.9;display:flex;align-items:center;gap:6px}
+.ribbon .tabsr span.on{background:#fff;color:var(--xl);font-weight:700;opacity:1}
+.ribbon .groups{display:flex;padding:9px 6px 6px;gap:4px;align-items:stretch}
+.ribbon .grp{display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:0 10px;border-right:1px solid #e1e1e1;color:#777;font-size:11.5px;gap:5px;text-align:center}
+.ribbon .grp .ic{font-size:22px;opacity:.5}
+.ribbon .grp.on{color:var(--text)}
+.ribbon .bt{display:flex;flex-direction:column;align-items:center;gap:2px;padding:3px 7px;font-size:12.5px;color:var(--text);border:2px solid transparent;text-align:center}
+.ribbon .bt.on{border-color:var(--acc);background:var(--acc-soft);font-weight:600}
+.ribbon .drop{display:flex;gap:6px;padding:0 14px 12px;align-items:flex-start}
+.menu{border:1px solid #c6c6c6;box-shadow:0 6px 14px rgba(0,0,0,.16);background:#fff;font-size:13.5px;font-family:var(--win)}
+.menu div{padding:6px 16px 6px 11px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.menu div.on{background:#d3e5d9;outline:2px solid var(--acc);outline-offset:-2px;font-weight:600}
+
+/* Editor de Power Query */
+.pq{border:1px solid #b9b7c6;background:#fff;font-family:var(--win);font-size:12.5px;display:flex;flex-direction:column;box-shadow:0 8px 22px rgba(0,0,0,.12);min-height:0}
+.pq .bar{background:var(--xl);color:#fff;padding:4px 10px;font-weight:600}
+.pq .rib{display:flex;gap:14px;padding:4px 10px;border-bottom:1px solid #d6d4e0;background:#f3f3f6;color:#333}
+.pq .rib span.on{border-bottom:2px solid var(--xl);font-weight:600}
+.pq .body{display:grid;grid-template-columns:minmax(0,1fr) 205px;min-height:0}
+.pq .body.tres{grid-template-columns:128px minmax(0,1fr) 190px}
+.pq .qs{border-right:1px solid #d6d4e0;padding:7px 8px;background:#fafafc;display:flex;flex-direction:column;gap:3px}
+.pq .qs b{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#555;margin-bottom:3px}
+.pq .qs span{padding:2px 5px}.pq .qs span.cur{background:#dfe7f7;font-weight:600}
+.pq .grid{padding:6px;overflow:hidden}
+.pq .grid table{border-collapse:collapse;width:100%}
+.pq .grid th{background:#f3f3f6;border:1px solid #dcdae5;padding:3px 6px;text-align:left;font-weight:600;white-space:nowrap}
+.pq .grid th.hl{background:#fdeedd;box-shadow:inset 0 -3px 0 var(--acc)}
+.pq .grid th i{font-style:normal;color:var(--xl);font-family:var(--mono);font-size:10.5px;margin-right:4px}
+.pq .grid td{border:1px solid #ebe9f1;padding:3px 6px;white-space:nowrap}
+.pq .grid td.hl{background:#fff8f0}
+.pq .grid td.num{text-align:right}
+.pq .steps{border-left:1px solid #d6d4e0;padding:7px 9px;display:flex;flex-direction:column;gap:2px;background:#fafafc}
+.pq .steps b{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#555;margin-bottom:3px}
+.pq .steps span{padding:2px 6px;border-radius:2px}
+.pq .steps span.cur{background:#dfe7f7;outline:1px solid #9fb3df;font-weight:600}
+.pq .st{border-top:1px solid #d6d4e0;background:#f3f3f6;padding:3px 10px;font-size:11.5px;letter-spacing:.03em;font-weight:600;color:#333}
+.sp{font-family:var(--mono);background:var(--neg-soft);color:var(--neg);padding:0 2px}
+
+/* Cuadros de diálogo */
+.dlg{border:1px solid #9aa3a6;background:#f0f0f0;font-family:var(--win);font-size:13.5px;box-shadow:0 10px 26px rgba(0,0,0,.16);width:100%;align-self:start}
+.dlg .t{background:#fff;padding:6px 12px;border-bottom:1px solid #d0d0d0;font-weight:600;display:flex;justify-content:space-between}
+.dlg .t span{color:#777;font-weight:400}
+.dlg .b{padding:10px 13px 12px;display:flex;flex-direction:column;gap:7px}
+.dlg .f{background:#fff;border:1px solid #8f979a;padding:4px 8px;min-height:27px}
+.dlg .f.on{border:2px solid var(--acc);background:#fffaf0;font-weight:600}
+.dlg .k{display:flex;justify-content:flex-end;gap:8px;margin-top:3px}
+.dlg .k span{border:1px solid #8f979a;background:#fdfdfd;padding:3px 13px;text-align:center;position:relative}
+.dlg .k span.on{border:2px solid var(--acc);background:var(--acc-soft);font-weight:600}
+.dlg .o{display:flex;gap:8px;align-items:center}
+.dlg .o i{font-style:normal;display:inline-block;width:14px;height:14px;border:1.5px solid #555;border-radius:50%;flex:none}
+.dlg .o i.on{background:radial-gradient(circle,var(--xl) 45%,#fff 50%)}
+.dlg .o i.sq{border-radius:2px}
+.dlg .o i.sq.on{background:var(--xl)}
+.dlg table{border-collapse:collapse;width:100%;background:#fff;font-size:12.5px}
+.dlg td,.dlg th{border:1px solid #dcdae5;padding:2px 6px;text-align:left;white-space:nowrap;font-weight:400}
+.dlg th{background:#f3f3f6;font-weight:600}
+.dlg .hl{background:#fdeedd;box-shadow:inset 0 0 0 2px var(--acc);font-weight:600}
+.tree{background:#fff;border:1px solid #8f979a;padding:6px 8px;display:flex;flex-direction:column;gap:3px}
+.tree span{padding:2px 6px}.tree span.on{background:#cce4f7;outline:2px solid var(--acc);outline-offset:-2px;font-weight:600}
+
+/* Lámina «Compruebe» */
+.okbox{border:2px solid var(--pos);background:var(--pos-soft);padding:13px 17px;display:flex;flex-direction:column;gap:8px;align-self:start;width:100%}
+.okbox .t{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--pos);font-weight:700;display:flex;align-items:center;gap:10px}
+.okbox .t i{font-style:normal;display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--pos);color:#fff;align-items:center;justify-content:center;font-size:16px}
+.okbox p{font-size:16.5px;line-height:1.42}
+.fixbox{align-self:start;width:100%;border:1px solid var(--grid);background:var(--card);padding:13px 17px;display:flex;flex-direction:column;gap:8px}
+.fixbox .t{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--neg);font-weight:700}
+.fixbox ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.fixbox li{display:grid;grid-template-columns:18px 1fr;gap:7px;font-size:14.5px;line-height:1.4}
+.fixbox li::before{content:"→";color:var(--neg);font-weight:700}
+.pop{animation:pop .6s cubic-bezier(.2,.9,.3,1.4) both}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+
+table.vals{border-collapse:collapse;width:100%;font-size:15px;background:var(--card);font-variant-numeric:tabular-nums}
+table.vals th,table.vals td{border:1px solid var(--line);padding:6px 11px;text-align:left}
+table.vals th{background:var(--ink);color:#fff;font-weight:600}
+table.vals td.r,table.vals th.r{text-align:right}
+table.vals tr.tot td{font-weight:700;background:var(--ink-soft);color:var(--ink)}
+table.vals td.bad{background:var(--neg-soft);color:#8f2f1c;font-family:var(--mono);font-size:13.5px}
+table.vals td.ok{background:var(--pos-soft)}
+.neg{color:var(--neg);font-weight:700}.pos{color:var(--pos);font-weight:700}
+
+/* Introducción */
+.cover{justify-content:center;gap:18px}
+.cover-logo{position:absolute;top:54px;right:72px;height:96px;width:auto;mix-blend-mode:multiply}
+.cover .mod{font-family:var(--mono);font-size:17px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-d)}
+.cover h1{font-size:58px;max-width:640px}
+.cover .lead{max-width:600px}
+.cover .by{font-size:20px;color:var(--muted)} .cover .by b{color:var(--ink);font-weight:600}
+.cover-tags{display:flex;gap:10px;flex-wrap:wrap;max-width:640px}
+.cover-tags span{font-family:var(--mono);font-size:13px;border:1px solid var(--ink);color:var(--ink);padding:5px 10px;background:var(--card)}
+.cover .hint{font-family:var(--mono);font-size:14px;color:var(--muted)}
+.cover-art{position:absolute;right:60px;top:186px;width:450px;height:388px}
+.draw{stroke-dasharray:420;stroke-dashoffset:420;animation:draw 1.6s .4s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.grow{transform-origin:left;transform-box:fill-box;animation:grow 1.2s cubic-bezier(.2,.9,.3,1.1) both}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.bob{animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.etapas{display:grid;grid-template-columns:1fr 30px 1fr 30px 1fr 30px 1fr;gap:6px;align-items:stretch}
+.etapas .a{color:var(--acc);font-size:26px;display:flex;align-items:center;justify-content:center}
+.et{background:var(--card);border:1px solid var(--line);border-top:5px solid var(--ink);padding:13px 14px;display:flex;flex-direction:column;gap:4px}
+.et.s{border-top-color:var(--neg)}.et.r{border-top-color:var(--pos)}.et.n{border-top-color:var(--acc)}
+.et .v{font-family:var(--serif);font-size:30px;color:var(--ink);font-weight:600;line-height:1.1}
+.et .l{font-size:15px;line-height:1.35}
+.et small{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.mapa{display:grid;grid-template-columns:1fr 1fr;gap:9px 20px}
+.mapa div{display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);padding:11px 14px;font-size:16.5px}
+.mapa .n{font-family:var(--serif);font-size:25px;color:var(--acc)}
+.mapa b{color:var(--ink)}
+.mapa small{font-family:var(--mono);font-size:12.5px;color:var(--acc-d);font-weight:600;text-align:right}
+.dlbs{display:flex;flex-direction:column;gap:9px}
+.dlbtn{display:flex;align-items:center;gap:13px;text-decoration:none;background:var(--ink);color:#fff;padding:10px 15px}
+.dlbtn:hover{background:#232c70}
+.dlbtn.alt{background:var(--card);color:var(--ink);border:1px solid var(--ink)}
+.dlbtn .ic{font-size:21px;line-height:1;color:var(--acc)}
+.dlbtn b{display:block;font-size:15.5px}
+.dlbtn small{display:block;font-family:var(--mono);font-size:11.5px;opacity:.9;margin-top:1px}
+.files{display:flex;flex-direction:column;gap:6px}
+.file{display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);padding:7px 11px;font-size:14.5px}
+.file .ic{display:inline-flex;align-items:center;justify-content:center;width:28px;height:30px;background:#1d6f42;color:#fff;font-weight:700;font-size:12.5px;border-radius:3px}
+.file.dir .ic{background:var(--acc);color:#2a1a00}
+.file.new{border:2px dashed var(--acc);background:var(--acc-soft)}
+.file small{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+
+/* Simulador de pasos aplicados */
+.simlist{display:flex;flex-direction:column;gap:2px;background:var(--card);border:1px solid var(--grid);padding:7px}
+.simlist button{all:unset;cursor:pointer;font-family:var(--win);font-size:13.5px;padding:3px 9px;display:flex;justify-content:space-between;gap:8px}
+.simlist button:hover{background:var(--ink-soft)}
+.simlist button:focus-visible{outline:3px solid var(--acc)}
+.simlist button.sel{background:#dfe7f7;outline:1px solid #9fb3df;font-weight:600}
+.say{font-size:15.5px;line-height:1.42;min-height:44px}
+
+/* Cierre */
+.final{background:var(--ink)}
+.final h2,.final .eyebrow{color:#fff}
+#stage.oscuro .top,#stage.oscuro .bottom{color:#d5d8ef}
+#stage.oscuro .btn.primary{background:var(--acc);border-color:var(--acc);color:#2a1a00}
+.chk{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+.chk li{display:grid;grid-template-columns:30px 1fr;gap:8px;font-size:17.5px;color:#fff;line-height:1.38}
+.chk li::before{content:"☐";font-size:22px;line-height:1.1;color:var(--acc)}
+.save{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);padding:18px;display:flex;flex-direction:column;gap:11px;color:#fff;font-size:16.5px;line-height:1.42;align-self:start}
+.save code{background:rgba(255,255,255,.14);color:#fff;font-size:18px;padding:6px 10px;white-space:normal}
+.think{font-family:var(--serif);font-size:21px;line-height:1.4;color:#fff;border-left:4px solid var(--acc);padding-left:16px}
+
+#gate{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px;font-family:var(--sans)}
+#gate[hidden]{display:none}
+#gate form{background:var(--paper);border-top:4px solid var(--ink);box-shadow:0 10px 40px rgba(47,58,143,.18);padding:34px 36px;width:min(420px,100%);display:flex;flex-direction:column;gap:14px;box-sizing:border-box}
+#gate .mod{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-d)}
+#gate h1{font-family:var(--serif);font-weight:600;font-size:32px;line-height:1.1;margin:0;color:var(--ink)}
+#gate p{margin:0;color:var(--muted);font-size:15px;line-height:1.45}
+#gate input{font-family:var(--mono);font-size:20px;padding:10px 12px;border:1px solid var(--grid);background:#fff;color:var(--ink);letter-spacing:.3em}
+#gate .err{color:var(--neg);font-size:14px;min-height:1.2em}
+#gate button{font-family:var(--mono);font-size:14px;padding:11px;border:0;background:var(--ink);color:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="gate" hidden>
+  <form id="gateForm" autocomplete="off">
+    <div class="mod">Módulo 6.</div>
+    <h1>Práctica guiada de Power Query.</h1>
+    <p>Este contenido está protegido. Escriba la clave de acceso para continuar.</p>
+    <input id="gateIn" type="password" inputmode="numeric" maxlength="12" aria-label="Clave de acceso" placeholder="Clave">
+    <div class="err" id="gateErr" role="alert"></div>
+    <button type="submit">Entrar</button>
+  </form>
+</div>
+<script>
+(function(){
+  var CLAVE="1022", KEY="m6-acceso", gate=document.getElementById("gate"), locked;
+  function valido(){ try{ var t=+localStorage.getItem(KEY); return t && Date.now()-t < 12*3600e3; }catch(e){ return false; } }
+  locked=!valido();
+  if(locked){ gate.hidden=false; setTimeout(function(){ document.getElementById("gateIn").focus(); },50); }
+  // Mientras está bloqueado, las teclas no mueven la presentación
+  document.addEventListener("keydown",function(e){ if(locked) e.stopImmediatePropagation(); },true);
+  document.getElementById("gateForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    var inp=document.getElementById("gateIn");
+    if(inp.value.trim()===CLAVE){ try{ localStorage.setItem(KEY,String(Date.now())); }catch(err){} locked=false; gate.hidden=true; }
+    else { document.getElementById("gateErr").textContent="Clave incorrecta. Inténtelo de nuevo."; inp.select(); }
+  });
+})();
+</script>
+<div id="stage">
+  <div class="top"><span id="topL">MÓDULO 6 · PRÁCTICA GUIADA.</span><div class="dots" id="dots"></div></div>
+  <div id="slides"></div>
+  <div class="bottom">
+    <span>Jarlin Figueroa, MA</span>
+    <div class="navb">
+      <button class="btn" id="snd" title="Sonido (M)">🔊 Sonido</button>
+      <button class="btn" id="fs" title="Pantalla completa (F)">Pantalla completa</button>
+      <button class="btn" id="prev">← Anterior</button>
+      <span id="count" style="min-width:70px;text-align:center"></span>
+      <button class="btn primary" id="next">Siguiente →</button>
+    </div>
+  </div>
+</div>
+<script>
+/* ---------- Cifras comprobadas en Power Query con los reportes publicados (datos ficticios) ---------- */
+const fmt = n => "RD$ " + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const POR_ARS = [["ARS Humano",40,689000],["ARS Universal",40,655250],["ARS Primera",40,472300]];
+const NUEVA = ["ARS Senasa",40,591650];
+const TOT3 = 1816550, TOT4 = 2408200, CON_DUP = 1917400;
+const POR_REGION = [["Cibao Norte",53,907500],["Ozama",38,640250],["Valdesia",26,399550],["Yuma",14,250350],["Cibao Sur",29,210550]];
+
+/* ---------- Piezas de las láminas ---------- */
+const CONC = {1:"Power Query",2:"Importar datos",3:"Editor y pasos aplicados",4:"Limpiar los datos",5:"Tipos de datos y duplicados",6:"Combinar información",7:"Cargar y actualizar"};
+const con = n => `<span class="con">Concepto 0${n} · ${CONC[n]}</span>`;
+const path = (...a) => `<div class="path">${a.map(x=>`<span>${x}</span>`).join("<i>›</i>")}</div>`;
+const doL = (items,st="") => `<ol class="do" style="${st}">${items.map((t,i)=>`<li><span class="m">${i+1}</span><span>${t}</span></li>`).join("")}</ol>`;
+const pin = n => `<span class="m pin">${n}</span>`;
+const sp = s => String(s).replace(/^ /,'<span class="sp">·</span>').replace(/ $/,'<span class="sp">·</span>');
+const ok = (...ps) => `<div class="okbox pop"><span class="t"><i>✓</i>Va bien si…</span>${ps.map(p=>`<p>${p}</p>`).join("")}</div>`;
+const fix = (...li) => `<div class="fixbox"><span class="t">✋ ¿Le salió distinto?</span><ul>${li.map(l=>`<li><span>${l}</span></li>`).join("")}</ul></div>`;
+const file = (n,s,cl="",ic="X") => `<div class="file ${cl}"><span class="ic">${ic}</span><span>${n}</span><small>${s}</small></div>`;
+
+function pq({cols,rows,steps,cur,st,hl=[],num=[],tab="Inicio",qs}){
+  const celdas=r=>r.map((v,j)=>`<td class="${hl.includes(j)?'hl ':''}${num.includes(j)?'num':''}">${sp(v)}</td>`).join("");
+  return `<div class="pq"><div class="bar">${qs?qs[0]:"Consolidado"} · Editor de Power Query</div>
+  <div class="rib">${["Inicio","Transformar","Agregar columna","Vista"].map(t=>`<span class="${t===tab?'on':''}">${t}</span>`).join("")}</div>
+  <div class="body ${qs?'tres':''}">${qs?`<div class="qs"><b>Consultas</b>${qs.map((q,i)=>`<span class="${i===0?'cur':''}">${q}</span>`).join("")}</div>`:""}
+  <div class="grid"><table><tr>${cols.map(([t,c],j)=>`<th class="${hl.includes(j)?'hl':''}"><i>${t}</i>${c}</th>`).join("")}</tr>${rows.map(r=>`<tr>${celdas(r)}</tr>`).join("")}</table></div>
+  <div class="steps"><b>Pasos aplicados</b>${steps.map((s,i)=>`<span class="${i===cur?'cur':''}">${s}</span>`).join("")}</div></div>
+  <div class="st">${st}</div></div>`;
+}
+const rib = (tabs,on,grupos,drop="") => `<div class="ribbon"><div class="tabsr">${tabs.map(t=>`<span class="${t===on?'on':''}">${t}${t===on?' <span class="m">1</span>':''}</span>`).join("")}</div><div class="groups">${grupos}</div>${drop}</div>`;
+const TABS_X = ["Archivo","Inicio","Insertar","Fórmulas","Datos","Revisar","Vista"], TABS_Q = ["Archivo","Inicio","Transformar","Agregar columna","Vista"];
+
+const S = [];
+const paso = (n,c,titulo,para,cuerpo) => S.push({t:n, l:`PRÁCTICA GUIADA · PASO ${n} DE 10 · HAGA ESTO.`, h:`<div class="slide">
+  <div class="eyebrow"><span class="tag">Paso ${n} de 10</span>Haga esto.${con(c)}</div><h2>${titulo}</h2>
+  <div class="why"><b>Para qué</b><span>${para}</span></div>${cuerpo}</div>`});
+const comp = (n,c,titulo,cuerpo) => S.push({t:n, ok:1, l:`PRÁCTICA GUIADA · PASO ${n} DE 10 · COMPRUEBE.`, h:`<div class="slide">
+  <div class="eyebrow"><span class="tag ok">Paso ${n} de 10</span>Compruebe.${con(c)}</div><h2>${titulo}</h2>${cuerpo}</div>`});
+
+/* ---------- Introducción ---------- */
+S.push({t:0, l:"MÓDULO 6 · PRÁCTICA GUIADA.", h:`<div class="slide cover">
+  <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
+  <div class="mod">Módulo 6 · Práctica guiada.</div>
+  <h1>De tres reportes sucios a una sola tabla.</h1>
+  <p class="lead">Hará con sus manos todo lo que vio en la teoría: importar, limpiar, combinar, cargar y actualizar con un clic.</p>
+  <div class="cover-tags"><span>⏱ 60 a 75 minutos</span><span>💻 Excel de escritorio para Windows</span><span>👤 Individual</span><span>🧰 Power Query</span></div>
+  <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
+  <div class="hint">Use las flechas ← → del teclado o los botones de abajo · M = sonido.</div>
+  <svg class="cover-art" viewBox="0 0 500 430" aria-hidden="true">
+    <rect x="20" y="30" width="460" height="350" rx="22" fill="#2f3a8f"/>
+    ${["Humano","Universal","Primera"].map((n,i)=>`<g class="bob" style="animation-delay:${i*.4}s"><rect x="50" y="${70+i*95}" width="120" height="70" rx="8" fill="#ffffff"/><rect x="50" y="${70+i*95}" width="120" height="18" rx="8" fill="#1d6f42"/><text x="110" y="${84+i*95}" text-anchor="middle" font-size="11" fill="#fff" font-family="IBM Plex Mono">ARS ${n}</text>
+      ${[0,1,2].map(r=>`<rect x="60" y="${96+i*95+r*12}" width="${[90,70,80][r]}" height="7" rx="2" fill="${r===1?'#f8c9a0':'#d9d7e4'}"/>`).join("")}</g>`).join("")}
+    ${[105,200,295].map(y=>`<path class="draw" d="M175 ${y} C 230 ${y} 230 205 268 205" fill="none" stroke="#f2994a" stroke-width="4" stroke-linecap="round"/>`).join("")}
+    <polygon points="262,165 300,205 262,245" fill="#f2994a"/>
+    <g><rect x="310" y="120" width="150" height="170" rx="10" fill="#ffffff"/>
+      ${[0,1,2,3,4,5,6].map(r=>`<rect class="grow" x="322" y="${134+r*21}" width="126" height="13" rx="2" fill="${r===0?'#2f3a8f':'#e7e9f6'}" style="animation-delay:${1+r*.12}s"/>`).join("")}</g>
+    <text x="385" y="315" text-anchor="middle" font-size="14" fill="#fff" font-family="IBM Plex Mono">1 tabla limpia</text>
+    <g class="bob" style="animation-delay:.8s"><rect x="330" y="335" width="130" height="32" rx="16" fill="#fdeedd" stroke="#f2994a"/><text x="395" y="356" text-anchor="middle" font-size="13" fill="#2f3a8f" font-family="IBM Plex Mono">↻ Actualizar</text></g>
+  </svg></div>`});
+
+S.push({t:0, l:"PRÁCTICA GUIADA · LA MISIÓN.", h:`<div class="slide" style="gap:18px">
+  <div class="eyebrow"><span class="tag go">La misión</span></div>
+  <h2>La Superintendencia quiere un solo consolidado de reclamaciones de enero.</h2>
+  <p class="q">Llegaron los reportes de tres ARS, cada uno con sus defectos. Usted los unirá y limpiará <b>una sola vez</b>, y dejará lista la consulta para el reporte que falta.</p>
+  <div class="etapas">
+    <div class="et s"><span class="v">138 filas</span><span class="l">Tres reportes, tal como llegan.</span><small>Pasos 1 y 2</small></div><div class="a">→</div>
+    <div class="et"><span class="v">120 filas</span><span class="l">Limpias, sin repetidas y con los montos como número.</span><small>Pasos 3 a 7</small></div><div class="a">→</div>
+    <div class="et n"><span class="v">+ Región</span><span class="l">Una columna nueva, traída de otra tabla.</span><small>Paso 8</small></div><div class="a">→</div>
+    <div class="et r"><span class="v">160 filas</span><span class="l">Llega ARS Senasa y basta un clic.</span><small>Pasos 9 y 10</small></div>
+  </div>
+  <p class="note">Los reportes de ARS Humano, ARS Universal, ARS Primera y ARS Senasa contienen <b>datos ficticios</b> creados con fines didácticos.</p></div>`});
+
+S.push({t:0, l:"PRÁCTICA GUIADA · LOS CONCEPTOS.", h:`<div class="slide" style="gap:18px">
+  <div class="eyebrow"><span class="tag go">Teoría y práctica</span></div>
+  <h2>Los siete conceptos, en diez pasos.</h2>
+  <p class="lead">Cada lámina indica arriba, a la derecha, qué concepto de la teoría está aplicando.</p>
+  <div class="mapa">
+    <div><span class="n">01</span><span><b>Power Query.</b> Obtener, transformar y cargar.</span><small>Toda la práctica</small></div>
+    <div><span class="n">02</span><span><b>Importar datos.</b> Una carpeta completa.</span><small>Pasos 1 y 2</small></div>
+    <div><span class="n">03</span><span><b>Editor y pasos aplicados.</b> La receta.</span><small>Pasos 2 y 7</small></div>
+    <div><span class="n">04</span><span><b>Limpiar los datos.</b> Filas, columnas y textos.</span><small>Pasos 3, 4 y 5</small></div>
+    <div><span class="n">05</span><span><b>Tipos de datos y duplicados.</b></span><small>Pasos 6 y 7</small></div>
+    <div><span class="n">06</span><span><b>Combinar información.</b> Anexar y combinar.</span><small>Pasos 2 y 8</small></div>
+    <div><span class="n">07</span><span><b>Cargar y actualizar.</b> Un clic para lo nuevo.</span><small>Pasos 9 y 10</small></div>
+    <div style="background:var(--ink-soft)"><span class="n">★</span><span><b>Reto opcional.</b> Monto por región.</span><small>Al final</small></div>
+  </div></div>`});
+
+S.push({t:0, l:"PRÁCTICA GUIADA · PREPARE SUS ARCHIVOS.", h:`<div class="slide">
+  <div class="eyebrow"><span class="tag go">Antes de empezar</span>Prepare sus archivos.</div>
+  <h2>Descargue tres archivos y deje lista la carpeta.</h2>
+  <div class="cols" style="grid-template-columns:1fr 1fr">
+    <div class="col">
+      ${doL([`Descargue los <b>tres archivos</b> de la derecha.`,
+        `Clic derecho en <code>Modulo6-Reportes-ARS.zip</code> › <b>Extraer todo…</b><span class="h">Debe quedar una carpeta «Reportes ARS» con los 3 reportes. Si la deja dentro del .zip, Excel no podrá leerla.</span>`,
+        `Abra Excel, cree un <b>libro en blanco</b> y guárdelo <b>fuera</b> de esa carpeta como <code>Modulo6_Apellido_Nombre.xlsx</code>.`,
+        `Guarde el archivo de <b>ARS Senasa</b> sin abrirlo: llega en el paso 10.`])}
+      <div class="warn">⚠️ En «Reportes ARS» van <b>solo los reportes</b>. Power Query toma todo lo que encuentre en esa carpeta.</div>
+    </div>
+    <div class="col">
+      <div class="dlbs">
+        <a class="dlbtn" href="Modulo6-Reportes-ARS.zip" download><span class="ic">⬇</span><span><b>Reportes de las ARS.</b><small>Modulo6-Reportes-ARS.zip · 3 archivos · pasos 1 a 7</small></span></a>
+        <a class="dlbtn" href="Modulo6-Regiones.xlsx" download><span class="ic">⬇</span><span><b>Tabla de regiones.</b><small>Modulo6-Regiones.xlsx · paso 8</small></span></a>
+        <a class="dlbtn" href="Modulo6-Archivo-Nuevo-ARS-Senasa.zip" download><span class="ic">⬇</span><span><b>Archivo nuevo: ARS Senasa.</b><small>Modulo6-Archivo-Nuevo-ARS-Senasa.zip · paso 10</small></span></a>
+      </div>
+      <span class="cap">Así debe quedar</span>
+      <div class="files">
+        ${file("Reportes ARS","Carpeta","dir","📁")}
+        ${file("&nbsp;&nbsp;ARS Humano.xlsx","46 filas")}${file("&nbsp;&nbsp;ARS Primera.xlsx","46 filas")}${file("&nbsp;&nbsp;ARS Universal.xlsx","46 filas")}
+        ${file("Modulo6_Apellido_Nombre.xlsx","Su libro, fuera de la carpeta","new")}
+      </div>
+    </div>
+  </div></div>`});
+
+/* ---------- Paso 1 ---------- */
+paso(1,2,"Conéctese a la carpeta de reportes.","Crear una conexión a la carpeta completa, no copiar archivo por archivo.",`<div class="cols">
+  <div class="col">${doL([`En su libro en blanco, vaya a la pestaña <b>Datos</b>.`,`Pulse <b>Obtener datos</b>.`,`Elija <b>Desde un archivo</b> › <b>Desde una carpeta</b>.`,`Busque la carpeta <b>Reportes ARS</b>, selecciónela y pulse <b>Abrir</b>.<span class="h">Si aparece una ventana «Carpeta», pulse Examinar…, elija la carpeta y pulse Aceptar.</span>`])}
+  ${path("Datos","Obtener datos","Desde un archivo","Desde una carpeta")}</div>
+  <div class="col"><span class="cap">Dónde hacer clic</span>
+  ${rib(TABS_X,"Datos",`<div class="grp on"><span class="bt on rel"><span style="font-size:23px">🗄️</span>Obtener<br>datos ▾${pin(2)}</span><span>Obtener y transformar</span></div><div class="grp"><span class="ic">↻</span><span>Consultas y<br>conexiones</span></div><div class="grp"><span class="ic">⇅</span><span>Ordenar y<br>filtrar</span></div><div class="grp"><span class="ic">⚒</span><span>Herramientas<br>de datos</span></div>`,
+  `<div class="drop"><div class="menu"><div class="on">Desde un archivo ▸ <span class="m">3</span></div><div>Desde una base de datos ▸</div><div>De otras fuentes ▸</div></div><div class="menu"><div>Desde un libro</div><div>Desde texto o CSV</div><div class="on">Desde una carpeta <span class="m">3</span></div></div></div>`)}
+  </div></div>`);
+comp(1,2,"¿Se abrió una ventana con los tres archivos?",`<div class="cols" style="grid-template-columns:1.15fr 1fr"><div class="col">
+  <div class="dlg pop"><div class="t">C:\\…\\Reportes ARS <span>✕</span></div><div class="b">
+    <table><tr><th>Content</th><th>Name</th><th>Extension</th></tr><tr><td>Binary</td><td>ARS Humano.xlsx</td><td>.xlsx</td></tr><tr><td>Binary</td><td>ARS Primera.xlsx</td><td>.xlsx</td></tr><tr><td>Binary</td><td>ARS Universal.xlsx</td><td>.xlsx</td></tr></table>
+    <div class="k"><span>Combinar ▾</span><span>Cargar ▾</span><span>Transformar datos</span><span>Cancelar</span></div></div></div>
+  ${ok("La lista muestra <b>exactamente 3 archivos</b>. <b>No cierre esta ventana:</b> el paso 2 empieza aquí.")}</div>
+  ${fix(`<b>No ve «Obtener datos»:</b> en algunas versiones de Excel 2016 está en <b>Datos › Nueva consulta</b>.`,`<b>Faltan o sobran archivos:</b> eligió otra carpeta. Pulse <b>Cancelar</b> y repita.`,`<b>No encuentra la carpeta:</b> quizás no extrajo el .zip. Vuelva a «Antes de empezar».`,`<b>Aparece un archivo con ~$:</b> un reporte está abierto. Ciérrelo.`)}</div>`);
+
+/* ---------- Paso 2 ---------- */
+paso(2,2,"Combine los archivos y entre al editor.","Unir los tres reportes en una sola consulta y empezar a transformar sin tocar los originales.",`<div class="cols" style="grid-template-columns:420px 1fr"><div class="col">${doL([`En la ventana, pulse la flecha de <b>Combinar</b> y elija <b>Combinar y transformar datos</b>.<span class="h">En Excel 2016 puede decir «Combinar y editar».</span>`,`En <b>Combinar archivos</b>, deje <b>Primer archivo</b> como archivo de ejemplo.`,`A la izquierda, seleccione la hoja <b>Reporte</b>. La hoja «Nota» no.`,`Pulse <b>Aceptar</b>: se abre el Editor de Power Query.`,`A la derecha, en <b>Configuración de la consulta › Nombre</b>, escriba <code>Consolidado</code> y pulse Entrar.`],"gap:8px")}</div>
+  <div class="col"><div class="menu" style="align-self:flex-start"><div class="on">Combinar y transformar datos <span class="m">1</span></div><div>Combinar y cargar</div><div>Combinar y cargar en…</div></div>
+  <div class="dlg"><div class="t">Combinar archivos <span>✕</span></div><div class="b"><span>Archivo de ejemplo:</span><div class="f on rel">Primer archivo${pin(2)}</div>
+    <div style="display:grid;grid-template-columns:170px 1fr;gap:10px"><div class="tree rel"><span>📁 ARS Humano.xlsx [2]</span><span>Nota</span><span class="on">Reporte</span>${pin(3)}</div>
+    <table><tr><th>NUM_RECL</th><th>FEC_SERV</th><th>PROVINCIA</th><th>MTO_RECL</th></tr><tr><td>HUM-26-0016</td><td>1/1/2026</td><td>La Vega</td><td>RD$ 8500</td></tr><tr><td>HUM-26-0022</td><td>1/1/2026</td><td>${sp(" san cristóbal")}</td><td>RD$ 7700</td></tr></table></div>
+    <div class="k"><span class="on">Aceptar${pin(4)}</span><span>Cancelar</span></div></div></div></div></div>`);
+comp(2,6,"¿El editor dice 8 columnas y 138 filas?",`${pq({cols:[["ABC","Source.Name"],["ABC","NUM_RECL"],["📅","FEC_SERV"],["ABC","PROVINCIA"],["ABC","TIPO_SERV"],["ABC","MTO_RECL"],["ABC","ESTADO"],["ABC","OBSERV"]],
+    rows:[["ARS Humano.xlsx","HUM-26-0016","1/1/2026","La Vega","Imágenes","RD$ 8500","Rechazada","null"],["ARS Humano.xlsx","HUM-26-0022","1/1/2026"," san cristóbal","Emergencia","RD$ 7700","Pendiente","null"],["ARS Humano.xlsx","HUM-26-0039","2/1/2026","LA VEGA "," consulta","RD$ 2250","Rechazada","null"]],
+    hl:[0],steps:["Origen","(pasos automáticos)","Tipo cambiado"],cur:2,st:"8 COLUMNAS, 138 FILAS"})}
+  <div class="cols" style="grid-template-columns:1fr 1fr;gap:20px">${ok("Abajo a la izquierda dice <b>8 columnas, 138 filas</b>. La consulta se llama <b>Consolidado</b>.","<b>Esto es anexar:</b> Power Query apiló los 46 × 3 reportes y creó <code>Source.Name</code> con el origen de cada fila.")}
+  ${fix(`<b>Vio una tabla con 3 filas:</b> pulsó «Transformar datos». Cierre el editor sin guardar los cambios y repita.`,`<b>Vio el texto «Datos ficticios…»:</b> eligió la hoja Nota. Cierre el editor sin guardar y repita.`,`<b>No ve el panel derecho:</b> pulse <b>Vista › Configuración de la consulta</b>.`)}</div>`);
+
+/* ---------- Paso 3 ---------- */
+paso(3,4,"Quite las filas y la columna que sobran.","Las filas vacías y los TOTAL no son reclamaciones, y OBSERV siempre está vacía.",`<div class="cols" style="grid-template-columns:430px 1fr"><div class="col">${doL([`En el encabezado <code>NUM_RECL</code>, pulse la <b>flecha del filtro</b> ▾.`,`Desmarque <b>(null)</b>: son las filas vacías.`,`Baje en la lista hasta <b>TOTAL</b>, entre los códigos PRI y UNI, y desmárquelo. Pulse <b>Aceptar</b>.`,`Clic derecho en el encabezado <code>OBSERV</code> › <b>Quitar</b>.`])}
+  <div class="tip">💡 Se filtra para quitar. Cuando llegue otro reporte, la misma regla sacará su TOTAL y sus filas vacías.</div></div>
+  <div class="col"><span class="cap">Lo que debe ver en el filtro</span><div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start">
+  <div class="dlg"><div class="t">NUM_RECL ▾</div><div class="b"><div class="o"><i class="sq on"></i>(Seleccionar todo)</div><div class="o rel"><i class="sq"></i><b>(null)</b>${pin(2)}</div><div class="o"><i class="sq on"></i>HUM-26-0001</div><div class="o"><i class="sq on"></i>…</div><div class="o"><i class="sq on"></i>PRI-26-0040</div><div class="o rel"><i class="sq"></i><b>TOTAL</b>${pin(3)}</div><div class="o"><i class="sq on"></i>UNI-26-0001</div><div class="k"><span class="on">Aceptar</span><span>Cancelar</span></div></div></div>
+  <div class="col"><table class="vals"><tr><th>Lo que sale</th><th class="r">Filas</th></tr><tr><td>Filas vacías (2 por reporte)</td><td class="r">6</td></tr><tr><td>Filas TOTAL (1 por reporte)</td><td class="r">3</td></tr><tr class="tot"><td>Quedan de 138</td><td class="r">129</td></tr></table>
+  <div class="menu" style="align-self:flex-start"><div style="color:#777">Clic derecho en OBSERV</div><div class="on">Quitar <span class="m">4</span></div><div>Quitar otras columnas</div></div></div></div></div></div>`);
+comp(3,4,"¿Ahora son 7 columnas y 129 filas?",`<div class="cols" style="grid-template-columns:1fr 1fr">${ok("Abajo dice <b>7 columnas, 129 filas</b>.","En <b>Pasos aplicados</b> hay dos pasos nuevos: <b>Filas filtradas</b> y <b>Columnas quitadas</b>.","La columna <code>OBSERV</code> ya no está.")}
+  ${fix(`<b>El número no es 129:</b> en Pasos aplicados, pulse la <b>✕</b> de «Filas filtradas» y repita el filtro.`,`<b>Quitó otra columna:</b> pulse la <b>✕</b> de «Columnas quitadas» y repita.`,`<b>Sus reportes siguen intactos:</b> solo se editan los pasos de la consulta.`)}</div>
+  <div class="tip">💡 Así funciona la receta: cada botón agregó un paso. Si se equivoca, no hay que empezar de nuevo, solo se quita ese paso.</div>`);
+
+/* ---------- Paso 4 ---------- */
+paso(4,4,"Ponga nombres claros a las columnas.","«Monto» se entiende sin preguntar; «MTO_RECL» no. Y en ARS sobra el «.xlsx».",`<div class="cols" style="grid-template-columns:1fr 1.05fr"><div class="col">${doL([`Haga <b>doble clic</b> en cada encabezado y escriba el nombre nuevo, según la tabla.`,`Seleccione la columna <code>ARS</code>.`,`Vaya a <b>Inicio › Reemplazar los valores</b>.`,`En <b>Valor que buscar</b> escriba <code>.xlsx</code>. Deje <b>Reemplazar con</b> vacío y pulse <b>Aceptar</b>.`])}
+  <div class="dlg"><div class="t">Reemplazar los valores <span>✕</span></div><div class="b"><span>Valor que buscar</span><div class="f on rel">.xlsx${pin(4)}</div><span>Reemplazar con</span><div class="f"></div><div class="k"><span class="on">Aceptar</span><span>Cancelar</span></div></div></div></div>
+  <table class="vals" style="align-self:start"><tr><th>Así llega</th><th>Escriba</th></tr>${[["Source.Name","ARS"],["NUM_RECL","Reclamación"],["FEC_SERV","Fecha"],["PROVINCIA","Provincia"],["TIPO_SERV","Tipo de servicio"],["MTO_RECL","Monto"],["ESTADO","Estado"]].map(([a,b])=>`<tr><td class="bad">${a}</td><td class="ok"><b>${b}</b></td></tr>`).join("")}</table></div>`);
+comp(4,4,"¿Los encabezados ya se entienden?",`${pq({cols:[["ABC","ARS"],["ABC","Reclamación"],["📅","Fecha"],["ABC","Provincia"],["ABC","Tipo de servicio"],["ABC","Monto"],["ABC","Estado"]],
+    rows:[["ARS Humano","HUM-26-0016","1/1/2026","La Vega","Imágenes","RD$ 8500","Rechazada"],["ARS Humano","HUM-26-0022","1/1/2026"," san cristóbal","Emergencia","RD$ 7700","Pendiente"],["ARS Humano","HUM-26-0039","2/1/2026","LA VEGA "," consulta","RD$ 2250","Rechazada"]],
+    hl:[0],steps:["…","Filas filtradas","Columnas quitadas","Columnas con nombre cambiado","Valor reemplazado"],cur:4,st:"7 COLUMNAS, 129 FILAS"})}
+  <div class="cols" style="grid-template-columns:1fr 1fr;gap:20px">${ok("Las 7 columnas tienen su nombre claro y la columna ARS dice <b>ARS Humano</b>, sin «.xlsx».")}
+  ${fix(`<b>Un nombre quedó mal:</b> doble clic en el encabezado y corríjalo.`,`<b>No cambió «.xlsx»:</b> revise que el punto esté escrito y que haya seleccionado la columna ARS.`)}</div>`);
+
+/* ---------- Paso 5 ---------- */
+paso(5,4,"Corrija los textos: espacios y mayúsculas.","Para Excel, «La Vega» y «LA VEGA·» son dos provincias distintas.",`<div class="cols" style="grid-template-columns:1fr 1fr"><div class="col">${doL([`Clic en <code>Provincia</code>. Con <b>Ctrl</b> pulsado, clic en <code>Tipo de servicio</code>.`,`Vaya a la pestaña <b>Transformar</b>.`,`Pulse <b>Formato › Recortar</b>: quita los espacios de más.`,`Pulse <b>Formato › Poner En Mayúsculas Cada Palabra</b>.`])}
+  ${path("Transformar","Formato","Recortar")}<div class="menu" style="align-self:flex-start"><div>minúscula</div><div>MAYÚSCULAS</div><div class="on">Poner En Mayúsculas Cada Palabra <span class="m">4</span></div><div class="on">Recortar <span class="m">3</span></div><div>Limpiar</div></div></div>
+  <div class="col"><span class="cap">Antes y después (reportes reales)</span><table class="vals"><tr><th>Así llega</th><th>Así queda</th></tr>${[" san cristóbal","LA VEGA ","puerto plata"," consulta","HOSPITALIZACIÓN "].map((a,i)=>`<tr><td class="bad">${sp(a)}</td><td class="ok">${["San Cristóbal","La Vega","Puerto Plata","Consulta","Hospitalización"][i]}</td></tr>`).join("")}</table>
+  <p class="note">Cada <span class="sp">·</span> es un espacio de más.</p></div></div>`);
+comp(5,4,"¿Quedan 7 provincias y 5 tipos de servicio?",`<p class="lead" style="font-size:17px">Abra la flecha del filtro de cada columna para <b>ver</b> la lista y luego pulse <b>Cancelar</b>. No filtre nada.</p>
+  <div class="cols" style="grid-template-columns:230px 230px 1fr;gap:18px">
+  <div class="dlg pop"><div class="t">Provincia ▾</div><div class="b" style="gap:3px">${["Distrito Nacional","La Romana","La Vega","Puerto Plata","San Cristóbal","Santiago","Santo Domingo"].map(x=>`<div class="o"><i class="sq on"></i>${x}</div>`).join("")}</div></div>
+  <div class="dlg pop"><div class="t">Tipo de servicio ▾</div><div class="b" style="gap:3px">${["Consulta","Emergencia","Hospitalización","Imágenes","Laboratorio"].map(x=>`<div class="o"><i class="sq on"></i>${x}</div>`).join("")}</div></div>
+  <div class="col">${ok("<b>Provincia</b> muestra 7 valores y <b>Tipo de servicio</b> muestra 5, sin repetidos.")}${fix(`<b>Hay más de 7 o más de 5:</b> una de las dos columnas se quedó sin Recortar o sin Mayúsculas. Selecciónela y aplique lo que falte.`,`<b>Solo cambió una columna:</b> repita con la otra.`,`<b>Faltan valores:</b> filtró sin querer. Pulse la ✕ del último paso «Filas filtradas».`)}</div></div>`);
+
+/* ---------- Paso 6 ---------- */
+paso(6,5,"Convierta el monto de texto a número.","Mientras diga «RD$ 8500», es texto y Excel no lo puede sumar. La fecha también debe ser fecha.",`<div class="cols" style="grid-template-columns:1fr 1fr"><div class="col">${doL([`Seleccione la columna <code>Monto</code>.`,`<b>Inicio › Reemplazar los valores</b>. Valor que buscar: <code>RD$</code>. Reemplazar con: vacío. <b>Aceptar</b>.`,`<b>Transformar › Formato › Recortar</b>, para quitar el espacio que quedó.`,`Pulse el icono <b>ABC</b> del encabezado <code>Monto</code> y elija <b>Número entero</b>.`,`Revise que <code>Fecha</code> tenga el icono de calendario 📅. Si no, elija <b>Fecha</b>.`])}</div>
+  <div class="col"><table class="vals"><tr><th>Reporte</th><th>Así llega</th><th>1 · Reemplazar y recortar</th><th class="r">2 · Número</th></tr><tr><td>ARS Humano</td><td class="bad">RD$ 8500</td><td>8500</td><td class="ok r">8,500</td></tr><tr><td>ARS Universal</td><td class="bad">RD$4450</td><td>4450</td><td class="ok r">4,450</td></tr><tr><td>ARS Primera</td><td class="bad">10600 RD$</td><td>10600</td><td class="ok r">10,600</td></tr></table>
+  <div class="dlg rel" style="width:270px"><div class="t">Icono ABC del encabezado</div><div class="b" style="gap:4px"><div class="o">1.2&nbsp; Número decimal</div><div class="o" style="background:#d3e5d9;outline:2px solid var(--acc);font-weight:600;padding:2px">123&nbsp; Número entero</div><div class="o">📅&nbsp; Fecha</div><div class="o">ABC&nbsp; Texto</div></div>${pin(4)}</div>
+  <div class="tip">💡 El orden importa: si convierte a número <b>antes</b> de quitar «RD$», cada celda dará <b>Error</b>.</div></div></div>`);
+comp(6,5,"¿Monto tiene el icono 123 y no hay errores?",`${pq({cols:[["ABC","ARS"],["ABC","Reclamación"],["📅","Fecha"],["ABC","Provincia"],["ABC","Tipo de servicio"],["123","Monto"],["ABC","Estado"]],
+    rows:[["ARS Humano","HUM-26-0016","1/1/2026","La Vega","Imágenes","8500","Rechazada"],["ARS Humano","HUM-26-0022","1/1/2026","San Cristóbal","Emergencia","7700","Pendiente"],["ARS Humano","HUM-26-0039","2/1/2026","La Vega","Consulta","2250","Rechazada"]],
+    hl:[5],num:[5],steps:["…","Valor reemplazado1","Texto recortado1","Tipo cambiado1"],cur:3,st:"7 COLUMNAS, 129 FILAS"})}
+  <div class="cols" style="grid-template-columns:1fr 1fr;gap:20px">${ok("Los montos están <b>alineados a la derecha</b>, sin «RD$», y el icono de la columna es <b>123</b>. Siguen siendo 129 filas.")}
+  ${fix(`<b>Ve «Error» en Monto:</b> quedó algún «RD$». Pulse la ✕ de «Tipo cambiado1», repita el reemplazo y vuelva a convertir.`,`<b>Escribió mal «RD$»:</b> debe ser R, D y $, sin espacios. Clic en el engrane ⚙ del paso para corregirlo.`)}</div>`);
+
+/* ---------- Paso 7 ---------- */
+paso(7,5,"Quite las reclamaciones repetidas.","Si una reclamación aparece dos veces, se paga y se cuenta dos veces.",`<div class="cols" style="grid-template-columns:1fr 1fr"><div class="col">${doL([`Haga clic en cualquier celda de la tabla y pulse <b>Ctrl + A</b> para seleccionar <b>todas</b> las columnas.<span class="h">Otra forma: clic en el primer encabezado, Mayús (Shift) y clic en el último.</span>`,`Vaya a <b>Inicio › Quitar filas</b>.`,`Elija <b>Quitar duplicados</b>.`])}
+  ${path("Inicio","Quitar filas","Quitar duplicados")}
+  <div class="tip">💡 Con todas las columnas seleccionadas se quitan solo las filas <b>idénticas</b>. Con una sola columna, se perderían filas distintas que comparten ese valor.</div></div>
+  <div class="col"><span class="cap">Dónde hacer clic</span>${rib(TABS_Q,"Inicio",`<div class="grp"><span class="ic">☷</span><span>Administrar<br>columnas</span></div><div class="grp on"><span class="bt on rel"><span style="font-size:22px">🧹</span>Quitar<br>filas ▾${pin(2)}</span><span>Reducir filas</span></div><div class="grp"><span class="ic">⇅</span><span>Ordenar</span></div><div class="grp"><span class="ic">🔗</span><span>Combinar</span></div>`,`<div class="drop"><div class="menu"><div>Quitar filas superiores</div><div>Quitar filas inferiores</div><div>Quitar filas alternas</div><div class="on">Quitar duplicados <span class="m">3</span></div><div>Quitar filas en blanco</div><div>Quitar errores</div></div></div>`)}</div></div>`);
+comp(7,5,"¿Llegó a 120 reclamaciones?",`<div class="cols" style="grid-template-columns:1fr 1fr"><div class="col"><table class="vals pop"><tr><th>De los 3 reportes</th><th class="r">Filas</th></tr><tr><td>Filas tal como llegaron</td><td class="r">138</td></tr><tr><td>− Filas vacías</td><td class="r neg">6</td></tr><tr><td>− Filas TOTAL</td><td class="r neg">3</td></tr><tr><td>− Reclamaciones repetidas</td><td class="r neg">9</td></tr><tr class="tot"><td>Reclamaciones únicas</td><td class="r">120</td></tr></table>
+  ${ok("Abajo dice <b>7 columnas, 120 filas</b>: 40 por cada ARS.")}</div>
+  <div class="col"><div class="tip" style="font-size:16px">💰 <b>Lo que evitó:</b> con las repetidas, el total habría sido ${fmt(CON_DUP)}. Sin ellas son ${fmt(TOT3)}: <b>${fmt(CON_DUP-TOT3)} contados de más</b>.</div>
+  ${fix(`<b>Quedaron más o menos de 120:</b> no estaban todas las columnas seleccionadas. Pulse la ✕ de «Duplicados quitados», seleccione todo y repita.`,`<b>Para comprobarlo:</b> haga clic en «Tipo cambiado1» y verá 129 filas. Luego vuelva al último paso.`)}</div></div>`);
+
+S.push({t:7, l:"PRÁCTICA GUIADA · PASO 7 · RECORRA SUS PASOS.", h:`<div class="slide">
+  <div class="eyebrow"><span class="tag go">Pruébelo aquí</span>Recorra su receta.<span class="con">Concepto 03 · ${CONC[3]}</span></div>
+  <h2>Haga clic en cada paso: los datos vuelven a ese momento.</h2>
+  <div class="cols" style="grid-template-columns:300px 1fr"><div class="col"><span class="cap">Pasos aplicados</span><div class="simlist" id="simList"></div></div>
+  <div class="col"><div class="pq"><div class="bar">Consolidado · Editor de Power Query</div><div class="grid" id="simGrid"></div><div class="st" id="simSt"></div></div>
+  <p class="say" id="simSay" aria-live="polite"></p>
+  <p class="note">Son 5 filas y 5 columnas de muestra de ARS Humano. Haga lo mismo en su editor: clic en un paso para mirar y clic en <b>el último</b> al terminar.</p></div></div></div>`});
+
+/* ---------- Paso 8 ---------- */
+paso(8,6,"Combine: agregue la región de cada provincia.","Anexar dio más filas; combinar da más columnas. Es como BUSCARV, pero queda grabado en la receta.",`<div class="cols" style="grid-template-columns:490px 1fr"><div class="col">${doL([`<b>Inicio › Nuevo origen › Archivo › Libro de Excel</b>. Abra <code>Modulo6-Regiones.xlsx</code>.`,`En el <b>Navegador</b>, marque la tabla <b>Regiones</b> y pulse <b>Aceptar</b>.`,`En el panel izquierdo, haga clic en la consulta <b>Consolidado</b> y seleccione la columna <code>Provincia</code>.`,`<b>Inicio › Combinar consultas</b>. Abajo elija <b>Regiones</b> y haga clic en su columna <code>Provincia</code>. Deje <b>Externa izquierda</b> y pulse <b>Aceptar</b>.`,`En la columna nueva <code>Regiones</code>, pulse el icono <b>Expandir</b> ⤢. Deje solo <b>Región</b>, desmarque <b>Usar el nombre de columna original como prefijo</b> y pulse <b>Aceptar</b>.`],"gap:7px")}</div>
+  <div class="col"><div class="dlg"><div class="t">Combinar <span>✕</span></div><div class="b"><div class="f"><b>Consolidado</b></div>
+    <table><tr><th>ARS</th><th>Reclamación</th><th class="hl">Provincia</th><th>Monto</th></tr><tr><td>ARS Humano</td><td>HUM-26-0016</td><td class="hl">La Vega</td><td>8500</td></tr></table>
+    <div class="f on rel">Regiones${pin(4)}</div><table><tr><th class="hl">Provincia</th><th>Región</th></tr><tr><td class="hl">Distrito Nacional</td><td>Ozama</td></tr></table>
+    <span>Tipo de combinación</span><div class="f">Externa izquierda (todas de la primera, coincidencias de la segunda)</div><div class="k"><span class="on">Aceptar</span><span>Cancelar</span></div></div></div>
+    <div class="dlg" style="width:360px"><div class="t">Regiones ⤢</div><div class="b" style="gap:3px;padding:6px 13px 8px"><div class="o"><i class="sq on"></i><b>Región</b></div><div class="o rel"><i class="sq"></i>Usar el nombre de columna original como prefijo${pin(5)}</div></div></div></div></div>`);
+comp(8,6,"¿Apareció la columna Región, sin vacíos?",`${pq({cols:[["ABC","ARS"],["ABC","Reclamación"],["📅","Fecha"],["ABC","Provincia"],["ABC","Tipo de servicio"],["123","Monto"],["ABC","Estado"],["ABC","Región"]],
+    rows:[["ARS Humano","HUM-26-0016","1/1/2026","La Vega","Imágenes","8500","Rechazada","Cibao Sur"],["ARS Humano","HUM-26-0040","1/1/2026","La Vega","Emergencia","8150","Pendiente","Cibao Sur"],["ARS Humano","HUM-26-0039","2/1/2026","La Vega","Consulta","2250","Rechazada","Cibao Sur"]],
+    hl:[7],num:[5],qs:["Consolidado","Regiones"],steps:["…","Duplicados quitados","Consultas combinadas","Se expandió Regiones"],cur:3,st:"8 COLUMNAS, 120 FILAS"})}
+  <div class="cols" style="grid-template-columns:1fr 1.25fr;gap:20px">${ok("Dice <b>8 columnas, 120 filas</b>: combinar <b>no</b> agrega filas. La columna <b>Región</b> no muestra ningún <code>null</code>.")}
+  ${fix(`<b>Las filas cambiaron de orden:</b> es normal al combinar.`,`<b>Región muestra null:</b> falta limpiar esa provincia. Revise el paso 5.`,`<b>Aparece «Se requiere información sobre la privacidad de datos»:</b> pulse <b>Continuar</b>, elija <b>Organizativo</b> en ambos orígenes y pulse <b>Guardar</b>.`,`<b>La columna dice «Regiones.Región»:</b> doble clic y déjela en <code>Región</code>.`)}</div>`);
+
+/* ---------- Paso 9 ---------- */
+paso(9,7,"Cierre y cargue la tabla en Excel.","Llevar el resultado a una hoja, lista para filtrar, sumar y analizar.",`<div class="cols" style="grid-template-columns:1fr 1fr"><div class="col">${doL([`Vaya a <b>Inicio</b>, pulse la flecha de <b>Cerrar y cargar</b> y elija <b>Cerrar y cargar en…</b>`,`Elija <b>Tabla</b> y <b>Hoja de cálculo nueva</b>. Pulse <b>Aceptar</b>.<span class="h">Puede aparecer también una hoja «Regiones». Es normal y no afecta el resultado.</span>`,`En la hoja <b>Consolidado</b>, seleccione los montos de la columna <code>Monto</code>.`,`Pulse <b>Ctrl + 1</b> › <b>Personalizada</b>, escriba <code>"RD$" #,##0.00</code> y pulse <b>Aceptar</b>.`])}
+  <div class="tip">💡 <b>Modelo de datos:</b> déjelo sin marcar. Sirve para varias tablas relacionadas o más de un millón de filas; aquí una tabla es suficiente.</div></div>
+  <div class="dlg" style="max-width:440px"><div class="t">Importar datos <span>? ✕</span></div><div class="b"><b>Seleccione cómo desea ver estos datos en el libro.</b><div class="o rel" style="width:90px"><i class="on"></i>Tabla${pin(2)}</div><div class="o"><i></i>Informe de tabla dinámica</div><div class="o"><i></i>Gráfico dinámico</div><div class="o"><i></i>Solo crear conexión</div>
+  <b>¿Dónde desea situar los datos?</b><div class="o"><i></i>Hoja de cálculo existente</div><div class="o rel" style="width:180px"><i class="on"></i>Hoja de cálculo nueva${pin(2)}</div><div class="o"><i class="sq"></i>Agregar estos datos al modelo de datos</div><div class="k"><span class="on">Aceptar</span><span>Cancelar</span></div></div></div></div>`);
+comp(9,7,"¿Tiene 120 filas y RD$ 1,816,550.00?",`<div class="cols" style="grid-template-columns:1fr 1fr"><div class="col"><table class="vals pop"><tr><th>ARS</th><th class="r">Filas</th><th class="r">Monto</th></tr>${POR_ARS.map(a=>`<tr><td>${a[0]}</td><td class="r">${a[1]}</td><td class="r">${fmt(a[2])}</td></tr>`).join("")}<tr class="tot"><td>Consolidado</td><td class="r">120</td><td class="r">${fmt(TOT3)}</td></tr></table>
+  ${ok(`El panel <b>Consultas y conexiones</b> dice <b>120 filas cargadas</b>.`,`Con los montos seleccionados, la barra inferior de Excel muestra <b>Recuento: 120</b> y <b>Suma: ${fmt(TOT3)}</b>.`)}</div>
+  ${fix(`<b>La barra no muestra la suma:</b> clic derecho en la barra inferior y marque <b>Suma</b> y <b>Recuento</b>.`,`<b>La suma es ${fmt(CON_DUP)}:</b> faltó quitar duplicados. Datos › Consultas y conexiones › clic derecho en Consolidado › <b>Editar</b>.`,`<b>No ve el panel:</b> pulse <b>Datos › Consultas y conexiones</b>.`,`<b>Ve ####:</b> la columna es angosta. Doble clic en el borde derecho de su encabezado.`)}</div>`);
+
+/* ---------- Paso 10 ---------- */
+paso(10,7,"Llegó ARS Senasa: actualice con un clic.","Aquí se comprueba el valor de Power Query: no se repite ningún paso.",`<div class="cols" style="grid-template-columns:1fr 1fr"><div class="col">${doL([`Guarde su libro y cierre cualquier reporte abierto.`,`Clic derecho en <code>Modulo6-Archivo-Nuevo-ARS-Senasa.zip</code> › <b>Extraer todo…</b>`,`Copie <code>ARS Senasa.xlsx</code> <b>dentro</b> de la carpeta <b>Reportes ARS</b>.`,`Regrese a Excel y pulse <b>Datos › Actualizar todo</b>.<span class="h">Atajo: Ctrl + Alt + F5.</span>`])}
+  ${path("Datos","Actualizar todo")}</div>
+  <div class="col"><span class="cap">La carpeta «Reportes ARS» ahora</span><div class="files">${file("ARS Humano.xlsx","46 filas")}${file("ARS Primera.xlsx","46 filas")}${file("ARS Universal.xlsx","46 filas")}${file("<b>ARS Senasa.xlsx</b>","46 filas · NUEVO","new")}</div>
+  <div class="tip">💡 El nuevo reporte trae los mismos defectos, y su TOTAL y sus repetidas. La misma receta los resuelve sola.</div></div></div>`);
+comp(10,7,"¿Subió a 160 filas y RD$ 2,408,200.00?",`<div class="cols" style="grid-template-columns:1fr 1fr"><div class="col"><table class="vals pop"><tr><th></th><th class="r">Filas</th><th class="r">Monto</th></tr><tr><td>Antes de actualizar</td><td class="r">120</td><td class="r">${fmt(TOT3)}</td></tr><tr><td>+ ARS Senasa</td><td class="r">40</td><td class="r">${fmt(NUEVA[2])}</td></tr><tr class="tot"><td>Después de Actualizar todo</td><td class="r">160</td><td class="r">${fmt(TOT4)}</td></tr></table>
+  ${ok(`La tabla tiene <b>160 filas</b>, la suma es <b>${fmt(TOT4)}</b> y aparece <b>ARS Senasa</b> en la columna ARS.`,"No repitió ningún paso: esa es la receta grabada.")}</div>
+  ${fix(`<b>Sigue en 120:</b> <code>ARS Senasa.xlsx</code> no quedó dentro de «Reportes ARS», o sigue dentro del .zip.`,`<b>Error de archivo o de ruta:</b> movió la carpeta. Clic derecho en Consolidado › <b>Editar</b>, paso <b>Origen</b>, y corrija la ruta.`,`<b>Error con un archivo ~$:</b> hay un reporte abierto. Ciérrelo y actualice otra vez.`)}</div>`);
+
+/* ---------- Reto y cierre ---------- */
+S.push({t:11, ok:1, l:"PRÁCTICA GUIADA · RETO OPCIONAL.", h:`<div class="slide">
+  <div class="eyebrow"><span class="tag go">Reto opcional</span>Del dato a la respuesta.</div>
+  <h2>¿Qué región concentra el mayor monto reclamado?</h2>
+  <div class="cols" style="grid-template-columns:1fr 1fr"><div class="col">${doL([`Haga clic en la tabla Consolidado y pulse <b>Insertar › Tabla dinámica</b>, en una hoja nueva.`,`Lleve <code>Región</code> a <b>Filas</b> y <code>Monto</code> a <b>Valores</b>.`,`Dé formato RD$ a la suma y ordene de mayor a menor.`])}
+  <div class="tip">💡 Cuando llegue el reporte de febrero, <b>Actualizar todo</b> pondrá al día la tabla y también esta tabla dinámica.</div>
+  ${ok(`<b>Cibao Norte</b> concentra ${fmt(POR_REGION[0][2])}, el 37.68 % del total.`)}</div>
+  <table class="vals" style="align-self:start"><tr><th>Región</th><th class="r">Filas</th><th class="r">Suma de Monto</th></tr>${POR_REGION.map(r=>`<tr><td>${r[0]}</td><td class="r">${r[1]}</td><td class="r">${fmt(r[2])}</td></tr>`).join("")}<tr class="tot"><td>Total general</td><td class="r">160</td><td class="r">${fmt(TOT4)}</td></tr></table></div></div>`});
+
+S.push({t:11, ok:2, l:"PRÁCTICA GUIADA · ANTES DE TERMINAR.", h:`<div class="slide final">
+  <div class="eyebrow"><span class="tag go">¡Lo logró!</span></div>
+  <h2>Lo que su libro debe tener ahora.</h2>
+  <div class="cols" style="grid-template-columns:1fr 1fr">
+    <ul class="chk"><li>Una consulta llamada Consolidado, con sus pasos aplicados.</li><li>Las columnas con nombres claros, los textos corregidos y Monto como número.</li><li>La columna Región, traída de la tabla Regiones.</li><li>Una tabla de 160 filas con ${fmt(TOT4)}.</li></ul>
+    <div class="save"><b style="font-size:19px">Guarde su libro.</b><span>Use <b>Archivo › Guardar</b>, con este nombre:</span><code>Modulo6_Apellido_Nombre.xlsx</code><span style="color:#d5d8ef">Si mueve la carpeta «Reportes ARS», recuerde corregir la ruta en el paso <b style="color:#fff">Origen</b>.</span></div>
+  </div>
+  <p class="think">Para pensar: ¿qué reporte que usted recibe cada mes podría resolver con una consulta como esta?</p></div>`});
+
+/* ---------- Motor ---------- */
+const wrap=document.getElementById("slides"); wrap.innerHTML=S.map(s=>s.h).join("");
+const els=[...wrap.children];
+const SECC=["Introducción",...Array.from({length:10},(_,i)=>"Paso "+(i+1)),"Cierre"];
+const INI=SECC.map((_,i)=>S.findIndex(s=>s.t===i));
+const dots=document.getElementById("dots");
+dots.innerHTML=SECC.map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
+dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.t]));
+
+/* Sonido: transición al cambiar de lámina y campanita en las láminas «Compruebe» */
+const SND={on:true,ctx:null,ready:false}; try{ SND.on=localStorage.getItem("m6sonido")!=="0"; }catch(e){}
+function ctx(){ const A=window.AudioContext||window.webkitAudioContext; if(!A) return null; const c=SND.ctx||(SND.ctx=new A()); if(c.state==="suspended") c.resume(); return c; }
+function tono(c,f,t0,dur,vol,tipo){ const o=c.createOscillator(), g=c.createGain(); o.type=tipo||"sine"; o.frequency.value=f; g.gain.setValueAtTime(.0001,t0); g.gain.exponentialRampToValueAtTime(vol,t0+.015); g.gain.exponentialRampToValueAtTime(.0001,t0+dur); o.connect(g); g.connect(c.destination); o.start(t0); o.stop(t0+dur+.02); }
+function sonar(dir){ if(!SND.on||!SND.ready) return; try{ const c=ctx(); if(!c) return;
+  const t=c.currentTime+.01, len=.22, b=c.createBuffer(1,Math.floor(c.sampleRate*len),c.sampleRate), d=b.getChannelData(0); for(let k=0;k<d.length;k++) d[k]=(Math.random()*2-1)*(1-k/d.length);
+  const s=c.createBufferSource(); s.buffer=b; const f=c.createBiquadFilter(); f.type="bandpass"; f.Q.value=1.4; f.frequency.setValueAtTime(dir>0?500:2600,t); f.frequency.exponentialRampToValueAtTime(dir>0?2600:500,t+len);
+  const g=c.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.2,t+.05); g.gain.exponentialRampToValueAtTime(.0001,t+len); s.connect(f); f.connect(g); g.connect(c.destination); s.start(t); s.stop(t+len);
+  tono(c,dir>0?880:587,t+.06,.25,.06); }catch(e){} }
+function exito(nivel){ if(!SND.on||!SND.ready) return; try{ const c=ctx(); if(!c) return; const t=c.currentTime+.18;
+  (nivel>1?[523.25,659.25,783.99,1046.5]:[659.25,987.77]).forEach((f,i)=>tono(c,f,t+i*.11,.45,.07,"triangle")); }catch(e){} }
+const pintarSnd=()=>{ document.getElementById("snd").textContent=SND.on?"🔊 Sonido":"🔇 Sin sonido"; };
+document.getElementById("snd").onclick=e=>{ SND.on=!SND.on; try{ localStorage.setItem("m6sonido",SND.on?"1":"0"); }catch(_){} pintarSnd(); e.currentTarget.blur(); }; pintarSnd();
+
+let cur=0;
+function go(i){ const prev=cur; cur=Math.max(0,Math.min(els.length-1,i));
+  if(cur!==prev){ sonar(cur>prev?1:-1); if(cur>prev && S[cur].ok) exito(S[cur].ok); }
+  els.forEach((e,j)=>e.classList.toggle("on",j===cur)); const tp=S[cur].t;
+  document.getElementById("stage").classList.toggle("oscuro",els[cur].classList.contains("final"));
+  dots.querySelectorAll("button").forEach((b,j)=>{ b.classList.toggle("cur",j===tp); b.classList.toggle("done",tp>j); });
+  document.getElementById("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
+  document.getElementById("topL").textContent=S[cur].l;
+  document.getElementById("prev").disabled=cur===0; document.getElementById("next").disabled=cur===els.length-1;
+  history.replaceState(null,"","#"+(cur+1)); }
+document.getElementById("prev").onclick=()=>go(cur-1); document.getElementById("next").onclick=()=>go(cur+1);
+document.getElementById("fs").onclick=e=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(_){} e.currentTarget.blur(); };
+document.addEventListener("keydown",e=>{ if(e.target.closest&&e.target.closest("#simList")&&["ArrowUp","ArrowDown"," ","Enter"].includes(e.key)) return;
+  if(["ArrowRight","PageDown"].includes(e.key)||e.key===" "){e.preventDefault();go(cur+1);} else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==="Home") go(0); else if(e.key==="End") go(els.length-1); else if(e.key==="f"||e.key==="F") document.getElementById("fs").click(); else if(e.key==="m"||e.key==="M") document.getElementById("snd").click(); });
+
+/* Simulador de pasos aplicados: filas reales de ARS Humano */
+const MUESTRA=[
+  {a:"ARS Humano.xlsx",n:"HUM-26-0039",p:"LA VEGA ",t:" consulta",m:"RD$ 2250"},
+  {a:"ARS Humano.xlsx",n:"HUM-26-0023",p:"Distrito Nacional",t:"Consulta",m:"RD$ 3400"},
+  {a:"ARS Humano.xlsx",n:"HUM-26-0023",p:"Distrito Nacional",t:"Consulta",m:"RD$ 3400",rep:1},
+  {a:"ARS Humano.xlsx",n:null,p:null,t:null,m:null},
+  {a:"ARS Humano.xlsx",n:"TOTAL",p:null,t:null,m:"RD$ 689000"}];
+const propio=s=>s==null?s:s.toLowerCase().replace(/(^|\s)(\S)/g,(_,a,b)=>a+b.toUpperCase());
+const SIM=[
+  {n:"Origen",f:138,c:8,d:"Así llegan los datos: con espacios, filas vacías, TOTAL y repetidas."},
+  {n:"Filas filtradas",f:129,c:8,d:"Salen la fila vacía y la fila TOTAL.",h:r=>r.filter(x=>x.n&&x.n!=="TOTAL")},
+  {n:"Columnas quitadas",f:129,c:7,d:"Sale OBSERV. Las filas no cambian."},
+  {n:"Columnas con nombre cambiado",f:129,c:7,d:"Los encabezados ya se entienden.",nom:1},
+  {n:"Valor reemplazado",f:129,c:7,d:"La columna ARS pierde el «.xlsx».",h:r=>r.map(x=>({...x,a:x.a.replace(".xlsx","")}))},
+  {n:"Texto recortado",f:129,c:7,d:"Desaparecen los espacios de más.",h:r=>r.map(x=>({...x,p:x.p.trim(),t:x.t.trim()}))},
+  {n:"Poner En Mayúsculas Cada Palabra",f:129,c:7,d:"«LA VEGA» pasa a «La Vega».",h:r=>r.map(x=>({...x,p:propio(x.p),t:propio(x.t)}))},
+  {n:"Valor reemplazado1",f:129,c:7,d:"Sale «RD$» de los montos, pero todavía son texto.",h:r=>r.map(x=>({...x,m:x.m.replace("RD$","")}))},
+  {n:"Texto recortado1",f:129,c:7,d:"Sale el espacio que quedó en Monto.",h:r=>r.map(x=>({...x,m:x.m.trim()}))},
+  {n:"Tipo cambiado1",f:129,c:7,d:"Monto ya es número: se alinea a la derecha y se puede sumar.",num:1},
+  {n:"Duplicados quitados",f:120,c:7,d:"HUM-26-0023 queda una sola vez. Ya son 120 reclamaciones.",h:r=>r.filter(x=>!x.rep)}];
+const simList=document.getElementById("simList"), simGrid=document.getElementById("simGrid");
+simList.innerHTML=SIM.map((p,i)=>`<button type="button" data-i="${i}"><span>${p.n}</span></button>`).join("");
+function verPaso(i){ let r=MUESTRA.map(x=>({...x})), nom=false, num=false;
+  for(let k=1;k<=i;k++){ if(SIM[k].h) r=SIM[k].h(r); nom=nom||!!SIM[k].nom; num=num||!!SIM[k].num; }
+  const H=nom?["ARS","Reclamación","Provincia","Tipo de servicio","Monto"]:["Source.Name","NUM_RECL","PROVINCIA","TIPO_SERV","MTO_RECL"];
+  const nul=v=>v==null?'<i style="color:#888">null</i>':sp(v);
+  simGrid.innerHTML=`<table><tr>${H.map((c,j)=>`<th><i>${j===4&&num?"123":"ABC"}</i>${c}</th>`).join("")}</tr>${r.map(x=>`<tr><td>${x.a}</td><td>${nul(x.n)}</td><td>${nul(x.p)}</td><td>${nul(x.t)}</td><td class="${num?"num":""}">${num?Number(x.m).toLocaleString("en-US"):nul(x.m)}</td></tr>`).join("")}</table>`;
+  document.getElementById("simSt").textContent=`${SIM[i].c} COLUMNAS, ${SIM[i].f} FILAS`;
+  document.getElementById("simSay").innerHTML=`<b>${SIM[i].n}:</b> ${SIM[i].d}`;
+  simList.querySelectorAll("button").forEach((b,j)=>b.classList.toggle("sel",j===i)); }
+simList.querySelectorAll("button").forEach(b=>b.onclick=()=>verPaso(+b.dataset.i)); verPaso(0);
+
+function fit(){ const s=Math.min((innerWidth-16)/1280,(innerHeight-16)/720); document.getElementById("stage").style.transform=`translate(-50%,-50%) scale(${s})`; }
+addEventListener("resize",fit); fit(); go((parseInt(location.hash.slice(1),10)||1)-1); SND.ready=true;
+</script>
+</body>
+</html>
