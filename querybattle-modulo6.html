@@ -648,7 +648,7 @@ function check(isC,el){
     soundCorrect(); if(el) el.classList.add('chosen-correct');
     points[currentPlayer()]++;
     if(gameMode==='victories'){ if(turn===1) wins1++; else wins2++; } else { if(turn===1) roundCorrect1++; else roundCorrect2++; }
-    updateBars(); setTimeout(()=>showResultOverlay(true,nextTurn),500);
+    updateBars(); cuentaCorrecta();
   } else {
     if(activeHab==='shield'&&!shieldUsed&&el){
       soundShield(); shieldUsed=true; activeHab=null; el.style.opacity='0.3'; el.style.pointerEvents='none';
@@ -658,6 +658,19 @@ function check(isC,el){
     soundWrong(); if(el) el.classList.add('chosen-wrong');
     updateBars(); revealCorrect(!el);
   }
+}
+/* Tras un acierto: cuenta 5 segundos antes del siguiente turno */
+function cuentaCorrecta(){
+  clearInterval(revealT);
+  document.getElementById('timer').innerText='';
+  ['freeze','shield','skip'].forEach(t=>document.getElementById('btn-'+t).disabled=true);
+  document.querySelectorAll('.option').forEach(o=>{ if(!o.classList.contains('chosen-correct')) o.style.opacity='0.35'; });
+  let n=5; const r=document.getElementById('result');
+  const pinta=()=>{ r.innerHTML='<span id="revealMsg"><span style="color:var(--neon)">✅ ¡CORRECTO!</span> · siguiente turno en <span class="n">'+n+'</span></span>'; };
+  pinta();
+  revealT=setInterval(()=>{ if(isPaused) return; n--; if(n>0){ pinta(); soundTick(); return; } clearInterval(revealT);
+    ['q','options'].forEach(id=>document.getElementById(id).style.display='none'); r.innerText='';
+    document.getElementById('turnText').innerText=''; document.getElementById('playerText').innerText=''; nextTurn(); },1000);
 }
 /* Tras un error o tiempo agotado: señala la correcta durante 5 segundos para que todos la vean */
 let revealT=null;
