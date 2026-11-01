@@ -142,7 +142,7 @@ const ID = {
   anx:`${["Enero","Febrero","Marzo"].map((t,i)=>C(0,20+i*106,300,88,["Reporte de "+t.toLowerCase(),"Mismas columnas"],"a",22)+F(304,64+i*106,456,134+i*36)).join("")}${C(460,50,600,44,"Fecha · Código · Monto","i",21)}${["Filas de enero","Filas de febrero","Filas de marzo"].map((t,i)=>C(460,94+i*62,600,62,t,"v",23)).join("")}`,
   cmb:`${T(0,20,[170,170],[["Código","Ventas"],["P-101","12"],["P-102","8"]],54,22)}${T(0,206,[170,170],[["Código","Categoría"],["P-101","Cocina"],["P-102","Hogar"]],36,19)}${F(344,102,496,150)}${F(344,262,496,190)}${T(500,80,[170,170,220],[["Código","Ventas","Categoría"],["P-101","12","Cocina"],["P-102","8","Hogar"]],62,23,[2])}`,
   joins:[["Externa izquierda",1,1,0],["Externa derecha",0,1,1],["Externa completa",1,1,1],["Interna",0,1,0],["Anti izquierda",1,0,0],["Anti derecha",0,0,1]].map(([k,a,c,b],i)=>venn(i%3*353+70,(i>2?1:0)*154+6,a,c,b,k)).join(""),
-  pasos:`${["Origen","Encabezados","Filas filtradas","Tipo cambiado"].map((t,i)=>C(i*220,40,190,100,t,i?"i":"a",22)+F(i*220+194,90,i*220+216,90)).join("")}${C(880,40,180,100,"Resultado","v",23)}<path class="f d" d="M970 146 V210 H95 V160"/><polygon class="p" points="95,142 85,162 105,162"/>${R(530,256,"Al actualizar, se repite toda la secuencia",24)}${R(530,300,"La interfaz escribe cada paso en lenguaje M",22)}`,
+  pasos:`${["Origen","Encabezados","Filas filtradas","Tipo cambiado"].map((t,i)=>C(i*220,40,190,100,t,i?"i":"a",22)+F(i*220+194,90,i*220+216,90)).join("")}${C(880,40,180,100,"Resultado","v",23)}<path class="f d" d="M970 146 V210 H95 V160"/><polygon class="p" points="95,142 85,162 105,162"/>${R(530,256,"Al actualizar, se repite toda la secuencia.",24)}${R(530,300,"La interfaz escribe cada paso en lenguaje M.",22)}`,
   carga:`${C(0,110,260,120,["Cerrar","y cargar"],"i",26)}${[["Tabla en una hoja","Filtrar y usar fórmulas"],["Modelo de datos","Relacionar tablas"],["Solo conexión","Etapa intermedia"]].map(([a,b],i)=>F(264,170,396,60+i*110)+C(400,20+i*110,660,84,[a,b],i===0?"v":"a",22)).join("")}`,
   act:`${C(40,20,320,100,"Llega información nueva","a",23)}${F(364,70,696,70)}${C(700,20,320,100,"Se guarda en el origen","a",24)}${F(860,124,860,206)}${C(700,210,320,100,"Actualizar","i",28)}${F(696,260,364,260)}${C(40,210,320,100,["Mismos pasos,","datos al día"],"v",24)}<line class="f d" x1="200" y1="206" x2="200" y2="134"/><polygon class="p" points="200,124 190,142 210,142"/>`,
   falla:`${["Cambió nombre o ruta","Cambiaron los encabezados","Sin permisos o credenciales","Origen no disponible","Tipos de datos inesperados"].map((t,i)=>C(0,2+i*66,480,54,t,"m",22)+F(484,29+i*66,676,105+i*30)).join("")}${C(680,90,380,170,["La actualización","puede fallar"],"i",27)}`
@@ -167,20 +167,21 @@ const dib = (k,alt,h=345) => `<svg class="sv" viewBox="0 0 1060 ${h}" role="img"
 
 /* ---------- Láminas: una idea, poco texto y una gráfica o esquema ---------- */
 const S = [];
-const SECC = ["Inicio","Qué es","Fuentes y editor","Calidad","Transformar","Tipos de datos","Resumir","Unir","Pasos","Cargar","Buenas prácticas","Cierre"];
+const SECC = ["Inicio","¿Qué es?","Fuentes y editor","Calidad","Transformar","Tipos de datos","Resumir","Unir","Pasos","Cargar","Buenas prácticas","Cierre"];
 const lam = (t,h,cl="") => S.push({t,h:`<div class="slide ${cl}">${h}</div>`});
-const idea = (t,ey,tit,apoyo) => lam(t,`<p class="eyebrow">${ey}</p><h2>${tit}</h2><p class="apoyo">${apoyo}</p>`);
-const gr = (t,ey,tit,cuerpo,nota="") => lam(t,`<p class="eyebrow">${ey}</p><h2>${tit}</h2>${cuerpo}${nota?`<p class="nota">${nota}</p>`:""}`,"esq");
+const pto = s => /[?.]$/.test(s) ? s : s + ".";
+const idea = (t,ey,tit,apoyo) => lam(t,`<p class="eyebrow">${pto(ey)}</p><h2>${tit}</h2><p class="apoyo">${apoyo}</p>`);
+const gr = (t,ey,tit,cuerpo,nota="") => lam(t,`<p class="eyebrow">${pto(ey)}</p><h2>${tit}</h2>${cuerpo}${nota?`<p class="nota">${nota}</p>`:""}`,"esq");
 
 lam(0,`<img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
   <p class="mod">Módulo 6</p><h1>Power Query en Excel.</h1><p class="sub">Fundamentos, herramientas y proceso de transformación de datos.</p><p class="by">Por: <b>Jarlin Figueroa, MA</b></p>`,"cover");
-lam(0,`<p class="eyebrow">Ruta</p><h2>Lo que veremos.</h2><ol class="lista">${["Qué es y para qué sirve","Fuentes de datos y editor","Limpieza y transformación","Tipos de datos","Agrupar, anexar y combinar","Pasos aplicados, carga y actualización"].map((x,i)=>`<li><b>${i+1}</b>${x}</li>`).join("")}</ol>`);
+lam(0,`<p class="eyebrow">Ruta.</p><h2>Lo que veremos.</h2><ol class="lista">${["¿Qué es y para qué sirve?","Fuentes de datos y editor.","Limpieza y transformación.","Tipos de datos.","Agrupar, anexar y combinar.","Pasos aplicados, carga y actualización."].map((x,i)=>`<li><b>${i+1}</b>${x}</li>`).join("")}</ol>`);
 
-idea(1,"Qué es","Un motor de conexión y transformación de datos.","Obtiene información de distintas fuentes y la prepara para el análisis.");
-gr(1,"Qué es","Obtener, transformar y cargar.",dib("etl","Las fuentes entran a Power Query y salen como tabla de Excel."));
+idea(1,"¿Qué es?","Un motor de conexión y transformación de datos.","Obtiene información de distintas fuentes y la prepara para el análisis.");
+gr(1,"¿Qué es?","Obtener, transformar y cargar.",dib("etl","Las fuentes entran a Power Query y salen como tabla de Excel."));
 idea(1,"Idea clave","Registra el procedimiento, no solo el resultado.","Por eso puede repetir las mismas transformaciones cuando llegan datos nuevos.");
-gr(1,"Para qué sirve","El tiempo invertido se recupera pronto.",linea(),"Ejemplo ilustrativo: 60 min al mes a mano; con la consulta, 90 min la primera vez y 2 min después.");
-gr(1,"Qué es","No reemplaza las fórmulas: las complementa.",dib("herr","Power Query prepara, la tabla guarda y las demás herramientas analizan."));
+gr(1,"¿Para qué sirve?","El tiempo invertido se recupera pronto.",linea(),"Ejemplo ilustrativo: 60 min al mes a mano; con la consulta, 90 min la primera vez y 2 min después.");
+gr(1,"¿Qué es?","No reemplaza las fórmulas: las complementa.",dib("herr","Power Query prepara, la tabla guarda y las demás herramientas analizan."));
 
 gr(2,"Fuentes de datos","Se conecta a muchos orígenes.",dib("fuen","Cinco orígenes llegan a Power Query."),"La lista exacta depende de la versión de Excel.");
 gr(2,"El editor","El editor tiene cinco zonas.",dib("edit","Cinta, barra de fórmulas, consultas, vista previa y pasos aplicados.",305),"La vista previa es una muestra: conviene revisarla después de cada cambio.");
@@ -204,11 +205,11 @@ gr(7,"Tipos de combinación","Seis formas de combinar.",`<svg class="sv" viewBox
 
 gr(8,"Pasos aplicados","El resultado de un paso alimenta al siguiente.",dib("pasos","Secuencia de pasos que se repite al actualizar.",315),"El orden importa: cambiar un paso puede afectar a los siguientes.");
 
-gr(9,"Cargar","¿Dónde llega el resultado?",dib("carga","Tres destinos de carga.",340));
+gr(9,"Cargar","¿Adónde llega el resultado?",dib("carga","Tres destinos de carga.",340));
 gr(9,"Actualizar","Actualizar repite los pasos.",dib("act","Ciclo de actualización.",325));
 gr(9,"Actualizar","Actualizar no corrige problemas nuevos.",dib("falla","Causas que pueden hacer fallar la actualización.",340));
 
-lam(10,`<p class="eyebrow">Buenas prácticas</p><h2>Cinco hábitos.</h2><ol class="lista">${["Use nombres claros","Quite pronto lo que no necesita","Revise los tipos de datos","Verifique los resultados","Proteja los datos sensibles"].map((x,i)=>`<li><b>${i+1}</b>${x}</li>`).join("")}</ol>`);
+lam(10,`<p class="eyebrow">Buenas prácticas.</p><h2>Cinco hábitos.</h2><ol class="lista">${["Use nombres claros.","Quite pronto lo que no necesita.","Revise los tipos de datos.","Verifique los resultados.","Proteja los datos sensibles."].map((x,i)=>`<li><b>${i+1}</b>${x}</li>`).join("")}</ol>`);
 
 lam(11,`<h2>Un proceso organizado y repetible.</h2><p class="apoyo">Menos tareas manuales. Más tiempo para analizar.</p>`,"cierre");
 lam(11,`<h2 class="ref-t">Referencias.</h2><ul class="refs">
@@ -237,7 +238,7 @@ function go(i){ const prev=cur; cur=Math.max(0,Math.min(els.length-1,i)); if(cur
   $("stage").classList.toggle("oscuro",els[cur].classList.contains("cover")||els[cur].classList.contains("cierre"));
   dots.querySelectorAll("button").forEach((b,j)=>{ b.classList.toggle("cur",j===tp); b.classList.toggle("done",tp>j); });
   $("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
-  $("topL").textContent="POWER QUERY EN EXCEL · "+SECC[tp].toUpperCase()+".";
+  $("topL").textContent="POWER QUERY EN EXCEL · "+SECC[tp].toUpperCase()+(SECC[tp].endsWith("?")?"":".");
   $("prev").disabled=cur===0; $("next").disabled=cur===els.length-1;
   try{ history.replaceState(null,"","#"+(cur+1)); }catch(e){} }
 $("prev").onclick=()=>go(cur-1); $("next").onclick=()=>go(cur+1);
