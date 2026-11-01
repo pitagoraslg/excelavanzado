@@ -170,7 +170,10 @@ html[data-turno="2"]{--eq:var(--t2);}
 #t2-hud,#t2.tname{color:var(--t2);}
 #t1-bar{background:linear-gradient(90deg,#1c5f8a 0%,var(--t1) 100%);}
 #t2-bar{background:linear-gradient(90deg,#9a5a1c 0%,var(--t2) 100%);}
-.team-hud{padding:4px 10px;border-radius:8px;border:2px solid transparent;transition:.25s;}
+#ui-top{padding:4px 16px;}
+.team-hud{padding:2px 10px;border-radius:8px;border:2px solid transparent;transition:.25s;}
+.team-hud .energy-bar-bg{margin-top:3px;}
+.team-hud .win-counter{margin-top:2px;}
 html[data-turno="1"] .team-hud:not(.right){border-color:var(--t1);background:rgba(77,184,255,.1);}
 html[data-turno="2"] .team-hud.right{border-color:var(--t2);background:rgba(255,159,67,.1);}
 #turnText{color:var(--eq)!important;font-weight:800;letter-spacing:1px;}
