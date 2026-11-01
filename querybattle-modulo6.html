@@ -152,7 +152,8 @@ input:checked+.toggle-slider:before{transform:translateX(22px);background:#000;}
 .pfx .s{font-size:clamp(1.1rem,2.2vw,1.5rem);color:#fff;margin-top:6px;}
 @keyframes pfxRise{0%{transform:translateY(80px) scale(.6);opacity:0;}12%{transform:translateY(0) scale(1.08);opacity:1;}20%{transform:translateY(0) scale(1);}62%{transform:translateY(-20px);opacity:1;}100%{transform:translateY(-300px) scale(.9);opacity:0;}}
 /* Respuesta correcta señalada tras un error */
-.option{position:relative;}
+.option{position:relative;padding-left:62px;padding-right:62px;}
+.option .letra{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:var(--neon);color:#000;font-weight:800;font-size:1.15rem;display:flex;align-items:center;justify-content:center;}
 .option.reveal{border:2px solid var(--neon)!important;background:rgba(46,229,157,0.22)!important;color:#fff!important;font-weight:800;animation:revealPulse .9s ease-in-out infinite;}
 @keyframes revealPulse{0%,100%{box-shadow:0 0 0 0 rgba(46,229,157,.7);transform:scale(1);}50%{box-shadow:0 0 34px 8px rgba(46,229,157,.55);transform:scale(1.035);}}
 .option .ptr{position:absolute;left:-64px;top:50%;font-size:2.6rem;transform:translateY(-50%);animation:point .55s ease-in-out infinite alternate;}
@@ -628,8 +629,8 @@ function loadQ(){
   document.getElementById('q').innerText=q.q;
   document.getElementById('result').innerText='';
   od.innerHTML='';
-  shuffle(q.o.map((t,i)=>({texto:t,correcta:i===q.a}))).forEach(op=>{
-    const d=document.createElement('div'); d.className='option'; d.innerText=op.texto; d.dataset.ok=op.correcta?'1':'0'; d.onclick=e=>check(op.correcta,e.currentTarget); od.appendChild(d); });
+  shuffle(q.o.map((t,i)=>({texto:t,correcta:i===q.a}))).forEach((op,i)=>{
+    const d=document.createElement('div'), l=document.createElement('span'); d.className='option'; l.className='letra'; l.textContent='ABCD'[i]; d.append(l,op.texto); d.dataset.ok=op.correcta?'1':'0'; d.onclick=e=>check(op.correcta,e.currentTarget); od.appendChild(d); });
   updHabsUI(); startTimer();
 }
 function startTimer(){ clearInterval(tInt); tInt=setInterval(()=>{ if(isPaused) return; timeLeft--; document.getElementById('timer').innerText=timeLeft; if(timeLeft<=5&&timeLeft>0) soundTick(); if(timeLeft<=0) check(false); },1000); }
