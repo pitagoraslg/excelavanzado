@@ -248,7 +248,7 @@ S.push({t:0, l:"MÓDULO 6 · PRÁCTICA GUIADA.", h:`<div class="slide cover">
   <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
   <div class="mod">Módulo 6 · Práctica guiada.</div>
   <h1>Las ventas de tres sucursales.</h1>
-  <p class="lead">Cinco pasos, uno por cada fundamento de la teoría: unir, convertir la fecha, unificar el texto, cambiar el precio a Moneda y actualizar.</p>
+  <p class="lead">Cinco pasos para aplicar la teoría: unir, convertir la fecha, unificar el texto, cambiar el precio a Moneda y actualizar.</p>
   <div class="cover-tags"><span>⏱ Unos 30 minutos</span><span>💻 Excel de escritorio para Windows</span><span>👤 Individual</span><span>🧰 Power Query</span></div>
   <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
   <div class="hint">Use las flechas ← → del teclado o los botones de abajo · M = sonido.</div>
@@ -301,7 +301,7 @@ S.push({t:0, l:"PRÁCTICA GUIADA · PREPARE SUS ARCHIVOS.", h:`<div class="slide
   </div></div>`});
 
 /* ---------- Pasos ---------- */
-paso(1,"Una los tres archivos en una sola consulta.","Fundamento 1: conectarse a una carpeta.",[
+paso(1,"Una los tres archivos en una sola consulta.","Fuentes de datos: conectarse a una carpeta.",[
   `En su libro en blanco, vaya a <b>Datos › Obtener datos › Desde un archivo › Desde una carpeta</b>.`,
   `Busque la carpeta <b>Ventas Sucursales</b>, selecciónela y pulse <b>Abrir</b>.`,
   `Pulse la flecha de <b>Combinar</b> y elija <b>Combinar y transformar datos</b>.`,
@@ -311,7 +311,7 @@ paso(1,"Una los tres archivos en una sola consulta.","Fundamento 1: conectarse a
   `${ok("Abajo a la izquierda dice <b>11 columnas, 90 filas</b>: las 10 de los archivos y <code>Source.Name</code>.","<code>Source.Name</code> muestra los 3 archivos.")}
   ${fix(`<b>Vio una tabla con 3 filas:</b> pulsó «Transformar datos». Cierre el editor sin guardar y repita.`,`<b>Faltan o sobran filas:</b> revise que la carpeta tenga solo los 3 archivos.`)}`);
 
-paso(2,"Deje la fecha como fecha.","Fundamento 2: tipos de datos, la fecha.",[
+paso(2,"Deje la fecha como fecha.","Tipos de datos: la fecha.",[
   `Busque la columna <code>Fecha</code> y mire el icono de su encabezado.`,
   `Si no tiene el calendario 📅, púlselo y elija <b>Fecha</b>.`,
   `Baje por la tabla y compare las filas de las tres sucursales.`],
@@ -320,7 +320,7 @@ paso(2,"Deje la fecha como fecha.","Fundamento 2: tipos de datos, la fecha.",[
   <table class="vals"><tr><th>Así llega</th><th class="r">Así queda</th></tr><tr><td class="bad">15-ene-26</td><td class="ok r">15/1/2026</td></tr><tr><td class="bad">14/01/2026</td><td class="ok r">14/1/2026</td></tr><tr><td class="bad">2026-01-15</td><td class="ok r">15/1/2026</td></tr></table>
   ${fix(`<b>Ve «Error» o fechas de otro mes:</b> su Windows no está en español. Pulse la ✕ del paso, abra el icono de Fecha › <b>Usar configuración regional…</b> y elija <b>Fecha</b> y <b>Español (República Dominicana)</b>.`)}`);
 
-paso(3,"Unifique las letras de la categoría.","Fundamento 3: unificar el texto.",[
+paso(3,"Unifique las letras de la categoría.","Limpieza y calidad: unificar el texto.",[
   `Seleccione la columna <code>Categoría</code>.`,
   `Vaya a la pestaña <b>Transformar</b>.`,
   `Pulse <b>Formato › Poner En Mayúsculas Cada Palabra</b>.`,
@@ -330,7 +330,7 @@ paso(3,"Unifique las letras de la categoría.","Fundamento 3: unificar el texto.
   <table class="vals"><tr><th>Así llega</th><th class="r">Así queda</th></tr><tr><td class="bad">electrodomésticos</td><td class="ok r">Electrodomésticos</td></tr><tr><td class="bad">cocina</td><td class="ok r">Cocina</td></tr><tr><td class="bad">muebles</td><td class="ok r">Muebles</td></tr><tr><td class="bad">hogar</td><td class="ok r">Hogar</td></tr></table>
   ${fix(`<b>Faltan valores:</b> filtró sin querer. Pulse la ✕ del último paso «Filas filtradas».`,`<b>Cambió otra columna:</b> pulse la ✕ del último paso y seleccione <code>Categoría</code>.`)}`);
 
-paso(4,"Cambie el precio a Moneda y cargue la tabla.","Fundamento 4: moneda y carga.",[
+paso(4,"Cambie el precio a Moneda y cargue la tabla.","Tipos de datos y carga.",[
   `Seleccione la columna <code>Precio</code>.`,
   `Pulse el icono del encabezado y elija <b>Moneda</b>.`,
   `Pulse <b>Inicio › Cerrar y cargar</b>.`,
@@ -340,7 +340,7 @@ paso(4,"Cambie el precio a Moneda y cargue la tabla.","Fundamento 4: moneda y ca
   ${ok(`En el editor, <code>Precio</code> tenía el icono <b>$</b>.`,`La tabla tiene <b>90 filas</b> y la barra inferior muestra <b>Suma: 279850</b>.`)}
   ${fix(`<b>La barra no muestra la suma:</b> clic derecho en la barra inferior y marque <b>Suma</b>.`)}`);
 
-paso(5,"Abrió la Sucursal Sur: actualice con un clic.","Fundamento 5: actualizar con un clic.",[
+paso(5,"Abrió la Sucursal Sur: actualice con un clic.","Actualizar consultas.",[
   `Guarde su libro y cierre cualquier archivo de ventas.`,
   `Extraiga <code>Modulo6-Sucursal-Sur.zip</code>.`,
   `Copie <code>Sucursal Sur.xlsx</code> <b>dentro</b> de la carpeta <b>Ventas Sucursales</b>.`,
