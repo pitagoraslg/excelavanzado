@@ -248,7 +248,7 @@ S.push({t:0, l:"MÓDULO 6 · PRÁCTICA GUIADA.", h:`<div class="slide cover">
   <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
   <div class="mod">Módulo 6 · Práctica guiada.</div>
   <h1>Las ventas de tres sucursales.</h1>
-  <p class="lead">Cinco pasos, uno por cada fundamento de la teoría: unir, convertir la fecha, unificar el texto, cargar y actualizar.</p>
+  <p class="lead">Cinco pasos, uno por cada fundamento de la teoría: unir, convertir la fecha, unificar el texto, cambiar el precio a Moneda y actualizar.</p>
   <div class="cover-tags"><span>⏱ Unos 30 minutos</span><span>💻 Excel de escritorio para Windows</span><span>👤 Individual</span><span>🧰 Power Query</span></div>
   <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
   <div class="hint">Use las flechas ← → del teclado o los botones de abajo · M = sonido.</div>
@@ -267,7 +267,7 @@ S.push({t:0, l:"MÓDULO 6 · PRÁCTICA GUIADA.", h:`<div class="slide cover">
 S.push({t:0, l:"PRÁCTICA GUIADA · EL CASO.", h:`<div class="slide" style="gap:16px">
   <div class="eyebrow"><span class="tag go">El caso</span></div>
   <h2>Tres sucursales, las mismas columnas y formatos distintos.</h2>
-  <p class="q">Comercial Las Palmas vende artículos para el hogar. Cada sucursal envió sus ventas de enero en un archivo, pero <b>no todas registran igual</b> la fecha y la categoría. El precio y el monto ya vienen en RD$.</p>
+  <p class="q">Comercial Las Palmas vende artículos para el hogar. Cada sucursal envió sus ventas de enero en un archivo, pero <b>no todas registran igual</b> la fecha y la categoría. El monto ya viene en RD$.</p>
   <table class="vals"><tr><th>Archivo</th><th>Monto</th><th>Fecha</th><th>Categoría</th><th class="r">Filas</th></tr>
     <tr><td>Sucursal Centro.xlsx</td><td class="ok">RD$ 5,550.00</td><td class="bad">15-ene-26</td><td class="ok">Hogar</td><td class="r">30</td></tr>
     <tr><td>Sucursal Este.xlsx</td><td class="ok">RD$ 4,400.00</td><td class="bad">14/01/2026</td><td class="bad">hogar</td><td class="r">30</td></tr>
@@ -330,13 +330,15 @@ paso(3,"Unifique las letras de la categoría.","Fundamento 3: unificar el texto.
   <table class="vals"><tr><th>Así llega</th><th class="r">Así queda</th></tr><tr><td class="bad">electrodomésticos</td><td class="ok r">Electrodomésticos</td></tr><tr><td class="bad">cocina</td><td class="ok r">Cocina</td></tr><tr><td class="bad">muebles</td><td class="ok r">Muebles</td></tr><tr><td class="bad">hogar</td><td class="ok r">Hogar</td></tr></table>
   ${fix(`<b>Faltan valores:</b> filtró sin querer. Pulse la ✕ del último paso «Filas filtradas».`,`<b>Cambió otra columna:</b> pulse la ✕ del último paso y seleccione <code>Categoría</code>.`)}`);
 
-paso(4,"Cargue la tabla y dé formato de moneda.","Fundamento 4: cargar y dar formato.",[
+paso(4,"Cambie el precio a Moneda y cargue la tabla.","Fundamento 4: moneda y carga.",[
+  `Seleccione la columna <code>Precio</code>.`,
+  `Pulse el icono del encabezado y elija <b>Moneda</b>.`,
   `Pulse <b>Inicio › Cerrar y cargar</b>.`,
-  `En la tabla, seleccione los valores de <code>Monto</code>.`,
-  `Pulse <b>Ctrl + 1</b> › <b>Personalizada</b>, escriba <code>"RD$" #,##0.00</code> y pulse <b>Aceptar</b>.`],
-  `Power Query trae el número, no su apariencia. Por eso el formato de moneda se da una vez en la tabla final.`,
+  `En la tabla, seleccione los valores de <code>Monto</code> y mire la <b>barra inferior</b> de Excel.`],
+  `<b>Moneda</b> es un tipo de dato de Power Query. El símbolo RD$ no viaja a la tabla: allí verá el número.`,
   `<table class="vals"><tr><th>Sucursal</th><th class="r">Filas</th><th class="r">Monto</th></tr>${VENTAS.map(a=>`<tr><td>${a[0]}</td><td class="r">${a[1]}</td><td class="r">${fmt(a[2])}</td></tr>`).join("")}<tr class="tot"><td>Consolidado</td><td class="r">90</td><td class="r">${fmt(TOT3)}</td></tr></table>
-  ${ok(`La tabla tiene <b>90 filas</b> y los montos se ven como <b>RD$ 450.00</b>.`,`Con la columna seleccionada, la barra inferior muestra <b>Suma: ${fmt(TOT3)}</b>.`)}`);
+  ${ok(`En el editor, <code>Precio</code> tenía el icono <b>$</b>.`,`La tabla tiene <b>90 filas</b> y la barra inferior muestra <b>Suma: 279850</b>.`)}
+  ${fix(`<b>La barra no muestra la suma:</b> clic derecho en la barra inferior y marque <b>Suma</b>.`)}`);
 
 paso(5,"Abrió la Sucursal Sur: actualice con un clic.","Fundamento 5: actualizar con un clic.",[
   `Guarde su libro y cierre cualquier archivo de ventas.`,
@@ -345,7 +347,7 @@ paso(5,"Abrió la Sucursal Sur: actualice con un clic.","Fundamento 5: actualiza
   `Regrese a Excel y pulse <b>Datos › Actualizar todo</b>.`],
   `No repita ningún paso: la consulta aplica la misma receta al archivo nuevo.`,
   `<table class="vals pop"><tr><th></th><th class="r">Filas</th><th class="r">Monto</th></tr><tr><td>Antes de actualizar</td><td class="r">90</td><td class="r">${fmt(TOT3)}</td></tr><tr><td>+ ${NUEVA[0]}</td><td class="r">${NUEVA[1]}</td><td class="r">${fmt(NUEVA[2])}</td></tr><tr class="tot"><td>Después de actualizar</td><td class="r">120</td><td class="r">${fmt(TOT4)}</td></tr></table>
-  ${ok(`La tabla tiene <b>120 filas</b>, la suma es <b>${fmt(TOT4)}</b> y las filas nuevas ya tienen formato de moneda.`)}
+  ${ok(`La tabla tiene <b>120 filas</b> y la suma de <code>Monto</code> es <b>378050</b>, es decir, ${fmt(TOT4)}.`)}
   ${fix(`<b>Sigue en 90:</b> <code>Sucursal Sur.xlsx</code> no quedó dentro de la carpeta, o sigue dentro del .zip.`,`<b>Error de ruta:</b> movió la carpeta. Clic derecho en Consolidado › <b>Editar</b>, paso <b>Origen</b>, y corrija la ruta.`)}`);
 S[S.length-1].ok=1;
 
@@ -354,7 +356,7 @@ S.push({t:6, ok:2, l:"PRÁCTICA GUIADA · ANTES DE TERMINAR.", h:`<div class="sl
   <div class="eyebrow"><span class="tag go">¡Lo logró!</span></div>
   <h2>Lo que su libro debe tener ahora.</h2>
   <div class="cols" style="grid-template-columns:1fr 1fr">
-    <ul class="chk"><li>Una consulta llamada Consolidado, conectada a la carpeta Ventas Sucursales.</li><li>La fecha como fecha, la categoría escrita de una sola forma y el monto en RD$.</li><li>Una tabla de 120 filas con ${fmt(TOT4)}.</li></ul>
+    <ul class="chk"><li>Una consulta llamada Consolidado, conectada a la carpeta Ventas Sucursales.</li><li>La fecha como fecha, la categoría escrita de una sola forma y el precio con tipo Moneda.</li><li>Una tabla de 120 filas con ${fmt(TOT4)}.</li></ul>
     <div class="save"><b style="font-size:19px">Guarde su libro.</b><span>Use <b>Archivo › Guardar</b>, con este nombre:</span><code>Modulo6_Apellido_Nombre.xlsx</code><span style="color:#d5d8ef">Si mueve la carpeta «Ventas Sucursales», recuerde corregir la ruta en el paso <b style="color:#fff">Origen</b>.</span></div>
   </div>
   <p class="think">Para pensar: ¿en su trabajo, quién registra los mismos datos de una forma distinta?</p>

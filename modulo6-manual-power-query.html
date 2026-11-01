@@ -97,12 +97,12 @@ idea(1,"La idea","¿Qué es Power Query?","Es la herramienta de Excel que obtien
 idea(1,"La idea","Una receta grabada.","Cada acción queda guardada como un paso. Cuando llegan datos nuevos, los pasos se repiten solos.");
 
 lam(1,`<p class="eyebrow">La idea</p><h2>Cinco fundamentos.</h2>
-  <ol class="lista"><li><b>1</b>Conectarse a una carpeta</li><li><b>2</b>Tipos de datos</li><li><b>3</b>Unificar el texto</li><li><b>4</b>Cargar y dar formato</li><li><b>5</b>Actualizar</li></ol>`);
+  <ol class="lista"><li><b>1</b>Conectarse a una carpeta</li><li><b>2</b>Tipos de datos</li><li><b>3</b>Unificar el texto</li><li><b>4</b>Moneda y carga</li><li><b>5</b>Actualizar</li></ol>`);
 
 idea(2,"Fundamento 1 · Conectarse a una carpeta","Se conecta, no copia.","Si varios archivos tienen las mismas columnas, Power Query los une en una sola consulta.",`<span>3 archivos</span>${fl}<span class="fin">1 tabla</span>`);
 idea(3,"Fundamento 2 · Tipos de datos","Cada columna tiene un tipo.","Una fecha guardada como texto no se puede ordenar ni agrupar por mes.",`<span>14/01/2026</span><span>2026-01-15</span>${fl}<span class="fin">📅 Fecha</span>`);
 idea(4,"Fundamento 3 · Unificar el texto","Igual solo si es idéntico.","Power Query distingue mayúsculas: una misma categoría escrita de dos formas cuenta como dos.",`<span>hogar</span><span>Hogar</span>${fl}<span class="fin">Hogar</span>`);
-idea(5,"Fundamento 4 · Cargar y dar formato","Tipo y formato no son lo mismo.","El tipo dice qué es el dato. El formato dice cómo se ve, y se da en la hoja de Excel.",`<span>450</span>${fl}<span class="fin">RD$ 450.00</span>`);
+idea(5,"Fundamento 4 · Moneda y carga","Moneda es un tipo de dato.","Se usa para precios y montos. Con Cerrar y cargar, el resultado llega a una tabla de Excel.",`<span>123 Precio</span>${fl}<span class="fin">$ Moneda</span>`);
 idea(6,"Fundamento 5 · Actualizar","Un clic repite la receta.","Al llegar un archivo nuevo a la carpeta, Actualizar todo aplica los mismos pasos.",`<span>90 filas</span>${fl}<span class="fin">120 filas</span>`);
 
 lam(7,`<h2>Se hace una vez. Se repite siempre.</h2><p class="apoyo">Menos copiar y pegar, más tiempo para analizar.</p>`,"cierre");
