@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
-/* Escenario fijo 1280×720 escalado a la pantalla. Manual de consulta en láminas. Paleta del Módulo 6: índigo + mandarina. */
+/* Escenario fijo 1280×720 escalado a la pantalla. Una idea por lámina, letra grande y un solo apoyo visual. Paleta del Módulo 6: índigo + mandarina. */
 :root{
   --bg:#e6e5ee; --paper:#f7f6f3; --card:#ffffff; --ink:#2f3a8f; --text:#1f2233; --muted:#5f6275; --line:#e2e0ea; --grid:#cbc8d8;
   --acc:#f2994a; --acc-d:#b8641c; --acc-soft:#fdeedd; --pos:#23826f; --pos-soft:#e2f3f0; --neg:#c8553d; --neg-soft:#f8e4df; --ink-soft:#e7e9f6;
@@ -20,11 +20,11 @@
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
 #stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;background:var(--paper);transform-origin:center;transform:translate(-50%,-50%);box-shadow:0 10px 40px rgba(47,58,143,.18);border-top:4px solid var(--ink)}
-.slide{position:absolute;inset:0;padding:62px 96px 70px;display:none;flex-direction:column;gap:20px}
+.slide{position:absolute;inset:0;padding:70px 110px 80px;display:none;flex-direction:column;justify-content:center;gap:28px}
 .slide.on{display:flex;animation:in .35s ease}
 @keyframes in{from{opacity:.3;transform:translateY(6px)}to{opacity:1;transform:none}}
 .top{position:absolute;top:20px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;z-index:3}
-.dots{display:flex;gap:6px}.dots button{width:24px;height:6px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dots{display:flex;gap:6px}.dots button{width:28px;height:6px;border:0;background:var(--line);cursor:pointer;padding:0}
 .dots button.done{background:var(--grid)}.dots button.cur{background:var(--acc)}
 .bottom{position:absolute;bottom:16px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);z-index:3}
 .navb{display:flex;gap:8px;align-items:center}
@@ -32,72 +32,31 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);ove
 .btn:hover{border-color:var(--ink)} .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
 .btn:disabled{opacity:.4;cursor:default}
 button:focus-visible,a:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
-h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0;color:var(--ink);line-height:1.1}
-h2{font-size:44px;text-wrap:balance}
-h3{font-size:22px}
+h1,h2{font-family:var(--serif);font-weight:600;margin:0;color:var(--ink);line-height:1.12;text-wrap:balance}
+h2{font-size:56px}
 p{margin:0}
-b{font-weight:600}
-.eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--acc-d)}
-.lead{font-size:23px;line-height:1.4}
-.frase{font-family:var(--serif);font-size:25px;line-height:1.3;color:var(--ink);border-left:5px solid var(--acc);padding-left:16px}
-code{font-family:var(--mono);font-size:.9em;background:var(--ink-soft);color:var(--ink);padding:1px 5px}
-.ruta{font-family:var(--mono);font-size:.84em;background:var(--ink-soft);color:var(--ink);padding:1px 6px}
-.dosc{display:grid;grid-template-columns:1fr 1fr;gap:20px;min-height:0;align-items:start}
-.col{display:flex;flex-direction:column;gap:9px;min-width:0}
-ul.li{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:12px;font-size:24px;line-height:1.35}
-ol.li{margin:0;padding-left:30px;display:flex;flex-direction:column;gap:14px;font-size:25px;line-height:1.35}
-.eje,.ojo,.tip{font-size:16.8px;line-height:1.4;padding:8px 13px}
-.eje{background:var(--pos-soft);border-left:4px solid var(--pos)}
-.ojo{background:var(--acc-soft);border-left:4px solid var(--acc)}
-.tip{background:var(--ink-soft);border-left:4px solid var(--ink)}
-
-table.t{border-collapse:collapse;width:100%;font-size:21px;line-height:1.33;background:var(--card);font-variant-numeric:tabular-nums}
-.t th{background:var(--ink);color:#fff;text-align:left;padding:9px 14px;font-weight:600;font-size:18px}
-.t td{border-bottom:1px solid var(--line);padding:10px 14px;vertical-align:top}
-.t .r{text-align:right}
-.t td.nul{color:#888;font-style:italic}
-.t td.nuevo,.t th.nuevo{background:var(--acc-soft);color:#2a1a00}
-
-.flujo{display:grid;grid-template-columns:1fr 26px 1fr 26px 1fr 26px 1fr;gap:5px}
-.flujo div{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--ink);padding:16px;font-size:19px;line-height:1.35}
-.flujo div b{display:block;color:var(--ink);font-size:23px;margin-bottom:4px}
-.flujo span{color:var(--acc);font-size:22px;align-self:center;text-align:center}
-
-/* Editor */
-.ed{border:1px solid #b9b7c6;background:#fff;font-family:"Segoe UI",Arial,sans-serif;font-size:13.4px}
-.ed .z{padding:5px 9px}.z1{background:#217346;color:#fff}.z2{background:#f3f3f6;font-family:var(--mono);font-size:11.5px;border-bottom:1px solid #d6d4e0}
-.zfila{display:grid;grid-template-columns:96px 1fr 130px}.z3,.z5{background:#fafafc;line-height:1.5}.z3{border-right:1px solid #d6d4e0}.z5{border-left:1px solid #d6d4e0}
-.z6{background:#f3f3f6;border-top:1px solid #d6d4e0;font-size:11.5px;font-weight:600}
-.num{display:inline-flex;width:18px;height:18px;border-radius:50%;background:var(--acc);color:#2a1a00;font-weight:700;font-size:11px;align-items:center;justify-content:center;margin-right:5px}
-
-/* Elementos con interacción */
-.opts{display:flex;flex-direction:column;gap:6px}
-.op{font-family:var(--sans);font-size:18px;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--grid);padding:7px 12px;cursor:pointer}
-.op:hover{border-color:var(--ink)}.op.on{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
-.venn svg{display:block;height:140px;margin:0 auto}
-.resul .t{font-size:18px}.resul .t td{padding:7px 12px}
-.resul{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--acc);padding:12px 14px;display:flex;flex-direction:column;gap:10px;font-size:20px;line-height:1.4}
-
-.cod{background:#20244f;color:#f0f0f8;font-family:var(--mono);font-size:15px;line-height:1.65;padding:11px 14px;white-space:pre-wrap;border-left:4px solid var(--acc)}
-.mapa{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1;min-height:0}
-.mapa button{all:unset;box-sizing:border-box;cursor:pointer;background:var(--card);border:1px solid var(--line);border-top:4px solid var(--ink);padding:10px 16px;display:flex;flex-direction:column;gap:3px}
-.mapa button:hover{border-top-color:var(--acc)}.mapa button:focus-visible{outline:3px solid var(--acc)}
-.mapa .n{font-family:var(--serif);font-size:23px;color:var(--acc);line-height:1}
-.mapa b{font-size:17.5px;color:var(--ink)}.mapa span{font-size:14.4px;color:var(--muted);line-height:1.35}
-.glos{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
-.glos div{display:grid;grid-template-columns:120px 1fr;gap:8px;font-size:15.2px;line-height:1.3;padding:4px 0;border-bottom:1px solid var(--line)}
-.glos b{color:var(--ink)}
-.refs{list-style:none;margin:0;padding:10px 0 0;border-top:2px solid var(--ink);columns:2;column-gap:30px;font-size:13.8px;line-height:1.36}
-.refs li{padding-left:22px;text-indent:-22px;margin-bottom:6px;break-inside:avoid}
+.eyebrow{font-family:var(--mono);font-size:18px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-d)}
+.apoyo{font-size:30px;line-height:1.38;text-wrap:pretty}
+.vis{display:flex;align-items:center;gap:18px}
+.vis span{font-family:var(--mono);font-size:27px;background:var(--card);border:1px solid var(--grid);padding:14px 22px;color:var(--text)}
+.vis span.fin{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:600}
+.vis i{font-style:normal;color:var(--acc);font-size:40px}
+.lista{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px;font-size:32px;line-height:1.2}
+.lista li{display:grid;grid-template-columns:54px 1fr;align-items:baseline}
+.lista b{font-family:var(--serif);font-weight:600;color:var(--acc)}
+.refs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:13px;font-size:18.5px;line-height:1.35}
+.refs li{padding-left:28px;text-indent:-28px}
 .refs a{color:var(--ink);word-break:break-all;text-decoration:none}
+.ref-t{font-size:44px}
 
-.cover{justify-content:center;gap:18px;background:var(--ink);color:#fff}
+.cover{gap:22px;background:var(--ink);color:#fff}
 .cover-logo{position:absolute;top:50px;right:72px;height:90px;width:auto;background:#fff;padding:9px 13px}
-.cover .mod{font-family:var(--mono);font-size:16px;letter-spacing:.14em;text-transform:uppercase;color:#f8c9a0}
-.cover h1{font-size:72px;color:#fff;max-width:900px}
-.cover .sub{font-family:var(--serif);font-size:25px;color:#dadcf2;max-width:760px;line-height:1.3}
-.cover .by{font-size:20px}.cover .by b{color:#f8c9a0}
-.cover .hint{font-family:var(--mono);font-size:13.5px;color:#dadcf2}
+.cover .mod{font-family:var(--mono);font-size:18px;letter-spacing:.14em;text-transform:uppercase;color:#f8c9a0}
+.cover h1{font-size:84px;color:#fff}
+.cover .by{font-size:26px}.cover .by b{color:#f8c9a0;font-weight:600}
+.cierre{background:var(--ink)}
+.cierre h2{color:#fff;font-size:64px}
+.cierre .apoyo{color:#dadcf2}
 #stage.oscuro .top,#stage.oscuro .bottom{color:#d5d8ef}
 #stage.oscuro .btn.primary{background:var(--acc);border-color:var(--acc);color:#2a1a00}
 #giroTel{display:none;position:fixed;inset:0;z-index:9;background:var(--ink);color:#fff;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:20px;line-height:1.4}
@@ -122,101 +81,39 @@ table.t{border-collapse:collapse;width:100%;font-size:21px;line-height:1.33;back
   </div>
 </div>
 <script>
-/* ---------- Piezas ---------- */
-const tabla = (cab,filas,opt={}) => `<table class="t"><tr>${cab.map((c,j)=>`<th class="${(opt.r||[]).includes(j)?'r':''} ${(opt.nuevas||[]).includes(j)?'nuevo':''}">${c}</th>`).join("")}</tr>${filas.map(f=>`<tr>${f.map((c,j)=>`<td class="${c===null?'nul':''} ${(opt.r||[]).includes(j)?'r':''} ${(opt.nuevas||[]).includes(j)?'nuevo':''}">${c===null?'null':c}</td>`).join("")}</tr>`).join("")}</table>`;
-const eje = t => `<p class="eje"><b>Ejemplo.</b> ${t}</p>`;
-const ojo = t => `<p class="ojo"><b>Importante.</b> ${t}</p>`;
-const tip = t => `<p class="tip"><b>Consejo.</b> ${t}</p>`;
-const cab = (c,t,l="") => `<p class="eyebrow">${c}</p><h2>${t}</h2>${l?`<p class="lead">${l}</p>`:""}`;
-const ul = a => `<ul class="li">${a.map(x=>`<li>${x}</li>`).join("")}</ul>`;
-const ruta = t => `<span class="ruta">${t}</span>`;
+/* ---------- Láminas: una idea, una frase de apoyo y, si ayuda, un solo apoyo visual ---------- */
 const S = [];
-const SECC = ["Inicio","Fundamentos","El editor","Los datos","Transformar","Unir consultas","Entregar","Referencias"];
+const SECC = ["Inicio","La idea","Conectar","Tipos de datos","Texto","Cargar","Actualizar","Cierre"];
 const lam = (t,h,cl="") => S.push({t,h:`<div class="slide ${cl}">${h}</div>`});
+const idea = (t,ey,tit,apoyo,vis="") => lam(t,`<p class="eyebrow">${ey}</p><h2>${tit}</h2><p class="apoyo">${apoyo}</p>${vis?`<div class="vis">${vis}</div>`:""}`);
+const fl = `<i>→</i>`;
 
-/* ---------- Inicio ---------- */
 lam(0,`<img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
-  <p class="mod">Módulo 6 · Material de consulta</p>
+  <p class="mod">Módulo 6</p>
   <h1>Manual de Power Query.</h1>
-  <p class="sub">Lo esencial de la herramienta, en pocas láminas.</p>
-  <p class="by">Por: <b>Jarlin Figueroa, MA</b></p>
-  <p class="hint">Use ← → para avanzar · M = sonido</p>`,"cover");
+  <p class="by">Por: <b>Jarlin Figueroa, MA</b></p>`,"cover");
 
-/* ---------- Fundamentos ---------- */
-lam(1,`${cab("Fundamentos","¿Qué es Power Query?","Prepara datos en Excel sin fórmulas y sin tocar los archivos originales.")}
-  <div class="flujo"><div><b>Obtener</b>Se conecta a los datos.</div><span>→</span><div><b>Transformar</b>Los limpia con botones.</div><span>→</span><div><b>Cargar</b>Los lleva a Excel.</div><span>↻</span><div><b>Actualizar</b>Repite todo con un clic.</div></div>
-  <p class="frase">Cada acción queda grabada como un paso: es una receta.</p>`);
+idea(1,"La idea","¿Qué es Power Query?","Es la herramienta de Excel que obtiene, transforma y carga datos, sin fórmulas y sin tocar los archivos originales.");
+idea(1,"La idea","Una receta grabada.","Cada acción queda guardada como un paso. Cuando llegan datos nuevos, los pasos se repiten solos.");
 
-lam(1,`${cab("Fundamentos","¿Cuándo conviene usarlo?")}
-  ${ul(["El mismo trabajo se repite cada mes.","La información llega en varios archivos.","Los datos necesitan siempre los mismos arreglos.","Otra persona debe poder revisar el proceso."])}
-  <p class="frase">Si es un arreglo de una sola vez, quizá no haga falta.</p>`);
+lam(1,`<p class="eyebrow">La idea</p><h2>Cinco fundamentos.</h2>
+  <ol class="lista"><li><b>1</b>Conectarse a una carpeta</li><li><b>2</b>Tipos de datos</li><li><b>3</b>Unificar el texto</li><li><b>4</b>Cargar y dar formato</li><li><b>5</b>Actualizar</li></ol>`);
 
-lam(1,`${cab("Fundamentos","Cada herramienta tiene su función.")}
-  ${tabla(["Herramienta","Sirve para"],[["<b>Power Query</b>","Preparar los datos."],["<b>Fórmulas</b>","Calcular celda por celda."],["<b>Tablas dinámicas</b>","Resumir y explorar."],["<b>Macros</b>","Automatizar acciones en Excel."]])}
-  <p class="frase">Una consulta solo cambia cuando se actualiza.</p>`);
+idea(2,"Fundamento 1 · Conectarse a una carpeta","Se conecta, no copia.","Si varios archivos tienen las mismas columnas, Power Query los une en una sola consulta.",`<span>3 archivos</span>${fl}<span class="fin">1 tabla</span>`);
+idea(3,"Fundamento 2 · Tipos de datos","Cada columna tiene un tipo.","Una fecha guardada como texto no se puede ordenar ni agrupar por mes.",`<span>14/01/2026</span><span>2026-01-15</span>${fl}<span class="fin">📅 Fecha</span>`);
+idea(4,"Fundamento 3 · Unificar el texto","Igual solo si es idéntico.","Power Query distingue mayúsculas: una misma categoría escrita de dos formas cuenta como dos.",`<span>hogar</span><span>Hogar</span>${fl}<span class="fin">Hogar</span>`);
+idea(5,"Fundamento 4 · Cargar y dar formato","Tipo y formato no son lo mismo.","El tipo dice qué es el dato. El formato dice cómo se ve, y se da en la hoja de Excel.",`<span>450</span>${fl}<span class="fin">RD$ 450.00</span>`);
+idea(6,"Fundamento 5 · Actualizar","Un clic repite la receta.","Al llegar un archivo nuevo a la carpeta, Actualizar todo aplica los mismos pasos.",`<span>90 filas</span>${fl}<span class="fin">120 filas</span>`);
 
-/* ---------- El editor ---------- */
-lam(2,`${cab("El editor","Cuatro pestañas, cuatro preguntas.")}
-  ${tabla(["Pestaña","Responde a"],[["<b>Inicio</b>","¿Qué hago con la consulta?"],["<b>Transformar</b>","¿Cómo cambio lo que existe?"],["<b>Agregar columna</b>","¿Cómo creo algo nuevo?"],["<b>Vista</b>","¿Qué quiero ver?"]])}
-  <p class="frase">Búsquelo en ${ruta("Datos › Obtener y transformar datos")}</p>`);
+lam(7,`<h2>Se hace una vez. Se repite siempre.</h2><p class="apoyo">Menos copiar y pegar, más tiempo para analizar.</p>`,"cierre");
 
-const BASE=[{o:"Sucursal Centro.xlsx",f:"15-ene-26",c:"Hogar"},{o:"Sucursal Este.xlsx",f:"14/01/2026",c:"hogar"},{o:"Sucursal Norte.xlsx",f:"2026-01-15",c:"cocina"}];
-const REC=[["Origen","Los datos tal como llegan.",r=>r,"ABC123"],
- ["Tipo cambiado","Todas las fechas son fecha.",r=>r.map((x,i)=>({...x,f:["15/1/2026","14/1/2026","15/1/2026"][i]})),"📅"],
- ["Mayúsculas","La categoría queda escrita igual.",r=>r.map(x=>({...x,c:x.c[0].toUpperCase()+x.c.slice(1)})),"📅"]];
-lam(2,`${cab("El editor","Los pasos aplicados son la receta.","Haga clic en un paso para ver los datos en ese momento.")}
-  <div class="dosc" style="grid-template-columns:230px 1fr"><div class="opts" id="recL">${REC.map((p,i)=>`<button type="button" class="op" data-i="${i}">${p[0]}</button>`).join("")}</div>
-  <div class="resul"><div id="recT"></div><p id="recD" aria-live="polite"></p></div></div>`);
-
-/* ---------- Datos ---------- */
-lam(3,`${cab("Los datos","¿De dónde vienen?")}
-  ${tabla(["Origen","Se usa para"],[["<b>Libro de Excel</b>","Un archivo."],["<b>Texto o CSV</b>","Lo que exportan los sistemas."],["<b>Carpeta</b>","Muchos archivos a la vez."],["<b>Base de datos</b>","Sistemas de la empresa."]])}
-  <p class="frase">En una carpeta: mismas columnas y solo esos archivos.</p>`);
-
-lam(3,`${cab("Los datos","Cada columna tiene un tipo.")}
-  ${tabla(["Icono","Tipo"],[["<code>ABC</code>","Texto"],["<code>123</code>","Número entero"],["<code>1.2</code>","Número decimal"],["📅","Fecha"]])}
-  <p class="frase">El tipo dice qué es el dato. El formato, cómo se ve.</p>`);
-
-/* ---------- Transformar ---------- */
-lam(4,`${cab("Transformar","Filas: ¿cuáles se quedan?")}
-  ${tabla(["Opción","Qué hace"],[["<b>Filtro</b>","Deja las que cumplen una regla."],["<b>Quitar duplicados</b>","Deja una vez cada fila."],["<b>Quitar filas en blanco</b>","Elimina las vacías."],["<b>Quitar filas superiores</b>","Elimina títulos de arriba."]])}`);
-
-lam(4,`${cab("Transformar","Columnas y texto.")}
-  ${tabla(["Opción","Qué hace"],[["<b>Quitar columnas</b>","Elimina las que sobran."],["<b>Dividir columna</b>","Separa una en varias."],["<b>Recortar</b>","Quita espacios de más."],["<b>Poner En Mayúsculas Cada Palabra</b>","Unifica cómo se escribe."]])}`);
-
-lam(4,`${cab("Transformar","Columnas nuevas y resúmenes.")}
-  ${tabla(["Opción","Qué hace"],[["<b>Columna condicional</b>","Clasifica: si… entonces…"],["<b>Columna personalizada</b>","Calcula con una fórmula."],["<b>Agrupar por</b>","Resume por grupo."],["<b>Anular dinamización</b>","Pasa los meses de columnas a filas."]])}`);
-
-/* ---------- Unir ---------- */
-lam(5,`${cab("Unir consultas","¿Más filas o más columnas?")}
-  ${tabla(["","Anexar","Combinar"],[["<b>Resultado</b>","Más filas.","Más columnas."],["<b>Requisito</b>","Mismas columnas.","Una columna en común."],["<b>Se parece a</b>","Pegar debajo.","BUSCARV."]])}`);
-
-const J=[["Externa izquierda",1,1,0,"Todas las de la primera.",["Licuadora","Olla","Mesa"]],["Externa derecha",0,1,1,"Todas las de la segunda.",["Licuadora","Olla","Silla"]],["Externa completa",1,1,1,"Todas las de ambas.",["Licuadora","Olla","Mesa","Silla"]],["Interna",0,1,0,"Solo las que coinciden.",["Licuadora","Olla"]],["Anti izquierda",1,0,0,"Las de la primera sin pareja.",["Mesa"]],["Anti derecha",0,0,1,"Las de la segunda sin pareja.",["Silla"]]];
-const VE={Licuadora:12,Olla:8,Mesa:5}, PR={Licuadora:"Alfa",Olla:"Beta",Silla:"Gamma"};
-const venn=(a,c,b)=>`<div class="venn"><svg viewBox="0 0 120 70" role="img" aria-label="Diagrama de la combinación"><circle cx="45" cy="35" r="28" fill="${a?'#f2994a':'#fff'}" stroke="#2f3a8f" stroke-width="1.5"/><circle cx="75" cy="35" r="28" fill="${b?'#f2994a':'#fff'}" fill-opacity="${b?1:.01}" stroke="#2f3a8f" stroke-width="1.5"/><path d="M60 10.8a28 28 0 0 1 0 48.4a28 28 0 0 1 0-48.4z" fill="${c?'#2f3a8f':'#fff'}" stroke="#2f3a8f" stroke-width="1.5"/></svg></div>`;
-lam(5,`${cab("Unir consultas","Seis tipos de combinación.","Elija un tipo.")}
-  <div class="dosc" style="grid-template-columns:250px 1fr"><div class="opts" id="joiL">${J.map((j,i)=>`<button type="button" class="op" data-i="${i}">${j[0]}</button>`).join("")}</div><div class="resul" id="joiP" aria-live="polite"></div></div>`);
-
-/* ---------- Entregar ---------- */
-lam(6,`${cab("Entregar","Cargar y actualizar.")}
-  ${ul(["<b>Cerrar y cargar:</b> lleva el resultado a una tabla.","<b>Solo crear conexión:</b> guarda sin ocupar una hoja.","<b>Modelo de datos:</b> relaciona varias tablas.","<b>Actualizar todo:</b> <code>Ctrl + Alt + F5</code>"])}
-  <p class="frase">No escriba en la tabla cargada: Actualizar lo reemplaza.</p>`);
-
-lam(6,`${cab("Entregar","Cinco hábitos.")}
-  <ol class="li"><li>Mire los datos antes de empezar.</li><li>Haga un cambio a la vez.</li><li>No toque los archivos originales.</li><li>Use nombres claros.</li><li>Compruebe filas y totales.</li></ol>`);
-
-/* ---------- Referencias ---------- */
-const MS=(l,t,u,s="Microsoft Learn")=>`Microsoft. (s. f.-${l}). <i>${t}</i>. ${s}. <a href="${u}" target="_blank" rel="noopener">${u}</a>`;
-lam(7,`<p class="eyebrow">Bibliografía</p><h2>Referencias.</h2><ul class="refs">
-  <li>Kimball, R., &amp; Caserta, J. (2004). <i>The data warehouse ETL toolkit: Practical techniques for extracting, cleaning, conforming, and delivering data</i>. Wiley.</li>
-  ${[["a","Agregar una columna a partir de los ejemplos","https://learn.microsoft.com/es-es/power-query/column-from-example"],["b","Conectores de Power Query","https://learn.microsoft.com/es-es/power-query/connectors/"],["c","Cómo agrupar por o resumir filas","https://learn.microsoft.com/es-es/power-query/group-by"],["d","Descripción de la evaluación de consultas y plegado de consultas en Power Query","https://learn.microsoft.com/es-es/power-query/query-folding-basics"],["e","Descripción de la funcionalidad de columnas dinámicas","https://learn.microsoft.com/es-es/power-query/pivot-columns"],["f","Despivotar columnas","https://learn.microsoft.com/es-es/power-query/unpivot-column"],["g","Referencia del lenguaje de fórmulas M de Power Query","https://learn.microsoft.com/es-es/powerquery-m/"],["h","Tipos de datos en Power Query","https://learn.microsoft.com/es-es/power-query/data-types"],["i","Visión general de las consultas de combinación","https://learn.microsoft.com/es-es/power-query/merge-queries-overview"],["j","¿Qué es Power Query?","https://learn.microsoft.com/es-es/power-query/power-query-what-is-power-query"]].map(r=>`<li>${MS(...r)}</li>`).join("")}
-  <li>${MS("k","Acerca de Power Query en Excel","https://support.microsoft.com/es-es/Excel/about-power-query-in-excel","Microsoft Support")}</li>
-  <li>${MS("l","Anexar consultas (Power Query)","https://support.microsoft.com/es-es/Excel/append-queries-power-query","Microsoft Support")}</li>
-  <li>Puls, K., &amp; Escobar, M. (2016). <i>M is for (data) monkey: The Excel pro's definitive guide to Power Query</i>. Holy Macro! Books.</li>
+lam(7,`<h2 class="ref-t">Referencias.</h2><ul class="refs">
+  <li>Kimball, R., &amp; Caserta, J. (2004). <i>The data warehouse ETL toolkit</i>. Wiley.</li>
+  <li>Microsoft. (s. f.-a). <i>Acerca de Power Query en Excel</i>. Microsoft Support. <a href="https://support.microsoft.com/es-es/Excel/about-power-query-in-excel" target="_blank" rel="noopener">https://support.microsoft.com/es-es/Excel/about-power-query-in-excel</a></li>
+  <li>Microsoft. (s. f.-b). <i>Tipos de datos en Power Query</i>. Microsoft Learn. <a href="https://learn.microsoft.com/es-es/power-query/data-types" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/power-query/data-types</a></li>
+  <li>Microsoft. (s. f.-c). <i>¿Qué es Power Query?</i> Microsoft Learn. <a href="https://learn.microsoft.com/es-es/power-query/power-query-what-is-power-query" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/power-query/power-query-what-is-power-query</a></li>
   <li>Puls, K., &amp; Escobar, M. (2021). <i>Master your data with Power Query in Excel and Power BI</i> (2.ª ed.). Holy Macro! Books.</li>
-  <li>Raviv, G. (2019). <i>Collect, combine, and transform data using Power Query in Excel and Power BI</i>. Microsoft Press.</li>
-  <li>Wickham, H. (2014). Tidy data. <i>Journal of Statistical Software, 59</i>(10), 1–23. <a href="https://doi.org/10.18637/jss.v059.i10" target="_blank" rel="noopener">https://doi.org/10.18637/jss.v059.i10</a></li></ul>
-  <p style="font-size:13px;color:var(--muted)">Los ejemplos usan datos ficticios creados con fines didácticos. Las páginas web se consultaron en octubre de 2026.</p>`);
+  <li>Raviv, G. (2019). <i>Collect, combine, and transform data using Power Query in Excel and Power BI</i>. Microsoft Press.</li></ul>`);
 
 /* ---------- Motor ---------- */
 const wrap=document.getElementById("slides"); wrap.innerHTML=S.map(s=>s.h).join("");
@@ -226,28 +123,15 @@ const dots=$("dots");
 dots.innerHTML=SECC.map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
 dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.t]));
 
-/* Pasos aplicados */
-function pintaR(i){ let r=BASE.map(x=>({...x})); for(let k=0;k<=i;k++) r=REC[k][2](r);
-  $("recT").innerHTML=tabla(["Source.Name",REC[i][3]+" Fecha","Categoría"],r.map(x=>[x.o,x.f,x.c]));
-  $("recD").innerHTML=`<b>${REC[i][0]}:</b> ${REC[i][1]}`; $("recL").querySelectorAll(".op").forEach((b,j)=>b.classList.toggle("on",j===i)); }
-$("recL").querySelectorAll(".op").forEach(b=>b.onclick=()=>pintaR(+b.dataset.i)); pintaR(0);
-
-/* Tipos de combinación */
-function pintaJ(i){ const [k,a,c,b,d,f]=J[i]; $("joiL").querySelectorAll(".op").forEach((x,j)=>x.classList.toggle("on",j===i));
-  $("joiP").innerHTML=`<div class="dosc" style="align-items:center"><div>${venn(a,c,b)}</div><div>${tabla(["Producto","Ventas","Proveedor"],f.map(p=>[p,VE[p]??null,PR[p]??null]))}</div></div><p><b>${k}:</b> ${d}</p>`; }
-$("joiL").querySelectorAll(".op").forEach(b=>b.onclick=()=>pintaJ(+b.dataset.i)); pintaJ(0);
-
-/* Sonido */
 const SND={on:true,ctx:null,ready:false}; try{ SND.on=localStorage.getItem("m6sonido")!=="0"; }catch(e){}
 function sonar(d){ if(!SND.on||!SND.ready) return; try{ const A=window.AudioContext||window.webkitAudioContext; if(!A) return; const c=SND.ctx||(SND.ctx=new A()); if(c.state==="suspended") c.resume(); const o=c.createOscillator(), g=c.createGain(), t=c.currentTime+.01; o.frequency.value=d>0?880:587; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.05,t+.015); g.gain.exponentialRampToValueAtTime(.0001,t+.2); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+.22); }catch(e){} }
 const pintarSnd=()=>{ $("snd").textContent=SND.on?"🔊 Sonido":"🔇 Sin sonido"; };
 $("snd").onclick=e=>{ SND.on=!SND.on; try{ localStorage.setItem("m6sonido",SND.on?"1":"0"); }catch(_){} pintarSnd(); e.currentTarget.blur(); }; pintarSnd();
 
-/* Navegación */
 let cur=0;
 function go(i){ const prev=cur; cur=Math.max(0,Math.min(els.length-1,i)); if(cur!==prev) sonar(cur>prev?1:-1);
   els.forEach((e,j)=>e.classList.toggle("on",j===cur)); const tp=S[cur].t;
-  $("stage").classList.toggle("oscuro",els[cur].classList.contains("cover"));
+  $("stage").classList.toggle("oscuro",els[cur].classList.contains("cover")||els[cur].classList.contains("cierre"));
   dots.querySelectorAll("button").forEach((b,j)=>{ b.classList.toggle("cur",j===tp); b.classList.toggle("done",tp>j); });
   $("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
   $("topL").textContent="MANUAL DE POWER QUERY · "+SECC[tp].toUpperCase()+".";
