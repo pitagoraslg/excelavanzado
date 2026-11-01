@@ -502,7 +502,7 @@ $("cod").querySelectorAll(".mk").forEach(b=>b.onclick=()=>{ $("cod").querySelect
 let qi=0;
 function pintaQ(){ const q=QZ[qi]; $("qzN").textContent=`Pregunta ${qi+1} de ${QZ.length}`; $("qzP").textContent=q[0]; $("qzF").textContent=""; $("qzS").disabled=true; $("qzS").textContent=qi===QZ.length-1?"Volver a empezar":"Siguiente pregunta";
   $("qzR").innerHTML=q[1].map((r,i)=>`<button type="button" class="resp" data-i="${i}">${r}</button>`).join("");
-  $("qzR").querySelectorAll(".resp").forEach(b=>b.onclick=()=>{ if(+b.dataset.i===q[2]){ b.classList.add("bien"); $("qzF").textContent="✓ "+q[3]; $("qzS").disabled=false; exito(); } else { b.classList.add("mal"); $("qzF").textContent="Todavía no. Pruebe otra opción."; clic(); } }); }
+  $("qzR").querySelectorAll(".resp").forEach(b=>b.onclick=()=>{ if(+b.dataset.i===q[2]){ b.classList.add("bien"); $("qzF").textContent="✓ "+q[3]; $("qzS").disabled=false; $("qzR").querySelectorAll(".resp").forEach(x=>x.disabled=true); exito(); } else { b.classList.add("mal"); $("qzF").textContent="Todavía no. Pruebe otra opción."; clic(); } }); }
 $("qzS").onclick=()=>{ qi=(qi+1)%QZ.length; pintaQ(); }; pintaQ();
 
 /* Tarjetas y glosario */
