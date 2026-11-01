@@ -4,433 +4,541 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="img/icadep-escudo.png">
-<title>Manual de Power Query · Módulo 6</title>
+<title>Manual interactivo de Power Query · Módulo 6</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
-/* Manual de consulta: 25 hojas tamaño carta al imprimir, lectura continua en pantalla. Paleta del Módulo 6: índigo + mandarina. */
-:root{--bg:#e6e5ee;--paper:#ffffff;--ink:#2f3a8f;--text:#1f2233;--muted:#5f6275;--line:#e2e0ea;--grid:#cbc8d8;--acc:#f2994a;--acc-d:#b8641c;--acc-soft:#fdeedd;--pos:#2a9d8f;--pos-soft:#e2f3f0;--neg:#c8553d;--neg-soft:#f8e4df;--ink-soft:#e7e9f6;--serif:"Source Serif 4",Georgia,serif;--sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif;--mono:"IBM Plex Mono",Consolas,monospace;color-scheme:light}
+/* Escenario fijo 1280×720 escalado a la pantalla. Manual interactivo: poco texto y algo que probar en cada lámina. Paleta del Módulo 6: índigo + mandarina. */
+:root{
+  --bg:#e6e5ee; --paper:#f7f6f3; --card:#ffffff; --ink:#2f3a8f; --text:#1f2233; --muted:#5f6275; --line:#e2e0ea; --grid:#cbc8d8;
+  --acc:#f2994a; --acc-d:#b8641c; --acc-soft:#fdeedd; --pos:#23826f; --pos-soft:#e2f3f0; --neg:#c8553d; --neg-soft:#f8e4df; --ink-soft:#e7e9f6;
+  --serif:"Source Serif 4",Georgia,serif; --sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif; --mono:"IBM Plex Mono",Consolas,monospace;
+  color-scheme:light;
+}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:64px}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15.5px;line-height:1.5;-webkit-text-size-adjust:100%}
-.barra-sup{position:sticky;top:0;z-index:5;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;font-family:var(--mono);font-size:13px}
-.barra-sup a,.barra-sup button{font:inherit;color:#fff;background:none;border:1px solid rgba(255,255,255,.45);padding:5px 12px;cursor:pointer;text-decoration:none}
-.barra-sup a:hover,.barra-sup button:hover{background:rgba(255,255,255,.15)}
-.barra-sup .acc{display:flex;gap:8px}
-.hoja{background:var(--paper);width:min(816px,100%);margin:20px auto;padding:48px 60px 34px;box-shadow:0 8px 28px rgba(47,58,143,.14);border-top:4px solid var(--ink);display:flex;flex-direction:column}
-.cuerpo{flex:1;display:flex;flex-direction:column;gap:9px;min-width:0}
-footer{display:flex;justify-content:space-between;gap:12px;margin-top:16px;padding-top:7px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--muted)}
-h1,h2,h3{font-family:var(--serif);font-weight:600;color:var(--ink);margin:0;line-height:1.15}
-h2{font-size:29px}
-h3{font-size:18px;margin-top:7px}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;background:var(--paper);transform-origin:center;transform:translate(-50%,-50%);box-shadow:0 10px 40px rgba(47,58,143,.18);border-top:4px solid var(--ink)}
+.slide{position:absolute;inset:0;padding:56px 72px 66px;display:none;flex-direction:column;gap:14px}
+.slide.on{display:flex;animation:in .4s ease}
+@keyframes in{from{opacity:.3;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.top{position:absolute;top:20px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;z-index:3}
+.dots{display:flex;gap:6px}.dots button{width:24px;height:6px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dots button.done{background:var(--grid)}.dots button.cur{background:var(--acc)}
+.bottom{position:absolute;bottom:16px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);z-index:3}
+.navb{display:flex;gap:8px;align-items:center}
+.btn{font-family:var(--mono);font-size:13px;border:1px solid var(--grid);background:var(--card);color:var(--ink);padding:7px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink)} .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+h1,h2{font-family:var(--serif);font-weight:600;margin:0;color:var(--ink);line-height:1.08;text-wrap:balance}
+h2{font-size:36px}
 p{margin:0}
-.cap{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc-d);margin-bottom:-5px}
-.intro{font-size:16.5px;line-height:1.48}
 b{font-weight:600}
-ul,ol{margin:0;padding-left:21px;display:flex;flex-direction:column;gap:3px}
-code,kbd{font-family:var(--mono);font-size:.88em;background:var(--ink-soft);color:var(--ink);padding:0 4px;border-radius:2px}
-kbd{border:1px solid var(--grid)}
-pre{margin:0;background:#20244f;color:#f0f0f8;padding:11px 14px;overflow-x:auto;border-left:4px solid var(--acc)}
-pre code{background:none;color:inherit;padding:0;font-size:12.5px;line-height:1.5}
-.ruta{font-family:var(--mono);font-size:.84em;background:var(--ink-soft);color:var(--ink);padding:1px 5px;white-space:normal}
-table{border-collapse:collapse;width:100%;font-size:13.6px;line-height:1.36}
-th{background:var(--ink);color:#fff;text-align:left;font-weight:600;padding:5px 8px;font-size:12.6px}
-td{border-bottom:1px solid var(--line);padding:4.5px 8px;vertical-align:top}
-tbody tr:nth-child(even) td{background:#f8f8fc}
-table.mini{font-size:13px}table.mini td{padding:3px 8px}
-table.compacta{font-size:12.8px}table.compacta td{padding:2.5px 8px}
-.nota,.consejo,.ejemplo{border-left:4px solid var(--ink);background:var(--ink-soft);padding:8px 12px;font-size:14px;line-height:1.42}
-.consejo{border-left-color:var(--acc);background:var(--acc-soft)}
-.ejemplo{border-left-color:var(--pos);background:var(--pos-soft)}
-aside>b:first-child{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
-.consejo>b:first-child{color:var(--acc-d)}.ejemplo>b:first-child{color:#1f7a6e}
-.pie{font-size:12.5px;color:var(--muted);margin-top:3px}
-.dos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.dos>div{min-width:0}
-.si,.no{background:var(--pos-soft);padding:9px 12px;font-size:14px}.no{background:var(--neg-soft)}
-.si b,.no b{display:block;color:var(--ink);margin-bottom:3px}
-.flujo{display:flex;align-items:stretch;gap:7px;flex-wrap:wrap}
-.flujo span{flex:1 1 130px;background:var(--ink-soft);border-top:3px solid var(--ink);padding:8px 10px;font-size:13.5px;line-height:1.35}
-.flujo span b{display:block;color:var(--ink);font-size:14.5px}
-.flujo i{font-style:normal;color:var(--acc);font-size:22px;align-self:center}
-.editor{margin:0;border:1px solid #b9b7c6;font-size:12.5px;font-family:"Segoe UI",Arial,sans-serif}
-.editor .z i{font-style:normal;display:inline-flex;width:18px;height:18px;align-items:center;justify-content:center;border-radius:50%;background:var(--acc);color:#2a1a00;font-weight:700;font-size:11px;margin-right:4px}
-.editor .cinta{background:#217346;color:#fff;padding:6px 9px}
-.editor .barra{background:#f3f3f6;border-bottom:1px solid #d6d4e0;padding:5px 9px;font-family:var(--mono);font-size:11.5px}
-.editor .fila{display:grid;grid-template-columns:118px minmax(0,1fr) 168px}
-.editor .consultas,.editor .pasos{background:#fafafc;padding:7px 9px}
-.editor .consultas{border-right:1px solid #d6d4e0}.editor .pasos{border-left:1px solid #d6d4e0}
-.editor small{display:block;font-size:11.5px;margin-top:3px;line-height:1.45}
-.editor .datos{padding:7px;min-width:0}.editor .datos table{font-size:11.5px;margin-top:4px}.editor .datos th{background:#f3f3f6;color:#222;font-size:11.5px}
-.editor .estado{background:#f3f3f6;border-top:1px solid #d6d4e0;padding:3px 9px;font-size:11px;font-weight:600}
-.vennes{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
-.venn{margin:0;text-align:center}.venn svg{width:100%;height:auto;display:block}.venn figcaption{font-size:11.5px;line-height:1.2;color:var(--ink);font-weight:600;margin-top:2px}
-.dos-col{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,auto);grid-auto-flow:column;gap:2px 30px;font-size:14px}
-.indice{columns:2;column-gap:30px;font-size:14px}
-.indice a{display:flex;align-items:baseline;gap:6px;color:var(--text);text-decoration:none;padding:1px 0}
-.indice a:hover span{color:var(--ink);text-decoration:underline}
-.indice a i{flex:1;border-bottom:1px dotted var(--grid)}
-.indice a b{font-family:var(--mono);font-size:12.5px;color:var(--ink)}
-.i-cap{font-family:var(--serif);font-weight:600;font-size:15.5px;color:var(--ink);margin-top:7px;break-after:avoid}
-.refs{list-style:none;padding:0;gap:7px;font-size:13.4px;line-height:1.4}
-.refs li{padding-left:28px;text-indent:-28px}
+.eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.11em;text-transform:uppercase;color:var(--acc-d)}
+.lead{font-size:19px;line-height:1.42}
+.hazlo{font-family:var(--mono);font-size:12.5px;color:var(--ink);background:var(--acc-soft);border-left:4px solid var(--acc);padding:5px 10px;align-self:flex-start}
+code{font-family:var(--mono);font-size:.9em;background:var(--ink-soft);color:var(--ink);padding:1px 5px}
+.ruta{font-family:var(--mono);font-size:13.5px;background:var(--ink-soft);color:var(--ink);padding:3px 8px;display:inline-block}
+.grow1{flex:1;min-height:0}
+
+/* Selector: botones + panel */
+.pick{display:flex;flex-direction:column;gap:12px;flex:1;min-height:0}
+.pick.lado{display:grid;grid-template-columns:320px 1fr;gap:18px}
+.opts{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+.pick.lado .opts{flex-direction:column;flex-wrap:nowrap}
+.op{font-family:var(--sans);font-size:15.5px;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--grid);padding:9px 14px;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.op:hover{border-color:var(--ink)}
+.op.on{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
+.panel{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--acc);padding:18px 22px;display:flex;flex-direction:column;gap:11px;min-height:0;font-size:17.5px;line-height:1.42;animation:pop .3s ease}
+.pick .panel{flex:1;justify-content:center;font-size:20px}
+.panel h3{font-family:var(--serif);font-size:27px;font-weight:600;color:var(--ink);margin:0}
+.panel .eje{font-size:15.5px;background:var(--pos-soft);border-left:4px solid var(--pos);padding:7px 11px}
+.panel .ojo{font-size:15.5px;background:var(--acc-soft);border-left:4px solid var(--acc);padding:7px 11px}
+
+/* Tablas de muestra */
+table.t{border-collapse:collapse;width:100%;font-size:15px;background:var(--card);font-variant-numeric:tabular-nums}
+.t th{background:var(--ink);color:#fff;text-align:left;padding:6px 10px;font-weight:600;font-size:14px;white-space:nowrap}
+.t td{border-bottom:1px solid var(--line);padding:6px 10px;white-space:nowrap}
+.t .r{text-align:right}
+.t tr.fuera td{background:var(--neg-soft);color:#8f2f1c;text-decoration:line-through}
+.t td.nul{color:#888;font-style:italic}
+.t td.nuevo,.t th.nuevo{background:var(--acc-soft);color:#2a1a00}
+.t td.bien{background:var(--pos-soft)}
+.estado{font-family:var(--mono);font-size:13px;color:var(--ink);font-weight:600}
+.dosc{display:grid;grid-template-columns:1fr 1fr;gap:18px;min-height:0}
+.cap{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.flecha{color:var(--acc);font-size:28px;text-align:center;align-self:center}
+.camp{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:16px}
+input[type=text],input[type=date],select{font-family:var(--mono);font-size:16px;padding:7px 10px;border:1.5px solid var(--grid);background:#fff;color:var(--text)}
+input[type=text]{width:100%}
+input[type=range]{accent-color:var(--ink);flex:1;min-width:180px}
+.resul{font-family:var(--mono);font-size:21px;color:var(--ink);background:var(--ink-soft);padding:10px 14px;min-height:50px;white-space:pre-wrap;word-break:break-word}
+.sp{background:var(--neg-soft);color:var(--neg);padding:0 1px}
+
+/* Flujo de etapas */
+.etapas{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr 34px 1fr;gap:6px;align-items:stretch}
+.etapas .a{color:var(--acc);font-size:26px;display:flex;align-items:center;justify-content:center}
+.etapa{font-family:var(--sans);background:var(--card);border:1.5px solid var(--grid);border-top:5px solid var(--ink);padding:14px;text-align:left;cursor:pointer;color:var(--ink);font-size:20px;font-weight:600}
+.etapa.on{background:var(--ink);color:#fff}
+
+/* Editor */
+.ed{border:1px solid #b9b7c6;background:#fff;font-family:"Segoe UI",Arial,sans-serif;font-size:14px;display:flex;flex-direction:column}
+.zona{all:unset;box-sizing:border-box;cursor:pointer;display:block;padding:7px 10px;transition:box-shadow .15s}
+.zona:hover{box-shadow:inset 0 0 0 2px var(--acc)}
+.zona.on{box-shadow:inset 0 0 0 3px var(--acc)}
+.zona:focus-visible{outline:3px solid var(--acc)}
+.z1{background:#217346;color:#fff}.z2{background:#f3f3f6;font-family:var(--mono);font-size:12.5px;border-bottom:1px solid #d6d4e0}
+.zfila{display:grid;grid-template-columns:120px 1fr 170px;min-height:220px;flex:1}
+.z3,.z5{background:#fafafc;font-size:13px;line-height:1.6}.z3{border-right:1px solid #d6d4e0}.z5{border-left:1px solid #d6d4e0}
+.z6{background:#f3f3f6;border-top:1px solid #d6d4e0;font-size:12.5px;font-weight:600}
+.num{display:inline-flex;width:21px;height:21px;border-radius:50%;background:var(--acc);color:#2a1a00;font-weight:700;font-size:12px;align-items:center;justify-content:center;margin-right:6px}
+
+/* Lista de pasos */
+.pasos{display:flex;flex-direction:column;gap:4px}
+.paso{all:unset;box-sizing:border-box;cursor:pointer;font-size:15.5px;padding:6px 11px;border:1px solid var(--line);background:var(--card)}
+.paso:hover{border-color:var(--ink)}.paso.on{background:#dfe7f7;outline:1px solid #9fb3df;font-weight:600}
+.paso:focus-visible{outline:3px solid var(--acc)}
+
+/* Venn */
+.venn svg{display:block;height:170px;margin:0 auto}
+.venn circle,.venn path{transition:fill .25s}
+
+/* Código M */
+.cod{background:#20244f;color:#f0f0f8;font-family:var(--mono);font-size:13.8px;line-height:2;padding:16px 18px;white-space:pre-wrap;border-left:4px solid var(--acc)}
+.mk{all:unset;cursor:pointer;border-bottom:2px dotted var(--acc);padding:0 2px}
+.mk:hover,.mk.on{background:var(--acc);color:#2a1a00}
+.mk:focus-visible{outline:2px solid #fff}
+
+/* Prueba */
+.preg{font-family:var(--serif);font-size:25px;line-height:1.28;color:var(--ink)}
+.resps{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.resp{font-family:var(--sans);font-size:17px;text-align:left;background:var(--card);color:var(--text);border:1.5px solid var(--grid);padding:13px 16px;cursor:pointer}
+.resp:hover{border-color:var(--ink)}
+.resp.bien{background:var(--pos-soft);border-color:var(--pos);font-weight:600}
+.resp.mal{background:var(--neg-soft);border-color:var(--neg)}
+.fb{font-size:17px;min-height:50px;line-height:1.4}
+
+/* Tarjetas que giran */
+.giros{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;flex:1;min-height:0}
+.giro{all:unset;cursor:pointer;perspective:900px;display:block}
+.giro:focus-visible{outline:3px solid var(--acc)}
+.giro .in{position:relative;display:block;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+.giro.on .in{transform:rotateY(180deg)}
+.giro .ca{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;box-sizing:border-box}
+.giro .fr{background:var(--card);border:1px solid var(--line);border-top:5px solid var(--acc);font-family:var(--serif);font-size:23px;font-weight:600;color:var(--ink)}
+.giro .at{background:var(--ink);color:#fff;font-size:17.5px;line-height:1.4;transform:rotateY(180deg)}
+
+/* Glosario */
+.glos{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;align-content:start;overflow:hidden;flex:1;min-height:0}
+.glos div{display:grid;grid-template-columns:165px 1fr;gap:10px;font-size:15.5px;padding:4px 0;border-bottom:1px solid var(--line)}
+.glos b{color:var(--ink)}
+
+/* Mapa */
+.mapa{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;flex:1;min-height:0}
+.mapa button{all:unset;box-sizing:border-box;cursor:pointer;background:var(--card);border:1px solid var(--line);border-top:4px solid var(--ink);padding:13px 17px;display:flex;flex-direction:column;gap:4px;transition:transform .15s,border-color .15s}
+.mapa button:hover{transform:translateY(-3px);border-top-color:var(--acc)}
+.mapa button:focus-visible{outline:3px solid var(--acc)}
+.mapa .n{font-family:var(--serif);font-size:27px;color:var(--acc);line-height:1}
+.mapa b{font-size:18px;color:var(--ink)}.mapa span{font-size:14.5px;color:var(--muted)}
+
+/* Actualizar */
+.cuenta{font-family:var(--serif);font-size:52px;font-weight:600;color:var(--ink);line-height:1;transition:color .3s}
+.archivos{display:flex;flex-direction:column;gap:6px}
+.arch{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);padding:8px 12px;font-size:15.5px;animation:pop .3s ease}
+.arch i{font-style:normal;display:inline-flex;align-items:center;justify-content:center;width:26px;height:28px;background:#1d6f42;color:#fff;font-weight:700;font-size:12px}
+.arch.nuevo{border:2px dashed var(--acc);background:var(--acc-soft)}
+
+.refs{list-style:none;margin:0;padding:10px 0 0;border-top:2px solid var(--ink);columns:2;column-gap:30px;font-size:12.6px;line-height:1.36}
+.refs li{padding-left:22px;text-indent:-22px;margin-bottom:6px;break-inside:avoid}
 .refs a{color:var(--ink);word-break:break-all;text-decoration:none}
-.portada{position:relative;background:var(--ink);color:#fff;border-top:0;justify-content:center;min-height:720px}
-.portada .cuerpo{justify-content:center;gap:20px}
-.portada .logo{background:#fff;padding:12px 16px;height:100px;width:auto;align-self:flex-start;margin-bottom:34px}
-.portada .mod{font-family:var(--mono);font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#f8c9a0}
-.portada h1{color:#fff;font-size:62px;line-height:1.03}
-.portada .sub{font-family:var(--serif);font-size:23px;line-height:1.3;color:#dadcf2;max-width:560px}
-.portada .flujo.grande{margin:28px 0}
-.portada .flujo.grande span{background:rgba(255,255,255,.1);border-top-color:var(--acc);color:#fff;text-align:center;font-weight:600;flex:1 1 100px}
-.portada .autor{font-size:19px;color:#fff}.portada .autor b{color:#f8c9a0}
-.portada .inst{font-family:var(--mono);font-size:13px;color:#dadcf2}
-@media (max-width:640px){
-  body{font-size:15px}
-  .hoja{margin:0 0 10px;padding:28px 16px 18px;box-shadow:none}
-  h2{font-size:25px}.portada h1{font-size:44px}.portada .sub{font-size:20px}
-  .dos{grid-template-columns:1fr}.dos-col{display:flex}.indice{columns:1}
-  .vennes{grid-template-columns:repeat(3,1fr)}
-  .editor .fila{grid-template-columns:1fr}.editor .consultas,.editor .pasos{border:0;border-bottom:1px solid #d6d4e0}
-  table{font-size:13.5px}th,td{padding:4px 5px}
-  .cuerpo{overflow-wrap:anywhere}
-  footer{font-size:10.5px}
-}
-@media print{
-  @page{size:letter;margin:0}
-  html,body{background:#fff}
-  .barra-sup{display:none}
-  .hoja{width:8.5in;height:11in;margin:0;box-shadow:none;border-top:0;overflow:hidden;break-after:page;break-inside:avoid;padding:.5in .62in .32in}
-  .hoja:last-of-type{break-after:auto}
-  .cuerpo{zoom:var(--z,1)}
-  .portada{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  th,tbody tr:nth-child(even) td,.nota,.consejo,.ejemplo,.si,.no,.flujo span,.editor *,pre,code,kbd,.ruta{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-}
+
+/* Portada */
+.cover{justify-content:center;gap:18px;background:var(--ink);color:#fff}
+.cover-logo{position:absolute;top:50px;right:72px;height:90px;width:auto;background:#fff;padding:9px 13px}
+.cover .mod{font-family:var(--mono);font-size:16px;letter-spacing:.14em;text-transform:uppercase;color:#f8c9a0}
+.cover h1{font-size:70px;color:#fff;max-width:900px}
+.cover .sub{font-family:var(--serif);font-size:25px;color:#dadcf2;max-width:760px;line-height:1.3}
+.cover .by{font-size:20px}.cover .by b{color:#f8c9a0}
+.cover .hint{font-family:var(--mono);font-size:13.5px;color:#dadcf2}
+#stage.oscuro .top,#stage.oscuro .bottom{color:#d5d8ef}
+#stage.oscuro .btn.primary{background:var(--acc);border-color:var(--acc);color:#2a1a00}
+
+#giroTel{display:none;position:fixed;inset:0;z-index:9;background:var(--ink);color:#fff;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:20px;line-height:1.4}
+@media (max-width:640px) and (orientation:portrait){#giroTel{display:flex}}
+@media (prefers-reduced-motion:reduce){.slide.on,.panel,.arch,.giro .in{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<nav class="barra-sup" aria-label="Manual"><span>MANUAL DE POWER QUERY</span><span class="acc"><a href="#p2">Contenido</a><button type="button" onclick="window.print()">Imprimir</button></span></nav>
-<main>
-<article class="hoja portada" id="p1"><div class="cuerpo">
-  <img class="logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
-  <p class="mod">Módulo 6 · Material de consulta</p>
-  <h1>Manual de Power Query.</h1>
-  <p class="sub">Qué es, para qué sirve y qué hace cada una de sus opciones en Excel.</p>
-  <div class="flujo grande"><span>Obtener</span><i>→</i><span>Transformar</span><i>→</i><span>Cargar</span><i>↻</i><span>Actualizar</span></div>
-  <p class="autor">Por: <b>Jarlin Figueroa, MA</b></p>
-  <p class="inst">Curso de Excel Avanzado · Instituto ICADEP-XXI · 2026</p></div></article>
-<article class="hoja" id="p2"><div class="cuerpo" style="--z:1.04">
-  <h2>Contenido.</h2>
-  <p>Este manual es un material para <b>ampliar</b> lo visto en clase. No es una práctica: explica la herramienta en términos generales, para que pueda consultar una opción cuando la necesite. No hace falta leerlo en orden.</p>
-  <div id="indice" class="indice"><p class="i-cap">1. Fundamentos</p><a href="#p3"><span>¿Qué es Power Query?</span><i></i><b>3</b></a><a href="#p4"><span>Para qué sirve</span><i></i><b>4</b></a><a href="#p5"><span>Power Query frente a otras herramientas</span><i></i><b>5</b></a><a href="#p6"><span>Versiones y dónde encontrarlo</span><i></i><b>6</b></a><p class="i-cap">2. El editor</p><a href="#p7"><span>El Editor de Power Query</span><i></i><b>7</b></a><a href="#p8"><span>Las pestañas de la cinta</span><i></i><b>8</b></a><a href="#p9"><span>Consultas y pasos aplicados</span><i></i><b>9</b></a><p class="i-cap">3. Obtener datos</p><a href="#p10"><span>Orígenes de datos</span><i></i><b>10</b></a><a href="#p11"><span>Carpetas, credenciales y privacidad</span><i></i><b>11</b></a><p class="i-cap">4. Tipos de datos</p><a href="#p12"><span>Tipos de datos</span><i></i><b>12</b></a><p class="i-cap">5. Transformar</p><a href="#p13"><span>Trabajar con filas</span><i></i><b>13</b></a><a href="#p14"><span>Trabajar con columnas</span><i></i><b>14</b></a><a href="#p15"><span>Texto, números y fechas</span><i></i><b>15</b></a><a href="#p16"><span>Reemplazar, rellenar y manejar errores</span><i></i><b>16</b></a><p class="i-cap">6. Crear y resumir</p><a href="#p17"><span>Agregar columnas</span><i></i><b>17</b></a><a href="#p18"><span>Agrupar y resumir</span><i></i><b>18</b></a><a href="#p19"><span>Dinamizar y anular dinamización</span><i></i><b>19</b></a><p class="i-cap">7. Unir consultas</p><a href="#p20"><span>Anexar y combinar consultas</span><i></i><b>20</b></a><a href="#p21"><span>Tipos de combinación</span><i></i><b>21</b></a><p class="i-cap">8. Entregar los datos</p><a href="#p22"><span>Cargar y actualizar</span><i></i><b>22</b></a><p class="i-cap">9. Ir más allá</p><a href="#p23"><span>El lenguaje M y los parámetros</span><i></i><b>23</b></a><a href="#p24"><span>Buenas prácticas, rendimiento y glosario</span><i></i><b>24</b></a><p class="i-cap">Bibliografía</p><a href="#p25"><span>Referencias</span><i></i><b>25</b></a></div>
-  <aside class="nota"><b>Para recordar</b><p>Los nombres de botones y menús corresponden a Excel para Windows en español. Según su versión, alguno puede variar un poco o estar en otro lugar.</p></aside>
-  <h3>Cómo aprovechar este manual.</h3>
-  <table class=""><thead><tr><th>Si quiere…</th><th>Vaya a</th></tr></thead><tbody><tr><td>Entender qué es y cuándo usarlo</td><td>Capítulo 1</td></tr><tr><td>Ubicarse en la ventana y en la cinta</td><td>Capítulo 2</td></tr><tr><td>Saber qué hace una opción concreta</td><td>Capítulos 3 a 7</td></tr><tr><td>Dejar listos sus datos en Excel</td><td>Capítulo 8</td></tr><tr><td>Dar el siguiente paso</td><td>Capítulo 9</td></tr></tbody></table>
-  <p>Cada capítulo incluye recuadros: <b>Para recordar</b> resume lo esencial, <b>Ejemplo</b> muestra un caso y <b>Consejo</b> comparte una recomendación de uso.</p></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 2 de 25</span></footer></article>
-<article class="hoja" id="p3"><div class="cuerpo" style="--z:1.08">
-  <p class="cap">Capítulo 1</p><h2>¿Qué es Power Query?</h2>
-  <p class="intro">Power Query es la herramienta de Excel para <b>conectarse a datos, prepararlos y dejarlos listos para analizar</b>, sin escribir fórmulas y sin modificar los archivos originales.</p>
-  <p>Casi todo análisis empieza igual: alguien recibe datos que no están listos. Vienen en varios archivos, con columnas que sobran, fechas escritas de distintas formas o números guardados como texto. Preparar esos datos suele tomar más tiempo que analizarlos, y la mayor parte de ese trabajo se repite cada semana o cada mes.</p>
-  <p>Power Query resuelve ese problema con una idea sencilla: cada acción que usted hace <b>queda grabada como un paso</b>. La lista de pasos forma una receta que se puede repetir con un clic cuando llegan datos nuevos.</p>
-  <h3>Las tres etapas: obtener, transformar y cargar.</h3>
-  <div class="flujo"><span><b>Obtener</b>Conectarse al origen de los datos.</span><i>→</i><span><b>Transformar</b>Limpiar, corregir y dar forma.</span><i>→</i><span><b>Cargar</b>Llevar el resultado a Excel.</span></div>
-  <p>En el mundo de los datos, este proceso se conoce como <b>ETL</b>, por sus siglas en inglés: <i>extract, transform, load</i> (extraer, transformar y cargar). Durante años fue una tarea reservada a especialistas con herramientas costosas. Power Query la pone al alcance de cualquier persona que use Excel.</p>
-  <h3>Tres ideas que lo explican todo.</h3>
-  <table class=""><thead><tr><th>Idea</th><th>Qué significa</th><th>Por qué importa</th></tr></thead><tbody><tr><td><b>Conexión</b></td><td>Power Query recuerda dónde están los datos, en lugar de copiarlos a mano.</td><td>Si el origen cambia, basta con actualizar.</td></tr><tr><td><b>Consulta</b></td><td>Es el conjunto formado por la conexión y sus pasos. Tiene un nombre y se guarda en el libro.</td><td>Un libro puede tener muchas consultas.</td></tr><tr><td><b>Pasos aplicados</b></td><td>Son las acciones grabadas, en orden.</td><td>Se pueden revisar, corregir o quitar en cualquier momento.</td></tr></tbody></table>
-  <aside class="nota"><b>Para recordar</b><p>Power Query no cambia los archivos de origen. Trabaja sobre una copia de los datos y lleva el resultado a Excel.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 3 de 25</span></footer></article>
-<article class="hoja" id="p4"><div class="cuerpo" style="--z:1.07">
-  <p class="cap">Capítulo 1</p><h2>Para qué sirve.</h2>
-  <p class="intro">Su utilidad principal es <b>ahorrar trabajo repetitivo y reducir errores</b>. El esfuerzo se hace una vez y los resultados se repiten.</p>
-  <h3>Beneficios principales.</h3>
-  <table class=""><thead><tr><th>Beneficio</th><th>Explicación</th></tr></thead><tbody><tr><td><b>Automatiza</b></td><td>Una tarea que tomaba una hora cada mes se convierte en pulsar un botón.</td></tr><tr><td><b>Reduce errores</b></td><td>Se evita copiar y pegar. Las mismas reglas se aplican siempre, sin olvidos.</td></tr><tr><td><b>Protege los originales</b></td><td>Los archivos fuente quedan intactos, por lo que siempre se puede volver a empezar.</td></tr><tr><td><b>Deja documentado el proceso</b></td><td>Cualquier persona puede abrir la consulta y ver qué se hizo y en qué orden.</td></tr><tr><td><b>Une fuentes distintas</b></td><td>Permite reunir archivos de Excel, texto, carpetas, páginas web y bases de datos.</td></tr><tr><td><b>Maneja más datos</b></td><td>Con el modelo de datos se puede trabajar con más filas de las que caben en una hoja.</td></tr></tbody></table>
-  <h3>Usos frecuentes por área.</h3>
-  <table class=""><thead><tr><th>Área</th><th>Ejemplo de uso</th></tr></thead><tbody><tr><td>Ventas</td><td>Unir cada mes los archivos de todas las sucursales en una sola tabla.</td></tr><tr><td>Finanzas</td><td>Consolidar estados de cuenta y clasificar movimientos con las mismas reglas.</td></tr><tr><td>Recursos humanos</td><td>Reunir nóminas o asistencia de varios departamentos.</td></tr><tr><td>Salud y seguros</td><td>Consolidar reportes que llegan de distintas instituciones.</td></tr><tr><td>Educación</td><td>Reunir calificaciones de varios cursos y unirlas con los datos de los estudiantes.</td></tr><tr><td>Inventario</td><td>Cruzar existencias con el catálogo de productos y sus proveedores.</td></tr></tbody></table>
-  <aside class="ejemplo"><b>Ejemplo</b><p>Una empresa recibe cada mes un archivo de ventas por sucursal. Sin Power Query, alguien copia, pega y corrige formatos cada mes. Con Power Query, esa persona solo guarda los archivos nuevos en la carpeta y pulsa Actualizar todo.</p></aside>
-  <aside class="consejo"><b>Consejo</b><p>Una buena señal para usar Power Query es pensar: «este mismo arreglo ya lo hice el mes pasado».</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 4 de 25</span></footer></article>
-<article class="hoja" id="p5"><div class="cuerpo" style="--z:1.08">
-  <p class="cap">Capítulo 1</p><h2>Power Query frente a otras herramientas.</h2>
-  <p class="intro">Power Query no reemplaza a las demás herramientas de Excel. Cada una tiene su función, y lo más común es <b>usarlas juntas</b>.</p>
-  <table class=""><thead><tr><th>Herramienta</th><th>Sirve sobre todo para</th><th>Se recomienda cuando</th></tr></thead><tbody><tr><td><b>Fórmulas</b></td><td>Calcular valores celda por celda.</td><td>Necesita un resultado que cambie al momento al modificar una celda.</td></tr><tr><td><b>Tablas dinámicas</b></td><td>Resumir y explorar datos ya preparados.</td><td>Los datos ya están limpios y quiere analizarlos desde varios ángulos.</td></tr><tr><td><b>Power Query</b></td><td>Preparar los datos antes de analizarlos.</td><td>Los datos llegan sucios, repartidos o se repiten cada cierto tiempo.</td></tr><tr><td><b>Macros y VBA</b></td><td>Automatizar acciones dentro de Excel.</td><td>Debe controlar la interfaz, dar formato a informes o crear procesos a la medida.</td></tr><tr><td><b>Power Pivot</b></td><td>Relacionar tablas y crear medidas.</td><td>El análisis usa varias tablas relacionadas o grandes volúmenes de datos.</td></tr></tbody></table>
-  <h3>El recorrido habitual de los datos.</h3>
-  <div class="flujo"><span><b>Power Query</b>Prepara los datos.</span><i>→</i><span><b>Tabla o modelo</b>Guarda los datos listos.</span><i>→</i><span><b>Tablas y gráficos</b>Analizan y muestran.</span></div>
-  <h3>¿Cuándo conviene y cuándo no?</h3>
-  <div class="dos"><div class="si"><b>Conviene cuando…</b><ul><li>El trabajo se repite con frecuencia.</li><li>La información llega en varios archivos.</li><li>Los datos necesitan siempre los mismos arreglos.</li><li>Otra persona debe poder revisar el proceso.</li></ul></div>
-  <div class="no"><b>Puede no hacer falta cuando…</b><ul><li>Es un arreglo pequeño que se hará una sola vez.</li><li>Los datos ya están limpios en una sola tabla.</li><li>Solo necesita un cálculo: una fórmula basta.</li><li>Necesita que el resultado cambie sin actualizar.</li></ul></div></div>
-  <aside class="nota"><b>Para recordar</b><p>Una diferencia importante: una fórmula se recalcula sola, pero una consulta <b>solo cambia cuando se actualiza</b>.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 5 de 25</span></footer></article>
-<article class="hoja" id="p6"><div class="cuerpo" style="--z:1.08">
-  <p class="cap">Capítulo 1</p><h2>Versiones y dónde encontrarlo.</h2>
-  <p class="intro">Power Query nació como un complemento y hoy viene incluido en Excel. Su nombre cambió con el tiempo, por eso puede verlo con distintos títulos.</p>
-  <table class=""><thead><tr><th>Versión de Excel</th><th>Cómo se encuentra</th></tr></thead><tbody><tr><td>Excel 2010 y 2013</td><td>Era un complemento gratuito que se instalaba aparte y agregaba la pestaña Power Query.</td></tr><tr><td>Excel 2016</td><td>Viene incluido en la pestaña Datos. En algunas actualizaciones aparece como Nueva consulta.</td></tr><tr><td>Excel 2019, 2021 y Microsoft 365</td><td>Viene incluido en <span class="ruta">Datos › Obtener y transformar datos</span>.</td></tr><tr><td>Excel para Mac y para la web</td><td>Las funciones disponibles son más limitadas y cambian con las actualizaciones. Compruebe qué permite su versión.</td></tr></tbody></table>
-  <h3>Cómo abrirlo.</h3>
-  <table class=""><thead><tr><th>Quiere…</th><th>Ruta</th></tr></thead><tbody><tr><td>Crear una consulta nueva</td><td><span class="ruta">Datos › Obtener datos</span></td></tr><tr><td>Abrir el editor sin crear nada</td><td><span class="ruta">Datos › Obtener datos › Iniciar el Editor de Power Query</span></td></tr><tr><td>Ver las consultas del libro</td><td><span class="ruta">Datos › Consultas y conexiones</span></td></tr><tr><td>Editar una consulta existente</td><td>En el panel de consultas: clic derecho en la consulta › <b>Editar</b></td></tr><tr><td>Actualizar todas las consultas</td><td><span class="ruta">Datos › Actualizar todo</span> o <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>F5</kbd></td></tr></tbody></table>
-  <h3>No solo está en Excel.</h3>
-  <p>El mismo motor se usa en <b>Power BI</b> y en otros servicios de Microsoft. Por eso, lo que aprenda en Excel también le servirá allí: la interfaz es muy parecida y el lenguaje de fondo es el mismo.</p>
-  <aside class="consejo"><b>Consejo</b><p>Si busca ayuda en internet, pruebe también en inglés. Los menús se llaman <i>Get &amp; Transform</i> y el editor, <i>Power Query Editor</i>. Hay mucha más información disponible en ese idioma.</p></aside>
-  <aside class="nota"><b>Para recordar</b><p>Algunos conectores, como ciertas bases de datos o servicios en línea, dependen de la edición de Microsoft Office que tenga instalada.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 6 de 25</span></footer></article>
-<article class="hoja" id="p7"><div class="cuerpo" style="--z:1.08">
-  <p class="cap">Capítulo 2</p><h2>El Editor de Power Query.</h2>
-  <p class="intro">El editor es la ventana donde se transforman los datos. Se abre aparte de Excel y tiene cinco zonas que conviene reconocer.</p>
-  <figure class="editor" aria-label="Zonas del Editor de Power Query">
-    <div class="z cinta"><i>1</i> Cinta: Archivo · Inicio · Transformar · Agregar columna · Vista</div>
-    <div class="z barra"><i>2</i> Barra de fórmulas: = Table.ReplaceValue(…)</div>
-    <div class="fila"><div class="z consultas"><i>3</i> Consultas<small>Ventas<br>Productos<br>Regiones</small></div>
-    <div class="z datos"><i>4</i> Vista previa de datos<table><tr><th>ABC Producto</th><th>📅 Fecha</th><th>123 Monto</th></tr><tr><td>Licuadora</td><td>15/1/2026</td><td>4800</td></tr><tr><td>Olla de 5 litros</td><td>16/1/2026</td><td>1900</td></tr></table></div>
-    <div class="z pasos"><i>5</i> Configuración de la consulta<small>Nombre: Ventas<br><b>Pasos aplicados</b><br>Origen<br>Tipo cambiado<br>Filas filtradas</small></div></div>
-    <div class="z estado">Barra de estado: 3 columnas, 90 filas</div>
-  </figure>
-  <table class=""><thead><tr><th>Zona</th><th>Para qué sirve</th></tr></thead><tbody><tr><td><b>1. Cinta</b></td><td>Reúne los comandos. Se organiza en pestañas, igual que en Excel.</td></tr><tr><td><b>2. Barra de fórmulas</b></td><td>Muestra el código del paso seleccionado. Si no la ve, actívela en la pestaña Vista.</td></tr><tr><td><b>3. Panel de consultas</b></td><td>Lista todas las consultas del libro. Puede estar contraído a la izquierda.</td></tr><tr><td><b>4. Vista previa</b></td><td>Muestra los datos después del paso seleccionado. Cada columna indica su tipo con un icono.</td></tr><tr><td><b>5. Configuración de la consulta</b></td><td>Permite cambiar el nombre de la consulta y revisar los pasos aplicados.</td></tr></tbody></table>
-  <h3>Los menús rápidos.</h3>
-  <p>Casi todo se puede hacer de dos formas: desde la cinta o con <b>clic derecho en el encabezado</b> de la columna. El clic derecho muestra solo las acciones posibles para esa columna, y suele ser el camino más rápido.</p>
-  <aside class="nota"><b>Para recordar</b><p>La vista previa es una <b>muestra</b> de los datos, no siempre el total. La barra de estado indica cuántas filas se están mostrando. El resultado completo se ve al cargar.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 7 de 25</span></footer></article>
-<article class="hoja" id="p8"><div class="cuerpo" style="--z:1.02">
-  <p class="cap">Capítulo 2</p><h2>Las pestañas de la cinta.</h2>
-  <p class="intro">Conocer cómo se organiza la cinta ayuda a encontrar cualquier opción. Cada pestaña responde a una pregunta distinta.</p>
-  <table class=""><thead><tr><th>Pestaña</th><th>Responde a</th><th>Grupos y opciones principales</th></tr></thead><tbody><tr><td><b>Inicio</b></td><td>¿Qué hago con la consulta?</td><td>Cerrar y cargar · Actualizar vista previa · Administrar columnas · Reducir filas · Ordenar · Combinar · Parámetros · Nuevo origen</td></tr><tr><td><b>Transformar</b></td><td>¿Cómo cambio lo que ya existe?</td><td>Agrupar por · Usar la primera fila como encabezado · Transponer · Invertir filas · Detectar tipo de datos · Reemplazar los valores · Rellenar · Dinamizar · Dividir columna · Formato · Extraer</td></tr><tr><td><b>Agregar columna</b></td><td>¿Cómo creo una columna nueva?</td><td>Columna a partir de los ejemplos · Columna personalizada · Columna condicional · Columna de índice · Duplicar columna</td></tr><tr><td><b>Vista</b></td><td>¿Qué quiero ver?</td><td>Configuración de la consulta · Barra de fórmulas · Calidad de columna · Distribución de columnas · Perfil de columna · Editor avanzado · Dependencias de la consulta</td></tr></tbody></table>
-  <h3>Transformar o Agregar columna: una diferencia clave.</h3>
-  <p>Varios comandos aparecen en las dos pestañas, como Formato, Extraer o Fecha. La diferencia es dónde queda el resultado:</p>
-  <div class="dos"><div class="si"><b>Pestaña Transformar</b><ul><li>Cambia la columna seleccionada.</li><li>El valor original se reemplaza.</li></ul></div><div class="si"><b>Pestaña Agregar columna</b><ul><li>Crea una columna nueva.</li><li>La columna original se conserva.</li></ul></div></div>
-  <h3>Herramientas para conocer los datos.</h3>
-  <p>En la pestaña <b>Vista</b> hay tres opciones que dan un diagnóstico de cada columna antes de transformarla:</p>
-  <table class=""><thead><tr><th>Opción</th><th>Qué muestra</th><th>Cómo ayuda</th></tr></thead><tbody><tr><td><b>Calidad de columna</b></td><td>Porcentaje de valores válidos, con error y vacíos.</td><td>Detecta problemas de inmediato.</td></tr><tr><td><b>Distribución de columnas</b></td><td>Cuántos valores distintos y únicos hay.</td><td>Revela duplicados y variantes de escritura.</td></tr><tr><td><b>Perfil de columna</b></td><td>Estadísticas de la columna seleccionada.</td><td>Muestra mínimo, máximo, promedio y más.</td></tr></tbody></table>
-  <aside class="consejo"><b>Consejo</b><p>Por defecto, estos datos se calculan con las primeras 1,000 filas. Para analizar toda la tabla, haga clic en ese mensaje en la barra de estado y elija el conjunto de datos completo.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 8 de 25</span></footer></article>
-<article class="hoja" id="p9"><div class="cuerpo" style="--z:1.02">
-  <p class="cap">Capítulo 2</p><h2>Consultas y pasos aplicados.</h2>
-  <p class="intro">Los pasos aplicados son el corazón de Power Query. Entender cómo funcionan evita la mayoría de los errores.</p>
-  <h3>Cómo funcionan.</h3>
-  <ul><li>Cada acción agrega un paso al final de la lista, con un nombre automático.</li><li>Los pasos se ejecutan en orden, de arriba hacia abajo.</li><li>Cada paso trabaja sobre el resultado del anterior.</li><li>Al hacer clic en un paso, la vista previa muestra los datos en ese momento.</li></ul>
-  <h3>Qué se puede hacer con un paso.</h3>
-  <table class=""><thead><tr><th>Acción</th><th>Cómo</th><th>Para qué</th></tr></thead><tbody><tr><td><b>Ver</b></td><td>Clic en el paso.</td><td>Volver a un momento anterior sin perder nada.</td></tr><tr><td><b>Modificar</b></td><td>Clic en el engrane ⚙ junto al paso.</td><td>Cambiar sus opciones sin repetirlo.</td></tr><tr><td><b>Quitar</b></td><td>Clic en la ✕ junto al paso.</td><td>Deshacer esa acción.</td></tr><tr><td><b>Cambiar el nombre</b></td><td>Clic derecho › Cambiar nombre.</td><td>Dejar claro qué hace el paso.</td></tr><tr><td><b>Mover</b></td><td>Arrastrar, o clic derecho › Mover.</td><td>Cambiar el orden. Hágalo con cuidado.</td></tr><tr><td><b>Insertar en medio</b></td><td>Seleccione un paso y aplique la acción.</td><td>Agregar un paso entre dos existentes.</td></tr></tbody></table>
-  <h3>Duplicar o referenciar una consulta.</h3>
-  <p>Con clic derecho en una consulta aparecen dos opciones que se confunden con frecuencia:</p>
-  <table class=""><thead><tr><th>Opción</th><th>Qué hace</th><th>Se usa para</th></tr></thead><tbody><tr><td><b>Duplicar</b></td><td>Crea una copia independiente, con todos los pasos.</td><td>Probar cambios o crear una variante sin afectar la original.</td></tr><tr><td><b>Referencia</b></td><td>Crea una consulta nueva que parte del resultado de la original.</td><td>Reutilizar una base común. Si la original cambia, esta también.</td></tr></tbody></table>
-  <p>Para ver cómo se relacionan las consultas del libro, use <span class="ruta">Vista › Dependencias de la consulta</span>. Muestra un diagrama de qué depende de qué.</p>
-  <aside class="consejo"><b>Consejo</b><p>Si quita o cambia un paso del medio, los siguientes pueden fallar, porque esperaban algo que ya no existe. Por ejemplo, si un paso usa una columna que un paso anterior acaba de renombrar. Revise siempre el último paso después de un cambio.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 9 de 25</span></footer></article>
-<article class="hoja" id="p10"><div class="cuerpo" style="--z:1">
-  <p class="cap">Capítulo 3</p><h2>Orígenes de datos.</h2>
-  <p class="intro">El primer paso de toda consulta es conectarse a un <b>origen</b>: el lugar donde están los datos. Power Query ofrece una gran cantidad de conectores.</p>
-  <table class=""><thead><tr><th>Grupo</th><th>Orígenes más comunes</th><th>Cuándo se usa</th></tr></thead><tbody><tr><td><b>Desde un archivo</b></td><td>Desde un libro · Desde texto o CSV · Desde XML · Desde JSON · Desde una carpeta · Desde PDF</td><td>Los datos llegan como archivos.</td></tr><tr><td><b>Desde una base de datos</b></td><td>SQL Server · Access · Oracle · MySQL y otras</td><td>Los datos viven en un sistema.</td></tr><tr><td><b>Desde Azure y servicios en línea</b></td><td>SharePoint · Exchange · servicios en la nube</td><td>Los datos están en la nube de la organización.</td></tr><tr><td><b>De otras fuentes</b></td><td>Desde tabla o rango · De web · Consulta en blanco</td><td>Datos del mismo libro, páginas web o consultas escritas a mano.</td></tr></tbody></table>
-  <h3>Los orígenes más usados.</h3>
-  <table class=""><thead><tr><th>Origen</th><th>Qué tener en cuenta</th></tr></thead><tbody><tr><td><b>Tabla o rango</b></td><td>Toma datos del mismo libro. Si es un rango, Excel lo convierte en tabla.</td></tr><tr><td><b>Libro de Excel</b></td><td>Abre el <b>Navegador</b> para elegir hojas o tablas. Es mejor elegir tablas, porque sus límites son claros.</td></tr><tr><td><b>Texto o CSV</b></td><td>Muestra una ventana para revisar el origen del archivo, el delimitador y la detección de tipos. Es el formato típico de lo que exportan los sistemas.</td></tr><tr><td><b>Carpeta</b></td><td>Lee todos los archivos de una carpeta y puede combinarlos en una sola tabla.</td></tr><tr><td><b>Web</b></td><td>Lee tablas de una página. Si la página cambia su diseño, la consulta puede fallar.</td></tr><tr><td><b>PDF</b></td><td>Detecta tablas dentro del documento. Conviene revisar bien el resultado.</td></tr></tbody></table>
-  <h3>La ventana Navegador.</h3>
-  <p>Al conectarse a un origen con varios objetos, como un libro, aparece el Navegador. Ofrece tres caminos:</p>
-  <table class=""><thead><tr><th>Botón</th><th>Qué hace</th></tr></thead><tbody><tr><td><b>Cargar</b></td><td>Lleva los datos directamente a Excel, sin pasar por el editor.</td></tr><tr><td><b>Transformar datos</b></td><td>Abre el editor para preparar los datos. Es la opción recomendada.</td></tr><tr><td><b>Cancelar</b></td><td>Cierra sin crear la consulta.</td></tr></tbody></table>
-  <aside class="nota"><b>Para recordar</b><p>Si necesita cambiar más adelante de dónde vienen los datos, edite el paso <b>Origen</b> o use <b>Inicio › Configuración de origen de datos</b>.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 10 de 25</span></footer></article>
-<article class="hoja" id="p11"><div class="cuerpo" style="--z:1">
-  <p class="cap">Capítulo 3</p><h2>Carpetas, credenciales y privacidad.</h2>
-  <p class="intro">Conectarse a una carpeta es una de las funciones más útiles de Power Query, porque permite que un archivo nuevo entre solo a la consulta.</p>
-  <h3>Cómo se combinan los archivos de una carpeta.</h3>
-  <ol><li>Power Query lista los archivos con su nombre, extensión y fecha.</li><li>Con <b>Combinar y transformar datos</b> se elige un <b>archivo de ejemplo</b> y la hoja o tabla que se debe leer.</li><li>Lo que se define con ese ejemplo se aplica a todos los demás archivos.</li><li>Agrega la columna <code>Source.Name</code> con el nombre del archivo de origen.</li></ol>
-  <table class=""><thead><tr><th>Requisito</th><th>Por qué</th></tr></thead><tbody><tr><td>Mismas columnas</td><td>Los archivos se unen por el nombre de la columna. Un nombre distinto crea una columna nueva o deja valores vacíos.</td></tr><tr><td>Mismo nombre de hoja</td><td>La consulta busca la hoja elegida en el archivo de ejemplo.</td></tr><tr><td>Carpeta exclusiva</td><td>Todo lo que esté adentro entra a la consulta, incluidas las subcarpetas.</td></tr><tr><td>Archivos cerrados</td><td>Un archivo abierto crea una copia temporal que empieza por ~$ y puede dar error.</td></tr></tbody></table>
-  <p>Al combinar, Power Query crea en el panel de consultas un grupo con consultas auxiliares, como el archivo de ejemplo y una función. <b>No las borre</b>: la consulta principal las necesita.</p>
-  <h3>Credenciales.</h3>
-  <p>Algunos orígenes piden iniciar sesión. Excel guarda esas credenciales en su equipo, no en el libro, por lo que otra persona deberá escribir las suyas. Se administran en <span class="ruta">Datos › Obtener datos › Configuración de origen de datos</span>.</p>
-  <h3>Niveles de privacidad.</h3>
-  <p>Cuando una consulta mezcla orígenes distintos, Power Query protege los datos para que uno no se filtre hacia otro. Por eso puede pedirle que clasifique cada origen:</p>
-  <table class=""><thead><tr><th>Nivel</th><th>Significado</th><th>Ejemplo</th></tr></thead><tbody><tr><td><b>Público</b></td><td>Cualquiera puede ver estos datos.</td><td>Una página web abierta.</td></tr><tr><td><b>Organizativo</b></td><td>Solo personas de confianza dentro de la organización.</td><td>Archivos internos de la empresa.</td></tr><tr><td><b>Privado</b></td><td>Información sensible o confidencial.</td><td>Datos personales o financieros.</td></tr></tbody></table>
-  <aside class="consejo"><b>Consejo</b><p>Elija el nivel real de cada origen. Si dos archivos internos dan un aviso de privacidad, suele bastar con clasificarlos como Organizativo.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 11 de 25</span></footer></article>
-<article class="hoja" id="p12"><div class="cuerpo" style="--z:0.96">
-  <p class="cap">Capítulo 4</p><h2>Tipos de datos.</h2>
-  <p class="intro">El <b>tipo</b> indica qué clase de dato contiene una columna. Es la base de todo lo demás: un monto guardado como texto no se puede sumar y una fecha guardada como texto no se puede agrupar por mes.</p>
-  <table class=""><thead><tr><th>Icono</th><th>Tipo</th><th>Se usa para</th></tr></thead><tbody><tr><td><code>ABC</code></td><td>Texto</td><td>Nombres, descripciones y códigos.</td></tr><tr><td><code>123</code></td><td>Número entero</td><td>Cantidades sin decimales. Si hay decimales, los redondea.</td></tr><tr><td><code>1.2</code></td><td>Número decimal</td><td>Valores con decimales.</td></tr><tr><td><code>$</code></td><td>Moneda</td><td>Montos con hasta cuatro decimales. Evita pequeñas diferencias de redondeo.</td></tr><tr><td><code>%</code></td><td>Porcentaje</td><td>Proporciones.</td></tr><tr><td><code>📅</code></td><td>Fecha</td><td>Día, mes y año.</td></tr><tr><td><code>🕒</code></td><td>Hora · Fecha/Hora · Duración</td><td>Momentos del día, fecha con hora y lapsos de tiempo.</td></tr><tr><td><code>⊘</code></td><td>Verdadero/Falso</td><td>Respuestas de sí o no.</td></tr><tr><td><code>ABC<br>123</code></td><td>Cualquiera</td><td>La columna aún no tiene un tipo definido.</td></tr></tbody></table>
-  <h3>Tres formas de cambiar el tipo.</h3>
-  <ul><li>Con el icono del encabezado de la columna.</li><li>Con <span class="ruta">Inicio › Tipo de datos</span>.</li><li>Con <span class="ruta">Transformar › Detectar tipo de datos</span>, que analiza la columna y propone uno.</li></ul>
-  <h3>Tipo no es lo mismo que formato.</h3>
-  <p>El <b>tipo</b> dice qué es el dato; el <b>formato</b> dice cómo se ve. Power Query define el tipo. El formato visual, como <code>RD$ 1,250.00</code>, se aplica después en la hoja de Excel, y se conserva al actualizar.</p>
-  <h3>La configuración regional.</h3>
-  <p>El texto <code>03/01/2026</code> es 3 de enero en República Dominicana y 1 de marzo en Estados Unidos. Power Query interpreta los textos según la región del equipo. Si los datos vienen de otro país, use el icono del encabezado › <b>Usar configuración regional…</b> e indique el tipo y la región de origen.</p>
-  <aside class="nota"><b>Para recordar</b><p>Power Query suele agregar solo un paso <b>Tipo cambiado</b> al abrir los datos. Revíselo siempre: puede tomar una decisión equivocada, como convertir en número un código que debe seguir siendo texto.</p></aside>
-  <aside class="consejo"><b>Consejo</b><p>Si un código como 00125 pierde los ceros iniciales, la columna se convirtió en número. Cámbiela a Texto en un paso anterior.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 12 de 25</span></footer></article>
-<article class="hoja" id="p13"><div class="cuerpo" style="--z:1.03">
-  <p class="cap">Capítulo 5</p><h2>Trabajar con filas.</h2>
-  <p class="intro">Las opciones de filas responden a una pregunta: <b>¿cuáles registros deben quedarse?</b> Están en <span class="ruta">Inicio › Reducir filas</span> y en el filtro de cada encabezado.</p>
-  <h3>Conservar filas.</h3>
-  <table class=""><thead><tr><th>Opción</th><th>Qué hace</th><th>Ejemplo de uso</th></tr></thead><tbody><tr><td><b>Conservar filas superiores</b></td><td>Deja las primeras N filas.</td><td>Los 10 productos más vendidos, después de ordenar.</td></tr><tr><td><b>Conservar filas inferiores</b></td><td>Deja las últimas N filas.</td><td>Los registros más recientes de un archivo ordenado.</td></tr><tr><td><b>Conservar intervalo de filas</b></td><td>Deja un bloque desde una fila dada.</td><td>Tomar solo una parte de un reporte.</td></tr><tr><td><b>Conservar duplicados</b></td><td>Deja solo las filas repetidas.</td><td>Revisar qué registros están duplicados.</td></tr><tr><td><b>Conservar errores</b></td><td>Deja solo las filas con error.</td><td>Investigar qué valores fallaron.</td></tr></tbody></table>
-  <h3>Quitar filas.</h3>
-  <table class=""><thead><tr><th>Opción</th><th>Qué hace</th><th>Ejemplo de uso</th></tr></thead><tbody><tr><td><b>Quitar filas superiores</b></td><td>Elimina las primeras N filas.</td><td>Títulos que el sistema pone arriba de la tabla.</td></tr><tr><td><b>Quitar filas inferiores</b></td><td>Elimina las últimas N filas.</td><td>Totales o notas al final del reporte.</td></tr><tr><td><b>Quitar filas alternas</b></td><td>Sigue un patrón que se repite.</td><td>Reportes con una fila de datos y una vacía.</td></tr><tr><td><b>Quitar duplicados</b></td><td>Deja una sola vez cada fila repetida.</td><td>Registros enviados dos veces.</td></tr><tr><td><b>Quitar filas en blanco</b></td><td>Elimina las filas totalmente vacías.</td><td>Espacios entre bloques de datos.</td></tr><tr><td><b>Quitar errores</b></td><td>Elimina las filas con error.</td><td>Solo después de entender por qué fallaron.</td></tr></tbody></table>
-  <h3>Filtrar y ordenar.</h3>
-  <p>La flecha del encabezado ofrece filtros similares a los de Excel, pero con una ventaja: <b>el filtro queda grabado como un paso</b>. Cuando llegue información nueva, la regla se aplicará sola. Según el tipo, aparecen filtros de texto (contiene, comienza por), de número (mayor que, entre) o de fecha (mes actual, último año).</p>
-  <aside class="nota"><b>Para recordar</b><p>Quitar duplicados compara solo las <b>columnas seleccionadas</b>. Con una sola columna puede perder filas distintas que comparten ese valor. Para quitar solo filas idénticas, seleccione todas las columnas. Además, distingue mayúsculas de minúsculas: «Ana» y «ANA» son distintos.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 13 de 25</span></footer></article>
-<article class="hoja" id="p14"><div class="cuerpo" style="--z:0.96">
-  <p class="cap">Capítulo 5</p><h2>Trabajar con columnas.</h2>
-  <p class="intro">Las opciones de columnas dan forma a la tabla: qué columnas existen, cómo se llaman y cómo están organizadas.</p>
-  <h3>Administrar columnas.</h3>
-  <table class=""><thead><tr><th>Opción</th><th>Qué hace</th><th>Consejo</th></tr></thead><tbody><tr><td><b>Elegir columnas</b></td><td>Muestra una lista para marcar las que se quedan.</td><td>Muy útil en tablas anchas.</td></tr><tr><td><b>Quitar columnas</b></td><td>Elimina las seleccionadas.</td><td>Si llega una columna nueva, se conservará.</td></tr><tr><td><b>Quitar otras columnas</b></td><td>Deja solo las seleccionadas.</td><td>Si llega una columna nueva, se descartará.</td></tr><tr><td><b>Cambiar nombre</b></td><td>Doble clic en el encabezado.</td><td>Use nombres claros y siempre iguales.</td></tr><tr><td><b>Mover</b></td><td>Arrastre, o use clic derecho › Mover.</td><td>Ordene las columnas por lectura lógica.</td></tr><tr><td><b>Ir a columna</b></td><td>Busca una columna por nombre.</td><td>Práctico cuando hay muchas columnas.</td></tr></tbody></table>
-  <h3>Dividir columna.</h3>
-  <p>Separa una columna en varias, o en varias filas. Está en <span class="ruta">Transformar › Dividir columna</span>.</p>
-  <table class=""><thead><tr><th>Opción</th><th>Divide según…</th><th>Ejemplo</th></tr></thead><tbody><tr><td><b>Por delimitador</b></td><td>Un carácter, como coma, guion o espacio.</td><td><code>Santiago, RD</code> → Santiago | RD</td></tr><tr><td><b>Por número de caracteres</b></td><td>Una cantidad fija de caracteres.</td><td>Códigos con una estructura fija.</td></tr><tr><td><b>Por posiciones</b></td><td>Posiciones exactas dentro del texto.</td><td>Archivos con ancho fijo.</td></tr><tr><td><b>De minúsculas a mayúsculas</b></td><td>El cambio de minúscula a mayúscula.</td><td><code>NombreCompleto</code> → Nombre | Completo</td></tr><tr><td><b>De dígito a no dígito</b></td><td>El cambio de número a texto.</td><td><code>25kg</code> → 25 | kg</td></tr></tbody></table>
-  <h3>Combinar columnas.</h3>
-  <p>Es lo contrario de dividir: une varias columnas en una, con un separador a elección. En <span class="ruta">Transformar › Combinar columnas</span>, la columna original se sustituye; en la pestaña Agregar columna, se crea una nueva.</p>
-  <aside class="ejemplo"><b>Ejemplo</b><p>Las columnas Nombre y Apellido se combinan, con un espacio como separador, en una columna Nombre completo. Importante: <b>Combinar columnas</b> une columnas de una misma tabla, mientras que <b>Combinar consultas</b> une dos tablas distintas.</p></aside>
-  <aside class="consejo"><b>Consejo</b><p>Prefiera <b>Quitar otras columnas</b> cuando el origen pueda traer columnas nuevas que no le interesan. Prefiera <b>Quitar columnas</b> cuando quiera recibir cualquier columna que se agregue.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 14 de 25</span></footer></article>
-<article class="hoja" id="p15"><div class="cuerpo" style="--z:0.89">
-  <p class="cap">Capítulo 5</p><h2>Texto, números y fechas.</h2>
-  <p class="intro">La pestaña Transformar reúne grupos de herramientas según el tipo de columna. Las opciones disponibles cambian según el dato seleccionado.</p>
-  <h3>Columnas de texto.</h3>
-  <table class=""><thead><tr><th>Grupo</th><th>Opción</th><th>Qué hace</th></tr></thead><tbody><tr><td><b>Formato</b></td><td>minúscula · MAYÚSCULAS · Poner En Mayúsculas Cada Palabra</td><td>Unifica cómo se escribe el texto.</td></tr><tr><td></td><td>Recortar</td><td>Quita los espacios al inicio y al final.</td></tr><tr><td></td><td>Limpiar</td><td>Quita caracteres invisibles que no se imprimen.</td></tr><tr><td></td><td>Agregar prefijo · Agregar sufijo</td><td>Añade un texto antes o después.</td></tr><tr><td><b>Extraer</b></td><td>Longitud</td><td>Devuelve cuántos caracteres tiene.</td></tr><tr><td></td><td>Primeros caracteres · Últimos caracteres</td><td>Toma un número de caracteres del inicio o del final.</td></tr><tr><td></td><td>Texto antes del delimitador · Texto después del delimitador</td><td>Toma la parte anterior o posterior a un carácter.</td></tr><tr><td></td><td>Texto entre delimitadores</td><td>Toma lo que está entre dos caracteres.</td></tr></tbody></table>
-  <h3>Columnas de números.</h3>
-  <table class=""><thead><tr><th>Grupo</th><th>Ejemplos</th><th>Uso</th></tr></thead><tbody><tr><td><b>Estadísticas</b></td><td>Suma · Mínimo · Máximo · Promedio</td><td>Devuelve un solo valor de toda la columna.</td></tr><tr><td><b>Estándar</b></td><td>Sumar · Multiplicar · Restar · Dividir</td><td>Aplica una operación a cada fila.</td></tr><tr><td><b>Científico</b></td><td>Valor absoluto · Potencia · Raíz cuadrada</td><td>Cálculos matemáticos.</td></tr><tr><td><b>Redondear</b></td><td>Redondear · Redondear al alza · Redondear a la baja</td><td>Ajusta los decimales.</td></tr><tr><td><b>Información</b></td><td>Es par · Es impar · Signo</td><td>Devuelve características del número.</td></tr></tbody></table>
-  <h3>Columnas de fecha y hora.</h3>
-  <table class=""><thead><tr><th>Opción</th><th>Devuelve</th><th>Ejemplo con 15/1/2026</th></tr></thead><tbody><tr><td>Año</td><td>El año, o el inicio y el fin del año.</td><td>2026</td></tr><tr><td>Mes</td><td>El número, el nombre, o el inicio y el fin del mes.</td><td>1 · enero</td></tr><tr><td>Trimestre</td><td>El trimestre del año.</td><td>1</td></tr><tr><td>Semana</td><td>La semana del año o del mes.</td><td>3</td></tr><tr><td>Día</td><td>El número, el nombre o el día del año.</td><td>15 · jueves</td></tr></tbody></table>
-  <aside class="consejo"><b>Consejo</b><p>Para no perder la fecha original, use estas opciones desde la pestaña <b>Agregar columna</b>. Así tendrá, por ejemplo, Fecha y además Nombre del mes.</p></aside>
-  <aside class="nota"><b>Para recordar</b><p><b>Estadísticas</b> en la pestaña Transformar reduce toda la tabla a un solo valor. Si solo quería verlo, quite el paso. Para calcular por grupos use Agrupar por.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 15 de 25</span></footer></article>
-<article class="hoja" id="p16"><div class="cuerpo" style="--z:0.91">
-  <p class="cap">Capítulo 5</p><h2>Reemplazar, rellenar y manejar errores.</h2>
-  <p class="intro">Estas herramientas corrigen valores concretos dentro de una columna y ayudan a tratar lo que falta o lo que falla.</p>
-  <h3>Reemplazar los valores.</h3>
-  <p>En <span class="ruta">Transformar › Reemplazar los valores</span> se indica qué buscar y qué poner en su lugar. Si deja vacío el segundo campo, el texto buscado se elimina.</p>
-  <aside class="ejemplo"><b>Ejemplo</b><p>Para convertir «RD$ 1500» en número, primero reemplace «RD$» por nada y después cambie el tipo. En las opciones avanzadas puede pedir que coincida todo el contenido de la celda: así, reemplazar «Sur» no afectará a «Surtido».</p></aside>
-  <h3>Rellenar.</h3>
-  <p>Muchos reportes muestran un dato solo en la primera fila de cada grupo y dejan las siguientes vacías. <span class="ruta">Transformar › Rellenar</span> copia el valor hacia abajo o hacia arriba.</p>
-  <table class="mini"><thead><tr><th>Así llega</th><th></th><th>Con Rellenar hacia abajo</th></tr></thead><tbody><tr><td>Sucursal Norte</td><td>→</td><td>Sucursal Norte</td></tr><tr><td><i>null</i></td><td>→</td><td>Sucursal Norte</td></tr><tr><td><i>null</i></td><td>→</td><td>Sucursal Norte</td></tr><tr><td>Sucursal Sur</td><td>→</td><td>Sucursal Sur</td></tr></tbody></table>
-  <p>Rellenar solo actúa sobre valores <code>null</code>. Si las celdas contienen texto vacío, primero reemplácelas por <code>null</code>.</p>
-  <h3>¿Qué es null?</h3>
-  <p><code>null</code> significa <b>ausencia de valor</b>. No es cero ni un texto vacío: es que allí no hay nada. Un cálculo con <code>null</code> suele devolver <code>null</code>, por eso conviene decidir qué hacer: quitar la fila, rellenarla o reemplazarla por un valor.</p>
-  <h3>Errores en las celdas.</h3>
-  <p>Cuando un valor no puede procesarse, la celda muestra <b>Error</b>. No detiene toda la consulta, pero impide usar ese valor. Si hace clic al lado de la palabra Error, verá el motivo abajo.</p>
-  <table class=""><thead><tr><th>Causa frecuente</th><th>Ejemplo</th><th>Solución</th></tr></thead><tbody><tr><td>Conversión imposible</td><td>Convertir «RD$ 500» en número.</td><td>Quitar el texto antes de cambiar el tipo.</td></tr><tr><td>Columna que ya no existe</td><td>Un paso usa un nombre que cambió.</td><td>Corregir el paso o el nombre.</td></tr><tr><td>Operación con tipos distintos</td><td>Sumar un número con un texto.</td><td>Definir bien los tipos.</td></tr><tr><td>Origen no disponible</td><td>El archivo cambió de lugar.</td><td>Corregir la ruta en el paso Origen.</td></tr></tbody></table>
-  <table class=""><thead><tr><th>Opción</th><th>Cuándo usarla</th></tr></thead><tbody><tr><td><b>Conservar errores</b></td><td>Para ver qué filas fallaron e investigar.</td></tr><tr><td><b>Reemplazar errores</b></td><td>Cuando un valor fijo es aceptable, como 0.</td></tr><tr><td><b>Quitar errores</b></td><td>Cuando esas filas realmente no sirven.</td></tr></tbody></table></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 16 de 25</span></footer></article>
-<article class="hoja" id="p17"><div class="cuerpo" style="--z:0.94">
-  <p class="cap">Capítulo 6</p><h2>Agregar columnas.</h2>
-  <p class="intro">La pestaña Agregar columna crea información nueva a partir de la que ya existe, sin alterar las columnas originales.</p>
-  <table class=""><thead><tr><th>Opción</th><th>Cómo funciona</th><th>Ideal para</th></tr></thead><tbody><tr><td><b>Columna a partir de los ejemplos</b></td><td>Usted escribe el resultado esperado y Power Query deduce la regla.</td><td>Quien no quiere escribir fórmulas.</td></tr><tr><td><b>Columna personalizada</b></td><td>Se escribe una fórmula en lenguaje M.</td><td>Cálculos entre columnas.</td></tr><tr><td><b>Columna condicional</b></td><td>Se definen reglas del tipo Si… entonces… en un formulario.</td><td>Clasificar registros.</td></tr><tr><td><b>Columna de índice</b></td><td>Numera las filas desde 0, desde 1 o a la medida.</td><td>Crear un identificador o conservar el orden.</td></tr><tr><td><b>Duplicar columna</b></td><td>Crea una copia exacta.</td><td>Transformar sin perder el original.</td></tr></tbody></table>
-  <h3>Columna a partir de los ejemplos.</h3>
-  <p>Es la opción más sencilla. Escriba en la primera fila lo que espera y, si hace falta, corrija una o dos filas más. Power Query propone una regla para toda la columna y muestra la fórmula que generó.</p>
-  <table class="mini"><thead><tr><th>Fecha</th><th>Lo que usted escribe</th><th>Lo que propone para las demás</th></tr></thead><tbody><tr><td>15/1/2026</td><td>enero 2026</td><td>enero 2026</td></tr><tr><td>2/2/2026</td><td></td><td>febrero 2026</td></tr><tr><td>20/3/2026</td><td></td><td>marzo 2026</td></tr></tbody></table>
-  <h3>Columna condicional.</h3>
-  <p>Equivale a la función SI, pero con un formulario. Cada regla indica una columna, un operador, un valor y un resultado. Se pueden agregar varias reglas y un valor para los demás casos.</p>
-  <aside class="ejemplo"><b>Ejemplo</b><p>Si Monto es mayor que 5000, entonces «Venta alta»; si es mayor que 2000, entonces «Venta media»; en otro caso, «Venta baja». Las reglas se revisan en orden, por lo que la más exigente debe ir primero.</p></aside>
-  <h3>Columna personalizada.</h3>
-  <p>Permite escribir una fórmula. Los nombres de columna van entre corchetes:</p>
-  <pre><code>= [Cantidad] * [Precio]
-= [Nombre] &amp; " " &amp; [Apellido]
-= if [Monto] &gt; 5000 then "Alta" else "Baja"</code></pre>
-  <aside class="nota"><b>Para recordar</b><p>Estas fórmulas no son las de Excel. Están escritas en lenguaje M: <code>if</code> va en minúscula, <code>&amp;</code> une textos y las funciones se separan con <b>coma</b>, no con punto y coma, aunque su Excel use punto y coma. Al terminar, defina el tipo de la columna, porque suele quedar sin tipo.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 17 de 25</span></footer></article>
-<article class="hoja" id="p18"><div class="cuerpo" style="--z:0.99">
-  <p class="cap">Capítulo 6</p><h2>Agrupar y resumir.</h2>
-  <p class="intro"><b>Agrupar por</b> reduce muchas filas a una por cada grupo y calcula un resumen. Es parecido a una tabla dinámica, pero el resultado es una tabla normal que forma parte de la receta.</p>
-  <p>Está en <span class="ruta">Inicio › Agrupar por</span> y también en la pestaña Transformar. La ventana ofrece dos modos:</p>
-  <table class=""><thead><tr><th>Modo</th><th>Permite</th></tr></thead><tbody><tr><td><b>Básico</b></td><td>Agrupar por una columna y calcular un resumen.</td></tr><tr><td><b>Opciones avanzadas</b></td><td>Agrupar por varias columnas y calcular varios resúmenes a la vez.</td></tr></tbody></table>
-  <h3>Operaciones disponibles.</h3>
-  <table class=""><thead><tr><th>Operación</th><th>Qué calcula</th><th>Ejemplo</th></tr></thead><tbody><tr><td>Suma</td><td>Total de la columna.</td><td>Monto vendido por sucursal.</td></tr><tr><td>Promedio · Mediana</td><td>Valor medio o central.</td><td>Venta promedio por categoría.</td></tr><tr><td>Mínimo · Máximo</td><td>Valor menor o mayor.</td><td>La venta más alta de cada mes.</td></tr><tr><td>Recuento de filas</td><td>Cuántas filas tiene el grupo.</td><td>Número de ventas por sucursal.</td></tr><tr><td>Recuento distinto</td><td>Cuántos valores diferentes hay.</td><td>Clientes distintos por sucursal.</td></tr><tr><td>Todas las filas</td><td>Guarda en cada grupo una tabla con sus filas.</td><td>Cálculos avanzados por grupo.</td></tr></tbody></table>
-  <h3>Ejemplo.</h3>
-  <div class="dos"><div><table class="mini"><thead><tr><th>Sucursal</th><th>Producto</th><th>Monto</th></tr></thead><tbody><tr><td>Norte</td><td>Licuadora</td><td>4,800</td></tr><tr><td>Norte</td><td>Silla</td><td>1,100</td></tr><tr><td>Sur</td><td>Olla</td><td>1,900</td></tr><tr><td>Sur</td><td>Silla</td><td>550</td></tr><tr><td>Sur</td><td>Mesa</td><td>2,200</td></tr></tbody></table></div>
-  <div><table class="mini"><thead><tr><th>Sucursal</th><th>Total</th><th>Ventas</th></tr></thead><tbody><tr><td>Norte</td><td>5,900</td><td>2</td></tr><tr><td>Sur</td><td>4,650</td><td>3</td></tr></tbody></table><p class="pie">Agrupado por Sucursal, con la suma de Monto y el recuento de filas.</p></div></div>
-  <h3>Agrupar por o tabla dinámica.</h3>
-  <table class=""><thead><tr><th>Aspecto</th><th>Agrupar por</th><th>Tabla dinámica</th></tr></thead><tbody><tr><td>Dónde vive</td><td>Dentro de la consulta.</td><td>En una hoja de Excel.</td></tr><tr><td>Resultado</td><td>Una tabla que se puede seguir transformando.</td><td>Un resumen interactivo.</td></tr><tr><td>Cambiar el análisis</td><td>Requiere editar el paso.</td><td>Basta con arrastrar campos.</td></tr><tr><td>Detalle original</td><td>Se pierde en la tabla resultante.</td><td>Sigue disponible en los datos de origen.</td></tr></tbody></table>
-  <aside class="consejo"><b>Consejo</b><p>Si va a explorar los datos desde varios ángulos, cargue el detalle y use una tabla dinámica. Use Agrupar por cuando necesite una tabla resumida como resultado, por ejemplo para unirla con otra consulta.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 18 de 25</span></footer></article>
-<article class="hoja" id="p19"><div class="cuerpo" style="--z:0.94">
-  <p class="cap">Capítulo 6</p><h2>Dinamizar y anular dinamización.</h2>
-  <p class="intro">Estas opciones cambian la <b>forma</b> de la tabla. Son de las más poderosas de Power Query, porque resuelven un problema frecuente: datos organizados para leerlos, pero no para analizarlos.</p>
-  <h3>Datos ordenados: una regla sencilla.</h3>
-  <p>Una tabla está bien organizada para el análisis cuando <b>cada columna es una variable y cada fila es un registro</b>. Esta idea se conoce como datos ordenados (Wickham, 2014). Excel, las tablas dinámicas y Power Query trabajan mejor con tablas largas que con tablas anchas.</p>
-  <h3>Anular dinamización: de ancho a largo.</h3>
-  <p>Convierte encabezados en valores de una columna. Es la solución cuando cada mes o cada año ocupa su propia columna.</p>
-  <div class="dos"><div><table class="mini"><thead><tr><th>Sucursal</th><th>Enero</th><th>Febrero</th></tr></thead><tbody><tr><td>Norte</td><td>500</td><td>650</td></tr><tr><td>Sur</td><td>300</td><td>420</td></tr></tbody></table><p class="pie">Tabla ancha: Enero y Febrero son datos, no variables.</p></div>
-  <div><table class="mini"><thead><tr><th>Sucursal</th><th>Atributo</th><th>Valor</th></tr></thead><tbody><tr><td>Norte</td><td>Enero</td><td>500</td></tr><tr><td>Norte</td><td>Febrero</td><td>650</td></tr><tr><td>Sur</td><td>Enero</td><td>300</td></tr><tr><td>Sur</td><td>Febrero</td><td>420</td></tr></tbody></table><p class="pie">Tabla larga: lista para una tabla dinámica.</p></div></div>
-  <p>Se usa en <span class="ruta">Transformar › Anular dinamización de columnas</span>. Existen dos variantes que importa distinguir:</p>
-  <table class=""><thead><tr><th>Opción</th><th>Qué hace</th><th>Si llega el mes de marzo</th></tr></thead><tbody><tr><td><b>Anular dinamización de columnas</b></td><td>Convierte las columnas seleccionadas y recuerda cuáles quedan fijas.</td><td>Entra sola. Es la opción más segura.</td></tr><tr><td><b>Anular dinamización de las columnas seleccionadas únicamente</b></td><td>Convierte solo esas columnas.</td><td>Se queda como columna aparte.</td></tr></tbody></table>
-  <h3>Columna dinámica: de largo a ancho.</h3>
-  <p>Hace lo contrario: convierte los valores de una columna en encabezados. Se usa en <span class="ruta">Transformar › Columna dinámica</span>. Hay que elegir la columna que tiene los valores y, en las opciones avanzadas, cómo agregarlos: suma, recuento, mínimo, máximo o sin agregar.</p>
-  <h3>Transponer e invertir.</h3>
-  <table class=""><thead><tr><th>Opción</th><th>Qué hace</th><th>Uso</th></tr></thead><tbody><tr><td><b>Transponer</b></td><td>Cambia filas por columnas.</td><td>Tablas escritas de lado.</td></tr><tr><td><b>Invertir filas</b></td><td>Pone la última fila primero.</td><td>Ver primero lo más reciente.</td></tr></tbody></table>
-  <aside class="consejo"><b>Consejo</b><p>Después de anular dinamización, cambie el nombre de <b>Atributo</b> y <b>Valor</b> por nombres claros, como Mes y Monto, y revise sus tipos.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 19 de 25</span></footer></article>
-<article class="hoja" id="p20"><div class="cuerpo" style="--z:0.93">
-  <p class="cap">Capítulo 7</p><h2>Anexar y combinar consultas.</h2>
-  <p class="intro">Hay dos maneras de unir dos tablas, y elegir la correcta depende de una pregunta: <b>¿necesito más filas o más columnas?</b></p>
-  <table class=""><thead><tr><th></th><th>Anexar consultas</th><th>Combinar consultas</th></tr></thead><tbody><tr><td><b>Resultado</b></td><td>Más filas.</td><td>Más columnas.</td></tr><tr><td><b>Requisito</b></td><td>Columnas con los mismos nombres.</td><td>Una columna en común.</td></tr><tr><td><b>Se parece a</b></td><td>Pegar una tabla debajo de otra.</td><td>BUSCARV o BUSCARX.</td></tr><tr><td><b>Ejemplo</b></td><td>Unir ventas de enero y febrero.</td><td>Traer el proveedor de cada producto.</td></tr><tr><td><b>Dónde está</b></td><td>Inicio › Combinar › Anexar consultas</td><td>Inicio › Combinar › Combinar consultas</td></tr></tbody></table>
-  <h3>Anexar consultas.</h3>
-  <p>Coloca las filas de una tabla debajo de las de otra. Puede anexar dos tablas o tres o más. Las columnas se emparejan <b>por nombre</b>, no por posición.</p>
-  <aside class="ejemplo"><b>Ejemplo</b><p>Si una tabla tiene la columna «Monto» y otra «Importe», el resultado tendrá las dos columnas y cada una quedará con <code>null</code> en las filas de la otra tabla. Antes de anexar, use el mismo nombre en ambas.</p></aside>
-  <p>También existe <b>Anexar consultas para crear una nueva</b>, que deja intactas las consultas originales. Lo mismo ocurre con Combinar. Suele ser la opción más ordenada.</p>
-  <h3>Combinar consultas.</h3>
-  <p>Agrega columnas de otra tabla mediante una columna en común, llamada <b>clave</b>. Funciona en tres pasos:</p>
-  <ol><li>Elija las dos consultas y haga clic en la columna clave de cada una.</li><li>Elija el tipo de combinación. La ventana indica cuántas filas coinciden.</li><li>La nueva columna contiene tablas. Pulse el icono <b>Expandir</b> ⤢ de su encabezado y marque las columnas que desea traer.</li></ol>
-  <aside class="ejemplo"><b>Ejemplo</b><p>Una tabla de ventas tiene la columna Código y un catálogo tiene Código, Categoría y Proveedor. Al combinar por Código y expandir, cada venta recibe su categoría y su proveedor.</p></aside>
-  <table class=""><thead><tr><th>Ventaja frente a BUSCARV</th><th>Por qué</th></tr></thead><tbody><tr><td>Queda grabado</td><td>Se repite solo al actualizar, sin arrastrar fórmulas.</td></tr><tr><td>No depende de la posición</td><td>La clave puede estar en cualquier lugar de la tabla.</td></tr><tr><td>Trae todas las coincidencias</td><td>Si hay varias, crea una fila por cada una.</td></tr><tr><td>Acepta varias claves</td><td>Seleccione varias columnas con <kbd>Ctrl</kbd>, en el mismo orden.</td></tr></tbody></table>
-  <aside class="nota"><b>Para recordar</b><p>Si la tabla de búsqueda tiene claves repetidas, la combinación <b>agregará filas</b> y los totales se inflarán. Compruebe que la clave no se repita, o quite duplicados antes de combinar.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 20 de 25</span></footer></article>
-<article class="hoja" id="p21"><div class="cuerpo" style="--z:0.92">
-  <p class="cap">Capítulo 7</p><h2>Tipos de combinación.</h2>
-  <p class="intro">Al combinar consultas se elige qué filas conservar. Hay seis tipos, y cada uno responde a una pregunta distinta. En las figuras, el círculo izquierdo es la primera tabla, el derecho es la segunda y el centro son las filas que coinciden.</p>
-  <div class="vennes">
-    <figure class="venn"><svg viewBox="0 0 120 70" role="img" aria-label="Externa izquierda"><circle cx="45" cy="35" r="28" fill="#f2994a" stroke="#2f3a8f" stroke-width="1.5"/><circle cx="75" cy="35" r="28" fill="#ffffff" fill-opacity="0.01" stroke="#2f3a8f" stroke-width="1.5"/><path d="M60 10.8a28 28 0 0 1 0 48.4a28 28 0 0 1 0-48.4z" fill="#2f3a8f" stroke="#2f3a8f" stroke-width="1.5"/></svg><figcaption>Externa izquierda</figcaption></figure><figure class="venn"><svg viewBox="0 0 120 70" role="img" aria-label="Externa derecha"><circle cx="45" cy="35" r="28" fill="#ffffff" stroke="#2f3a8f" stroke-width="1.5"/><circle cx="75" cy="35" r="28" fill="#f2994a" fill-opacity="1" stroke="#2f3a8f" stroke-width="1.5"/><path d="M60 10.8a28 28 0 0 1 0 48.4a28 28 0 0 1 0-48.4z" fill="#2f3a8f" stroke="#2f3a8f" stroke-width="1.5"/></svg><figcaption>Externa derecha</figcaption></figure><figure class="venn"><svg viewBox="0 0 120 70" role="img" aria-label="Externa completa"><circle cx="45" cy="35" r="28" fill="#f2994a" stroke="#2f3a8f" stroke-width="1.5"/><circle cx="75" cy="35" r="28" fill="#f2994a" fill-opacity="1" stroke="#2f3a8f" stroke-width="1.5"/><path d="M60 10.8a28 28 0 0 1 0 48.4a28 28 0 0 1 0-48.4z" fill="#2f3a8f" stroke="#2f3a8f" stroke-width="1.5"/></svg><figcaption>Externa completa</figcaption></figure>
-    <figure class="venn"><svg viewBox="0 0 120 70" role="img" aria-label="Interna"><circle cx="45" cy="35" r="28" fill="#ffffff" stroke="#2f3a8f" stroke-width="1.5"/><circle cx="75" cy="35" r="28" fill="#ffffff" fill-opacity="0.01" stroke="#2f3a8f" stroke-width="1.5"/><path d="M60 10.8a28 28 0 0 1 0 48.4a28 28 0 0 1 0-48.4z" fill="#2f3a8f" stroke="#2f3a8f" stroke-width="1.5"/></svg><figcaption>Interna</figcaption></figure><figure class="venn"><svg viewBox="0 0 120 70" role="img" aria-label="Anti izquierda"><circle cx="45" cy="35" r="28" fill="#f2994a" stroke="#2f3a8f" stroke-width="1.5"/><circle cx="75" cy="35" r="28" fill="#ffffff" fill-opacity="0.01" stroke="#2f3a8f" stroke-width="1.5"/><path d="M60 10.8a28 28 0 0 1 0 48.4a28 28 0 0 1 0-48.4z" fill="#ffffff" stroke="#2f3a8f" stroke-width="1.5"/></svg><figcaption>Anti izquierda</figcaption></figure><figure class="venn"><svg viewBox="0 0 120 70" role="img" aria-label="Anti derecha"><circle cx="45" cy="35" r="28" fill="#ffffff" stroke="#2f3a8f" stroke-width="1.5"/><circle cx="75" cy="35" r="28" fill="#f2994a" fill-opacity="1" stroke="#2f3a8f" stroke-width="1.5"/><path d="M60 10.8a28 28 0 0 1 0 48.4a28 28 0 0 1 0-48.4z" fill="#ffffff" stroke="#2f3a8f" stroke-width="1.5"/></svg><figcaption>Anti derecha</figcaption></figure>
+<div id="giroTel"><p>📱 Gire su teléfono para ver el manual en horizontal.</p></div>
+<div id="stage">
+  <div class="top"><span id="topL">MANUAL DE POWER QUERY.</span><div class="dots" id="dots"></div></div>
+  <div id="slides"></div>
+  <div class="bottom">
+    <span>Jarlin Figueroa, MA</span>
+    <div class="navb">
+      <button class="btn" id="snd" title="Sonido (M)">🔊 Sonido</button>
+      <button class="btn" id="fs" title="Pantalla completa (F)">Pantalla completa</button>
+      <button class="btn" id="prev">← Anterior</button>
+      <span id="count" style="min-width:70px;text-align:center"></span>
+      <button class="btn primary" id="next">Siguiente →</button>
+    </div>
   </div>
-  <table class=""><thead><tr><th>Tipo</th><th>Conserva</th><th>Pregunta que responde</th></tr></thead><tbody><tr><td><b>Externa izquierda</b></td><td>Todas las de la primera y las coincidencias de la segunda.</td><td>¿Cómo agrego datos a mi tabla sin perder filas? Es la más usada.</td></tr><tr><td><b>Externa derecha</b></td><td>Todas las de la segunda y las coincidencias de la primera.</td><td>Lo mismo, partiendo de la segunda tabla.</td></tr><tr><td><b>Externa completa</b></td><td>Todas las filas de ambas.</td><td>¿Cómo veo todo, coincida o no?</td></tr><tr><td><b>Interna</b></td><td>Solo las filas que coinciden.</td><td>¿Qué registros están en ambas tablas?</td></tr><tr><td><b>Anti izquierda</b></td><td>Solo las de la primera sin coincidencia.</td><td>¿Qué hay en la primera que falta en la segunda?</td></tr><tr><td><b>Anti derecha</b></td><td>Solo las de la segunda sin coincidencia.</td><td>¿Qué hay en la segunda que falta en la primera?</td></tr></tbody></table>
-  <h3>Un ejemplo con tablas pequeñas.</h3>
-  <div class="dos"><div><table class="mini"><thead><tr><th>Producto</th><th>Ventas</th></tr></thead><tbody><tr><td>Licuadora</td><td>12</td></tr><tr><td>Olla</td><td>8</td></tr><tr><td>Mesa</td><td>5</td></tr></tbody></table><p class="pie">Primera tabla.</p></div><div><table class="mini"><thead><tr><th>Producto</th><th>Proveedor</th></tr></thead><tbody><tr><td>Licuadora</td><td>Alfa</td></tr><tr><td>Olla</td><td>Beta</td></tr><tr><td>Silla</td><td>Gamma</td></tr></tbody></table><p class="pie">Segunda tabla.</p></div></div>
-  <table class=""><thead><tr><th>Tipo</th><th>Resultado</th></tr></thead><tbody><tr><td>Externa izquierda</td><td>Licuadora, Olla y Mesa. Mesa queda con proveedor <code>null</code>.</td></tr><tr><td>Interna</td><td>Licuadora y Olla.</td></tr><tr><td>Anti izquierda</td><td>Mesa: un producto vendido que no está en el catálogo.</td></tr><tr><td>Anti derecha</td><td>Silla: un producto del catálogo que no se ha vendido.</td></tr></tbody></table>
-  <h3>Coincidencia aproximada.</h3>
-  <p>Cuando la clave no se escribe igual, como «Comercial Palmas» y «Comercial Las Palmas», la ventana ofrece <b>Opciones de coincidencia aproximada</b>. Permite ajustar el nivel de parecido exigido y usar una tabla de equivalencias.</p>
-  <aside class="consejo"><b>Consejo</b><p>Los tipos <b>anti</b> son excelentes para auditar: muestran rápidamente qué registros no tienen pareja, por ejemplo facturas sin pago o productos sin categoría.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 21 de 25</span></footer></article>
-<article class="hoja" id="p22"><div class="cuerpo" style="--z:0.94">
-  <p class="cap">Capítulo 8</p><h2>Cargar y actualizar.</h2>
-  <p class="intro">Cuando la consulta está lista, hay que decidir dónde llegará el resultado y cómo se mantendrá al día.</p>
-  <h3>Cerrar y cargar.</h3>
-  <table class=""><thead><tr><th>Comando</th><th>Qué hace</th></tr></thead><tbody><tr><td><b>Cerrar y cargar</b></td><td>Lleva el resultado a una hoja nueva, como tabla.</td></tr><tr><td><b>Cerrar y cargar en…</b></td><td>Abre la ventana Importar datos para elegir el destino.</td></tr></tbody></table>
-  <table class=""><thead><tr><th>Opción en Importar datos</th><th>Para qué sirve</th></tr></thead><tbody><tr><td><b>Tabla</b></td><td>Ver los datos en una hoja, listos para filtrar y usar en fórmulas.</td></tr><tr><td><b>Informe de tabla dinámica</b></td><td>Ir directo a un resumen, sin tabla en la hoja.</td></tr><tr><td><b>Gráfico dinámico</b></td><td>Crear un gráfico con su tabla dinámica.</td></tr><tr><td><b>Solo crear conexión</b></td><td>Guardar la consulta sin cargarla. Ideal para consultas intermedias.</td></tr><tr><td><b>Agregar estos datos al modelo de datos</b></td><td>Guardar los datos en el modelo para relacionar tablas o manejar grandes volúmenes.</td></tr></tbody></table>
-  <h3>¿Qué es el modelo de datos?</h3>
-  <p>Es un almacén dentro del libro. Permite <b>relacionar varias tablas</b> y trabajar con más filas de las que caben en una hoja, cuyo límite es de 1,048,576. Es la base de Power Pivot.</p>
-  <h3>Actualizar.</h3>
-  <table class=""><thead><tr><th>Acción</th><th>Cómo</th><th>Efecto</th></tr></thead><tbody><tr><td>Actualizar una consulta</td><td>Panel de consultas › icono o clic derecho › Actualizar.</td><td>Solo esa consulta.</td></tr><tr><td>Actualizar todo</td><td><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>F5</kbd> o Datos › Actualizar todo.</td><td>Todas las conexiones del libro.</td></tr></tbody></table>
-  <p>En <span class="ruta">Clic derecho en la consulta › Propiedades</span> se puede automatizar la actualización:</p>
-  <table class=""><thead><tr><th>Propiedad</th><th>Para qué sirve</th></tr></thead><tbody><tr><td><b>Actualizar al abrir el archivo</b></td><td>El libro siempre abre con datos recientes.</td></tr><tr><td><b>Actualizar cada N minutos</b></td><td>Mantiene los datos al día mientras el libro está abierto.</td></tr><tr><td><b>Habilitar actualización en segundo plano</b></td><td>Permite seguir trabajando mientras se actualiza.</td></tr></tbody></table>
-  <h3>Compartir un libro con consultas.</h3>
-  <p>La consulta guarda la ruta del origen. Si otra persona abre el libro, puede ver los datos cargados, pero para actualizar necesita acceso a ese origen. Por eso conviene usar ubicaciones compartidas.</p>
-  <aside class="nota"><b>Para recordar</b><p>No escriba datos dentro de la tabla cargada: <b>Actualizar los reemplaza</b>. Toda corrección debe hacerse en la consulta. Sí puede dar formato y agregar columnas calculadas a la tabla.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 22 de 25</span></footer></article>
-<article class="hoja" id="p23"><div class="cuerpo" style="--z:0.88">
-  <p class="cap">Capítulo 9</p><h2>El lenguaje M y los parámetros.</h2>
-  <p class="intro">Cada botón que usted pulsa escribe código. Ese código está en <b>M</b>, el lenguaje de Power Query. No hace falta programar para usar la herramienta, pero conocerlo abre más posibilidades.</p>
-  <h3>Dónde se ve.</h3>
-  <table class=""><thead><tr><th>Lugar</th><th>Muestra</th></tr></thead><tbody><tr><td><b>Barra de fórmulas</b></td><td>El código de un solo paso.</td></tr><tr><td><b>Editor avanzado</b></td><td>Toda la consulta, en <span class="ruta">Vista › Editor avanzado</span>.</td></tr></tbody></table>
-  <h3>Cómo se lee una consulta.</h3>
-  <pre><code>let
-    Origen = Excel.CurrentWorkbook(){[Name="Ventas"]}[Content],
-    #"Tipo cambiado" = Table.TransformColumnTypes(Origen, {{"Fecha", type date}}),
-    #"Filas filtradas" = Table.SelectRows(#"Tipo cambiado", each [Monto] &gt; 1000)
-in
-    #"Filas filtradas"</code></pre>
-  <table class=""><thead><tr><th>Parte</th><th>Significado</th></tr></thead><tbody><tr><td><code>let</code></td><td>Inicia la lista de pasos. Cada paso tiene un nombre, y va separado del siguiente por una coma.</td></tr><tr><td><code>in</code></td><td>Indica qué paso entrega el resultado final.</td></tr><tr><td><code>#"Tipo cambiado"</code></td><td>Es el nombre de un paso. Lleva <code>#" "</code> cuando tiene espacios.</td></tr><tr><td><code>each [Monto] &gt; 1000</code></td><td>Indica una regla que se revisa fila por fila.</td></tr></tbody></table>
-  <h3>Reglas básicas del lenguaje.</h3>
-  <ul><li><b>Distingue mayúsculas de minúsculas:</b> <code>Text.Upper</code> funciona y <code>text.upper</code> no.</li><li>Las funciones siguen la forma <b>Categoría.Acción</b>: <code>Text.Trim</code>, <code>Date.Year</code>, <code>Table.SelectRows</code>.</li><li>Las listas van entre llaves <code>{ }</code> y las columnas de una fila, entre corchetes <code>[ ]</code>.</li><li>Cada paso es una transformación completa del resultado anterior.</li></ul>
-  <h3>Parámetros.</h3>
-  <p>Un parámetro es un valor guardado aparte que las consultas pueden usar. Se crea en <span class="ruta">Inicio › Administrar parámetros</span>.</p>
-  <aside class="ejemplo"><b>Ejemplo</b><p>Si guarda la ruta de la carpeta en un parámetro, cualquier persona puede cambiarla en un solo lugar sin abrir cada consulta. También sirve para un año o una sucursal que se quiera filtrar.</p></aside>
-  <p>Una consulta también se puede convertir en una <b>función</b> que se aplica a muchos elementos. Es lo que hace Power Query al combinar los archivos de una carpeta.</p>
-  <aside class="consejo"><b>Consejo</b><p>Una buena forma de aprender M es hacer algo con los botones y leer lo que aparece en la barra de fórmulas. La referencia oficial está en las fuentes de este manual.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 23 de 25</span></footer></article>
-<article class="hoja" id="p24"><div class="cuerpo" style="--z:1.04">
-  <p class="cap">Capítulo 9</p><h2>Buenas prácticas, rendimiento y glosario.</h2>
-  <h3>Diez hábitos recomendados.</h3>
-  <ol class="dos-col">
-    <li>Mire los datos antes de empezar.</li><li>Dé nombres claros a consultas y pasos.</li><li>Revise el resultado después de cada cambio.</li><li>Nunca corrija los archivos originales.</li><li>Quite pronto lo que no necesita.</li>
-    <li>Defina los tipos de datos con cuidado.</li><li>Use una carpeta exclusiva para los archivos.</li><li>Agrupe las consultas por tema.</li><li>Compare filas y totales con lo esperado.</li><li>Acuerde un formato único con quien envía los datos.</li></ol>
-  <h3>Si la consulta tarda mucho.</h3>
-  <table class=""><thead><tr><th>Medida</th><th>Por qué ayuda</th></tr></thead><tbody><tr><td>Filtre y quite columnas al inicio</td><td>Los pasos siguientes procesan menos datos.</td></tr><tr><td>Evite pasos innecesarios</td><td>Ordenar, por ejemplo, puede obligar a leer toda la tabla.</td></tr><tr><td>Use Solo crear conexión</td><td>Las consultas intermedias no necesitan ocupar una hoja.</td></tr><tr><td>Reutilice con Referencia</td><td>Evita repetir los mismos pasos en varias consultas.</td></tr><tr><td>Cuide el plegado de consultas</td><td>En bases de datos, el servidor hace el trabajo y envía solo el resultado.</td></tr></tbody></table>
-  <p>El <b>plegado de consultas</b> ocurre cuando Power Query traduce sus pasos al lenguaje del origen, como SQL. No aplica a archivos de Excel o de texto, pero es muy importante con bases de datos.</p>
-  <h3>Glosario.</h3>
-  <table class="compacta"><thead><tr><th>Término</th><th>Significado</th></tr></thead><tbody><tr><td><b>Anexar</b></td><td>Unir tablas poniendo unas filas debajo de otras.</td></tr><tr><td><b>Clave</b></td><td>Columna que permite relacionar dos tablas.</td></tr><tr><td><b>Combinar</b></td><td>Agregar columnas de otra tabla mediante una clave.</td></tr><tr><td><b>Conector</b></td><td>Componente que permite leer un tipo de origen.</td></tr><tr><td><b>Consulta</b></td><td>Conexión a un origen más sus pasos de transformación.</td></tr><tr><td><b>Dinamizar</b></td><td>Convertir valores de una columna en encabezados.</td></tr><tr><td><b>ETL</b></td><td>Extraer, transformar y cargar datos.</td></tr><tr><td><b>M</b></td><td>Lenguaje en el que se escriben las consultas.</td></tr><tr><td><b>Modelo de datos</b></td><td>Almacén del libro para tablas relacionadas.</td></tr><tr><td><b>null</b></td><td>Ausencia de valor.</td></tr><tr><td><b>Origen</b></td><td>Lugar de donde provienen los datos.</td></tr><tr><td><b>Paso aplicado</b></td><td>Acción grabada dentro de una consulta.</td></tr><tr><td><b>Plegado de consultas</b></td><td>Traducción de los pasos al lenguaje del origen.</td></tr></tbody></table></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 24 de 25</span></footer></article>
-<article class="hoja" id="p25"><div class="cuerpo" style="--z:1.04">
-  <p class="cap">Bibliografía</p><h2>Referencias.</h2>
-  <ul class="refs">
-    <li>Kimball, R., &amp; Caserta, J. (2004). <i>The data warehouse ETL toolkit: Practical techniques for extracting, cleaning, conforming, and delivering data</i>. Wiley.</li>
-    <li>Microsoft. (s. f.-a). <i>Agregar una columna a partir de los ejemplos</i>. Microsoft Learn. <a href="https://learn.microsoft.com/es-es/power-query/column-from-example" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/power-query/column-from-example</a></li>
-    <li>Microsoft. (s. f.-b). <i>Conectores de Power Query</i>. Microsoft Learn. <a href="https://learn.microsoft.com/es-es/power-query/connectors/" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/power-query/connectors/</a></li>
-    <li>Microsoft. (s. f.-c). <i>Cómo agrupar por o resumir filas</i>. Microsoft Learn. <a href="https://learn.microsoft.com/es-es/power-query/group-by" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/power-query/group-by</a></li>
-    <li>Microsoft. (s. f.-d). <i>Descripción de la evaluación de consultas y plegado de consultas en Power Query</i>. Microsoft Learn. <a href="https://learn.microsoft.com/es-es/power-query/query-folding-basics" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/power-query/query-folding-basics</a></li>
-    <li>Microsoft. (s. f.-e). <i>Descripción de la funcionalidad de columnas dinámicas</i>. Microsoft Learn. <a href="https://learn.microsoft.com/es-es/power-query/pivot-columns" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/power-query/pivot-columns</a></li>
-    <li>Microsoft. (s. f.-f). <i>Despivotar columnas</i>. Microsoft Learn. <a href="https://learn.microsoft.com/es-es/power-query/unpivot-column" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/power-query/unpivot-column</a></li>
-    <li>Microsoft. (s. f.-g). <i>Referencia del lenguaje de fórmulas M de Power Query</i>. Microsoft Learn. <a href="https://learn.microsoft.com/es-es/powerquery-m/" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/powerquery-m/</a></li>
-    <li>Microsoft. (s. f.-h). <i>Tipos de datos en Power Query</i>. Microsoft Learn. <a href="https://learn.microsoft.com/es-es/power-query/data-types" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/power-query/data-types</a></li>
-    <li>Microsoft. (s. f.-i). <i>Visión general de las consultas de combinación</i>. Microsoft Learn. <a href="https://learn.microsoft.com/es-es/power-query/merge-queries-overview" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/power-query/merge-queries-overview</a></li>
-    <li>Microsoft. (s. f.-j). <i>¿Qué es Power Query?</i>. Microsoft Learn. <a href="https://learn.microsoft.com/es-es/power-query/power-query-what-is-power-query" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/power-query/power-query-what-is-power-query</a></li>
-    <li>Microsoft. (s. f.-k). <i>Acerca de Power Query en Excel</i>. Microsoft Support. <a href="https://support.microsoft.com/es-es/Excel/about-power-query-in-excel" target="_blank" rel="noopener">https://support.microsoft.com/es-es/Excel/about-power-query-in-excel</a></li>
-    <li>Microsoft. (s. f.-l). <i>Anexar consultas (Power Query)</i>. Microsoft Support. <a href="https://support.microsoft.com/es-es/Excel/append-queries-power-query" target="_blank" rel="noopener">https://support.microsoft.com/es-es/Excel/append-queries-power-query</a></li>
-    <li>Puls, K., &amp; Escobar, M. (2016). <i>M is for (data) monkey: The Excel pro's definitive guide to Power Query</i>. Holy Macro! Books.</li>
-    <li>Puls, K., &amp; Escobar, M. (2021). <i>Master your data with Power Query in Excel and Power BI</i> (2.ª ed.). Holy Macro! Books.</li>
-    <li>Raviv, G. (2019). <i>Collect, combine, and transform data using Power Query in Excel and Power BI</i>. Microsoft Press.</li>
-    <li>Wickham, H. (2014). Tidy data. <i>Journal of Statistical Software, 59</i>(10), 1–23. <a href="https://doi.org/10.18637/jss.v059.i10" target="_blank" rel="noopener">https://doi.org/10.18637/jss.v059.i10</a></li>
-  </ul>
-  <aside class="nota"><b>Para recordar</b><p>Los ejemplos de este manual usan datos ficticios creados con fines didácticos. Las páginas web se consultaron en octubre de 2026.</p></aside></div><footer><span>Manual de Power Query · Módulo 6</span><span>Página 25 de 25</span></footer></article>
-</main>
+</div>
+<script>
+/* ---------- Piezas ---------- */
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const fmtN = n => n.toLocaleString("en-US");
+const tabla = (cab,filas,opt={}) => `<table class="t"><tr>${cab.map((c,j)=>`<th class="${(opt.r||[]).includes(j)?'r':''} ${(opt.nuevas||[]).includes(j)?'nuevo':''}">${c}</th>`).join("")}</tr>${filas.map((f,i)=>`<tr class="${(opt.fuera||[]).includes(i)?'fuera':''}">${f.map((c,j)=>`<td class="${c===null?'nul':''} ${(opt.r||[]).includes(j)?'r':''} ${(opt.nuevas||[]).includes(j)?'nuevo':''}">${c===null?'null':c}</td>`).join("")}</tr>`).join("")}</table>`;
+const panel = (h,t,x="") => `<h3>${h}</h3><p>${t}</p>${x}`;
+const eje = t => `<p class="eje"><b>Ejemplo.</b> ${t}</p>`;
+const ojo = t => `<p class="ojo"><b>Ojo.</b> ${t}</p>`;
+const haz = t => `<p class="hazlo">👆 ${t}</p>`;
+const cab = (c,t,l="") => `<p class="eyebrow">${c}</p><h2>${t}</h2>${l?`<p class="lead">${l}</p>`:""}`;
+
+/* Selector genérico: cada opción tiene un nombre (k) y un contenido (b) o una función */
+const SEL = {};
+let nSel = 0;
+function sel(ops,lado=true,al){ const id="s"+(++nSel); SEL[id]={ops,al}; return `<div class="pick ${lado?'lado':''}" data-sel="${id}"><div class="opts">${ops.map((o,i)=>`<button type="button" class="op" data-i="${i}">${o.k}</button>`).join("")}</div><div class="panel" aria-live="polite"></div></div>`; }
+function pintaSel(g,i){ const s=SEL[g.dataset.sel], o=s.ops[i], p=g.querySelector(".panel"); g.querySelectorAll(".op").forEach((b,j)=>b.classList.toggle("on",j===i)); p.innerHTML=typeof o.b==="function"?o.b():o.b; p.style.animation="none"; p.offsetWidth; p.style.animation=""; if(s.al) s.al(p,i); }
+
+const S = [];
+const SECC = ["Inicio","Fundamentos","El editor","Obtener datos","Tipos de datos","Transformar","Crear y resumir","Unir consultas","Entregar","Ir más allá","Referencias"];
+const lam = (t,h,cl="") => S.push({t,h:`<div class="slide ${cl}">${h}</div>`});
+
+/* ---------- Inicio ---------- */
+lam(0,`<img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
+  <p class="mod">Módulo 6 · Material de consulta</p>
+  <h1>Manual interactivo de Power Query.</h1>
+  <p class="sub">Qué es, para qué sirve y qué hace cada opción. Pruébelo aquí mismo.</p>
+  <p class="by">Por: <b>Jarlin Figueroa, MA</b></p>
+  <p class="hint">Use ← → para avanzar · En cada lámina hay algo que tocar 👆 · M = sonido</p>`,"cover");
+
+lam(0,`${cab("Contenido","Vaya directo a lo que necesita.")}
+  <div class="mapa" id="mapa">${[["1","Fundamentos","Qué es y cuándo usarlo"],["2","El editor","La ventana, la cinta y los pasos"],["3","Obtener datos","Orígenes y carpetas"],["4","Tipos de datos","Tipo, formato y región"],["5","Transformar","Filas, columnas, texto y fechas"],["6","Crear y resumir","Columnas nuevas, agrupar, dinamizar"],["7","Unir consultas","Anexar, combinar y sus 6 tipos"],["8","Entregar","Cargar y actualizar"],["9","Ir más allá","Lenguaje M, prueba y glosario"]].map(([n,k,d],i)=>`<button type="button" data-sec="${i+1}"><span class="n">${n}</span><b>${k}.</b><span>${d}</span></button>`).join("")}</div>`);
+
+/* ---------- 1. Fundamentos ---------- */
+lam(1,`${cab("Capítulo 1 · Fundamentos","Prepara los datos una vez. Después, se repite solo.")}
+  ${haz("Toque cada etapa.")}
+  <div class="pick" data-sel="etl"><div class="etapas opts" style="display:grid">${["Obtener","Transformar","Cargar","Actualizar"].map((k,i)=>`<button type="button" class="etapa op" data-i="${i}">${k}</button>${i<3?`<span class="a">${i===2?'↻':'→'}</span>`:""}`).join("")}</div><div class="panel" aria-live="polite"></div></div>`);
+SEL.etl={ops:[
+  {b:panel("Obtener.","Se conecta al origen de los datos: un archivo, una carpeta, una web o una base de datos. No copia nada a mano: recuerda dónde están.")},
+  {b:panel("Transformar.","Limpia y da forma con botones, sin fórmulas. Cada acción queda grabada como un paso.")},
+  {b:panel("Cargar.","Lleva el resultado a una tabla de Excel, lista para analizar. Los archivos originales no cambian.")},
+  {b:panel("Actualizar.","Cuando llegan datos nuevos, un clic repite toda la receta.",eje("A este proceso se le llama ETL: extraer, transformar y cargar."))}]};
+
+lam(1,`${cab("Capítulo 1 · Fundamentos","Sirve en casi cualquier área.")}${haz("Elija un área.")}
+  ${sel([
+   {k:"Ventas",b:panel("Ventas.","Unir cada mes los archivos de todas las sucursales.",eje("Antes: copiar y pegar por horas. Ahora: guardar el archivo y pulsar Actualizar todo."))},
+   {k:"Finanzas",b:panel("Finanzas.","Consolidar estados de cuenta y clasificar movimientos siempre con las mismas reglas.")},
+   {k:"Recursos humanos",b:panel("Recursos humanos.","Reunir nóminas o asistencia de varios departamentos en una sola tabla.")},
+   {k:"Salud y seguros",b:panel("Salud y seguros.","Consolidar reportes que llegan de distintas instituciones.")},
+   {k:"Educación",b:panel("Educación.","Reunir calificaciones de varios cursos y unirlas con los datos de los estudiantes.")},
+   {k:"Inventario",b:panel("Inventario.","Cruzar existencias con el catálogo de productos y proveedores.")}])}`);
+
+lam(1,`${cab("Capítulo 1 · Fundamentos","¿Power Query u otra herramienta?")}${haz("Elija su situación.")}
+  ${sel([
+   {k:"Los datos llegan sucios cada mes",b:panel("Power Query.","Prepara y repite los mismos arreglos.")},
+   {k:"Necesito un cálculo que cambie al instante",b:panel("Fórmulas.","Se recalculan solas. Una consulta solo cambia al actualizar.")},
+   {k:"Quiero explorar datos ya limpios",b:panel("Tablas dinámicas.","Resumen y exploran desde varios ángulos.")},
+   {k:"Debo automatizar botones e informes",b:panel("Macros y VBA.","Controlan la interfaz de Excel y crean procesos a la medida.")},
+   {k:"Tengo varias tablas relacionadas",b:panel("Power Pivot.","Relaciona tablas y crea medidas sobre el modelo de datos.")},
+   {k:"Es un arreglo pequeño, una sola vez",b:panel("Quizá no haga falta.","Si no se repetirá, hágalo directamente en la hoja.",ojo("Lo normal es combinarlas: Power Query prepara y las tablas dinámicas analizan."))}])}`);
+
+lam(1,`${cab("Capítulo 1 · Fundamentos","¿Dónde está en su Excel?")}${haz("Elija su versión.")}
+  ${sel([
+   {k:"Excel 2010 y 2013",b:panel("Complemento aparte.","Se instalaba y agregaba la pestaña Power Query.")},
+   {k:"Excel 2016",b:panel("Ya viene incluido.",`En la pestaña Datos. En algunas actualizaciones aparece como Nueva consulta.`)},
+   {k:"Excel 2019, 2021 y 365",b:panel("Ya viene incluido.",`<span class="ruta">Datos › Obtener y transformar datos</span>`,`<p>Actualizar todo: <code>Ctrl + Alt + F5</code></p>`)},
+   {k:"Mac y web",b:panel("Con funciones más limitadas.","Cambian con las actualizaciones. Compruebe qué permite su versión.")},
+   {k:"Power BI",b:panel("El mismo motor.","Lo que aprenda en Excel también le sirve en Power BI.")}])}`);
+
+/* ---------- 2. Editor ---------- */
+const ZONAS=[["Cinta","Reúne los comandos, organizados en pestañas."],["Barra de fórmulas","Muestra el código del paso seleccionado. Si no la ve, actívela en Vista."],["Consultas","Lista todas las consultas del libro."],["Vista previa","Muestra los datos en el paso elegido. Es una muestra, no siempre el total."],["Configuración de la consulta","Nombre de la consulta y sus pasos aplicados."],["Barra de estado","Indica columnas y filas de la vista previa."]];
+lam(2,`${cab("Capítulo 2 · El editor","La ventana donde se transforman los datos.")}${haz("Toque cada zona del editor.")}
+  <div class="dosc grow1" style="grid-template-columns:1.5fr 1fr"><div class="ed" id="ed">
+    <button type="button" class="zona z1" data-z="0"><span class="num">1</span>Archivo · Inicio · Transformar · Agregar columna · Vista</button>
+    <button type="button" class="zona z2" data-z="1"><span class="num">2</span>= Table.ReplaceValue(…)</button>
+    <div class="zfila"><button type="button" class="zona z3" data-z="2"><span class="num">3</span><br>Ventas<br>Productos</button>
+    <button type="button" class="zona" data-z="3"><span class="num">4</span>Vista previa<br><br>ABC Producto · 📅 Fecha · 123 Monto<br>Licuadora · 15/1/2026 · 4800<br>Olla de 5 litros · 16/1/2026 · 1900</button>
+    <button type="button" class="zona z5" data-z="4"><span class="num">5</span><br>Pasos aplicados<br>Origen<br>Tipo cambiado</button></div>
+    <button type="button" class="zona z6" data-z="5"><span class="num">6</span>3 columnas, 90 filas</button></div>
+  <div class="panel" id="edP" aria-live="polite"></div></div>`);
+
+lam(2,`${cab("Capítulo 2 · El editor","Cada pestaña responde a una pregunta.")}${haz("Abra cada pestaña.")}
+  ${sel([
+   {k:"Inicio",b:panel("¿Qué hago con la consulta?","Cerrar y cargar · Administrar columnas · Reducir filas · Combinar · Parámetros · Nuevo origen")},
+   {k:"Transformar",b:panel("¿Cómo cambio lo que existe?","Agrupar por · Reemplazar los valores · Rellenar · Dividir columna · Formato · Extraer",ojo("Cambia la columna seleccionada."))},
+   {k:"Agregar columna",b:panel("¿Cómo creo algo nuevo?","Columna a partir de los ejemplos · Personalizada · Condicional · Índice",ojo("Conserva la columna original."))},
+   {k:"Vista",b:panel("¿Qué quiero ver?","Calidad de columna · Distribución de columnas · Perfil de columna · Editor avanzado",eje("Calidad de columna muestra de inmediato cuántos valores tienen error o están vacíos."))}],false)}`);
+
+const BASE=[{o:"Sucursal Centro.xlsx",f:"15-ene-26",c:"Hogar",m:"RD$ 5550"},{o:"Sucursal Este.xlsx",f:"14/01/2026",c:"hogar",m:4400},{o:"Sucursal Norte.xlsx",f:"2026-01-15",c:"cocina",m:4800}];
+const REC=[["Origen","Los datos tal como llegan.",r=>r,"ABC123","ABC123"],
+ ["Tipo cambiado","Monto pasa a texto.",r=>r.map(x=>({...x,m:String(x.m)})),"ABC","ABC123"],
+ ["Valor reemplazado","Sale «RD$».",r=>r.map(x=>({...x,m:x.m.replace("RD$","").trim()})),"ABC","ABC123"],
+ ["Tipo cambiado1","Monto ya es número y se puede sumar.",r=>r.map(x=>({...x,n:1})),"123","ABC123"],
+ ["Tipo cambiado2","Todas las fechas son fecha.",r=>r.map((x,i)=>({...x,f:["15/1/2026","14/1/2026","15/1/2026"][i]})),"123","📅"],
+ ["Poner En Mayúsculas Cada Palabra","La categoría queda escrita igual.",r=>r.map(x=>({...x,c:x.c[0].toUpperCase()+x.c.slice(1)})),"123","📅"]];
+lam(2,`${cab("Capítulo 2 · El editor","Los pasos aplicados son la receta.")}${haz("Toque un paso: los datos vuelven a ese momento.")}
+  <div class="dosc grow1" style="grid-template-columns:320px 1fr"><div class="pasos" id="recL">${REC.map((p,i)=>`<button type="button" class="paso" data-i="${i}">${p[0]}</button>`).join("")}</div>
+  <div class="panel"><div id="recT"></div><p id="recD" aria-live="polite"></p>${ojo("El orden importa: cada paso trabaja sobre el resultado del anterior.")}</div></div>`);
+
+lam(2,`${cab("Capítulo 2 · El editor","Lo que puede hacer con un paso.")}${haz("Elija una acción.")}
+  ${sel([
+   {k:"Modificar",b:panel("Engrane ⚙.","Cambia las opciones del paso sin repetirlo.")},
+   {k:"Quitar",b:panel("La ✕.","Deshace esa acción, sin empezar de nuevo.",ojo("Si quita un paso del medio, los siguientes pueden fallar."))},
+   {k:"Cambiar nombre",b:panel("Clic derecho.","Deje claro qué hace el paso.")},
+   {k:"Duplicar la consulta",b:panel("Una copia independiente.","Para probar cambios sin tocar la original.")},
+   {k:"Referencia",b:panel("Una consulta que parte de otra.","Si la original cambia, esta también.",eje("Una base común limpia y dos reportes que salen de ella."))}])}`);
+
+/* ---------- 3. Obtener datos ---------- */
+lam(3,`${cab("Capítulo 3 · Obtener datos","¿Dónde están sus datos?")}${haz("Elija un origen.")}
+  ${sel([
+   {k:"Tabla o rango",b:panel("Del mismo libro.","Si es un rango, Excel lo convierte en tabla.")},
+   {k:"Libro de Excel",b:panel("Otro archivo.","Abre el Navegador. Prefiera tablas: sus límites son claros.")},
+   {k:"Texto o CSV",b:panel("Lo que exportan los sistemas.","Revise el delimitador y los tipos detectados.")},
+   {k:"Carpeta",b:panel("Muchos archivos a la vez.","Une todos los archivos en una sola consulta.")},
+   {k:"Web",b:panel("Tablas de una página.","Si la página cambia su diseño, la consulta puede fallar.")},
+   {k:"Base de datos",b:panel("Sistemas de la empresa.","SQL Server, Access, Oracle y otros. Pueden pedir credenciales.")}])}`);
+
+lam(3,`${cab("Capítulo 3 · Obtener datos","Conectarse a una carpeta tiene reglas.")}${haz("Toque cada regla para ver por qué existe.")}
+  ${sel([
+   {k:"Mismas columnas",b:panel("Se unen por nombre.","Un nombre distinto crea otra columna o deja valores vacíos.")},
+   {k:"Misma hoja",b:panel("Se usa un archivo de ejemplo.","La consulta busca la hoja que eligió en ese ejemplo.")},
+   {k:"Carpeta exclusiva",b:panel("Entra todo lo que haya.","También lo que esté en subcarpetas.")},
+   {k:"Archivos cerrados",b:panel("Evite las copias ~$.","Un archivo abierto crea una copia temporal que puede dar error.")},
+   {k:"No borre las auxiliares",b:panel("Son parte de la receta.","Power Query crea consultas de ayuda. La principal las necesita.")}])}`);
+
+lam(3,`${cab("Capítulo 3 · Obtener datos","¿Qué tan privados son sus datos?")}${haz("Elija un nivel de privacidad.")}
+  ${sel([
+   {k:"Público",b:panel("Cualquiera puede verlos.","Una página web abierta.")},
+   {k:"Organizativo",b:panel("Solo personas de confianza.","Archivos internos de la empresa.")},
+   {k:"Privado",b:panel("Información sensible.","Datos personales o financieros.",ojo("Las credenciales se guardan en su equipo, no en el libro. Se administran en Datos › Obtener datos › Configuración de origen de datos."))}])}`);
+
+/* ---------- 4. Tipos ---------- */
+lam(4,`${cab("Capítulo 4 · Tipos de datos","El icono dice qué es cada dato.")}${haz("Toque un icono.")}
+  ${sel([
+   {k:"ABC · Texto",b:panel("Texto.","Nombres, descripciones y códigos.",eje("El código 00125 debe ser texto, o perderá los ceros."))},
+   {k:"123 · Número entero",b:panel("Número entero.","Cantidades sin decimales.",ojo("Si hay decimales, los redondea."))},
+   {k:"1.2 · Número decimal",b:panel("Número decimal.","Valores con decimales.")},
+   {k:"$ · Moneda",b:panel("Moneda.","Montos con hasta cuatro decimales.")},
+   {k:"📅 · Fecha",b:panel("Fecha.","Día, mes y año. Permite agrupar por mes.")},
+   {k:"Fecha/Hora · Duración",b:panel("Tiempo.","Fecha con hora, o lapsos de tiempo.")},
+   {k:"Verdadero/Falso",b:panel("Sí o no.","Respuestas de dos valores.")}])}`);
+
+lam(4,`${cab("Capítulo 4 · Tipos de datos","Tipo no es lo mismo que formato.")}${haz("Cambie el formato y la región.")}
+  <div class="dosc grow1"><div class="panel"><h3>El formato cambia cómo se ve.</h3><p>El dato sigue siendo el mismo número.</p>
+    <div class="opts" id="fmtO"><button type="button" class="op on" data-f="0">General</button><button type="button" class="op" data-f="1">Moneda RD$</button><button type="button" class="op" data-f="2">Con miles</button></div>
+    <div class="resul" id="fmtR" aria-live="polite">1250</div></div>
+  <div class="panel"><h3>La región cambia cómo se lee.</h3><p>El texto <code>03/01/2026</code> no significa lo mismo en todas partes.</p>
+    <div class="opts" id="regO"><button type="button" class="op on" data-r="0">República Dominicana</button><button type="button" class="op" data-r="1">Estados Unidos</button></div>
+    <div class="resul" id="regR" aria-live="polite">3 de enero de 2026</div></div></div>`);
+
+/* ---------- 5. Transformar ---------- */
+const FIL=[["1001","Norte","4,800"],["1002","Sur","1,900"],["1002","Sur","1,900"],[null,null,null],["1003","Este","550"],["TOTAL",null,"9,150"]];
+const ACF=[["Todas las filas",[]],["Conservar filas superiores (3)",[3,4,5]],["Quitar filas inferiores (1)",[5]],["Quitar filas en blanco",[3]],["Quitar duplicados",[2]],["Conservar duplicados",[0,3,4,5]]];
+lam(5,`${cab("Capítulo 5 · Transformar","¿Qué filas deben quedarse?")}${haz("Aplique una opción y mire qué filas salen.")}
+  ${sel(ACF.map(([k,f])=>({k,b:()=>`${tabla(["Factura","Sucursal","Monto"],FIL,{fuera:f,r:[2]})}<p class="estado">${FIL.length-f.length} de ${FIL.length} filas</p>`})))}`);
+
+lam(5,`${cab("Capítulo 5 · Transformar","Dividir y combinar columnas.")}${haz("Escriba y mire el resultado.")}
+  ${sel([
+   {k:"Dividir columna",b:()=>`<p class="cap">Texto</p><input type="text" id="divT" value="Santiago, RD" aria-label="Texto para dividir"><div class="camp"><label for="divD">Delimitador</label><select id="divD"><option value=",">Coma</option><option value=" ">Espacio</option><option value="-">Guion</option></select></div><p class="cap">Resultado</p><div id="divR"></div>`},
+   {k:"Combinar columnas",b:()=>`<div class="dosc"><div><p class="cap">Nombre</p><input type="text" id="comA" value="Ana" aria-label="Nombre"></div><div><p class="cap">Apellido</p><input type="text" id="comB" value="Peña" aria-label="Apellido"></div></div><p class="cap">Resultado, con un espacio</p><div class="resul" id="comR"></div>${ojo("Combinar columnas une columnas de una tabla. Combinar consultas une dos tablas.")}`},
+   {k:"Elegir o quitar",b:panel("Quitar columnas o Quitar otras columnas.","Con Quitar columnas, una columna nueva del origen se conserva. Con Quitar otras columnas, se descarta.")}],true,liveCol)}`);
+
+const TXT=[["minúscula",s=>s.toLowerCase()],["MAYÚSCULAS",s=>s.toUpperCase()],["Poner En Mayúsculas Cada Palabra",s=>s.toLowerCase().replace(/(^|\s)(\S)/g,(m,a,b)=>a+b.toUpperCase())],["Recortar",s=>s.trim()],["Longitud",s=>String(s.length)],["Primeros caracteres (3)",s=>s.slice(0,3)]];
+lam(5,`${cab("Capítulo 5 · Transformar","Texto y fechas.")}${haz("Cambie los valores y pruebe las opciones.")}
+  <div class="dosc grow1"><div class="panel"><p class="cap">Texto · Transformar › Formato y Extraer</p><input type="text" id="txtI" value="  san CRISTÓBAL  " aria-label="Texto de prueba">
+    <div class="opts" id="txtO">${TXT.map((t,i)=>`<button type="button" class="op" data-t="${i}">${t[0]}</button>`).join("")}</div><div class="resul" id="txtR" aria-live="polite"></div></div>
+  <div class="panel"><p class="cap">Fecha · Agregar columna › Fecha</p><input type="date" id="fecI" value="2026-01-15" aria-label="Fecha de prueba"><div id="fecR" aria-live="polite"></div></div></div>`);
+
+lam(5,`${cab("Capítulo 5 · Transformar","Vacíos y errores.")}${haz("Pulse Rellenar y elija un error.")}
+  <div class="dosc grow1"><div class="panel"><h3>null: aquí no hay nada.</h3><p>No es cero ni texto vacío.</p><div id="relT"></div><div class="opts"><button type="button" class="op" id="relB">Rellenar hacia abajo</button></div></div>
+  ${sel([
+   {k:"Convertir «RD$ 500» en número",b:"Quite el texto antes de cambiar el tipo."},
+   {k:"Una columna ya no existe",b:"Corrija el paso o el nombre."},
+   {k:"El archivo cambió de lugar",b:"Corrija la ruta en el paso Origen."},
+   {k:"Solo quiero ver qué falló",b:"Use Conservar errores. Después, Reemplazar errores o Quitar errores."}],false)}</div>`);
+
+/* ---------- 6. Crear y resumir ---------- */
+const VTA=[["Licuadora",4800],["Mesa plegable",2200],["Olla de 5 litros",1900],["Silla plástica",1100],["Toalla de baño",350]];
+lam(6,`${cab("Capítulo 6 · Crear y resumir","Agregar columnas.")}${haz("Elija una forma. En Condicional, mueva el valor.")}
+  ${sel([
+   {k:"A partir de los ejemplos",b:()=>`<p>Escriba el resultado y Power Query deduce la regla.</p>${tabla(["Fecha","Usted escribe","Propone"],[["15/1/2026","enero 2026","enero 2026"],["2/2/2026","","febrero 2026"],["20/3/2026","","marzo 2026"]],{nuevas:[2]})}`},
+   {k:"Condicional",b:()=>`<div class="camp"><label for="conR">Venta alta si Monto &gt;</label><input type="range" id="conR" min="500" max="4500" step="100" value="2000"><b id="conV">2,000</b></div><div id="conT"></div>`},
+   {k:"Personalizada",b:()=>`<p>Una fórmula en lenguaje M. Los nombres de columna van entre corchetes.</p><p class="resul">= [Cantidad] * [Precio]</p>${ojo("No son fórmulas de Excel: en M se separa con coma, no con punto y coma.")}`},
+   {k:"Índice",b:()=>`<p>Numera las filas desde 0 o desde 1.</p>${tabla(["Índice","Producto"],VTA.slice(0,3).map((v,i)=>[i+1,v[0]]),{nuevas:[0]})}`}],true,liveCon)}`);
+
+const GRU=[["Norte",4800],["Norte",1100],["Sur",1900],["Sur",550],["Sur",2200]];
+const OPG=[["Suma",a=>a.reduce((x,y)=>x+y,0)],["Promedio",a=>a.reduce((x,y)=>x+y,0)/a.length],["Mínimo",a=>Math.min(...a)],["Máximo",a=>Math.max(...a)],["Recuento de filas",a=>a.length]];
+lam(6,`${cab("Capítulo 6 · Crear y resumir","Agrupar por: muchas filas, un resumen.")}${haz("Elija una operación.")}
+  ${sel(OPG.map(([k,f])=>({k,b:()=>{const g=["Norte","Sur"].map(s=>[s,fmtN(f(GRU.filter(x=>x[0]===s).map(x=>x[1])))]);return `<div class="dosc"><div><p class="cap">Antes · 5 filas</p>${tabla(["Sucursal","Monto"],GRU.map(x=>[x[0],fmtN(x[1])]),{r:[1]})}</div><div><p class="cap">Después · 2 filas</p>${tabla(["Sucursal",k],g,{r:[1],nuevas:[1]})}<p class="ojo" style="margin-top:10px">A diferencia de una tabla dinámica, el resultado es una tabla normal dentro de la receta.</p></div></div>`;}})))}`);
+
+lam(6,`${cab("Capítulo 6 · Crear y resumir","Dinamizar: cambiar la forma de la tabla.")}${haz("Cambie entre tabla ancha y tabla larga.")}
+  ${sel([
+   {k:"Tabla ancha",b:()=>`<p>Fácil de leer, difícil de analizar: los meses son columnas.</p>${tabla(["Sucursal","Enero","Febrero"],[["Norte","500","650"],["Sur","300","420"]],{r:[1,2]})}${ojo("Pulse Anular dinamización de columnas para pasar a tabla larga.")}`},
+   {k:"Tabla larga",b:()=>`<p>Cada fila es un registro. Lista para una tabla dinámica.</p>${tabla(["Sucursal","Atributo","Valor"],[["Norte","Enero","500"],["Norte","Febrero","650"],["Sur","Enero","300"],["Sur","Febrero","420"]],{r:[2],nuevas:[1,2]})}${eje("Columna dinámica hace lo contrario: de larga a ancha.")}`}])}`);
+
+/* ---------- 7. Unir consultas ---------- */
+lam(7,`${cab("Capítulo 7 · Unir consultas","¿Necesita más filas o más columnas?")}${haz("Elija una forma de unir.")}
+  ${sel([
+   {k:"Más filas: Anexar",b:()=>`<div class="dosc"><div><p class="cap">Enero + febrero</p>${tabla(["Mes","Monto"],[["Enero","500"],["Enero","650"]],{r:[1]})}<br>${tabla(["Mes","Monto"],[["Febrero","300"]],{r:[1]})}</div><div><p class="cap">Resultado · 3 filas</p>${tabla(["Mes","Monto"],[["Enero","500"],["Enero","650"],["Febrero","300"]],{r:[1]})}<p class="ojo" style="margin-top:10px">Las columnas se emparejan por nombre, no por posición.</p></div></div>`},
+   {k:"Más columnas: Combinar",b:()=>`<div class="dosc"><div><p class="cap">Ventas + catálogo, por Código</p>${tabla(["Código","Ventas"],[["P-101","12"],["P-102","8"]])}<br>${tabla(["Código","Proveedor"],[["P-101","Alfa"],["P-102","Beta"]])}</div><div><p class="cap">Resultado · misma cantidad de filas</p>${tabla(["Código","Ventas","Proveedor"],[["P-101","12","Alfa"],["P-102","8","Beta"]],{nuevas:[2]})}<p class="ojo" style="margin-top:10px">Si la clave se repite en el catálogo, aparecen filas de más.</p></div></div>`}],false)}`);
+
+const J=[["Externa izquierda",1,1,0,"Todas las de la primera. Es la más usada.",["Licuadora","Olla","Mesa"]],["Externa derecha",0,1,1,"Todas las de la segunda.",["Licuadora","Olla","Silla"]],["Externa completa",1,1,1,"Todas las de ambas.",["Licuadora","Olla","Mesa","Silla"]],["Interna",0,1,0,"Solo las que coinciden.",["Licuadora","Olla"]],["Anti izquierda",1,0,0,"Las de la primera sin pareja. Ideal para auditar.",["Mesa"]],["Anti derecha",0,0,1,"Las de la segunda sin pareja.",["Silla"]]];
+const VE={Licuadora:12,Olla:8,Mesa:5}, PR={Licuadora:"Alfa",Olla:"Beta",Silla:"Gamma"};
+const venn=(a,c,b)=>`<div class="venn"><svg viewBox="0 0 120 70" role="img" aria-label="Diagrama de la combinación"><circle cx="45" cy="35" r="28" fill="${a?'#f2994a':'#fff'}" stroke="#2f3a8f" stroke-width="1.5"/><circle cx="75" cy="35" r="28" fill="${b?'#f2994a':'#fff'}" fill-opacity="${b?1:.01}" stroke="#2f3a8f" stroke-width="1.5"/><path d="M60 10.8a28 28 0 0 1 0 48.4a28 28 0 0 1 0-48.4z" fill="${c?'#2f3a8f':'#fff'}" stroke="#2f3a8f" stroke-width="1.5"/></svg></div>`;
+lam(7,`${cab("Capítulo 7 · Unir consultas","Seis tipos de combinación.")}${haz("Elija un tipo. Primera tabla: Licuadora, Olla, Mesa. Segunda: Licuadora, Olla, Silla.")}
+  ${sel(J.map(([k,a,c,b,d,f])=>({k,b:()=>`<div class="dosc"><div>${venn(a,c,b)}<p style="text-align:center;margin-top:8px">${d}</p></div><div>${tabla(["Producto","Ventas","Proveedor"],f.map(p=>[p,VE[p]??null,PR[p]??null]))}<p class="estado" style="margin-top:8px">${f.length} ${f.length===1?'fila':'filas'}</p></div></div>`})))}`);
+
+/* ---------- 8. Entregar ---------- */
+lam(8,`${cab("Capítulo 8 · Entregar","¿A dónde llega el resultado?")}${haz("Elija un destino en Cerrar y cargar en…")}
+  ${sel([
+   {k:"Tabla",b:panel("Una tabla en una hoja.","Lista para filtrar y usar en fórmulas.")},
+   {k:"Informe de tabla dinámica",b:panel("Directo a un resumen.","Sin tabla en la hoja.")},
+   {k:"Gráfico dinámico",b:panel("Un gráfico con su tabla dinámica.","Para mostrar el resultado de inmediato.")},
+   {k:"Solo crear conexión",b:panel("Se guarda sin ocupar una hoja.","Ideal para consultas intermedias.")},
+   {k:"Modelo de datos",b:panel("Un almacén dentro del libro.","Relaciona tablas y supera el límite de 1,048,576 filas de una hoja.")}])}`);
+
+lam(8,`${cab("Capítulo 8 · Entregar","Actualizar: pruebe la secuencia.")}${haz("Primero pulse Actualizar todo. Después copie el archivo y actualice otra vez.")}
+  <div class="dosc grow1"><div class="panel"><p class="cap">Carpeta</p><div class="archivos" id="actA"></div><div class="opts"><button type="button" class="op" id="actC">Copiar Sucursal Sur</button><button type="button" class="op" id="actU">↻ Actualizar todo</button><button type="button" class="op" id="actR">Reiniciar</button></div></div>
+  <div class="panel"><p class="cap">Tabla en Excel</p><p class="cuenta"><span id="actN">90</span> filas</p><p class="lead" id="actM">RD$ 279,850.00</p><p id="actD" aria-live="polite"></p>${ojo("No escriba dentro de la tabla cargada: Actualizar lo reemplaza. El formato sí se conserva.")}</div></div>`);
+
+/* ---------- 9. Ir más allá ---------- */
+const MK={let:"Inicia la lista de pasos.",ori:"Primer paso: de dónde vienen los datos.",nom:"El nombre de un paso. Lleva #\" \" porque tiene espacios.",fun:"Las funciones se escriben Categoría.Acción.",eac:"Una regla que se revisa fila por fila.",inn:"Indica qué paso entrega el resultado final."};
+lam(9,`${cab("Capítulo 9 · Ir más allá","Cada botón escribe código en lenguaje M.")}${haz("Toque cada parte marcada.")}
+  <div class="dosc grow1" style="grid-template-columns:1.5fr 1fr"><div class="cod" id="cod"><button type="button" class="mk" data-m="let">let</button>
+    <button type="button" class="mk" data-m="ori">Origen</button> = Excel.CurrentWorkbook(){[Name="Ventas"]}[Content],
+    <button type="button" class="mk" data-m="nom">#"Filas filtradas"</button> = <button type="button" class="mk" data-m="fun">Table.SelectRows</button>(Origen, <button type="button" class="mk" data-m="eac">each [Monto] &gt; 1000</button>)
+<button type="button" class="mk" data-m="inn">in</button>
+    #"Filas filtradas"</div><div class="panel"><h3>Reglas básicas.</h3><p id="codP" aria-live="polite">Toque una parte del código.</p>${ojo("M distingue mayúsculas: Text.Upper funciona y text.upper no.")}<p>Véalo en <span class="ruta">Vista › Editor avanzado</span></p></div></div>`);
+
+const QZ=[["Tiene los meses como columnas y quiere una tabla larga.",["Anular dinamización de columnas","Agrupar por","Transponer","Combinar columnas"],0,"Convierte encabezados en valores de una columna."],
+ ["Quiere saber qué facturas no tienen pago registrado.",["Interna","Externa completa","Anti izquierda","Externa derecha"],2,"Muestra las filas de la primera tabla sin pareja."],
+ ["«Hogar» y «hogar» aparecen como dos categorías.",["Quitar duplicados","Poner En Mayúsculas Cada Palabra","Rellenar hacia abajo","Dividir columna"],1,"Unifica el texto: Power Query distingue mayúsculas."],
+ ["Un reporte muestra la sucursal solo en la primera fila de cada grupo.",["Transponer","Reemplazar errores","Columna de índice","Rellenar hacia abajo"],3,"Copia el valor sobre los null siguientes."],
+ ["Quiere unir las ventas de enero y de febrero en una tabla.",["Combinar consultas","Anexar consultas","Combinar columnas","Agrupar por"],1,"Mismas columnas, más filas."],
+ ["Una consulta es solo un paso intermedio.",["Tabla","Gráfico dinámico","Solo crear conexión","Informe de tabla dinámica"],2,"La guarda sin ocupar una hoja."]];
+lam(9,`${cab("Capítulo 9 · Ir más allá","¿Qué opción usaría?")}<p class="hazlo" id="qzN"></p><p class="preg" id="qzP"></p><div class="resps" id="qzR"></div><p class="fb" id="qzF" aria-live="polite"></p><div class="opts"><button type="button" class="op" id="qzS" disabled>Siguiente pregunta</button></div>`);
+
+lam(9,`${cab("Capítulo 9 · Ir más allá","Seis hábitos.")}${haz("Gire cada tarjeta.")}
+  <div class="giros">${[["Mire los datos antes","Identifique qué cambia entre un archivo y otro."],["Un cambio a la vez","Revise el resultado antes del siguiente paso."],["No toque los originales","Toda corrección va en la consulta."],["Use nombres claros","En consultas y pasos, para que otros entiendan."],["Compruebe el total","Compare filas y sumas con lo esperado."],["Filtre al inicio","Los pasos siguientes procesan menos datos."]].map(([a,b])=>`<button type="button" class="giro"><span class="in"><span class="ca fr">${a}</span><span class="ca at">${b}</span></span></button>`).join("")}</div>`);
+
+const GL=[["Anexar","Unir tablas poniendo unas filas debajo de otras."],["Clave","Columna que relaciona dos tablas."],["Combinar","Agregar columnas de otra tabla mediante una clave."],["Conector","Componente que lee un tipo de origen."],["Consulta","Conexión a un origen más sus pasos."],["Dinamizar","Convertir valores en encabezados."],["ETL","Extraer, transformar y cargar."],["M","Lenguaje de las consultas."],["Modelo de datos","Almacén del libro para tablas relacionadas."],["null","Ausencia de valor."],["Origen","Lugar de donde vienen los datos."],["Paso aplicado","Acción grabada en una consulta."],["Plegado de consultas","Traducir pasos al lenguaje del origen."],["Parámetro","Valor guardado aparte que usan las consultas."]];
+lam(9,`${cab("Capítulo 9 · Ir más allá","Glosario.")}<input type="text" id="gloI" placeholder="Busque un término…" aria-label="Buscar en el glosario"><div class="glos" id="gloL" aria-live="polite"></div>`);
+
+/* ---------- Referencias ---------- */
+const MS=(l,t,u,s="Microsoft Learn")=>`Microsoft. (s. f.-${l}). <i>${t}</i>. ${s}. <a href="${u}" target="_blank" rel="noopener">${u}</a>`;
+lam(10,`<p class="eyebrow">Bibliografía</p><h2 style="font-size:32px">Referencias.</h2><ul class="refs">
+  <li>Kimball, R., &amp; Caserta, J. (2004). <i>The data warehouse ETL toolkit: Practical techniques for extracting, cleaning, conforming, and delivering data</i>. Wiley.</li>
+  ${[["a","Agregar una columna a partir de los ejemplos","https://learn.microsoft.com/es-es/power-query/column-from-example"],["b","Conectores de Power Query","https://learn.microsoft.com/es-es/power-query/connectors/"],["c","Cómo agrupar por o resumir filas","https://learn.microsoft.com/es-es/power-query/group-by"],["d","Descripción de la evaluación de consultas y plegado de consultas en Power Query","https://learn.microsoft.com/es-es/power-query/query-folding-basics"],["e","Descripción de la funcionalidad de columnas dinámicas","https://learn.microsoft.com/es-es/power-query/pivot-columns"],["f","Despivotar columnas","https://learn.microsoft.com/es-es/power-query/unpivot-column"],["g","Referencia del lenguaje de fórmulas M de Power Query","https://learn.microsoft.com/es-es/powerquery-m/"],["h","Tipos de datos en Power Query","https://learn.microsoft.com/es-es/power-query/data-types"],["i","Visión general de las consultas de combinación","https://learn.microsoft.com/es-es/power-query/merge-queries-overview"],["j","¿Qué es Power Query?","https://learn.microsoft.com/es-es/power-query/power-query-what-is-power-query"]].map(r=>`<li>${MS(...r)}</li>`).join("")}
+  <li>${MS("k","Acerca de Power Query en Excel","https://support.microsoft.com/es-es/Excel/about-power-query-in-excel","Microsoft Support")}</li>
+  <li>${MS("l","Anexar consultas (Power Query)","https://support.microsoft.com/es-es/Excel/append-queries-power-query","Microsoft Support")}</li>
+  <li>Puls, K., &amp; Escobar, M. (2016). <i>M is for (data) monkey: The Excel pro's definitive guide to Power Query</i>. Holy Macro! Books.</li>
+  <li>Puls, K., &amp; Escobar, M. (2021). <i>Master your data with Power Query in Excel and Power BI</i> (2.ª ed.). Holy Macro! Books.</li>
+  <li>Raviv, G. (2019). <i>Collect, combine, and transform data using Power Query in Excel and Power BI</i>. Microsoft Press.</li>
+  <li>Wickham, H. (2014). Tidy data. <i>Journal of Statistical Software, 59</i>(10), 1–23. <a href="https://doi.org/10.18637/jss.v059.i10" target="_blank" rel="noopener">https://doi.org/10.18637/jss.v059.i10</a></li></ul>
+  <p style="font-size:13px;color:var(--muted)">Los ejemplos usan datos ficticios creados con fines didácticos. Las páginas web se consultaron en octubre de 2026.</p>`);
+
+/* ---------- Simuladores que dependen de un selector ---------- */
+function liveCol(p){ const t=p.querySelector("#divT"), d=p.querySelector("#divD"), a=p.querySelector("#comA"), b=p.querySelector("#comB");
+  if(t){ const f=()=>{ const q=t.value.split(d.value).map(x=>x.trim()).filter(Boolean); p.querySelector("#divR").innerHTML=tabla(q.map((_,i)=>"Columna."+(i+1)),[q.map(esc)]); }; t.oninput=f; d.onchange=f; f(); }
+  if(a){ const f=()=>{ p.querySelector("#comR").textContent=(a.value+" "+b.value).trim(); }; a.oninput=f; b.oninput=f; f(); } }
+function liveCon(p){ const r=p.querySelector("#conR"); if(!r) return; const f=()=>{ const v=+r.value; p.querySelector("#conV").textContent=fmtN(v); p.querySelector("#conT").innerHTML=tabla(["Producto","Monto","Nivel"],VTA.map(x=>[x[0],fmtN(x[1]),x[1]>v?"Venta alta":"Venta baja"]),{r:[1],nuevas:[2]}); }; r.oninput=f; f(); }
+
+/* ---------- Motor ---------- */
+const wrap=document.getElementById("slides"); wrap.innerHTML=S.map(s=>s.h).join("");
+const els=[...wrap.children], $=id=>document.getElementById(id);
+const INI=SECC.map((_,i)=>S.findIndex(s=>s.t===i));
+const dots=$("dots");
+dots.innerHTML=SECC.map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
+dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.t]));
+$("mapa").querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.sec]));
+
+/* Selectores: delegación de clics y primera opción visible */
+wrap.querySelectorAll("[data-sel]").forEach(g=>{ pintaSel(g,0); g.querySelector(".opts").addEventListener("click",e=>{ const b=e.target.closest(".op"); if(b){ pintaSel(g,+b.dataset.i); clic(); } }); });
+
+/* Editor */
+const pintaZ=i=>{ $("ed").querySelectorAll(".zona").forEach(z=>z.classList.toggle("on",+z.dataset.z===i)); $("edP").innerHTML=panel(ZONAS[i][0]+".",ZONAS[i][1]); };
+$("ed").querySelectorAll(".zona").forEach(z=>z.onclick=()=>{ pintaZ(+z.dataset.z); clic(); }); pintaZ(0);
+
+/* Pasos aplicados */
+function pintaR(i){ let r=BASE.map(x=>({...x})); for(let k=0;k<=i;k++) r=REC[k][2](r); const num=r[0].n;
+  $("recT").innerHTML=tabla(["ABC Source.Name",REC[i][4]+" Fecha","ABC Categoría",REC[i][3]+" Monto"],r.map(x=>[x.o,x.f,x.c,x.m]),{r:num?[3]:[]});
+  $("recD").innerHTML=`<b>${REC[i][0]}:</b> ${REC[i][1]}`; $("recL").querySelectorAll(".paso").forEach((b,j)=>b.classList.toggle("on",j===i)); }
+$("recL").querySelectorAll(".paso").forEach(b=>b.onclick=()=>{ pintaR(+b.dataset.i); clic(); }); pintaR(0);
+
+/* Formato y región */
+const FMT=["1250","RD$ 1,250.00","1,250"], REG=["3 de enero de 2026","1 de marzo de 2026"];
+const unico=(c,sel,res,arr,k)=>$(c).querySelectorAll(sel).forEach(b=>b.onclick=()=>{ $(c).querySelectorAll(sel).forEach(x=>x.classList.toggle("on",x===b)); $(res).textContent=arr[+b.dataset[k]]; clic(); });
+unico("fmtO",".op","fmtR",FMT,"f"); unico("regO",".op","regR",REG,"r");
+
+/* Texto y fecha en vivo */
+let tIdx=3; const vis=s=>esc(s).replace(/ /g,'<span class="sp">·</span>');
+function pintaT(){ const v=$("txtI").value; $("txtO").querySelectorAll(".op").forEach((b,j)=>b.classList.toggle("on",j===tIdx)); $("txtR").innerHTML=vis(TXT[tIdx][1](v)); }
+$("txtO").querySelectorAll(".op").forEach(b=>b.onclick=()=>{ tIdx=+b.dataset.t; pintaT(); clic(); }); $("txtI").oninput=pintaT; pintaT();
+function pintaF(){ const v=$("fecI").value; if(!v){ $("fecR").innerHTML=""; return; } const d=new Date(v+"T12:00:00"), i=new Date(d.getFullYear(),0,1), dy=Math.round((d-i)/864e5)+1;
+  $("fecR").innerHTML=tabla(["Opción","Resultado"],[["Año",d.getFullYear()],["Mes",d.getMonth()+1],["Nombre del mes",d.toLocaleDateString("es-DO",{month:"long"})],["Trimestre",Math.ceil((d.getMonth()+1)/3)],["Semana del año",Math.ceil((dy+i.getDay())/7)],["Nombre del día",d.toLocaleDateString("es-DO",{weekday:"long"})]]); }
+$("fecI").oninput=pintaF; pintaF();
+
+/* Rellenar */
+let rel=false; const RL=[["Sucursal Norte","4,800"],[null,"1,100"],[null,"650"],["Sucursal Sur","1,900"]];
+function pintaRel(){ $("relT").innerHTML=tabla(["Sucursal","Monto"],rel?RL.map((x,i)=>[x[0]||RL[0][0],x[1]]):RL,{r:[1]}); $("relB").classList.toggle("on",rel); $("relB").textContent=rel?"Deshacer":"Rellenar hacia abajo"; }
+$("relB").onclick=()=>{ rel=!rel; pintaRel(); clic(); }; pintaRel();
+
+/* Actualizar */
+let act={copiado:false,hecho:false};
+function pintaA(m){ const a=["Sucursal Centro","Sucursal Este","Sucursal Norte"]; $("actA").innerHTML=a.map(n=>`<div class="arch"><i>X</i>${n}.xlsx</div>`).join("")+(act.copiado?`<div class="arch nuevo"><i>X</i>Sucursal Sur.xlsx</div>`:""); $("actN").textContent=act.hecho?"120":"90"; $("actM").textContent=act.hecho?"RD$ 378,050.00":"RD$ 279,850.00"; $("actD").textContent=m||""; }
+$("actC").onclick=()=>{ act.copiado=true; pintaA("Archivo copiado. La tabla aún no cambia: falta actualizar."); clic(); };
+$("actU").onclick=()=>{ if(act.copiado){ act.hecho=true; pintaA("La receta se repitió sola con el archivo nuevo."); exito(); } else { pintaA("No cambió nada: no hay archivos nuevos en la carpeta."); clic(); } };
+$("actR").onclick=()=>{ act={copiado:false,hecho:false}; pintaA(); clic(); }; pintaA();
+
+/* Código M */
+$("cod").querySelectorAll(".mk").forEach(b=>b.onclick=()=>{ $("cod").querySelectorAll(".mk").forEach(x=>x.classList.toggle("on",x===b)); $("codP").textContent=MK[b.dataset.m]; clic(); });
+
+/* Prueba: sin puntos, se puede volver a intentar hasta acertar */
+let qi=0;
+function pintaQ(){ const q=QZ[qi]; $("qzN").textContent=`Pregunta ${qi+1} de ${QZ.length}`; $("qzP").textContent=q[0]; $("qzF").textContent=""; $("qzS").disabled=true; $("qzS").textContent=qi===QZ.length-1?"Volver a empezar":"Siguiente pregunta";
+  $("qzR").innerHTML=q[1].map((r,i)=>`<button type="button" class="resp" data-i="${i}">${r}</button>`).join("");
+  $("qzR").querySelectorAll(".resp").forEach(b=>b.onclick=()=>{ if(+b.dataset.i===q[2]){ b.classList.add("bien"); $("qzF").textContent="✓ "+q[3]; $("qzS").disabled=false; exito(); } else { b.classList.add("mal"); $("qzF").textContent="Todavía no. Pruebe otra opción."; clic(); } }); }
+$("qzS").onclick=()=>{ qi=(qi+1)%QZ.length; pintaQ(); }; pintaQ();
+
+/* Tarjetas y glosario */
+wrap.querySelectorAll(".giro").forEach(g=>g.onclick=()=>{ g.classList.toggle("on"); clic(); });
+function pintaG(){ const q=$("gloI").value.trim().toLowerCase(), f=GL.filter(([a,b])=>(a+" "+b).toLowerCase().includes(q)); $("gloL").innerHTML=f.length?f.map(([a,b])=>`<div><b>${a}</b><span>${b}</span></div>`).join(""):"<p>No hay términos con esa búsqueda.</p>"; }
+$("gloI").oninput=pintaG; pintaG();
+
+/* Sonido */
+const SND={on:true,ctx:null,ready:false}; try{ SND.on=localStorage.getItem("m6sonido")!=="0"; }catch(e){}
+function ctx(){ const A=window.AudioContext||window.webkitAudioContext; if(!A) return null; const c=SND.ctx||(SND.ctx=new A()); if(c.state==="suspended") c.resume(); return c; }
+function tono(c,f,t0,dur,vol,tipo){ const o=c.createOscillator(), g=c.createGain(); o.type=tipo||"sine"; o.frequency.value=f; g.gain.setValueAtTime(.0001,t0); g.gain.exponentialRampToValueAtTime(vol,t0+.015); g.gain.exponentialRampToValueAtTime(.0001,t0+dur); o.connect(g); g.connect(c.destination); o.start(t0); o.stop(t0+dur+.02); }
+function clic(){ if(!SND.on||!SND.ready) return; try{ const c=ctx(); if(c) tono(c,660,c.currentTime+.01,.09,.035); }catch(e){} }
+function exito(){ if(!SND.on||!SND.ready) return; try{ const c=ctx(); if(!c) return; const t=c.currentTime+.05; [659.25,987.77].forEach((f,i)=>tono(c,f,t+i*.11,.4,.07,"triangle")); }catch(e){} }
+function sonar(d){ if(!SND.on||!SND.ready) return; try{ const c=ctx(); if(c) tono(c,d>0?880:587,c.currentTime+.01,.2,.05); }catch(e){} }
+const pintarSnd=()=>{ $("snd").textContent=SND.on?"🔊 Sonido":"🔇 Sin sonido"; };
+$("snd").onclick=e=>{ SND.on=!SND.on; try{ localStorage.setItem("m6sonido",SND.on?"1":"0"); }catch(_){} pintarSnd(); e.currentTarget.blur(); }; pintarSnd();
+
+/* Navegación */
+let cur=0;
+function go(i){ const prev=cur; cur=Math.max(0,Math.min(els.length-1,i)); if(cur!==prev) sonar(cur>prev?1:-1);
+  els.forEach((e,j)=>e.classList.toggle("on",j===cur)); const tp=S[cur].t;
+  $("stage").classList.toggle("oscuro",els[cur].classList.contains("cover"));
+  dots.querySelectorAll("button").forEach((b,j)=>{ b.classList.toggle("cur",j===tp); b.classList.toggle("done",tp>j); });
+  $("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
+  $("topL").textContent="MANUAL DE POWER QUERY · "+SECC[tp].toUpperCase()+".";
+  $("prev").disabled=cur===0; $("next").disabled=cur===els.length-1;
+  try{ history.replaceState(null,"","#"+(cur+1)); }catch(e){} }
+$("prev").onclick=()=>go(cur-1); $("next").onclick=()=>go(cur+1);
+$("fs").onclick=e=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(_){} e.currentTarget.blur(); };
+document.addEventListener("keydown",e=>{ const en=e.target.closest&&e.target.closest("input,select,textarea"); if(en) return; const enB=e.target.closest&&e.target.closest("button,a");
+  if(["ArrowRight","PageDown"].includes(e.key)||(e.key===" "&&!enB)){e.preventDefault();go(cur+1);} else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==="Home") go(0); else if(e.key==="End") go(els.length-1); else if(e.key==="f"||e.key==="F") $("fs").click(); else if(e.key==="m"||e.key==="M") $("snd").click(); });
+let tx=null; document.addEventListener("touchstart",e=>{ tx=e.target.closest("input,select")?null:e.touches[0].clientX; },{passive:true});
+document.addEventListener("touchend",e=>{ if(tx===null) return; const d=e.changedTouches[0].clientX-tx; if(Math.abs(d)>70) go(cur+(d<0?1:-1)); tx=null; },{passive:true});
+function fit(){ const s=Math.min((innerWidth-16)/1280,(innerHeight-16)/720); $("stage").style.transform=`translate(-50%,-50%) scale(${s})`; }
+addEventListener("resize",fit); fit(); go((parseInt(location.hash.slice(1),10)||1)-1); SND.ready=true;
+</script>
 </body>
 </html>
