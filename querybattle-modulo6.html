@@ -161,6 +161,24 @@ input:checked+.toggle-slider:before{transform:translateX(22px);background:#000;}
 .option .okb{display:inline-block;margin-left:12px;font-size:.8rem;letter-spacing:2px;background:var(--neon);color:#000;border-radius:20px;padding:2px 10px;vertical-align:middle;}
 #revealMsg{font-size:1.25rem;font-weight:800;}
 #revealMsg .n{display:inline-block;min-width:1.4em;color:var(--warning);font-size:1.6rem;}
+
+/* Color de cada equipo: azul para el equipo 1 y naranja para el equipo 2. --eq es el equipo que tiene el turno */
+:root{--t1:#4db8ff;--t2:#ff9f43;--eq:var(--t1);}
+html[data-turno="2"]{--eq:var(--t2);}
+#ui-top{border-bottom-color:var(--eq);transition:border-color .3s;}
+#t1-hud,#t1.tname{color:var(--t1);}
+#t2-hud,#t2.tname{color:var(--t2);}
+#t1-bar{background:linear-gradient(90deg,#1c5f8a 0%,var(--t1) 100%);}
+#t2-bar{background:linear-gradient(90deg,#9a5a1c 0%,var(--t2) 100%);}
+.team-hud{padding:4px 10px;border-radius:8px;border:2px solid transparent;transition:.25s;}
+html[data-turno="1"] .team-hud:not(.right){border-color:var(--t1);background:rgba(77,184,255,.1);}
+html[data-turno="2"] .team-hud.right{border-color:var(--t2);background:rgba(255,159,67,.1);}
+#turnText{color:var(--eq)!important;font-weight:800;letter-spacing:1px;}
+#playerText{color:var(--eq)!important;}
+.option:hover{border-color:var(--eq);background:rgba(255,255,255,.05);}
+.option .letra{background:var(--eq);}
+.team-box:nth-child(1){border-top:4px solid var(--t1);}
+.team-box:nth-child(2){border-top:4px solid var(--t2);}
 </style>
 </head>
 <body>
@@ -254,8 +272,8 @@ input:checked+.toggle-slider:before{transform:translateX(22px);background:#000;}
       <p style="color:#ccc;line-height:1.7;">Hacerlo a mano tomaría días, y el mes próximo habría que empezar de nuevo. La reunión con la junta es en una hora.</p>
       <p style="color:#ccc;line-height:1.7;">Se activa el <strong style="color:var(--neon)">Protocolo Power Query</strong>: dos equipos de analistas competirán respondiendo sobre fuentes de datos, limpieza, tipos, combinación de consultas y actualización.</p>
       <div style="display:flex;gap:16px;margin:16px 0;flex-wrap:wrap;">
-        <div style="flex:1;min-width:180px;background:rgba(46,229,157,0.06);border:1px solid var(--neon);border-radius:10px;padding:14px;"><p style="color:var(--neon);font-weight:bold;margin:0 0 6px 0;">🔌 EQUIPO CONSULTA</p><p style="color:#aaa;font-size:0.85rem;margin:0;line-height:1.5;">Maestros de la conexión. Su lema: <em>«Se conecta una vez y funciona siempre.»</em></p></div>
-        <div style="flex:1;min-width:180px;background:rgba(255,212,0,0.06);border:1px solid var(--warning);border-radius:10px;padding:14px;"><p style="color:var(--warning);font-weight:bold;margin:0 0 6px 0;">🧹 EQUIPO TRANSFORMA</p><p style="color:#aaa;font-size:0.85rem;margin:0;line-height:1.5;">Expertos en limpiar datos. Su lema: <em>«Los datos llegan sucios, pero salen listos.»</em></p></div>
+        <div style="flex:1;min-width:180px;background:rgba(46,229,157,0.06);border:1px solid var(--t1);border-radius:10px;padding:14px;"><p style="color:var(--t1);font-weight:bold;margin:0 0 6px 0;">🔌 EQUIPO CONSULTA</p><p style="color:#aaa;font-size:0.85rem;margin:0;line-height:1.5;">Maestros de la conexión. Su lema: <em>«Se conecta una vez y funciona siempre.»</em></p></div>
+        <div style="flex:1;min-width:180px;background:rgba(255,212,0,0.06);border:1px solid var(--t2);border-radius:10px;padding:14px;"><p style="color:var(--t2);font-weight:bold;margin:0 0 6px 0;">🧹 EQUIPO TRANSFORMA</p><p style="color:#aaa;font-size:0.85rem;margin:0;line-height:1.5;">Expertos en limpiar datos. Su lema: <em>«Los datos llegan sucios, pero salen listos.»</em></p></div>
       </div>
       <p style="color:#ccc;line-height:1.7;">Solo el equipo con más conocimiento devolverá el orden a los archivos.</p>
       <p style="color:#666;font-size:0.82rem;text-align:center;margin-bottom:0;letter-spacing:1px;">— FIN DEL INFORME —</p>
@@ -624,7 +642,7 @@ function loadQ(){
   document.getElementById('inter-turn-msg').style.display='none';
   if(index>=aQs.length){ const last=aQs[aQs.length-1]; aQs=shuffle(QUESTIONS); if(aQs[0]===last) aQs.push(aQs.shift()); index=0; toast('🔁 Se usaron las '+QUESTIONS.length+' preguntas: el banco vuelve a empezar',3500); }
   const q=aQs[index];
-  document.getElementById('turnText').innerText=`TURNO DE: ${turn===1?team1:team2}`;
+  document.documentElement.dataset.turno=turn; document.getElementById('turnText').innerText=`TURNO DE: ${turn===1?team1:team2}`;
   document.getElementById('playerText').innerText=currentPlayer();
   document.getElementById('q').innerText=q.q;
   document.getElementById('result').innerText='';
