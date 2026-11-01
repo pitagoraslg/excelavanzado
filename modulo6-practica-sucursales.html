@@ -238,8 +238,8 @@ const fix = (...li) => `<div class="fixbox"><span class="t">✋ ¿Le salió dist
 const file = (n,s,cl="",ic="X") => `<div class="file ${cl}"><span class="ic">${ic}</span><span>${n}</span><small>${s}</small></div>`;
 
 const S = [];
-const paso = (n,titulo,repaso,pasos,pista,cuerpo) => S.push({t:n, l:`PRÁCTICA GUIADA · PASO ${n} DE 5.`, h:`<div class="slide">
-  <div class="eyebrow"><span class="tag">Paso ${n} de 5</span>Haga esto.</div><h2>${titulo}</h2>
+const paso = (n,titulo,repaso,pasos,pista,cuerpo) => S.push({t:n, l:`PRÁCTICA GUIADA · PASO ${n} DE 6.`, h:`<div class="slide">
+  <div class="eyebrow"><span class="tag">Paso ${n} de 6</span>Haga esto.</div><h2>${titulo}</h2>
   <div class="why"><b>Teoría</b><span>${repaso}</span></div>
   <div class="cols" style="grid-template-columns:1fr 1fr"><div class="col">${doL(pasos)}<div class="tip">💡 ${pista}</div></div><div class="col">${cuerpo}</div></div></div>`});
 
@@ -248,7 +248,7 @@ S.push({t:0, l:"MÓDULO 6 · PRÁCTICA GUIADA.", h:`<div class="slide cover">
   <img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
   <div class="mod">Módulo 6 · Práctica guiada.</div>
   <h1>Las ventas de tres sucursales.</h1>
-  <p class="lead">Cinco pasos, uno por cada fundamento de la teoría: unir, convertir el monto, convertir la fecha, cargar y actualizar.</p>
+  <p class="lead">Seis pasos, uno por cada fundamento de la teoría: unir, convertir el monto y la fecha, unificar el texto, cargar y actualizar.</p>
   <div class="cover-tags"><span>⏱ Unos 30 minutos</span><span>💻 Excel de escritorio para Windows</span><span>👤 Individual</span><span>🧰 Power Query</span></div>
   <div class="by">Por: <b>Jarlin Figueroa, MA</b></div>
   <div class="hint">Use las flechas ← → del teclado o los botones de abajo · M = sonido.</div>
@@ -267,12 +267,12 @@ S.push({t:0, l:"MÓDULO 6 · PRÁCTICA GUIADA.", h:`<div class="slide cover">
 S.push({t:0, l:"PRÁCTICA GUIADA · EL CASO.", h:`<div class="slide" style="gap:16px">
   <div class="eyebrow"><span class="tag go">El caso</span></div>
   <h2>Tres sucursales, las mismas columnas y formatos distintos.</h2>
-  <p class="q">Comercial Las Palmas vende artículos para el hogar. Cada sucursal envió sus ventas de enero en un archivo, pero <b>no todas registran igual</b> la fecha y el monto.</p>
-  <table class="vals"><tr><th>Archivo</th><th>Así registra la fecha</th><th>Así registra el monto</th><th class="r">Filas</th></tr>
-    <tr><td>Sucursal Centro.xlsx</td><td class="bad">15-ene-26</td><td class="bad">RD$ 5550</td><td class="r">30</td></tr>
-    <tr><td>Sucursal Este.xlsx</td><td class="bad">14/01/2026</td><td class="bad">4400 RD$</td><td class="r">30</td></tr>
-    <tr><td>Sucursal Norte.xlsx</td><td class="bad">2026-01-15</td><td class="bad">RD$4800</td><td class="r">30</td></tr></table>
-  <p class="lead" style="font-size:17.5px">Las tres tienen las columnas <code>Fecha</code>, <code>Descripción</code>, <code>Categoría</code>, <code>Cantidad</code> y <code>Monto</code>, y ninguna tiene celdas vacías. Su misión es dejar <b>una sola tabla</b>, con la fecha como fecha y el monto como moneda.</p>
+  <p class="q">Comercial Las Palmas vende artículos para el hogar. Cada sucursal envió sus ventas de enero en un archivo, pero <b>no todas registran igual</b> el monto, la fecha y la categoría.</p>
+  <table class="vals"><tr><th>Archivo</th><th>Monto</th><th>Fecha</th><th>Categoría</th><th class="r">Filas</th></tr>
+    <tr><td>Sucursal Centro.xlsx</td><td class="bad">RD$ 5550</td><td class="bad">15-ene-26</td><td class="ok">Hogar</td><td class="r">30</td></tr>
+    <tr><td>Sucursal Este.xlsx</td><td class="ok">4400</td><td class="bad">14/01/2026</td><td class="bad">hogar</td><td class="r">30</td></tr>
+    <tr><td>Sucursal Norte.xlsx</td><td class="ok">4800</td><td class="bad">2026-01-15</td><td class="bad">hogar</td><td class="r">30</td></tr></table>
+  <p class="lead" style="font-size:16.5px">Los tres archivos tienen las mismas 10 columnas: <code>Factura</code>, <code>Fecha</code>, <code>Código</code>, <code>Descripción</code>, <code>Categoría</code>, <code>Vendedor</code>, <code>Cantidad</code>, <code>Precio</code>, <code>Monto</code> y <code>Forma de pago</code>. Ninguna tiene celdas vacías. Su misión es dejar <b>una sola tabla</b> con cada campo escrito de una sola forma.</p>
   <p class="note">Comercial Las Palmas y sus ventas son <b>ficticias</b>, creadas con fines didácticos.</p></div>`});
 
 S.push({t:0, l:"PRÁCTICA GUIADA · PREPARE SUS ARCHIVOS.", h:`<div class="slide">
@@ -283,13 +283,13 @@ S.push({t:0, l:"PRÁCTICA GUIADA · PREPARE SUS ARCHIVOS.", h:`<div class="slide
       ${doL([`Descargue los <b>dos archivos</b> de la derecha.`,
         `Clic derecho en <code>Modulo6-Ventas-Sucursales.zip</code> › <b>Extraer todo…</b><span class="h">Debe quedar una carpeta «Ventas Sucursales» con los 3 archivos.</span>`,
         `Abra Excel, cree un <b>libro en blanco</b> y guárdelo <b>fuera</b> de esa carpeta como <code>Modulo6_Apellido_Nombre.xlsx</code>.`,
-        `Guarde <code>Modulo6-Sucursal-Sur.zip</code> sin abrirlo: llega en el paso 5.`])}
+        `Guarde <code>Modulo6-Sucursal-Sur.zip</code> sin abrirlo: llega en el paso 6.`])}
       <div class="warn">⚠️ En «Ventas Sucursales» van <b>solo los archivos de ventas</b>.</div>
     </div>
     <div class="col">
       <div class="dlbs">
-        <a class="dlbtn" href="Modulo6-Ventas-Sucursales.zip" download><span class="ic">⬇</span><span><b>Ventas de las sucursales.</b><small>Modulo6-Ventas-Sucursales.zip · 3 archivos · pasos 1 a 4</small></span></a>
-        <a class="dlbtn" href="Modulo6-Sucursal-Sur.zip" download><span class="ic">⬇</span><span><b>Archivo nuevo: Sucursal Sur.</b><small>Modulo6-Sucursal-Sur.zip · paso 5</small></span></a>
+        <a class="dlbtn" href="Modulo6-Ventas-Sucursales.zip" download><span class="ic">⬇</span><span><b>Ventas de las sucursales.</b><small>Modulo6-Ventas-Sucursales.zip · 3 archivos · pasos 1 a 5</small></span></a>
+        <a class="dlbtn" href="Modulo6-Sucursal-Sur.zip" download><span class="ic">⬇</span><span><b>Archivo nuevo: Sucursal Sur.</b><small>Modulo6-Sucursal-Sur.zip · paso 6</small></span></a>
       </div>
       <span class="cap">Así debe quedar</span>
       <div class="files">
@@ -308,17 +308,18 @@ paso(1,"Una los tres archivos en una sola consulta.","Fundamento 1: conectarse a
   `Deje <b>Primer archivo</b>, seleccione la hoja <b>Ventas</b> y pulse <b>Aceptar</b>.`,
   `A la derecha, en <b>Nombre</b>, escriba <code>Consolidado</code> y pulse Entrar.`],
   `En Excel 2016, «Combinar y transformar datos» puede decir «Combinar y editar».`,
-  `${ok("Abajo a la izquierda dice <b>6 columnas, 90 filas</b>.","<code>Source.Name</code> muestra los 3 archivos.")}
+  `${ok("Abajo a la izquierda dice <b>11 columnas, 90 filas</b>: las 10 de los archivos y <code>Source.Name</code>.","<code>Source.Name</code> muestra los 3 archivos.")}
   ${fix(`<b>Vio una tabla con 3 filas:</b> pulsó «Transformar datos». Cierre el editor sin guardar y repita.`,`<b>Faltan o sobran filas:</b> revise que la carpeta tenga solo los 3 archivos.`)}`);
 
 paso(2,"Convierta el monto en número.","Fundamento 2: tipos de datos, el monto.",[
-  `Seleccione la columna <code>Monto</code>.`,
+  `Seleccione la columna <code>Monto</code>. Mezcla texto y números.`,
+  `Pulse el icono del encabezado y elija <b>Texto</b>.<span class="h">Si le pregunta, elija «Reemplazar el actual».</span>`,
   `Con <b>Inicio › Reemplazar los valores</b>, quite <code>RD$</code>. Deje vacío <b>Reemplazar con</b>.`,
-  `Cambie el tipo de la columna a <b>Número entero</b> con el icono del encabezado.`],
-  `Primero se quita el texto y después se cambia el tipo. Los tres formatos se resuelven con el mismo reemplazo.`,
+  `Pulse el icono <b>ABC</b> y elija <b>Número entero</b>.`],
+  `El orden importa: si reemplaza antes de pasar a Texto, las filas que ya eran número darán <b>Error</b>.`,
   `${ok("<code>Monto</code> tiene el icono <b>123</b>, sin «RD$» y sin ningún <b>Error</b>.")}
-  <table class="vals"><tr><th>Así llega</th><th class="r">Así queda</th></tr><tr><td class="bad">RD$ 5550</td><td class="ok r">5550</td></tr><tr><td class="bad">4400 RD$</td><td class="ok r">4400</td></tr><tr><td class="bad">RD$4800</td><td class="ok r">4800</td></tr></table>
-  ${fix(`<b>Ve «Error»:</b> quedó algún «RD$». Pulse la ✕ del último paso, repita el reemplazo y vuelva a convertir.`)}`);
+  <table class="vals"><tr><th>Sucursal</th><th>Así llega</th><th class="r">Así queda</th></tr><tr><td>Centro</td><td class="bad">RD$ 5550</td><td class="ok r">5550</td></tr><tr><td>Este</td><td>4400</td><td class="ok r">4400</td></tr><tr><td>Norte</td><td>4800</td><td class="ok r">4800</td></tr></table>
+  ${fix(`<b>Ve «Error»:</b> faltó pasar a Texto o quedó algún «RD$». Pulse la ✕ de los últimos pasos y repítalos en orden.`)}`);
 
 paso(3,"Deje la fecha como fecha.","Fundamento 3: tipos de datos, la fecha.",[
   `Busque la columna <code>Fecha</code> y mire el icono de su encabezado.`,
@@ -327,9 +328,19 @@ paso(3,"Deje la fecha como fecha.","Fundamento 3: tipos de datos, la fecha.",[
   `Si la columna ya tiene 📅, Power Query la convirtió al combinar. Solo compruebe que quedó bien.`,
   `${ok("Todas las fechas se ven <b>iguales</b>, son de <b>enero de 2026</b> y no hay ningún <b>Error</b>.")}
   <table class="vals"><tr><th>Así llega</th><th class="r">Así queda</th></tr><tr><td class="bad">15-ene-26</td><td class="ok r">15/1/2026</td></tr><tr><td class="bad">14/01/2026</td><td class="ok r">14/1/2026</td></tr><tr><td class="bad">2026-01-15</td><td class="ok r">15/1/2026</td></tr></table>
-  ${fix(`<b>Ve «Error» o fechas de otro mes:</b> su Windows no está en español. Pulse la ✕ del paso, abra el icono de Fecha › <b>Usando configuración regional…</b> y elija <b>Fecha</b> y <b>Español (República Dominicana)</b>.`)}`);
+  ${fix(`<b>Ve «Error» o fechas de otro mes:</b> su Windows no está en español. Pulse la ✕ del paso, abra el icono de Fecha › <b>Usar configuración regional…</b> y elija <b>Fecha</b> y <b>Español (República Dominicana)</b>.`)}`);
 
-paso(4,"Cargue la tabla y dé formato de moneda.","Fundamento 4: cargar y dar formato.",[
+paso(4,"Unifique las letras de la categoría.","Fundamento 4: unificar el texto.",[
+  `Seleccione la columna <code>Categoría</code>.`,
+  `Vaya a la pestaña <b>Transformar</b>.`,
+  `Pulse <b>Formato › Poner En Mayúsculas Cada Palabra</b>.`,
+  `Abra la flecha del filtro de <code>Categoría</code> para ver la lista y pulse <b>Cancelar</b>.`],
+  `Las sucursales Este y Norte escribieron la categoría en minúsculas. Para Power Query, «hogar» y «Hogar» son valores distintos.`,
+  `${ok("La lista muestra solo <b>4 categorías</b>, cada una escrita una vez.")}
+  <table class="vals"><tr><th>Así llega</th><th class="r">Así queda</th></tr><tr><td class="bad">electrodomésticos</td><td class="ok r">Electrodomésticos</td></tr><tr><td class="bad">cocina</td><td class="ok r">Cocina</td></tr><tr><td class="bad">muebles</td><td class="ok r">Muebles</td></tr><tr><td class="bad">hogar</td><td class="ok r">Hogar</td></tr></table>
+  ${fix(`<b>Faltan valores:</b> filtró sin querer. Pulse la ✕ del último paso «Filas filtradas».`,`<b>Cambió otra columna:</b> pulse la ✕ del último paso y seleccione <code>Categoría</code>.`)}`);
+
+paso(5,"Cargue la tabla y dé formato de moneda.","Fundamento 5: cargar y dar formato.",[
   `Pulse <b>Inicio › Cerrar y cargar</b>.`,
   `En la tabla, seleccione los valores de <code>Monto</code>.`,
   `Pulse <b>Ctrl + 1</b> › <b>Personalizada</b>, escriba <code>"RD$" #,##0.00</code> y pulse <b>Aceptar</b>.`],
@@ -337,7 +348,7 @@ paso(4,"Cargue la tabla y dé formato de moneda.","Fundamento 4: cargar y dar fo
   `<table class="vals"><tr><th>Sucursal</th><th class="r">Filas</th><th class="r">Monto</th></tr>${VENTAS.map(a=>`<tr><td>${a[0]}</td><td class="r">${a[1]}</td><td class="r">${fmt(a[2])}</td></tr>`).join("")}<tr class="tot"><td>Consolidado</td><td class="r">90</td><td class="r">${fmt(TOT3)}</td></tr></table>
   ${ok(`La tabla tiene <b>90 filas</b> y los montos se ven como <b>RD$ 450.00</b>.`,`Con la columna seleccionada, la barra inferior muestra <b>Suma: ${fmt(TOT3)}</b>.`)}`);
 
-paso(5,"Abrió la Sucursal Sur: actualice con un clic.","Fundamento 5: actualizar con un clic.",[
+paso(6,"Abrió la Sucursal Sur: actualice con un clic.","Fundamento 6: actualizar con un clic.",[
   `Guarde su libro y cierre cualquier archivo de ventas.`,
   `Extraiga <code>Modulo6-Sucursal-Sur.zip</code>.`,
   `Copie <code>Sucursal Sur.xlsx</code> <b>dentro</b> de la carpeta <b>Ventas Sucursales</b>.`,
@@ -349,11 +360,11 @@ paso(5,"Abrió la Sucursal Sur: actualice con un clic.","Fundamento 5: actualiza
 S[S.length-1].ok=1;
 
 /* ---------- Cierre ---------- */
-S.push({t:6, ok:2, l:"PRÁCTICA GUIADA · ANTES DE TERMINAR.", h:`<div class="slide final">
+S.push({t:7, ok:2, l:"PRÁCTICA GUIADA · ANTES DE TERMINAR.", h:`<div class="slide final">
   <div class="eyebrow"><span class="tag go">¡Lo logró!</span></div>
   <h2>Lo que su libro debe tener ahora.</h2>
   <div class="cols" style="grid-template-columns:1fr 1fr">
-    <ul class="chk"><li>Una consulta llamada Consolidado, conectada a la carpeta Ventas Sucursales.</li><li>La fecha como fecha y el monto como número, con formato de moneda en la hoja.</li><li>Una tabla de 120 filas con ${fmt(TOT4)}.</li></ul>
+    <ul class="chk"><li>Una consulta llamada Consolidado, conectada a la carpeta Ventas Sucursales.</li><li>El monto como número, con formato de moneda en la hoja, la fecha como fecha y la categoría escrita de una sola forma.</li><li>Una tabla de 120 filas con ${fmt(TOT4)}.</li></ul>
     <div class="save"><b style="font-size:19px">Guarde su libro.</b><span>Use <b>Archivo › Guardar</b>, con este nombre:</span><code>Modulo6_Apellido_Nombre.xlsx</code><span style="color:#d5d8ef">Si mueve la carpeta «Ventas Sucursales», recuerde corregir la ruta en el paso <b style="color:#fff">Origen</b>.</span></div>
   </div>
   <p class="think">Para pensar: ¿en su trabajo, quién registra los mismos datos de una forma distinta?</p>
@@ -362,7 +373,7 @@ S.push({t:6, ok:2, l:"PRÁCTICA GUIADA · ANTES DE TERMINAR.", h:`<div class="sl
 /* ---------- Motor ---------- */
 const wrap=document.getElementById("slides"); wrap.innerHTML=S.map(s=>s.h).join("");
 const els=[...wrap.children];
-const SECC=["Introducción",...Array.from({length:5},(_,i)=>"Paso "+(i+1)),"Cierre"];
+const SECC=["Introducción",...Array.from({length:6},(_,i)=>"Paso "+(i+1)),"Cierre"];
 const INI=SECC.map((_,i)=>S.findIndex(s=>s.t===i));
 const dots=document.getElementById("dots");
 dots.innerHTML=SECC.map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");

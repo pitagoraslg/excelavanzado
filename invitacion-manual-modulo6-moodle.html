@@ -1,0 +1,50 @@
+<!-- Invitación al Manual de Power Query del Módulo 6 para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes mq6-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes mq6-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(242,153,74,.55); } 50% { box-shadow: 0 0 0 12px rgba(242,153,74,0); } }
+  @keyframes mq6-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(-4deg); } }
+  .mq6-in { animation: mq6-in .7s ease-out both; }
+  .mq6-d1 { animation-delay: .1s; } .mq6-d2 { animation-delay: .25s; } .mq6-d3 { animation-delay: .4s; }
+  .mq6-float { display: inline-block; animation: mq6-float 3s ease-in-out infinite; }
+  .mq6-btn { animation: mq6-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
+  .mq6-btn:hover { transform: scale(1.04); background-color: #232C70 !important; }
+  @media (prefers-reduced-motion: reduce) { .mq6-in, .mq6-btn, .mq6-float { animation: none !important; } }
+</style>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #1F2233; line-height: 1.55; background-color: #F7F6F3; border-radius: 10px; overflow: hidden; border: 1px solid #E2E0EA; border-top: 6px solid #F2994A;">
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #2F3A8F;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="mq6-float">📖</span></td>
+      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
+        <p class="mq6-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #F8C9A0;">Material de consulta · Módulo 6</p>
+        <h2 class="mq6-in mq6-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 27px; font-weight: normal; line-height: 1.2; color: #FFFFFF;">Manual de Power Query.</h2>
+        <p class="mq6-in mq6-d2" style="margin: 0; font-size: 15px; color: #DADDF2;">¿Quieres abundar más? Este manual de <strong style="color: #FFFFFF;">25 páginas</strong> explica qué es Power Query, para qué sirve y <strong style="color: #FFFFFF;">qué hace cada una de sus opciones</strong>, en términos generales. No es una práctica: es un material para leer y consultar cuando lo necesites.</p>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 4px 26px 26px;">
+
+    <!-- Contenido -->
+    <div class="mq6-in mq6-d3" style="margin: 16px 0 0; background-color: #FFFFFF; border: 1px solid #E2E0EA; border-radius: 8px; padding: 12px 16px;">
+      <p style="margin: 0 0 8px; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; color: #B8641C;">Qué encontrarás</p>
+      <p style="margin: 0; font-size: 14px;">Fundamentos · El editor · Orígenes de datos · Tipos de datos · Filas, columnas, texto y fechas · Columnas nuevas · Agrupar y dinamizar · Anexar y combinar · Cargar y actualizar · Lenguaje M · Buenas prácticas · Glosario · Referencias.</p>
+    </div>
+
+    <!-- Consejo -->
+    <div class="mq6-in mq6-d3" style="margin: 14px 0 0; background-color: #FDEEDD; border-left: 5px solid #F2994A; border-radius: 6px; padding: 12px 16px; font-size: 14px;">
+      🖨️ <strong style="color: #2F3A8F;">Para guardarlo o imprimirlo:</strong> pulsa el botón <strong>Imprimir</strong> del manual. Desde ahí puedes elegir <strong>Guardar como PDF</strong>.
+    </div>
+
+    <!-- Llamado a la acción -->
+    <div class="mq6-in mq6-d3" style="text-align: center; margin: 22px 0 6px;">
+      <a class="mq6-btn" href="https://pitagoraslg.github.io/excelavanzado/modulo6-manual-power-query.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #2F3A8F; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px;">📖 Abrir el manual</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #5F6275;">Se abre en una pestaña nueva.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #5F6275;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
