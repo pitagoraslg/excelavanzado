@@ -20,7 +20,7 @@
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
 #stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;background:var(--paper);transform-origin:center;transform:translate(-50%,-50%);box-shadow:0 10px 40px rgba(47,58,143,.18);border-top:4px solid var(--ink)}
-.slide{position:absolute;inset:0;padding:52px 72px 64px;display:none;flex-direction:column;gap:11px}
+.slide{position:absolute;inset:0;padding:62px 96px 70px;display:none;flex-direction:column;gap:20px}
 .slide.on{display:flex;animation:in .35s ease}
 @keyframes in{from{opacity:.3;transform:translateY(6px)}to{opacity:1;transform:none}}
 .top{position:absolute;top:20px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;z-index:3}
@@ -33,33 +33,34 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);ove
 .btn:disabled{opacity:.4;cursor:default}
 button:focus-visible,a:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
 h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0;color:var(--ink);line-height:1.1}
-h2{font-size:35px;text-wrap:balance}
+h2{font-size:44px;text-wrap:balance}
 h3{font-size:22px}
 p{margin:0}
 b{font-weight:600}
 .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--acc-d)}
-.lead{font-size:19px;line-height:1.42}
+.lead{font-size:23px;line-height:1.4}
+.frase{font-family:var(--serif);font-size:25px;line-height:1.3;color:var(--ink);border-left:5px solid var(--acc);padding-left:16px}
 code{font-family:var(--mono);font-size:.9em;background:var(--ink-soft);color:var(--ink);padding:1px 5px}
 .ruta{font-family:var(--mono);font-size:.84em;background:var(--ink-soft);color:var(--ink);padding:1px 6px}
 .dosc{display:grid;grid-template-columns:1fr 1fr;gap:20px;min-height:0;align-items:start}
 .col{display:flex;flex-direction:column;gap:9px;min-width:0}
-ul.li{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:17.4px;line-height:1.4}
-ol.li{margin:0;padding-left:24px;display:flex;flex-direction:column;gap:4px;font-size:17.4px;line-height:1.4}
+ul.li{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:12px;font-size:24px;line-height:1.35}
+ol.li{margin:0;padding-left:30px;display:flex;flex-direction:column;gap:14px;font-size:25px;line-height:1.35}
 .eje,.ojo,.tip{font-size:16.8px;line-height:1.4;padding:8px 13px}
 .eje{background:var(--pos-soft);border-left:4px solid var(--pos)}
 .ojo{background:var(--acc-soft);border-left:4px solid var(--acc)}
 .tip{background:var(--ink-soft);border-left:4px solid var(--ink)}
 
-table.t{border-collapse:collapse;width:100%;font-size:16.2px;line-height:1.33;background:var(--card);font-variant-numeric:tabular-nums}
-.t th{background:var(--ink);color:#fff;text-align:left;padding:6px 10px;font-weight:600;font-size:15px}
-.t td{border-bottom:1px solid var(--line);padding:5.5px 10px;vertical-align:top}
+table.t{border-collapse:collapse;width:100%;font-size:21px;line-height:1.33;background:var(--card);font-variant-numeric:tabular-nums}
+.t th{background:var(--ink);color:#fff;text-align:left;padding:9px 14px;font-weight:600;font-size:18px}
+.t td{border-bottom:1px solid var(--line);padding:10px 14px;vertical-align:top}
 .t .r{text-align:right}
 .t td.nul{color:#888;font-style:italic}
 .t td.nuevo,.t th.nuevo{background:var(--acc-soft);color:#2a1a00}
 
 .flujo{display:grid;grid-template-columns:1fr 26px 1fr 26px 1fr 26px 1fr;gap:5px}
-.flujo div{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--ink);padding:11px 12px;font-size:16.2px;line-height:1.35}
-.flujo div b{display:block;color:var(--ink);font-size:19px}
+.flujo div{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--ink);padding:16px;font-size:19px;line-height:1.35}
+.flujo div b{display:block;color:var(--ink);font-size:23px;margin-bottom:4px}
 .flujo span{color:var(--acc);font-size:22px;align-self:center;text-align:center}
 
 /* Editor */
@@ -71,10 +72,11 @@ table.t{border-collapse:collapse;width:100%;font-size:16.2px;line-height:1.33;ba
 
 /* Elementos con interacción */
 .opts{display:flex;flex-direction:column;gap:6px}
-.op{font-family:var(--sans);font-size:16px;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--grid);padding:7px 12px;cursor:pointer}
+.op{font-family:var(--sans);font-size:18px;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--grid);padding:7px 12px;cursor:pointer}
 .op:hover{border-color:var(--ink)}.op.on{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
 .venn svg{display:block;height:140px;margin:0 auto}
-.resul{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--acc);padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:17px;line-height:1.4}
+.resul .t{font-size:18px}.resul .t td{padding:7px 12px}
+.resul{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--acc);padding:12px 14px;display:flex;flex-direction:column;gap:10px;font-size:20px;line-height:1.4}
 
 .cod{background:#20244f;color:#f0f0f8;font-family:var(--mono);font-size:15px;line-height:1.65;padding:11px 14px;white-space:pre-wrap;border-left:4px solid var(--acc)}
 .mapa{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1;min-height:0}
@@ -129,165 +131,83 @@ const cab = (c,t,l="") => `<p class="eyebrow">${c}</p><h2>${t}</h2>${l?`<p class
 const ul = a => `<ul class="li">${a.map(x=>`<li>${x}</li>`).join("")}</ul>`;
 const ruta = t => `<span class="ruta">${t}</span>`;
 const S = [];
-const SECC = ["Inicio","Fundamentos","El editor","Obtener datos","Tipos de datos","Transformar","Crear y resumir","Unir consultas","Entregar","Ir más allá","Referencias"];
+const SECC = ["Inicio","Fundamentos","El editor","Los datos","Transformar","Unir consultas","Entregar","Referencias"];
 const lam = (t,h,cl="") => S.push({t,h:`<div class="slide ${cl}">${h}</div>`});
 
 /* ---------- Inicio ---------- */
 lam(0,`<img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
   <p class="mod">Módulo 6 · Material de consulta</p>
   <h1>Manual de Power Query.</h1>
-  <p class="sub">Qué es, para qué sirve y qué hace cada una de sus opciones en Excel.</p>
+  <p class="sub">Lo esencial de la herramienta, en pocas láminas.</p>
   <p class="by">Por: <b>Jarlin Figueroa, MA</b></p>
   <p class="hint">Use ← → para avanzar · M = sonido</p>`,"cover");
 
-lam(0,`${cab("Contenido","Vaya directo a lo que necesita.","Este manual amplía lo visto en clase. Explica la herramienta en términos generales, por lo que no hace falta verlo en orden.")}
-  <div class="mapa" id="mapa">${[["1","Fundamentos","Qué es, para qué sirve y cuándo conviene"],["2","El editor","La ventana, la cinta y los pasos aplicados"],["3","Obtener datos","Orígenes, carpetas y privacidad"],["4","Tipos de datos","Tipo, formato y configuración regional"],["5","Transformar","Filas, columnas, texto, fechas y errores"],["6","Crear y resumir","Columnas nuevas, agrupar y dinamizar"],["7","Unir consultas","Anexar, combinar y los 6 tipos"],["8","Entregar","Cargar, modelo de datos y actualizar"],["9","Ir más allá","Lenguaje M, buenas prácticas y glosario"]].map(([n,k,d],i)=>`<button type="button" data-sec="${i+1}"><span class="n">${n}</span><b>${k}.</b><span>${d}</span></button>`).join("")}</div>`);
+/* ---------- Fundamentos ---------- */
+lam(1,`${cab("Fundamentos","¿Qué es Power Query?","Prepara datos en Excel sin fórmulas y sin tocar los archivos originales.")}
+  <div class="flujo"><div><b>Obtener</b>Se conecta a los datos.</div><span>→</span><div><b>Transformar</b>Los limpia con botones.</div><span>→</span><div><b>Cargar</b>Los lleva a Excel.</div><span>↻</span><div><b>Actualizar</b>Repite todo con un clic.</div></div>
+  <p class="frase">Cada acción queda grabada como un paso: es una receta.</p>`);
 
-/* ---------- 1. Fundamentos ---------- */
-lam(1,`${cab("Capítulo 1 · Fundamentos","¿Qué es Power Query?","Es la herramienta de Excel para <b>conectarse a datos, prepararlos y dejarlos listos para analizar</b>, sin escribir fórmulas y sin modificar los archivos originales.")}
-  <p class="lead">Preparar datos suele tomar más tiempo que analizarlos, y ese trabajo se repite cada mes. Power Query lo resuelve con una idea: <b>cada acción queda grabada como un paso</b>. La lista de pasos forma una receta que se repite con un clic.</p>
-  <div class="flujo"><div><b>Obtener</b>Se conecta al origen: un archivo, una carpeta, la web o una base de datos.</div><span>→</span><div><b>Transformar</b>Limpia y da forma a los datos con botones.</div><span>→</span><div><b>Cargar</b>Lleva el resultado a una tabla de Excel.</div><span>↻</span><div><b>Actualizar</b>Repite toda la receta con los datos nuevos.</div></div>
-  ${tabla(["Idea clave","Qué significa"],[["<b>Conexión</b>","Power Query recuerda dónde están los datos, en lugar de copiarlos a mano."],["<b>Consulta</b>","La conexión más sus pasos. Tiene nombre y se guarda en el libro."],["<b>ETL</b>","Extraer, transformar y cargar: el nombre técnico de este proceso."]])}`);
+lam(1,`${cab("Fundamentos","¿Cuándo conviene usarlo?")}
+  ${ul(["El mismo trabajo se repite cada mes.","La información llega en varios archivos.","Los datos necesitan siempre los mismos arreglos.","Otra persona debe poder revisar el proceso."])}
+  <p class="frase">Si es un arreglo de una sola vez, quizá no haga falta.</p>`);
 
-lam(1,`${cab("Capítulo 1 · Fundamentos","Para qué sirve y cuándo conviene.")}
-  <div class="dosc"><div class="col"><h3>Beneficios.</h3>${tabla(["Beneficio","Explicación"],[["<b>Automatiza</b>","Una tarea mensual se convierte en un clic."],["<b>Reduce errores</b>","Evita copiar y pegar; las reglas son siempre las mismas."],["<b>Protege los originales</b>","Los archivos fuente quedan intactos."],["<b>Documenta</b>","Cualquiera puede revisar los pasos y su orden."],["<b>Une fuentes</b>","Reúne Excel, texto, carpetas, web y bases de datos."],["<b>Maneja más datos</b>","El modelo de datos admite más filas que una hoja."]])}</div>
-  <div class="col"><h3>Conviene cuando…</h3>${ul(["El mismo trabajo se repite cada semana o cada mes.","La información llega en varios archivos.","Los datos necesitan siempre los mismos arreglos.","Otra persona debe poder revisar el proceso."])}
-  <h3>Puede no hacer falta cuando…</h3>${ul(["Es un arreglo pequeño que se hará una sola vez.","Los datos ya están limpios en una sola tabla.","Solo necesita un cálculo: una fórmula basta."])}</div></div>
-  ${eje("<b>Ventas:</b> unir cada mes los archivos de todas las sucursales. <b>Finanzas:</b> consolidar estados de cuenta. <b>Recursos humanos:</b> reunir la asistencia de varios departamentos.")}`);
+lam(1,`${cab("Fundamentos","Cada herramienta tiene su función.")}
+  ${tabla(["Herramienta","Sirve para"],[["<b>Power Query</b>","Preparar los datos."],["<b>Fórmulas</b>","Calcular celda por celda."],["<b>Tablas dinámicas</b>","Resumir y explorar."],["<b>Macros</b>","Automatizar acciones en Excel."]])}
+  <p class="frase">Una consulta solo cambia cuando se actualiza.</p>`);
 
-lam(1,`${cab("Capítulo 1 · Fundamentos","Frente a otras herramientas y dónde encontrarlo.")}
-  ${tabla(["Herramienta","Sirve para","Se recomienda cuando"],[["<b>Fórmulas</b>","Calcular celda por celda.","El resultado debe cambiar al momento."],["<b>Tablas dinámicas</b>","Resumir y explorar datos listos.","Quiere analizar desde varios ángulos."],["<b>Power Query</b>","Preparar los datos.","Llegan sucios, repartidos o se repiten."],["<b>Macros y VBA</b>","Automatizar acciones en Excel.","Debe controlar la interfaz o crear procesos a la medida."],["<b>Power Pivot</b>","Relacionar tablas y crear medidas.","Usa varias tablas o grandes volúmenes."]])}
-  ${ojo("Una fórmula se recalcula sola. Una consulta <b>solo cambia cuando se actualiza</b>.")}
-  ${tabla(["Versión de Excel","Dónde está"],[["2010 y 2013","Complemento gratuito que se instalaba aparte."],["2016","Pestaña Datos. En algunas actualizaciones aparece como Nueva consulta."],["2019, 2021 y Microsoft 365",ruta("Datos › Obtener y transformar datos")],["Mac y web","Funciones más limitadas, que cambian con las actualizaciones."]])}`);
+/* ---------- El editor ---------- */
+lam(2,`${cab("El editor","Cuatro pestañas, cuatro preguntas.")}
+  ${tabla(["Pestaña","Responde a"],[["<b>Inicio</b>","¿Qué hago con la consulta?"],["<b>Transformar</b>","¿Cómo cambio lo que existe?"],["<b>Agregar columna</b>","¿Cómo creo algo nuevo?"],["<b>Vista</b>","¿Qué quiero ver?"]])}
+  <p class="frase">Búsquelo en ${ruta("Datos › Obtener y transformar datos")}</p>`);
 
-/* ---------- 2. Editor ---------- */
-lam(2,`${cab("Capítulo 2 · El editor","La ventana y sus pestañas.")}
-  <div class="dosc" style="grid-template-columns:.86fr 1.14fr"><div class="col"><div class="ed"><div class="z z1"><span class="num">1</span>Inicio · Transformar · Agregar columna · Vista</div><div class="z z2"><span class="num">2</span>= Table.ReplaceValue(…)</div><div class="zfila"><div class="z z3"><span class="num">3</span><br>Ventas<br>Productos</div><div class="z"><span class="num">4</span>Vista previa<br>ABC Producto · 123 Monto<br>Licuadora · 4800</div><div class="z z5"><span class="num">5</span><br>Pasos aplicados</div></div><div class="z z6">Barra de estado: 3 columnas, 90 filas</div></div>
-   ${tabla(["Zona","Función"],[["1. Cinta","Reúne los comandos."],["2. Barra de fórmulas","Muestra el código del paso."],["3. Consultas","Lista las consultas del libro."],["4. Vista previa","Muestra una muestra de los datos."],["5. Configuración","Nombre y pasos aplicados."]])}</div>
-  <div class="col">${tabla(["Pestaña","Responde a","Opciones principales"],[["<b>Inicio</b>","¿Qué hago con la consulta?","Cerrar y cargar · Administrar columnas · Reducir filas · Combinar · Nuevo origen"],["<b>Transformar</b>","¿Cómo cambio lo que existe?","Agrupar por · Reemplazar los valores · Rellenar · Dividir columna · Formato"],["<b>Agregar columna</b>","¿Cómo creo algo nuevo?","A partir de los ejemplos · Personalizada · Condicional · Índice"],["<b>Vista</b>","¿Qué quiero ver?","Calidad de columna · Perfil de columna · Editor avanzado"]])}
-   ${ojo("<b>Transformar</b> cambia la columna seleccionada. <b>Agregar columna</b> crea otra y conserva la original.")}
-   ${tip("Con clic derecho en el encabezado verá solo las acciones posibles para esa columna. Suele ser el camino más rápido.")}</div></div>`);
+const BASE=[{o:"Sucursal Centro.xlsx",f:"15-ene-26",c:"Hogar"},{o:"Sucursal Este.xlsx",f:"14/01/2026",c:"hogar"},{o:"Sucursal Norte.xlsx",f:"2026-01-15",c:"cocina"}];
+const REC=[["Origen","Los datos tal como llegan.",r=>r,"ABC123"],
+ ["Tipo cambiado","Todas las fechas son fecha.",r=>r.map((x,i)=>({...x,f:["15/1/2026","14/1/2026","15/1/2026"][i]})),"📅"],
+ ["Mayúsculas","La categoría queda escrita igual.",r=>r.map(x=>({...x,c:x.c[0].toUpperCase()+x.c.slice(1)})),"📅"]];
+lam(2,`${cab("El editor","Los pasos aplicados son la receta.","Haga clic en un paso para ver los datos en ese momento.")}
+  <div class="dosc" style="grid-template-columns:230px 1fr"><div class="opts" id="recL">${REC.map((p,i)=>`<button type="button" class="op" data-i="${i}">${p[0]}</button>`).join("")}</div>
+  <div class="resul"><div id="recT"></div><p id="recD" aria-live="polite"></p></div></div>`);
 
-const BASE=[{o:"Sucursal Centro.xlsx",f:"15-ene-26",c:"Hogar",m:"RD$ 5550"},{o:"Sucursal Este.xlsx",f:"14/01/2026",c:"hogar",m:4400},{o:"Sucursal Norte.xlsx",f:"2026-01-15",c:"cocina",m:4800}];
-const REC=[["Origen","Los datos tal como llegan.",r=>r,"ABC123","ABC123"],
- ["Tipo cambiado","Monto pasa a texto.",r=>r.map(x=>({...x,m:String(x.m)})),"ABC","ABC123"],
- ["Valor reemplazado","Sale «RD$».",r=>r.map(x=>({...x,m:x.m.replace("RD$","").trim()})),"ABC","ABC123"],
- ["Tipo cambiado1","Monto ya es número y se puede sumar.",r=>r.map(x=>({...x,n:1})),"123","ABC123"],
- ["Tipo cambiado2","Todas las fechas son fecha.",r=>r.map((x,i)=>({...x,f:["15/1/2026","14/1/2026","15/1/2026"][i]})),"123","📅"],
- ["Poner En Mayúsculas Cada Palabra","La categoría queda escrita igual.",r=>r.map(x=>({...x,c:x.c[0].toUpperCase()+x.c.slice(1)})),"123","📅"]];
-lam(2,`${cab("Capítulo 2 · El editor","Los pasos aplicados son la receta.","Cada acción agrega un paso. Se ejecutan en orden y cada uno trabaja sobre el resultado del anterior. <b>Haga clic en un paso</b> para ver los datos en ese momento.")}
-  <div class="dosc" style="grid-template-columns:300px 1fr"><div class="opts" id="recL">${REC.map((p,i)=>`<button type="button" class="op" data-i="${i}">${p[0]}</button>`).join("")}</div>
-  <div class="col"><div class="resul"><div id="recT"></div><p id="recD" aria-live="polite"></p></div>
-  ${tabla(["Acción","Cómo","Para qué"],[["Modificar","Engrane ⚙","Cambiar sus opciones sin repetirlo."],["Quitar","La ✕","Deshacer esa acción."],["Cambiar nombre","Clic derecho","Dejar claro qué hace."]])}</div></div>
-  ${ojo("<b>Duplicar</b> crea una copia independiente. <b>Referencia</b> parte del resultado de la original: si esta cambia, la otra también. Si quita un paso del medio, los siguientes pueden fallar.")}`);
+/* ---------- Datos ---------- */
+lam(3,`${cab("Los datos","¿De dónde vienen?")}
+  ${tabla(["Origen","Se usa para"],[["<b>Libro de Excel</b>","Un archivo."],["<b>Texto o CSV</b>","Lo que exportan los sistemas."],["<b>Carpeta</b>","Muchos archivos a la vez."],["<b>Base de datos</b>","Sistemas de la empresa."]])}
+  <p class="frase">En una carpeta: mismas columnas y solo esos archivos.</p>`);
 
-/* ---------- 3. Obtener datos ---------- */
-lam(3,`${cab("Capítulo 3 · Obtener datos","Orígenes, carpetas y privacidad.")}
-  <div class="dosc"><div class="col">${tabla(["Origen","Qué tener en cuenta"],[["<b>Tabla o rango</b>","Datos del mismo libro."],["<b>Libro de Excel</b>","Abre el Navegador. Prefiera tablas a hojas."],["<b>Texto o CSV</b>","Lo que exportan los sistemas. Revise el delimitador."],["<b>Carpeta</b>","Une todos los archivos en una consulta."],["<b>Web</b>","Si la página cambia, la consulta puede fallar."],["<b>Base de datos</b>","SQL Server, Access y otras. Pide credenciales."]])}
-   ${tabla(["Nivel de privacidad","Significado"],[["<b>Público</b>","Cualquiera puede verlos."],["<b>Organizativo</b>","Solo personas de confianza."],["<b>Privado</b>","Información sensible."]])}</div>
-  <div class="col"><h3>Reglas para una carpeta.</h3>${ul(["<b>Mismas columnas:</b> se unen por nombre. Un nombre distinto crea otra columna o deja valores vacíos.","<b>Misma hoja:</b> se busca la hoja del archivo de ejemplo.","<b>Carpeta exclusiva:</b> entra todo, incluidas las subcarpetas.","<b>Archivos cerrados:</b> uno abierto crea una copia ~$ que puede dar error.","<b>No borre las consultas auxiliares:</b> la principal las necesita."])}
-   ${tip("En el Navegador, elija <b>Transformar datos</b> en lugar de Cargar para revisar los datos antes de llevarlos a Excel.")}
-   <p style="font-size:17px;line-height:1.4">Las credenciales se guardan en su equipo, no en el libro. Se administran en ${ruta("Datos › Obtener datos › Configuración de origen de datos")}.</p></div></div>`);
+lam(3,`${cab("Los datos","Cada columna tiene un tipo.")}
+  ${tabla(["Icono","Tipo"],[["<code>ABC</code>","Texto"],["<code>123</code>","Número entero"],["<code>1.2</code>","Número decimal"],["📅","Fecha"]])}
+  <p class="frase">El tipo dice qué es el dato. El formato, cómo se ve.</p>`);
 
-/* ---------- 4. Tipos ---------- */
-lam(4,`${cab("Capítulo 4 · Tipos de datos","El tipo indica qué clase de dato tiene una columna.")}
-  <div class="dosc"><div class="col">${tabla(["Icono","Tipo","Se usa para"],[["<code>ABC</code>","Texto","Nombres y códigos."],["<code>123</code>","Número entero","Cantidades. Redondea los decimales."],["<code>1.2</code>","Número decimal","Valores con decimales."],["<code>$</code>","Moneda","Montos con hasta cuatro decimales."],["<code>%</code>","Porcentaje","Proporciones."],["📅","Fecha","Día, mes y año."],["🕒","Hora · Fecha/Hora · Duración","Horas y lapsos de tiempo."],["<code>⊘</code>","Verdadero/Falso","Respuestas de sí o no."],["<code>ABC123</code>","Cualquiera","Aún no tiene tipo."]])}</div>
-  <div class="col"><h3>Tipo no es lo mismo que formato.</h3><p style="font-size:17.4px;line-height:1.4">El <b>tipo</b> dice qué es el dato y lo define Power Query. El <b>formato</b> dice cómo se ve: <code>RD$ 1,250.00</code> se aplica en la hoja y se conserva al actualizar.</p>
-   <h3>La configuración regional.</h3><p style="font-size:17.4px;line-height:1.4">El texto <code>03/01/2026</code> es 3 de enero en República Dominicana y 1 de marzo en Estados Unidos. Si los datos vienen de otro país, use el icono del encabezado › <b>Usar configuración regional…</b></p>
-   ${ojo("Power Query suele agregar solo un paso <b>Tipo cambiado</b>. Revíselo: un código como 00125 pierde los ceros si se convierte en número.")}
-   ${tip("Si una columna mezcla texto y números, pásela a Texto, quite lo que sobra y conviértala en número.")}</div></div>`);
+/* ---------- Transformar ---------- */
+lam(4,`${cab("Transformar","Filas: ¿cuáles se quedan?")}
+  ${tabla(["Opción","Qué hace"],[["<b>Filtro</b>","Deja las que cumplen una regla."],["<b>Quitar duplicados</b>","Deja una vez cada fila."],["<b>Quitar filas en blanco</b>","Elimina las vacías."],["<b>Quitar filas superiores</b>","Elimina títulos de arriba."]])}`);
 
-/* ---------- 5. Transformar ---------- */
-lam(5,`${cab("Capítulo 5 · Transformar","Filas: ¿cuáles deben quedarse?","Están en "+ruta("Inicio › Reducir filas")+" y en el filtro de cada encabezado.")}
-  <div class="dosc"><div class="col"><h3>Conservar filas.</h3>${tabla(["Opción","Qué hace"],[["<b>Conservar filas superiores</b>","Deja las primeras N filas."],["<b>Conservar filas inferiores</b>","Deja las últimas N filas."],["<b>Conservar intervalo de filas</b>","Deja un bloque desde una fila."],["<b>Conservar duplicados</b>","Deja solo las filas repetidas."],["<b>Conservar errores</b>","Deja solo las filas con error."]])}</div>
-  <div class="col"><h3>Quitar filas.</h3>${tabla(["Opción","Qué hace"],[["<b>Quitar filas superiores</b>","Elimina títulos de arriba."],["<b>Quitar filas inferiores</b>","Elimina totales o notas finales."],["<b>Quitar filas alternas</b>","Sigue un patrón que se repite."],["<b>Quitar duplicados</b>","Deja una vez cada fila repetida."],["<b>Quitar filas en blanco</b>","Elimina filas totalmente vacías."],["<b>Quitar errores</b>","Elimina las filas con error."]])}</div></div>
-  ${ojo("Quitar duplicados compara solo las <b>columnas seleccionadas</b>. Para quitar solo filas idénticas, seleccione todas. Además, «Ana» y «ANA» son distintos.")}
-  ${tip("El filtro de un encabezado queda grabado como un paso: cuando lleguen datos nuevos, la regla se aplicará sola.")}`);
+lam(4,`${cab("Transformar","Columnas y texto.")}
+  ${tabla(["Opción","Qué hace"],[["<b>Quitar columnas</b>","Elimina las que sobran."],["<b>Dividir columna</b>","Separa una en varias."],["<b>Recortar</b>","Quita espacios de más."],["<b>Poner En Mayúsculas Cada Palabra</b>","Unifica cómo se escribe."]])}`);
 
-lam(5,`${cab("Capítulo 5 · Transformar","Columnas: elegir, dividir y combinar.")}
-  <div class="dosc"><div class="col"><h3>Administrar columnas.</h3>${tabla(["Opción","Qué hace"],[["<b>Elegir columnas</b>","Marca en una lista las que se quedan."],["<b>Quitar columnas</b>","Elimina las seleccionadas."],["<b>Quitar otras columnas</b>","Deja solo las seleccionadas."],["<b>Cambiar nombre</b>","Doble clic en el encabezado."],["<b>Mover</b>","Arrastre o clic derecho › Mover."],["<b>Ir a columna</b>","Busca una columna por nombre."]])}
-   ${tip("Si llega una columna nueva, <b>Quitar columnas</b> la conserva y <b>Quitar otras columnas</b> la descarta.")}</div>
-  <div class="col"><h3>Dividir columna.</h3>${tabla(["Opción","Ejemplo"],[["<b>Por delimitador</b>","<code>Santiago, RD</code> → Santiago | RD"],["<b>Por número de caracteres</b>","Códigos con estructura fija."],["<b>Por posiciones</b>","Archivos con ancho fijo."],["<b>De minúsculas a mayúsculas</b>","<code>NombreCompleto</code> → Nombre | Completo"],["<b>De dígito a no dígito</b>","<code>25kg</code> → 25 | kg"]])}
-   <h3>Combinar columnas.</h3><p style="font-size:17.4px;line-height:1.4">Une varias columnas en una, con un separador a elección. Con Nombre y Apellido se obtiene Nombre completo.</p>
-   ${ojo("<b>Combinar columnas</b> une columnas de una tabla. <b>Combinar consultas</b> une dos tablas.")}</div></div>`);
+lam(4,`${cab("Transformar","Columnas nuevas y resúmenes.")}
+  ${tabla(["Opción","Qué hace"],[["<b>Columna condicional</b>","Clasifica: si… entonces…"],["<b>Columna personalizada</b>","Calcula con una fórmula."],["<b>Agrupar por</b>","Resume por grupo."],["<b>Anular dinamización</b>","Pasa los meses de columnas a filas."]])}`);
 
-lam(5,`${cab("Capítulo 5 · Transformar","Texto, números y fechas.","Las opciones cambian según el tipo de la columna seleccionada.")}
-  <div class="dosc"><div class="col"><h3>Texto.</h3>${tabla(["Opción","Qué hace"],[["minúscula · MAYÚSCULAS","Unifica cómo se escribe."],["Poner En Mayúsculas Cada Palabra","<code>san cristóbal</code> → San Cristóbal"],["Recortar","Quita espacios al inicio y al final."],["Limpiar","Quita caracteres invisibles."],["Agregar prefijo · Agregar sufijo","Añade un texto antes o después."],["Longitud","Cuenta los caracteres."],["Primeros y Últimos caracteres","Toma una parte del texto."],["Texto antes o después del delimitador","Toma lo anterior o lo posterior a un carácter."]])}</div>
-  <div class="col"><h3>Números.</h3>${tabla(["Grupo","Ejemplos"],[["<b>Estadísticas</b>","Suma · Mínimo · Máximo · Promedio"],["<b>Estándar</b>","Sumar · Multiplicar · Restar · Dividir"],["<b>Redondear</b>","Redondear al alza · a la baja"]])}
-  <h3>Fechas, con 15/1/2026.</h3>${tabla(["Opción","Resultado"],[["Año · Mes · Día","2026 · 1 · 15"],["Nombre del mes · del día","enero · jueves"],["Trimestre · Semana del año","1 · 3"]])}
-  ${tip("Use estas opciones desde <b>Agregar columna</b> para conservar el dato original.")}</div></div>`);
+/* ---------- Unir ---------- */
+lam(5,`${cab("Unir consultas","¿Más filas o más columnas?")}
+  ${tabla(["","Anexar","Combinar"],[["<b>Resultado</b>","Más filas.","Más columnas."],["<b>Requisito</b>","Mismas columnas.","Una columna en común."],["<b>Se parece a</b>","Pegar debajo.","BUSCARV."]])}`);
 
-lam(5,`${cab("Capítulo 5 · Transformar","Reemplazar, rellenar y manejar errores.")}
-  <div class="dosc"><div class="col"><h3>Reemplazar los valores.</h3><p style="font-size:17.4px;line-height:1.4">Indica qué buscar y qué poner. Si deja vacío el segundo campo, el texto se elimina. En opciones avanzadas puede pedir que coincida toda la celda.</p>
-   <h3>¿Qué es null?</h3><p style="font-size:17.4px;line-height:1.4"><code>null</code> es <b>ausencia de valor</b>: no es cero ni texto vacío. Un cálculo con <code>null</code> suele dar <code>null</code>.</p>
-   <h3>Rellenar.</h3><p style="font-size:17.4px;line-height:1.4">Copia un valor hacia abajo o hacia arriba, solo sobre los <code>null</code>. Sirve para reportes que muestran un dato solo en la primera fila de cada grupo.</p>
-   ${tabla(["Así llega","Rellenar hacia abajo"],[["Sucursal Norte","Sucursal Norte"],[null,"Sucursal Norte"],["Sucursal Sur","Sucursal Sur"]],{nuevas:[1]})}</div>
-  <div class="col"><h3>Errores en las celdas.</h3><p style="font-size:17.4px;line-height:1.4">La celda muestra <b>Error</b> cuando un valor no se puede procesar. Haga clic al lado de la palabra para ver el motivo.</p>
-   ${tabla(["Causa","Solución"],[["Convertir «RD$ 500» en número.","Quitar el texto antes."],["Una columna ya no existe.","Corregir el paso o el nombre."],["Sumar un número con un texto.","Definir bien los tipos."],["El archivo cambió de lugar.","Corregir el paso Origen."]])}
-   ${tabla(["Opción","Cuándo usarla"],[["<b>Conservar errores</b>","Para investigar qué falló."],["<b>Reemplazar errores</b>","Si un valor fijo es aceptable."],["<b>Quitar errores</b>","Si esas filas no sirven."]])}</div></div>`);
-
-/* ---------- 6. Crear y resumir ---------- */
-lam(6,`${cab("Capítulo 6 · Crear y resumir","Agregar columnas.","La pestaña Agregar columna crea información nueva sin alterar las columnas originales.")}
-  ${tabla(["Opción","Cómo funciona","Ideal para"],[["<b>Columna a partir de los ejemplos</b>","Escribe el resultado y Power Query deduce la regla.","Quien no quiere escribir fórmulas."],["<b>Columna personalizada</b>","Se escribe una fórmula en lenguaje M.","Cálculos entre columnas."],["<b>Columna condicional</b>","Reglas Si… entonces… en un formulario.","Clasificar registros."],["<b>Columna de índice</b>","Numera las filas desde 0 o desde 1.","Crear un identificador."],["<b>Duplicar columna</b>","Crea una copia exacta.","Transformar sin perder el original."]])}
-  <div class="dosc"><div class="col"><h3>Columna personalizada.</h3><div class="cod">= [Cantidad] * [Precio]
-= [Nombre] &amp; " " &amp; [Apellido]
-= if [Monto] &gt; 5000 then "Alta" else "Baja"</div></div>
-  <div class="col">${eje("Columna condicional: si Monto es mayor que 5000, «Venta alta»; si es mayor que 2000, «Venta media»; en otro caso, «Venta baja». La regla más exigente va primero.")}${ojo("Estas fórmulas no son las de Excel: <code>if</code> va en minúscula y las funciones se separan con <b>coma</b>.")}</div></div>`);
-
-lam(6,`${cab("Capítulo 6 · Crear y resumir","Agrupar y dinamizar.")}
-  <div class="dosc"><div class="col"><h3>Agrupar por.</h3><p style="font-size:17.4px;line-height:1.4">Reduce muchas filas a una por grupo y calcula un resumen: Suma, Promedio, Mediana, Mínimo, Máximo, Recuento de filas, Recuento distinto o Todas las filas.</p>
-   ${tabla(["Sucursal","Total","Ventas"],[["Norte","5,900","2"],["Sur","4,650","3"]],{r:[1,2]})}
-   ${tabla(["","Agrupar por","Tabla dinámica"],[["Vive en","La consulta.","Una hoja."],["Resultado","Tabla normal.","Resumen interactivo."],["Cambiar","Editar el paso.","Arrastrar campos."]])}
-   ${tip("Si va a explorar, cargue el detalle y use una tabla dinámica.")}</div>
-  <div class="col"><h3>Anular dinamización: de ancho a largo.</h3><p style="font-size:17.4px;line-height:1.4">Una tabla sirve mejor para analizar cuando <b>cada columna es una variable y cada fila un registro</b> (Wickham, 2014).</p>
-   <div class="dosc" style="gap:10px">${tabla(["Sucursal","Enero","Febrero"],[["Norte","500","650"],["Sur","300","420"]],{r:[1,2]})}${tabla(["Sucursal","Atributo","Valor"],[["Norte","Enero","500"],["Norte","Febrero","650"],["Sur","Enero","300"],["Sur","Febrero","420"]],{r:[2]})}</div>
-   ${tabla(["Opción","Si llega marzo"],[["<b>Anular dinamización de columnas</b>","Entra solo."],["<b>…de las columnas seleccionadas únicamente</b>","Queda como columna aparte."]])}
-   <p style="font-size:17.4px;line-height:1.4"><b>Columna dinámica</b> hace lo contrario: de largo a ancho. <b>Transponer</b> cambia filas por columnas.</p></div></div>`);
-
-/* ---------- 7. Unir consultas ---------- */
-lam(7,`${cab("Capítulo 7 · Unir consultas","¿Necesita más filas o más columnas?")}
-  ${tabla(["","Anexar consultas","Combinar consultas"],[["<b>Resultado</b>","Más filas.","Más columnas."],["<b>Requisito</b>","Columnas con los mismos nombres.","Una columna en común, llamada clave."],["<b>Se parece a</b>","Pegar una tabla debajo de otra.","BUSCARV o BUSCARX."],["<b>Ejemplo</b>","Unir ventas de enero y febrero.","Traer el proveedor de cada producto."]])}
-  <div class="dosc"><div class="col"><h3>Cómo se combina.</h3><ol class="li"><li>Elija las dos consultas y la columna clave de cada una.</li><li>Elija el tipo de combinación.</li><li>Pulse el icono <b>Expandir</b> ⤢ y marque las columnas que desea traer.</li></ol>
-   ${tip("Use <b>Combinar consultas para crear una nueva</b>: deja intactas las originales.")}</div>
-  <div class="col"><h3>Ventajas frente a BUSCARV.</h3>${ul(["Queda grabado y se repite al actualizar.","La clave puede estar en cualquier posición.","Acepta varias columnas clave."])}
-   ${ojo("Si la tabla de búsqueda repite claves, aparecerán <b>filas de más</b> y los totales se inflarán.")}</div></div>
-  ${ojo("Al anexar, las columnas se emparejan <b>por nombre</b>. Si una tabla dice «Monto» y otra «Importe», quedarán dos columnas con <code>null</code>.")}`);
-
-const J=[["Externa izquierda",1,1,0,"Todas las de la primera y las coincidencias de la segunda. Es la más usada.",["Licuadora","Olla","Mesa"]],["Externa derecha",0,1,1,"Todas las de la segunda y las coincidencias de la primera.",["Licuadora","Olla","Silla"]],["Externa completa",1,1,1,"Todas las filas de ambas tablas.",["Licuadora","Olla","Mesa","Silla"]],["Interna",0,1,0,"Solo las filas que coinciden.",["Licuadora","Olla"]],["Anti izquierda",1,0,0,"Las de la primera sin pareja. Ideal para auditar.",["Mesa"]],["Anti derecha",0,0,1,"Las de la segunda sin pareja.",["Silla"]]];
+const J=[["Externa izquierda",1,1,0,"Todas las de la primera.",["Licuadora","Olla","Mesa"]],["Externa derecha",0,1,1,"Todas las de la segunda.",["Licuadora","Olla","Silla"]],["Externa completa",1,1,1,"Todas las de ambas.",["Licuadora","Olla","Mesa","Silla"]],["Interna",0,1,0,"Solo las que coinciden.",["Licuadora","Olla"]],["Anti izquierda",1,0,0,"Las de la primera sin pareja.",["Mesa"]],["Anti derecha",0,0,1,"Las de la segunda sin pareja.",["Silla"]]];
 const VE={Licuadora:12,Olla:8,Mesa:5}, PR={Licuadora:"Alfa",Olla:"Beta",Silla:"Gamma"};
 const venn=(a,c,b)=>`<div class="venn"><svg viewBox="0 0 120 70" role="img" aria-label="Diagrama de la combinación"><circle cx="45" cy="35" r="28" fill="${a?'#f2994a':'#fff'}" stroke="#2f3a8f" stroke-width="1.5"/><circle cx="75" cy="35" r="28" fill="${b?'#f2994a':'#fff'}" fill-opacity="${b?1:.01}" stroke="#2f3a8f" stroke-width="1.5"/><path d="M60 10.8a28 28 0 0 1 0 48.4a28 28 0 0 1 0-48.4z" fill="${c?'#2f3a8f':'#fff'}" stroke="#2f3a8f" stroke-width="1.5"/></svg></div>`;
-lam(7,`${cab("Capítulo 7 · Unir consultas","Los seis tipos de combinación.","<b>Elija un tipo.</b> La primera tabla tiene Licuadora, Olla y Mesa. La segunda tiene Licuadora, Olla y Silla.")}
-  <div class="dosc" style="grid-template-columns:240px 1fr"><div class="opts" id="joiL">${J.map((j,i)=>`<button type="button" class="op" data-i="${i}">${j[0]}</button>`).join("")}</div><div class="resul" id="joiP" aria-live="polite"></div></div>
-  ${tip("Los tipos <b>anti</b> sirven para auditar: muestran qué registros no tienen pareja, como facturas sin pago. Si la clave no se escribe igual, revise <b>Opciones de coincidencia aproximada</b>.")}`);
+lam(5,`${cab("Unir consultas","Seis tipos de combinación.","Elija un tipo.")}
+  <div class="dosc" style="grid-template-columns:250px 1fr"><div class="opts" id="joiL">${J.map((j,i)=>`<button type="button" class="op" data-i="${i}">${j[0]}</button>`).join("")}</div><div class="resul" id="joiP" aria-live="polite"></div></div>`);
 
-/* ---------- 8. Entregar ---------- */
-lam(8,`${cab("Capítulo 8 · Entregar","Cargar y actualizar.")}
-  <div class="dosc"><div class="col"><h3>Cerrar y cargar en…</h3>${tabla(["Destino","Para qué sirve"],[["<b>Tabla</b>","Ver los datos en una hoja."],["<b>Informe de tabla dinámica</b>","Ir directo a un resumen."],["<b>Gráfico dinámico</b>","Crear un gráfico con su tabla."],["<b>Solo crear conexión</b>","Guardar sin ocupar una hoja. Ideal para consultas intermedias."],["<b>Modelo de datos</b>","Relacionar tablas y superar las 1,048,576 filas de una hoja."]])}
-   ${ojo("No escriba dentro de la tabla cargada: <b>Actualizar lo reemplaza</b>. El formato sí se conserva.")}</div>
-  <div class="col"><h3>Actualizar.</h3><p style="font-size:17.4px;line-height:1.4">${ruta("Datos › Actualizar todo")} o <code>Ctrl + Alt + F5</code> actualiza todas las conexiones del libro.</p>
-   <p style="font-size:17.4px;line-height:1.4">En las propiedades de la consulta se puede automatizar:</p>
-   ${tabla(["Propiedad","Para qué sirve"],[["<b>Actualizar al abrir el archivo</b>","El libro abre con datos recientes."],["<b>Actualizar cada N minutos</b>","Mantiene los datos al día."],["<b>Actualización en segundo plano</b>","Permite seguir trabajando."]])}
-   <h3>Compartir un libro.</h3><p style="font-size:17.4px;line-height:1.4">Otra persona verá los datos cargados, pero para actualizar necesita acceso al origen. Conviene usar ubicaciones compartidas.</p></div></div>`);
+/* ---------- Entregar ---------- */
+lam(6,`${cab("Entregar","Cargar y actualizar.")}
+  ${ul(["<b>Cerrar y cargar:</b> lleva el resultado a una tabla.","<b>Solo crear conexión:</b> guarda sin ocupar una hoja.","<b>Modelo de datos:</b> relaciona varias tablas.","<b>Actualizar todo:</b> <code>Ctrl + Alt + F5</code>"])}
+  <p class="frase">No escriba en la tabla cargada: Actualizar lo reemplaza.</p>`);
 
-/* ---------- 9. Ir más allá ---------- */
-lam(9,`${cab("Capítulo 9 · Ir más allá","El lenguaje M y los parámetros.","Cada botón escribe código en <b>M</b>. No hace falta programar, pero conocerlo abre más posibilidades. Se ve en la barra de fórmulas y en "+ruta("Vista › Editor avanzado")+".")}
-  <div class="cod">let
-    Origen = Excel.CurrentWorkbook(){[Name="Ventas"]}[Content],
-    #"Filas filtradas" = Table.SelectRows(Origen, each [Monto] &gt; 1000)
-in
-    #"Filas filtradas"</div>
-  <div class="dosc"><div class="col">${tabla(["Parte","Significado"],[["<code>let</code>","Inicia la lista de pasos, separados por comas."],["<code>in</code>","Indica qué paso entrega el resultado."],["<code>#\" \"</code>","Encierra un nombre con espacios."],["<code>each</code>","Indica una regla que se revisa fila por fila."]])}</div>
-  <div class="col">${ul(["<b>Distingue mayúsculas:</b> <code>Text.Upper</code> funciona y <code>text.upper</code> no.","Las funciones siguen la forma <b>Categoría.Acción</b>, como <code>Date.Year</code>."])}
-   <p style="font-size:17.4px;line-height:1.4"><b>Parámetros:</b> valores guardados aparte, como la ruta de una carpeta. Se crean en ${ruta("Inicio › Administrar parámetros")}.</p></div></div>`);
-
-lam(9,`${cab("Capítulo 9 · Ir más allá","Buenas prácticas y glosario.")}
-  <div class="dosc" style="grid-template-columns:.8fr 1.2fr"><div class="col"><h3>Ocho hábitos.</h3><ol class="li"><li>Mire los datos antes de empezar.</li><li>Dé nombres claros a consultas y pasos.</li><li>Revise el resultado de cada cambio.</li><li>Nunca corrija los archivos originales.</li><li>Filtre y quite columnas al inicio.</li><li>Defina los tipos con cuidado.</li><li>Compare filas y totales con lo esperado.</li><li>Acuerde un formato único con quien envía los datos.</li></ol>
-   ${tip("<b>Plegado de consultas:</b> en bases de datos, el servidor hace el trabajo y envía solo el resultado. No aplica a archivos.")}</div>
-  <div class="col"><h3>Glosario.</h3><div class="glos">${[["Anexar","Poner unas filas debajo de otras."],["Clave","Columna que relaciona tablas."],["Combinar","Agregar columnas de otra tabla."],["Conector","Lee un tipo de origen."],["Consulta","Conexión más sus pasos."],["Dinamizar","Convertir valores en encabezados."],["ETL","Extraer, transformar y cargar."],["M","Lenguaje de las consultas."],["Modelo de datos","Almacén de tablas relacionadas."],["null","Ausencia de valor."],["Origen","De donde vienen los datos."],["Paso aplicado","Acción grabada."],["Parámetro","Valor guardado aparte."],["Plegado","Traducir pasos al origen."]].map(([a,b])=>`<div><b>${a}</b><span>${b}</span></div>`).join("")}</div></div></div>`);
+lam(6,`${cab("Entregar","Cinco hábitos.")}
+  <ol class="li"><li>Mire los datos antes de empezar.</li><li>Haga un cambio a la vez.</li><li>No toque los archivos originales.</li><li>Use nombres claros.</li><li>Compruebe filas y totales.</li></ol>`);
 
 /* ---------- Referencias ---------- */
 const MS=(l,t,u,s="Microsoft Learn")=>`Microsoft. (s. f.-${l}). <i>${t}</i>. ${s}. <a href="${u}" target="_blank" rel="noopener">${u}</a>`;
-lam(10,`<p class="eyebrow">Bibliografía</p><h2>Referencias.</h2><ul class="refs">
+lam(7,`<p class="eyebrow">Bibliografía</p><h2>Referencias.</h2><ul class="refs">
   <li>Kimball, R., &amp; Caserta, J. (2004). <i>The data warehouse ETL toolkit: Practical techniques for extracting, cleaning, conforming, and delivering data</i>. Wiley.</li>
   ${[["a","Agregar una columna a partir de los ejemplos","https://learn.microsoft.com/es-es/power-query/column-from-example"],["b","Conectores de Power Query","https://learn.microsoft.com/es-es/power-query/connectors/"],["c","Cómo agrupar por o resumir filas","https://learn.microsoft.com/es-es/power-query/group-by"],["d","Descripción de la evaluación de consultas y plegado de consultas en Power Query","https://learn.microsoft.com/es-es/power-query/query-folding-basics"],["e","Descripción de la funcionalidad de columnas dinámicas","https://learn.microsoft.com/es-es/power-query/pivot-columns"],["f","Despivotar columnas","https://learn.microsoft.com/es-es/power-query/unpivot-column"],["g","Referencia del lenguaje de fórmulas M de Power Query","https://learn.microsoft.com/es-es/powerquery-m/"],["h","Tipos de datos en Power Query","https://learn.microsoft.com/es-es/power-query/data-types"],["i","Visión general de las consultas de combinación","https://learn.microsoft.com/es-es/power-query/merge-queries-overview"],["j","¿Qué es Power Query?","https://learn.microsoft.com/es-es/power-query/power-query-what-is-power-query"]].map(r=>`<li>${MS(...r)}</li>`).join("")}
   <li>${MS("k","Acerca de Power Query en Excel","https://support.microsoft.com/es-es/Excel/about-power-query-in-excel","Microsoft Support")}</li>
@@ -305,11 +225,10 @@ const INI=SECC.map((_,i)=>S.findIndex(s=>s.t===i));
 const dots=$("dots");
 dots.innerHTML=SECC.map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
 dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.t]));
-$("mapa").querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.sec]));
 
 /* Pasos aplicados */
-function pintaR(i){ let r=BASE.map(x=>({...x})); for(let k=0;k<=i;k++) r=REC[k][2](r); const num=r[0].n;
-  $("recT").innerHTML=tabla(["ABC Source.Name",REC[i][4]+" Fecha","ABC Categoría",REC[i][3]+" Monto"],r.map(x=>[x.o,x.f,x.c,x.m]),{r:num?[3]:[]});
+function pintaR(i){ let r=BASE.map(x=>({...x})); for(let k=0;k<=i;k++) r=REC[k][2](r);
+  $("recT").innerHTML=tabla(["Source.Name",REC[i][3]+" Fecha","Categoría"],r.map(x=>[x.o,x.f,x.c]));
   $("recD").innerHTML=`<b>${REC[i][0]}:</b> ${REC[i][1]}`; $("recL").querySelectorAll(".op").forEach((b,j)=>b.classList.toggle("on",j===i)); }
 $("recL").querySelectorAll(".op").forEach(b=>b.onclick=()=>pintaR(+b.dataset.i)); pintaR(0);
 
