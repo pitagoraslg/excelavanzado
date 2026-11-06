@@ -282,6 +282,13 @@ table.t td{color:#fff}
 .cert .datos{margin-bottom:10px}
 .cert .hall div{padding:5px 12px}
 .cert .pie{margin-top:8px}
+/* lista de participantes */
+.lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin:12px 0 10px;max-height:330px;overflow:auto;padding-right:4px}
+.alumno{text-align:left;padding:11px 14px;border-radius:6px;border:1px solid rgba(212,168,75,.3);background:#121116;color:#fff;font:600 15.5px Sora,'Segoe UI',sans-serif;cursor:pointer}
+.alumno:hover{border-color:var(--gold2);background:#1d1b21}
+.alumno.sel{background:linear-gradient(180deg,#f0cf7f,#d4a84b);color:#1a1408;border-color:#f0cf7f}
+.elegido{margin:4px 0 12px;color:var(--muted);font-size:16px}
+.elegido b{color:var(--gold2)}
 
 </style>
 </head>
@@ -384,6 +391,21 @@ const SALAS = [
     pis:['Si no ves la columna Source.Name, revisa en el editor que ningún paso de <b>Pasos aplicados</b> la haya quitado.',
          'Deben quedar <b>25 filas</b>.'] }
 ];
+
+/* Participantes reales del curso (misma lista de QueryBattle y la rúbrica del Módulo 3) */
+const ALUMNOS = ["Alenny Tejeda Montero","Crispatri Albenia Borbón Silva","Adriana García Hidalgo","Ángel Rodolfo Mariano Ventura","Hector José Donastorg Vásquez","Jorge Antonio Suazo Bello","Katherinne Liliana Paulino Rosario","Rachell Gómez","Winnifer Valdez Medina","Yasmiry Mejía Núñez","Katherine Suriel"].sort((a, b) => a.localeCompare(b, 'es'));
+function armarLista(){
+  const lista = $('#lista'), busca = $('#busca'), nm = $('#nm');
+  const visibles = () => { const q = normNombre(busca.value); return ALUMNOS.filter(a => !q || normNombre(a).includes(q)); };
+  const elegir = a => { nm.value = a; $('#elegido').innerHTML = 'Vas a jugar como: <b>' + esc(a) + '</b>'; $('#go').disabled = false; pintar(); };
+  const pintar = () => { const v = visibles();
+    lista.innerHTML = v.length ? v.map(a => `<button type="button" class="alumno ${nm.value === a ? 'sel' : ''}" data-n="${esc(a)}">${nm.value === a ? '✔' : '👤'} ${esc(a)}</button>`).join('')
+      : '<p class="muted" style="margin:6px 0">No aparece ese nombre. Revisa cómo lo escribiste o avisa a tu facilitador.</p>'; };
+  lista.onclick = e => { const b = e.target.closest('.alumno'); if (b) elegir(b.dataset.n); };
+  busca.oninput = pintar;
+  busca.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); const v = visibles(); if (v.length === 1) elegir(v[0]); } };
+  pintar();
+}
 
 /* ---------- utilidades ---------- */
 const $ = s => document.querySelector(s);
@@ -634,11 +656,11 @@ function vistaInicio(){
   <p>4. Si te trabas, tienes dos pistas por candado. Cada pista suma <b>2 minutos</b> a tu tiempo en el ranking de la clase.</p>
   <p>5. Al abrir el último candado aparecerá una <b>felicitación con tu nombre</b>: tómale una captura de pantalla y envíasela a tu facilitador.</p>
   <p>🎧 El juego tiene música de suspenso y efectos de sonido. Si necesitas silencio, usa el botón 🔊 de abajo a la derecha (o la tecla M).</p></div>
-  <form id="fIni" style="margin-top:18px" autocomplete="off"><label class="lbl" for="nm">Tu nombre completo (así aparecerá en la felicitación)</label>
-  <div class="code" style="margin-top:0"><input id="nm" type="text" maxlength="50" placeholder="Nombre y apellido"><button class="btn">🔍 Iniciar investigación</button></div></form></div>
+  <form id="fIni" style="margin-top:18px" autocomplete="off"><label class="lbl" for="busca">¿Quién eres? Busca tu nombre en la lista y tócalo (así aparecerá en la felicitación)</label>
+  <input id="busca" type="text" placeholder="Escribe parte de tu nombre o apellido…"><div class="lista" id="lista"></div><input id="nm" type="hidden"><div class="elegido" id="elegido">Todavía no has elegido tu nombre.</div><button class="btn" id="go" disabled>🔍 Iniciar investigación</button></form></div>
   ${credito}</div>`;
-  $('#fIni').onsubmit = ev => { ev.preventDefault(); const n = $('#nm').value.trim().replace(/\s+/g,' ');
-    if (n.length < 3) { toast('Escribe tu nombre completo.'); $('#nm').focus(); return; }
+  armarLista(); $('#fIni').onsubmit = ev => { ev.preventDefault(); const n = $('#nm').value.trim().replace(/\s+/g,' ');
+    if (!ALUMNOS.includes(n)) { toast('Busca y toca tu nombre en la lista.'); $('#busca').focus(); return; }
     ac(); SFX.inicio(); G = { nombre:n, inicio:Date.now(), sala:1, res:{}, resp:{}, tok:{}, pistas:{}, intentos:0, fin:null, noCuenta: lsGet('cazadoresM6_terminado') === '1' }; guardar(); render(); MUS.duck(); };
 }
 
