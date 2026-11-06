@@ -1,0 +1,92 @@
+<!-- Invitación a la presentación del Módulo 7 (Macros y VBA) para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes m7-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes m7-pulso { 0%, 100% { box-shadow: 0 0 0 0 rgba(21,154,140,.40); } 50% { box-shadow: 0 0 0 12px rgba(21,154,140,0); } }
+  .m7-in { animation: m7-in .7s ease-out both; }
+  .m7-d1 { animation-delay: .1s; } .m7-d2 { animation-delay: .25s; } .m7-d3 { animation-delay: .4s; } .m7-d4 { animation-delay: .55s; }
+  .m7-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .m7-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(110,31,58,.12); }
+  .m7-btn { animation: m7-pulso 2.2s ease-in-out infinite; transition: transform .15s ease; }
+  .m7-btn:hover { transform: scale(1.04); }
+  @media (prefers-reduced-motion: reduce) { .m7-in, .m7-btn { animation: none !important; } }
+</style>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #231B20; line-height: 1.55; background-color: #FBF7EF; border-radius: 10px; overflow: hidden; border: 1px solid #E6DCCB;">
+
+  <div style="height: 5px; background-color: #6E1F3A;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 26px 0 18px 26px; vertical-align: top; font-size: 46px; line-height: 1;">📘</td>
+      <td style="padding: 22px 26px 18px 14px; vertical-align: top;">
+        <p class="m7-in" style="margin: 0 0 6px; font-size: 12.5px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #0B6B61;">Módulo 7 · Material de estudio</p>
+        <h2 class="m7-in m7-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 29px; font-weight: bold; line-height: 1.18; color: #6E1F3A;">Automatización con macros y VBA.</h2>
+        <p class="m7-in m7-d2" style="margin: 0; font-size: 15.5px; color: #4A3F3B;">Aprenda a convertir tareas repetitivas de Excel en procesos rápidos, confiables y de <strong style="color: #6E1F3A;">un solo clic</strong>. Esta presentación es su material de estudio del módulo: cada lámina explica un tema con ejemplos y código comentado.</p>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Lo que tiene -->
+  <table class="m7-in m7-d2" style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 10px; margin: 0;" role="presentation">
+    <tr>
+      <td class="m7-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E6DCCB; border-top: 4px solid #6E1F3A; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">📑</span><br>
+        <strong style="color: #6E1F3A; font-size: 18px;">20 láminas</strong><br>
+        <span style="font-size: 13px; color: #665A55;">Con explicaciones y tablas de consulta</span>
+      </td>
+      <td class="m7-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E6DCCB; border-top: 4px solid #159A8C; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">💻</span><br>
+        <strong style="color: #6E1F3A; font-size: 18px;">Código comentado</strong><br>
+        <span style="font-size: 13px; color: #665A55;">Ejemplos de VBA explicados</span>
+      </td>
+      <td class="m7-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E6DCCB; border-top: 4px solid #6E1F3A; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">🏥</span><br>
+        <strong style="color: #6E1F3A; font-size: 18px;">Caso real</strong><br>
+        <span style="font-size: 13px; color: #665A55;">El informe mensual de reclamaciones</span>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 4px 26px 26px;">
+
+    <!-- Temas -->
+    <p class="m7-in m7-d3" style="margin: 14px 0 8px; font-weight: bold; color: #6E1F3A; font-size: 16px;">🧩 Lo que va a estudiar</p>
+    <table class="m7-in m7-d3" style="width: 100%; border-collapse: separate; border-spacing: 0 6px; font-size: 14.5px;" role="presentation">
+      <tr>
+        <td style="width: 50%; vertical-align: top; padding-right: 10px;">
+          <p style="margin: 0 0 5px;">✔ Qué es automatizar y cuándo conviene.</p>
+          <p style="margin: 0 0 5px;">✔ Macros y VBA: definiciones y formas de crearlas.</p>
+          <p style="margin: 0 0 5px;">✔ La pestaña Programador, los archivos .xlsm y la seguridad.</p>
+          <p style="margin: 0 0 5px;">✔ Cómo grabar una macro.</p>
+          <p style="margin: 0;">✔ El editor de VBA y la estructura de una macro.</p>
+        </td>
+        <td style="width: 50%; vertical-align: top; padding-left: 10px;">
+          <p style="margin: 0 0 5px;">✔ Libros, hojas y celdas: el modelo de objetos.</p>
+          <p style="margin: 0 0 5px;">✔ Variables, decisiones (If) y repeticiones (For).</p>
+          <p style="margin: 0 0 5px;">✔ Mensajes al usuario: MsgBox e InputBox.</p>
+          <p style="margin: 0 0 5px;">✔ Un botón para ejecutar la macro y cómo corregir errores.</p>
+          <p style="margin: 0;">✔ Buenas prácticas y aplicación en una institución como SISALRIL.</p>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Recomendaciones -->
+    <table class="m7-in m7-d4" style="width: 100%; border-collapse: collapse; margin: 14px 0 0;" role="presentation">
+      <tr>
+        <td style="background-color: #DCF2EF; border-left: 4px solid #159A8C; border-radius: 6px; padding: 12px 16px; font-size: 14.5px;">
+          <strong style="color: #0B6B61;">💡 Cómo aprovecharla:</strong> avance con las flechas del teclado o con los botones <em>Anterior</em> y <em>Siguiente</em>; pulse <strong>F</strong> para verla en pantalla completa. Lea los comentarios en verde de cada código: explican qué hace cada línea. Después, ponga en práctica lo aprendido en la <strong>práctica guiada</strong> del módulo.
+        </td>
+      </tr>
+    </table>
+
+    <!-- Llamado a la acción -->
+    <div class="m7-in m7-d4" style="text-align: center; margin: 24px 0 6px;">
+      <a class="m7-btn" href="https://pitagoraslg.github.io/excelavanzado/modulo7-macros-vba.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #6E1F3A; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px;">📘 Abrir la presentación</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #665A55;">Se abre en una pestaña nueva. Se recomienda verla en computadora o tableta.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #665A55;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
