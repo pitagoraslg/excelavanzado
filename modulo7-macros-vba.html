@@ -102,6 +102,18 @@ p{margin:0}
 #giroTel{display:none;position:fixed;inset:0;z-index:9;background:var(--ink);color:#fff;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:20px;line-height:1.4}
 @media (max-width:640px) and (orientation:portrait){#giroTel{display:flex}}
 @media (prefers-reduced-motion:reduce){.slide.on{animation:none!important}}
+
+/* Fondo crema claro en todas las láminas (pedido del facilitador) */
+:root{--bg:#f1ebdf;--paper:#fbf7ef;--line:#ebe3d4;--grid:#d9cdb8;--ink-soft:#f5ead9}
+.cover,.cierre{background:var(--paper)!important;color:var(--text)}
+.cover{border-left:14px solid var(--ink)}
+.cover h1,.cierre h2{color:var(--ink)!important}
+.cover .mod{color:var(--acc-d)!important}
+.cover .sub,.cierre .apoyo{color:var(--muted)!important}
+.cover .by{color:var(--text)}.cover .by b{color:var(--acc-d)!important}
+.cover-logo{border:1px solid var(--line)}
+#stage.oscuro .top,#stage.oscuro .bottom{color:var(--muted)!important}
+#stage.oscuro .btn.primary{background:var(--ink)!important;border-color:var(--ink)!important;color:#fff!important}
 </style>
 </head>
 <body>

@@ -58,8 +58,8 @@ code{font-family:var(--mono);font-size:.92em;background:var(--ink-soft);color:va
 .path i{font-style:normal;color:var(--acc-d);font-weight:700}
 
 /* Código para copiar */
-.codebox{flex:1;display:flex;flex-direction:column;border:1px solid #b9aeb4;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.08);min-height:0}
-.codebox .bar{display:flex;justify-content:space-between;align-items:center;background:#ece8ea;border-bottom:1px solid #d4cbd0;padding:6px 10px;font-family:var(--win);font-size:13px}
+.codebox{flex:1;display:flex;flex-direction:column;border:1px solid #cdbfa7;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.08);min-height:0}
+.codebox .bar{display:flex;justify-content:space-between;align-items:center;background:#f3ecdf;border-bottom:1px solid #ddd0bb;padding:6px 10px;font-family:var(--win);font-size:13px}
 .codebox .bar b{color:var(--ink)}
 .codebox pre{flex:1;min-height:0;margin:0;padding:10px 14px;font-family:var(--mono);font-size:12px;line-height:1.33;white-space:pre;overflow:auto;color:#1b1b1b}
 .codebox .k{color:#1d47b8;font-weight:600}.codebox .t{color:#a31515}.codebox .c{color:#2e7d32}
@@ -131,6 +131,18 @@ code{font-family:var(--mono);font-size:.92em;background:var(--ink-soft);color:va
 @media (max-width:640px) and (orientation:portrait){#giroTel{display:flex}}
 #aviso{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--pos);color:#fff;font-family:var(--mono);font-size:14px;padding:9px 16px;opacity:0;transition:opacity .25s;z-index:20;pointer-events:none}
 #aviso.on{opacity:1}
+
+/* Fondo crema claro en todas las láminas (pedido del facilitador) */
+:root{--bg:#f1ebdf;--paper:#fbf7ef;--line:#ebe3d4;--grid:#d9cdb8;--ink-soft:#f5ead9}
+.cover,.cierre{background:var(--paper)!important;color:var(--text)}
+.cover{border-left:14px solid var(--ink)}
+.cover h1,.cierre h2{color:var(--ink)!important}
+.cover .mod{color:var(--acc-d)!important}
+.cover .sub,.cierre .apoyo{color:var(--muted)!important}
+.cover .by{color:var(--text)}.cover .by b{color:var(--acc-d)!important}
+.cover-logo{border:1px solid var(--line)}
+#stage.oscuro .top,#stage.oscuro .bottom{color:var(--muted)!important}
+#stage.oscuro .btn.primary{background:var(--ink)!important;border-color:var(--ink)!important;color:#fff!important}
 </style>
 </head>
 <body>
