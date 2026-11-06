@@ -1,0 +1,51 @@
+﻿Pedido,Fecha,Cliente,Provincia,Producto,Cantidad,Monto,Estado
+W-5001,2026-02-01,Colmado Don Pedro,Santiago,Azúcar 5 lb,13,2730,Entregado
+W-5002,2026-02-01,Colmado El Vecino,Santo Domingo,Café 1 lb,16,6240,Entregado
+W-5003,2026-02-02,Colmado El Vecino,Santiago,Habichuelas en lata,17,1445,Entregado
+W-5004,2026-02-02,Colmado Los Primos,Santiago,Azúcar 5 lb,16,3360,Cancelado
+W-5005,2026-02-03,Colmado Don Pedro,Santo Domingo,Habichuelas en lata,10,850,Entregado
+W-5006,2026-02-03,Colmado Don Pedro,Santiago,Azúcar 5 lb,3,630,Entregado
+W-5007,2026-02-04,Súper Tienda Rosa,La Vega,Aceite 1 galón,19,9880,Cancelado
+W-5008,2026-02-04,Colmado Los Primos,San Cristóbal,Habichuelas en lata,20,1700,Cancelado
+W-5009,2026-02-05,Colmado Los Primos,Santiago,Azúcar 5 lb,3,630,Cancelado
+W-5010,2026-02-06,Súper Tienda Rosa,San Cristóbal,Pasta 1 lb,9,540,Entregado
+W-5011,2026-02-06,Colmado El Vecino,Santo Domingo,Café 1 lb,20,7800,Entregado
+W-5012,2026-02-07,Colmado Mi Barrio,Puerto Plata,Aceite 1 galón,21,10920,Cancelado
+W-5013,2026-02-07,Colmado El Vecino,La Vega,Azúcar 5 lb,20,4200,Entregado
+W-5014,2026-02-08,Colmado Mi Barrio,Puerto Plata,Café 1 lb,20,7800,Entregado
+W-5015,2026-02-08,Colmado Mi Barrio,Santo Domingo,Habichuelas en lata,13,1105,Entregado
+W-5016,2026-02-09,Colmado El Vecino,La Vega,Habichuelas en lata,12,1020,Cancelado
+W-5017,2026-02-09,Colmado Mi Barrio,Santo Domingo,Aceite 1 galón,13,6760,Entregado
+W-5018,2026-02-10,Súper Tienda Rosa,San Cristóbal,Café 1 lb,18,7020,Entregado
+W-5019,2026-02-11,Mercadito Central,Puerto Plata,Salami,11,3025,Entregado
+W-5020,2026-02-11,Colmado Mi Barrio,La Vega,Habichuelas en lata,4,340,Entregado
+W-5021,2026-02-12,Colmado Mi Barrio,San Cristóbal,Leche en polvo,10,6800,Entregado
+W-5022,2026-02-12,Colmado La Esquina,Santiago,Leche en polvo,8,5440,Entregado
+W-5023,2026-02-13,Colmado El Vecino,Santiago,Pasta 1 lb,7,420,Entregado
+W-5024,2026-02-13,Colmado La Esquina,Santiago,Pasta 1 lb,14,840,Cancelado
+W-5025,2026-02-14,Colmado Mi Barrio,Santo Domingo,Arroz 10 lb,18,8100,Entregado
+W-5026,2026-02-15,Minimarket Sol,Puerto Plata,Café 1 lb,11,4290,Entregado
+W-5027,2026-02-15,Mercadito Central,Puerto Plata,Arroz 10 lb,5,2250,Cancelado
+W-5028,2026-02-16,Colmado Mi Barrio,Puerto Plata,Azúcar 5 lb,10,2100,Entregado
+W-5029,2026-02-16,Minimarket Sol,Santiago,Café 1 lb,9,3510,Entregado
+W-5030,2026-02-17,Súper Tienda Rosa,San Cristóbal,Arroz 10 lb,19,8550,Entregado
+W-5031,2026-02-17,Colmado La Esquina,Santo Domingo,Habichuelas en lata,20,1700,Entregado
+W-5032,2026-02-18,Colmado Los Primos,Puerto Plata,Pasta 1 lb,9,540,Entregado
+W-5033,2026-02-18,Colmado Los Primos,La Vega,Habichuelas en lata,20,1700,Entregado
+W-5034,2026-02-19,Súper Tienda Rosa,Santiago,Habichuelas en lata,17,1445,Entregado
+W-5035,2026-02-20,Colmado Don Pedro,Puerto Plata,Aceite 1 galón,4,2080,Cancelado
+W-5036,2026-02-20,Minimarket Sol,Puerto Plata,Leche en polvo,16,10880,Entregado
+W-5037,2026-02-21,Minimarket Sol,Santo Domingo,Aceite 1 galón,18,9360,Entregado
+W-5038,2026-02-21,Colmado Don Pedro,Santiago,Arroz 10 lb,10,4500,Entregado
+W-5039,2026-02-22,Minimarket Sol,Santo Domingo,Leche en polvo,17,11560,Entregado
+W-5040,2026-02-22,Súper Tienda Rosa,Santiago,Leche en polvo,16,10880,Entregado
+W-5041,2026-02-23,Súper Tienda Rosa,San Cristóbal,Azúcar 5 lb,7,1470,Entregado
+W-5042,2026-02-23,Colmado Mi Barrio,Santo Domingo,Arroz 10 lb,12,5400,Entregado
+W-5043,2026-02-24,Mercadito Central,Santiago,Habichuelas en lata,6,510,Entregado
+W-5044,2026-02-25,Colmado Don Pedro,San Cristóbal,Azúcar 5 lb,3,630,Entregado
+W-5045,2026-02-25,Colmado Mi Barrio,La Vega,Salami,17,4675,Entregado
+W-5046,2026-02-26,Mercadito Central,San Cristóbal,Arroz 10 lb,10,4500,Cancelado
+W-5047,2026-02-26,Colmado Los Primos,San Cristóbal,Pasta 1 lb,17,1020,Entregado
+W-5048,2026-02-27,Minimarket Sol,San Cristóbal,Azúcar 5 lb,5,1050,Entregado
+W-5049,2026-02-27,Mercadito Central,Santiago,Arroz 10 lb,8,3600,Entregado
+W-5050,2026-02-28,Colmado El Vecino,Santo Domingo,Habichuelas en lata,11,935,Entregado

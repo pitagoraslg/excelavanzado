@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cazadores de Datos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1030; --bg2:#151a45; --panel:#1b2157; --panel2:#232a6b; --line:#343c86;
+  --ink:#eef0ff; --muted:#a9afd9; --indigo:#2F3A8F; --mand:#F2994A; --mand2:#ffb877;
+  --ok:#3ddc97; --bad:#ff6b81;
+  --e1:#ff6b81; --e2:#4db8ff; --e3:#3ddc97;
+  --r:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:radial-gradient(1200px 700px at 80% -10%,#2a2f7a 0%,transparent 60%),radial-gradient(900px 600px at -10% 110%,#3a2350 0%,transparent 55%),var(--bg);
+  color:var(--ink);font-family:Sora,'Segoe UI',Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input{font:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 48px}
+.muted{color:var(--muted)}
+.mono{font-family:'JetBrains Mono',Consolas,monospace}
+.panel{background:linear-gradient(180deg,var(--panel),#181d4e);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:0 18px 40px rgba(0,0,0,.25)}
+h1,h2,h3{margin:0 0 .4em;line-height:1.2}
+.kick{font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--mand2)}
+.btn{border:0;border-radius:12px;padding:12px 20px;font-weight:700;cursor:pointer;background:var(--mand);color:#241200;transition:transform .12s,filter .12s}
+.btn:hover{filter:brightness(1.08)} .btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sec{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+.btn.dang{background:#5a1f33;color:#ffd7de;border:1px solid #8a2e4a}
+.btn.sm{padding:7px 12px;font-size:14px;border-radius:9px}
+input[type=text],input[type=password],input[type=number]{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:#10143a;color:var(--ink);outline:none}
+input:focus{border-color:var(--mand)}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:760px){.grid3{grid-template-columns:1fr}}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .ico{font-size:34px}
+.brand b{display:block;font-size:18px}
+.brand span{font-size:13px;color:var(--muted)}
+.credit{text-align:center;color:var(--muted);font-size:13px;margin-top:30px}
+.loading{text-align:center;padding:30vh 16px;color:var(--muted)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);opacity:0;background:#0b0e2b;border:1px solid var(--line);padding:12px 18px;border-radius:12px;transition:.25s;z-index:60;max-width:90vw}
+#toast.show{opacity:1;transform:translateX(-50%)}
+
+/* Equipos */
+.team{border-radius:var(--r);padding:18px;border:2px solid var(--line);background:var(--panel);cursor:pointer;text-align:left;color:var(--ink);transition:transform .15s,border-color .15s}
+.team:hover{transform:translateY(-3px)}
+.team.sel{border-color:var(--c)}
+.team .tn{font-weight:800;font-size:19px;color:var(--c)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-size:13px;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1)}
+.chip.off{opacity:.45}
+.chip .x{margin-left:6px;cursor:pointer;color:var(--bad)}
+
+/* Candados */
+.locks{display:flex;gap:6px;flex-wrap:wrap}
+.lk{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:#10143a;border:1px solid var(--line);position:relative}
+.lk.on{border-color:var(--mand);box-shadow:0 0 0 3px rgba(242,153,74,.25)}
+.lk.ok{background:rgba(61,220,151,.14);border-color:var(--ok)}
+.lk small{position:absolute;bottom:-1px;right:4px;font-size:10px;color:var(--muted)}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.clock{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;letter-spacing:1px}
+.clock.extra{color:var(--bad)}
+.tag{display:inline-block;padding:4px 12px;border-radius:99px;font-weight:700;font-size:14px;background:rgba(255,255,255,.08)}
+
+/* Sala */
+.sala{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+@media (max-width:900px){.sala{grid-template-columns:1fr}}
+.sala h2{font-size:clamp(24px,3.4vw,34px)}
+.story{font-size:16px;color:#d9dcff;border-left:3px solid var(--mand);padding:4px 0 4px 14px;margin:12px 0 16px}
+.mision{background:#10143a;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.mision p{margin:.3em 0}
+.preg{margin-top:16px;font-size:18px;font-weight:700}
+.code{display:flex;gap:10px;margin-top:10px}
+.code input{font-family:'JetBrains Mono',monospace;font-size:22px;letter-spacing:1px}
+.code .btn{white-space:nowrap}
+.code input::placeholder{font-family:Sora,'Segoe UI',sans-serif;font-size:16px;letter-spacing:0}
+.shake{animation:shake .45s}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-9px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+.msg{min-height:24px;margin-top:8px;font-weight:600}
+.msg.bad{color:var(--bad)} .msg.ok{color:var(--ok)}
+.file{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:#10143a;border:1px solid var(--line);margin-bottom:10px;text-decoration:none;color:var(--ink)}
+.file:hover{border-color:var(--mand)}
+.file .fi{font-size:26px}
+.file b{display:block;font-size:15px;word-break:break-word}
+.file span{font-size:13px;color:var(--muted)}
+.file.new{animation:glow 2s ease-out 3}
+@keyframes glow{0%{box-shadow:0 0 0 0 rgba(242,153,74,.7)}100%{box-shadow:0 0 0 14px rgba(242,153,74,0)}}
+.pista{background:rgba(242,153,74,.09);border:1px dashed rgba(242,153,74,.55);border-radius:12px;padding:12px 14px;margin-top:10px;font-size:15px}
+.side h3{font-size:15px;letter-spacing:1px;text-transform:uppercase;color:var(--mand2);margin:4px 0 10px}
+.side .blk{margin-bottom:18px}
+
+/* Overlay */
+.ov{position:fixed;inset:0;background:rgba(5,7,25,.86);display:grid;place-items:center;z-index:50;padding:16px;animation:fade .25s}
+@keyframes fade{from{opacity:0}}
+.ov .card{text-align:center;max-width:640px}
+.ov .big{font-size:clamp(60px,12vw,120px);line-height:1;animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(.3) rotate(-20deg);opacity:0}}
+.ov h2{font-size:clamp(28px,5vw,48px)}
+canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:70}
+
+/* Pantalla */
+.scr{padding:22px 28px;max-width:none}
+.scr .head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:20px}
+.scr .title{font-size:clamp(26px,3vw,44px);font-weight:800}
+.scr .clock{font-size:clamp(44px,6vw,86px)}
+.lanes{display:grid;gap:16px}
+.lane{display:grid;grid-template-columns:260px 1fr 190px;gap:18px;align-items:center;background:var(--panel);border:2px solid var(--line);border-left:8px solid var(--c);border-radius:var(--r);padding:16px 20px}
+.lane .nm{font-size:26px;font-weight:800;color:var(--c)}
+.lane .doors{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.door{height:92px;border-radius:14px;background:#10143a;border:2px solid var(--line);display:grid;place-items:center;font-size:40px;position:relative}
+.door.ok{background:rgba(61,220,151,.14);border-color:var(--ok)}
+.door.on{border-color:var(--c);box-shadow:0 0 22px -4px var(--c)}
+.door.on::after{content:'';position:absolute;inset:-2px;border-radius:14px;border:2px solid var(--c);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.12)}}
+.door small{position:absolute;top:6px;left:9px;font-size:13px;color:var(--muted);font-weight:700}
+.door .t{position:absolute;bottom:5px;font-size:12px;color:var(--ok);font-family:'JetBrains Mono',monospace}
+.lane .st{text-align:right}
+.lane .st b{font-size:24px;display:block}
+.feed{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+.feed .ev{background:rgba(255,255,255,.06);border:1px solid var(--line);padding:6px 12px;border-radius:99px;font-size:15px}
+.join{display:flex;gap:16px;align-items:center;background:#fff;color:#111;border-radius:14px;padding:10px 14px}
+.join #qr img,.join #qr canvas{display:block;width:96px;height:96px}
+.join b{display:block;font-size:13px}
+.join span{font-size:12px;word-break:break-all;max-width:260px;display:block}
+@media (max-width:1000px){.lane{grid-template-columns:1fr}.lane .st{text-align:left}.door{height:70px;font-size:30px}}
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:22px;margin-top:30px}
+.pd{width:240px;text-align:center}
+.pd .base{border-radius:14px 14px 0 0;background:linear-gradient(180deg,var(--c),rgba(0,0,0,.2));display:grid;place-items:center;font-size:54px;font-weight:800;color:#0d1030}
+.pd .nm{font-size:24px;font-weight:800;color:var(--c);margin-bottom:6px}
+
+/* Profesor */
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th,table.t td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.t th{color:var(--muted);font-weight:600}
+.ctl{display:flex;gap:10px;flex-wrap:wrap}
+.lbl{font-size:13px;color:var(--muted);display:block;margin:0 0 5px}
+.sep{height:1px;background:var(--line);margin:18px 0}
+.links a{color:var(--mand2);word-break:break-all}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* Felicitación */
+.cert{position:relative;max-width:860px;margin:0 auto;border-radius:22px;padding:34px 34px 26px;text-align:center;overflow:hidden;
+  background:radial-gradient(600px 300px at 50% -10%,rgba(242,153,74,.28),transparent 70%),linear-gradient(180deg,#1f2668,#151a4a);border:2px solid var(--mand);box-shadow:0 0 0 6px rgba(242,153,74,.12),0 30px 60px rgba(0,0,0,.35)}
+.cert .seal{font-size:64px;line-height:1;animation:pop .7s cubic-bezier(.2,1.6,.4,1)}
+.cert .fel{font-size:clamp(30px,5vw,50px);font-weight:800;margin:10px 0 2px;line-height:1.1}
+.cert .nom{font-size:clamp(28px,5vw,46px);font-weight:800;color:var(--mand2);margin:2px 0 8px;word-break:break-word}
+.cert .lead{font-size:18px;color:#d9dcff;max-width:640px;margin:0 auto 18px}
+.cert .datos{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.cert .datos span{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-size:14px}
+.cert .hall{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left}
+@media (max-width:640px){.cert .hall{grid-template-columns:1fr}.cert{padding:26px 18px 20px}}
+.cert .hall div{background:#10143a;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:14px}
+.cert .hall b{display:block;color:var(--ok);font-family:'JetBrains Mono',monospace;font-size:15px}
+.cert .pie{margin-top:16px;font-size:13px;color:var(--muted)}
+.foto{max-width:860px;margin:16px auto 0;text-align:center;background:rgba(61,220,151,.1);border:1px dashed var(--ok);border-radius:14px;padding:12px 16px;font-size:16px}
+.grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.jr{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:16px}
+.jr .mini{font-size:15px;letter-spacing:2px;white-space:nowrap}
+.scr .panel h3{font-size:18px}
+table.t td{font-size:16px}
+.musbtn{position:fixed;right:16px;bottom:16px;z-index:80;display:flex;align-items:center;gap:8px;padding:10px 16px 10px 12px;border-radius:99px;border:1px solid var(--mand);background:rgba(13,16,48,.92);color:var(--ink);font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.musbtn .mi{font-size:20px;line-height:1}
+.musbtn.off{border-color:var(--bad);animation:llama 1.8s ease-in-out infinite}
+@keyframes llama{50%{box-shadow:0 0 0 8px rgba(255,107,129,.18)}}
+.wrap{padding-bottom:84px}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:13px}
+.cert{padding:20px 28px 14px}.cert .seal{font-size:40px}.cert .fel{font-size:clamp(26px,4vw,38px);margin-top:4px}.cert .nom{font-size:clamp(26px,4vw,38px);margin-bottom:4px}.cert .lead{font-size:15.5px;margin-bottom:10px}.cert .datos{margin-bottom:12px;gap:8px}.cert .datos span{padding:4px 12px;font-size:13px}.cert .hall{gap:6px}.cert .hall div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 12px;font-size:13.5px}.cert .hall b{display:inline;font-size:14px;white-space:nowrap}.cert .pie{margin-top:10px}
+</style>
+</head>
+<body>
+<div id="app"><div class="loading">Cargando…</div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<canvas id="cf"></canvas>
+
+<script>
+/* Firebase (mismo proyecto del curso): solo para el ranking del facilitador. Si falla, el juego sigue funcionando. */
+(function(){
+  var cfg = { apiKey:"AIzaSyCLrT88lr0by0elfhI6bwdbgFN3u3ORCDI", authDomain:"excel-avanzado-icadep.firebaseapp.com", databaseURL:"https://excel-avanzado-icadep-default-rtdb.firebaseio.com",
+    projectId:"excel-avanzado-icadep", storageBucket:"excel-avanzado-icadep.firebasestorage.app", messagingSenderId:"391674719896", appId:"1:391674719896:web:738cc75c1d9720dd7caaed" };
+  var APP = ["https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js","https://cdnjs.cloudflare.com/ajax/libs/firebase/10.13.2/firebase-app-compat.min.js"];
+  var DB = ["https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js","https://cdnjs.cloudflare.com/ajax/libs/firebase/10.13.2/firebase-database-compat.min.js"];
+  function load(src){return new Promise(function(ok,ko){var s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=ko;document.head.appendChild(s);});}
+  function fb(urls){var i=0;function n(){if(i>=urls.length)return Promise.reject();return load(urls[i++]).catch(n);}return n();}
+  fb(APP).then(function(){return fb(DB);}).then(function(){ firebase.initializeApp(cfg); window.DB_READY = firebase.database(); window.dispatchEvent(new Event('fb-ready')); })
+    .catch(function(){ window.dispatchEvent(new Event('fb-error')); });
+})();
+</script>
+
+<script>
+'use strict';
+const KEY = 'cazadoresM6_juego';
+const ROOT = 'cazadoresM6';
+const NC = 10; /* número de candados */
+const CLAVE = '1022';
+const PEN = 120000; /* cada pista suma 2 minutos en el ranking */
+const MODO = new URLSearchParams(location.search).get('modo') || '';
+const CRYPTO = {"h":[["71827ffe01f02671bd2686bb98b2f588a804e8dfdf8ba2923ced2b99d59f06e7"],["4dd9f15c81025e74c41b91a14c46a89426370adac3403e2224741e218c764f88"],["73c06345a1e06f234802ad3ac0aac4de049f0aec1390d09213c1bddb77cb0a72"],["ab9eb8ef2d7040ba8e975b63679f4e5267bd4aa5217e0320917946814cc4efc6"],["de7ae1909025a27f4bae63098311b559318c42d64022511fc494c61f4f17917d"],["cebfbc4e7880567c3b126b159e69dc8603024a5bfee1851336d7101493665dc8"],["3bd31b8ce1863468c275ce48240b25bffd684f01684c265c99b6b2d7d8c9d3dd","476db112c52c40b19027c3fedf37c910636efed6902083a0434d9e79f292f0ad"],["19837c7583b9250ace78f9a9615861d24ee5e78de091de25ca74975dbf9ff0b1"],["a70623ecb928f817dc7aa049e627c2ce536e21bb309fe71d48367f30dbd4fe83","f87aeb2a288c1e486955eb41c38a595782924afa6e45fa9806c2d5e870d8f74a"],["7513c7ba04cb931379f21d52528bfc026f1c2012fb1303e431cb5522ea65d9d5"]],"e":[null,"28dac7fa2ce889312dc8",null,"c18a35992d64f81c0489",null,"88748c3d303960fc4f58",null,null,null,null]};
+/* Fuentes de datos: la clave es el candado donde se usan por primera vez */
+const FUENTES = {
+  1:{ nombre:'Ventas-Sucursales.zip', ruta:'cazadores-m6/f45b18a0a8/Ventas-Sucursales.zip', desc:'Carpeta con 3 archivos de Excel', tipo:'Excel', ico:'📦' },
+  3:{ nombre:'Pedidos-Web.csv', desc:'Pedidos de la tienda en línea', tipo:'CSV', ico:'🧾' },
+  5:{ nombre:'Inventario-Almacen.pdf', desc:'Inventario del almacén', tipo:'PDF', ico:'📕' },
+  7:{ nombre:'Ventas-Vendedores-2025.zip', desc:'Carpeta con 4 archivos, uno por trimestre', tipo:'Excel', ico:'🗂️' }
+};
+const HISTORIA = 'Acabas de entrar como analista de datos en <b>Distribuidora El Faro</b>. El primer día descubres el problema: cada área guarda su información en un formato distinto (archivos de Excel, un CSV de la tienda en línea, un PDF del almacén) y nadie logra ver el panorama completo. Tu misión: <b>obtener, unir y consultar</b> esos datos con Power Query. Hay <b>diez candados</b>, y cada uno se abre con una respuesta que solo encontrarás en los datos.';
+
+const SALAS = [
+  { t:'Las tres sucursales', ico:'🏬', tipo:'num', fmt:'rd', r:'Total de las 3 sucursales', fuente:1,
+    h:'Primera tarea: las tres sucursales enviaron sus ventas de enero a marzo, cada una en su propio archivo de Excel. El gerente quiere una sola tabla.',
+    m:'<p>1. Descarga <b>Ventas-Sucursales.zip</b> y extráelo (clic derecho › <b>Extraer todo</b>). Verás la carpeta <b>Ventas Sucursales</b>.</p><p>2. En Excel: <b>Datos › Obtener datos › Desde un archivo › Desde una carpeta</b>, elige esa carpeta y pulsa <b>Combinar › Combinar y transformar datos</b> (hoja <b>Ventas</b>).</p><p>3. Pulsa <b>Cerrar y cargar</b>.</p>',
+    p:'¿Cuánto vendieron, en total, las tres sucursales? (suma de la columna Monto)',
+    pis:['Selecciona la <b>carpeta</b>, no un archivo. En la ventana <b>Combinar archivos</b> elige la hoja <b>Ventas</b> y pulsa <b>Aceptar</b>.',
+         'La tabla debe tener <b>90 filas</b>. Haz clic dentro de la tabla › <b>Diseño de tabla</b> › marca <b>Fila de totales</b>: debajo de Monto aparece la suma.'] },
+  { t:'El filtro de Santiago', ico:'🔎', tipo:'num', fmt:'rd', r:'Ventas de Santiago', fuente:1,
+    h:'Suena el teléfono: el gerente de Santiago quiere saber cuánto vendió su sucursal.',
+    m:'<p>Ya tienes la tabla unida en Excel, así que no necesitas volver a Power Query.</p><p>1. Abre el filtro (la flechita) de la columna <b>Sucursal</b> y deja marcada solo <b>Santiago</b>.</p><p>2. Mira el total de <b>Monto</b> en la fila de totales.</p>',
+    p:'¿Cuánto vendió la sucursal Santiago?',
+    pis:['Quita la marca de <b>(Seleccionar todo)</b> y marca solo <b>Santiago</b>.',
+         'La fila de totales solo suma las filas visibles. Deben quedar <b>30 filas</b>.'] },
+  { t:'Los pedidos de la tienda en línea', ico:'🧾', tipo:'num', fmt:'n', r:'Pedidos en línea', fuente:3,
+    h:'La tienda en línea no usa Excel: su sistema exporta un archivo <b>CSV</b>, que es texto con los datos separados por comas.',
+    m:'<p>1. Descarga <b>Pedidos-Web.csv</b>.</p><p>2. Ve a una hoja nueva: <b>Datos › Obtener datos › Desde un archivo › Desde texto/CSV</b> y elige el archivo.</p><p>3. En la vista previa revisa que el <b>Delimitador</b> sea <b>Coma</b> y que los acentos se vean bien. Pulsa <b>Cargar</b>.</p>',
+    p:'¿Cuántos pedidos (filas) trae el archivo?',
+    pis:['Si los acentos se ven raros (por ejemplo «SÃºper»), cambia el <b>Origen de archivo</b> a <b>65001: Unicode (UTF-8)</b>.',
+         'Al cargar, el panel <b>Consultas y conexiones</b> muestra «<b>X filas cargadas</b>». Ese número es la respuesta.'] },
+  { t:'Entregados y cancelados', ico:'✅', tipo:'num', fmt:'rd', r:'Pedidos entregados', fuente:3,
+    h:'Algunos pedidos se cancelaron. Al jefe solo le interesa el dinero de los pedidos que sí llegaron al cliente.',
+    m:'<p>1. En la tabla de pedidos, filtra la columna <b>Estado</b> y deja solo <b>Entregado</b>.</p><p>2. Suma la columna <b>Monto</b> con la fila de totales.</p>',
+    p:'¿Cuánto suman los pedidos entregados?',
+    pis:['Haz clic en la tabla › <b>Diseño de tabla</b> › marca <b>Fila de totales</b>. Con el filtro aplicado, solo cuenta lo visible.',
+         'Deben quedar <b>40 pedidos</b> entregados.'] },
+  { t:'El reporte del almacén', ico:'📕', tipo:'num', fmt:'n', r:'Unidades en existencia', fuente:5,
+    h:'El almacén manda su inventario en un <b>PDF</b>. ¿Copiarlo a mano? ¡No! Power Query puede leer las tablas de un PDF.',
+    m:'<p>1. Descarga <b>Inventario-Almacen.pdf</b>.</p><p>2. Ve a una hoja nueva: <b>Datos › Obtener datos › Desde un archivo › Desde PDF</b> y elige el archivo.</p><p>3. En el <b>Navegador</b> elige la tabla <b>Table001</b> (mira la vista previa) y pulsa <b>Cargar</b>.</p>',
+    p:'¿Cuántas unidades hay en existencia en total? (suma de la columna Existencia)',
+    pis:['En el Navegador aparecen la página (<b>Page001</b>) y la tabla (<b>Table001</b>). Elige la tabla: ya trae los encabezados Código, Producto, Categoría, Existencia y Costo.',
+         'Son <b>16 productos</b>. Activa la fila de totales y elige <b>Suma</b> debajo de Existencia.'] },
+  { t:'Productos por agotarse', ico:'⚠️', tipo:'num', fmt:'n', r:'Productos con menos de 50', fuente:5,
+    h:'Hay que pedir mercancía de los productos que se están agotando: los que tienen <b>menos de 50 unidades</b>.',
+    m:'<p>1. Abre el filtro de la columna <b>Existencia</b> › <b>Filtros de número › Menor que…</b> y escribe <b>50</b>.</p><p>2. Cuenta cuántos productos quedan.</p>',
+    p:'¿Cuántos productos tienen menos de 50 unidades?',
+    pis:['Si el menú dice «Filtros de texto» en vez de «Filtros de número», la columna quedó como texto: en Power Query cámbiala a <b>Número entero</b>.',
+         'Selecciona las celdas visibles de la columna Producto: la barra de estado de Excel muestra el <b>Recuento</b>.'] },
+  { t:'Los cuatro trimestres', ico:'🗂️', tipo:'nombre', fmt:'txt', r:'Venta más grande del año', fuente:7,
+    h:'Recursos Humanos quiere premiar a los vendedores de 2025. Las ventas están repartidas en <b>cuatro archivos</b>, uno por trimestre.',
+    m:'<p>1. Descarga <b>Ventas-Vendedores-2025.zip</b> y extráelo: verás la carpeta <b>Ventas Vendedores 2025</b> con 4 archivos.</p><p>2. Únelos con <b>Datos › Obtener datos › Desde un archivo › Desde una carpeta</b> › <b>Combinar y transformar datos</b> (hoja <b>Ventas</b>) y carga la tabla.</p><p>3. Ordena la columna <b>Monto</b> de mayor a menor.</p>',
+    p:'¿Quién hizo la venta más grande del año? (escribe el nombre del vendedor)',
+    pis:['La tabla unida debe tener <b>100 filas</b> y una columna <b>Source.Name</b> con el nombre del archivo de cada fila.',
+         'Abre el filtro de Monto › <b>Ordenar de mayor a menor</b>. La primera fila tiene la venta más grande: mira la columna <b>Vendedor</b>.'] },
+  { t:'Las ventas de María', ico:'👩‍💼', tipo:'num', fmt:'rd', r:'Ventas de María Santos', fuente:7,
+    h:'María Santos pide un reporte de lo que vendió en todo el año para su evaluación.',
+    m:'<p>1. Filtra la columna <b>Vendedor</b> y deja solo <b>María Santos</b>.</p><p>2. Suma la columna <b>Monto</b> con la fila de totales.</p>',
+    p:'¿Cuánto vendió María Santos en 2025?',
+    pis:['Si la tabla tiene un orden o filtro anterior, no importa: el filtro de Vendedor es lo que cuenta.',
+         'Deben quedar las ventas de María en los cuatro trimestres. La fila de totales suma solo esas filas.'] },
+  { t:'El vendedor del año', ico:'🏆', tipo:'nombre', fmt:'txt', r:'Vendedor del año', fuente:7,
+    h:'Llega el momento del premio: ¿quién vendió más dinero en todo el año?',
+    m:'<p>Tienes dos caminos:</p><p>• <b>Con filtros:</b> filtra un vendedor a la vez y anota su total (son 6 vendedores).</p><p>• <b>Con Power Query:</b> en el editor, <b>Inicio › Agrupar por</b> Vendedor con la <b>Suma</b> de Monto.</p>',
+    p:'¿Quién fue el vendedor que más vendió en el año? (escribe su nombre)',
+    pis:['Los vendedores son Ana Pérez, Luis Castillo, María Santos, José Reyes, Carmen Díaz y Pedro Marte.',
+         'La venta más grande no siempre gana: cuenta la <b>suma de todas</b> sus ventas. El ganador pasa de RD$ 110,000.'] },
+  { t:'El último trimestre', ico:'📅', tipo:'num', fmt:'rd', r:'Ventas del Trimestre 4', fuente:7,
+    h:'Última puerta. La gerencia quiere ver el cierre del año: ¿cuánto se vendió en el cuarto trimestre?',
+    m:'<p>Cuando unes archivos desde una carpeta, Power Query agrega la columna <b>Source.Name</b>, que dice de qué archivo viene cada fila.</p><p>1. Quita los filtros anteriores (<b>Datos › Borrar</b>).</p><p>2. Filtra <b>Source.Name</b> y deja solo <b>Trimestre 4.xlsx</b>.</p><p>3. Suma el Monto.</p>',
+    p:'¿Cuánto se vendió en el Trimestre 4?',
+    pis:['Si no ves la columna Source.Name, revisa en el editor que ningún paso de <b>Pasos aplicados</b> la haya quitado.',
+         'Deben quedar <b>25 filas</b>.'] }
+];
+
+/* ---------- utilidades ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rd = n => 'RD$ ' + Number(n).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 });
+function toast(t){ const el = $('#toast'); el.innerHTML = t; el.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => el.classList.remove('show'), 2800); }
+function norm(v){
+  let s = String(v || '').replace(/[^\d.,]/g, '');
+  s = s.replace(/[.,]\d{1,2}$/, '');
+  return s.replace(/[.,]/g, '').replace(/^0+(?=\d)/, '');
+}
+function normNombre(v){ return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+async function sha(s){ const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join(''); }
+async function revelar(n, v){
+  const enc = CRYPTO.e[n-1]; if (!enc) return null;
+  const k = await sha('m6cazkey|' + n + '|' + v); let out = '';
+  for (let i = 0; i < enc.length / 2; i++) out += String.fromCharCode(parseInt(enc.substr(i*2,2),16) ^ parseInt(k.substr(i*2,2),16));
+  return out;
+}
+const hms = ms => { let s = Math.max(0, Math.round(ms/1000)); const h = Math.floor(s/3600); s -= h*3600; const m = Math.floor(s/60); s -= m*60;
+  return (h ? h + ':' + String(m).padStart(2,'0') : String(m).padStart(2,'0')) + ':' + String(s).padStart(2,'0'); };
+const urlArch = (n, tok) => 'cazadores-m6/' + tok + '/' + encodeURIComponent(FUENTES[n].nombre);
+const fechaLarga = t => new Date(t).toLocaleString('es-DO', { day:'numeric', month:'long', year:'numeric', hour:'numeric', minute:'2-digit' });
+
+/* ---------- progreso (se guarda en este navegador) ---------- */
+let G = cargar();
+function cargar(){ try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch(e) { return null; } }
+function guardar(){ try { localStorage.setItem(KEY, JSON.stringify(G)); } catch(e) {} subir(); }
+const lsGet = k => { try { return localStorage.getItem(k); } catch(e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch(e) {} };
+const UID = lsGet('cazadoresM6_uid') || ('u' + Math.random().toString(36).slice(2,11)); lsSet('cazadoresM6_uid', UID);
+const totalRank = j => (j.fin - j.inicio) + (j.pistas || 0) * PEN;
+/* Envía el avance al ranking. Solo cuenta el primer intento completo de cada navegador. */
+function subir(){
+  if (!G || !window.DB_READY || G.noCuenta) return;
+  const pistas = Object.values(G.pistas).reduce((a,b) => a + b, 0);
+  window.DB_READY.ref(ROOT + '/jugadores/' + UID).set({ nombre:G.nombre, inicio:G.inicio, sala:G.fin != null ? NC + 1 : G.sala, fin:G.fin, pistas, intentos:G.intentos, visto:Date.now() }).catch(() => {});
+}
+async function miLugar(){
+  if (!window.DB_READY || G.noCuenta) return null;
+  try { const s = await window.DB_READY.ref(ROOT + '/jugadores').once('value'), v = s.val() || {};
+    const fin = Object.keys(v).filter(k => v[k].fin != null).sort((a,b) => totalRank(v[a]) - totalRank(v[b]));
+    const i = fin.indexOf(UID); return i < 0 ? null : { lugar:i+1, de:fin.length };
+  } catch(e) { return null; }
+}
+
+/* ---------- sonido ---------- */
+let AC = null;
+function ac(){ if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} } if (AC && AC.state === 'suspended') AC.resume(); return AC; }
+function tone(f, d, type, vol, at){ if (window.SILENCIO && MODO !== 'profesor') return; const a = ac(); if (!a) return; const t = a.currentTime + (at || 0), o = a.createOscillator(), g = a.createGain();
+  o.type = type || 'sine'; o.frequency.setValueAtTime(f, t); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || .18, t + .02); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+  o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + d + .05); }
+/* ruido filtrado: retumbos, soplidos, aplausos */
+let RUIDO = null;
+function ruido(tipo, f1, f2, vol, dur, at, q){
+  if (window.SILENCIO && MODO !== 'profesor') return; const a = ac(); if (!a) return;
+  if (!RUIDO) { RUIDO = a.createBuffer(1, a.sampleRate * 2, a.sampleRate); const d = RUIDO.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1; }
+  const t = a.currentTime + (at || 0), s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+  s.buffer = RUIDO; f.type = tipo; f.Q.value = q || 1; f.frequency.setValueAtTime(f1, t); f.frequency.exponentialRampToValueAtTime(f2, t + dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + Math.min(.05, dur/4)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  s.connect(f); f.connect(g); g.connect(a.destination); s.start(t, Math.random()); s.stop(t + dur + .05);
+}
+function barrido(f1, f2, dur, type, vol, at){ /* tono que sube o baja */
+  if (window.SILENCIO && MODO !== 'profesor') return; const a = ac(); if (!a) return;
+  const t = a.currentTime + (at || 0), o = a.createOscillator(), g = a.createGain(); o.type = type; o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .03); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + dur + .05);
+}
+const SFX = {
+  tecla(){ tone(1600 + Math.random()*900, .025, 'square', .025); ruido('highpass', 4000, 3000, .03, .03); },
+  boton(){ tone(520, .05, 'triangle', .09); tone(780, .06, 'triangle', .07, .04); },
+  descarga(){ ruido('bandpass', 400, 3500, .18, .45, 0, 2); barrido(300, 900, .35, 'sine', .07, .05); tone(1175, .25, 'sine', .08, .42); },
+  inicio(){ /* apertura: retumbo, golpe metálico y luz */
+    ruido('lowpass', 180, 60, .45, 1.6); barrido(55, 38, 1.4, 'sawtooth', .12);
+    tone(190, .12, 'square', .14, .5); tone(140, .18, 'square', .12, .58); ruido('bandpass', 2500, 1800, .12, .25, .5, 4);
+    barrido(220, 880, 1.2, 'triangle', .07, 1.0); [440, 554, 659, 880].forEach((f, i) => tone(f, .5, 'sine', .07, 1.5 + i*.1)); },
+  err(){ /* el candado traquetea y no abre */
+    [0, .07, .14, .21].forEach((d, i) => { tone(900 + i*60, .04, 'square', .07, d); ruido('bandpass', 3000, 2500, .08, .05, d, 6); });
+    tone(140, .32, 'sawtooth', .14, .28); tone(110, .4, 'square', .07, .34); },
+  pista(){ [1047, 1319, 1568, 2093, 2637].forEach((f, i) => tone(f, .25, 'sine', .07, i*.06)); ruido('highpass', 6000, 9000, .05, .5, 0); },
+  unlock(){ /* clic del candado, chirrido de la puerta y acorde */
+    tone(220, .06, 'square', .12); tone(320, .06, 'square', .12, .06); ruido('bandpass', 2800, 2000, .14, .12, .02, 5);
+    barrido(180, 120, .7, 'sawtooth', .04, .15); ruido('lowpass', 300, 80, .2, .8, .1);
+    [523, 659, 784, 1047].forEach((f, i) => tone(f, .4, 'triangle', .15, .25 + i*.09)); tone(1568, .8, 'sine', .06, .7); },
+  aplausos(){ for (let i = 0; i < 70; i++) ruido('bandpass', 1500 + Math.random()*1500, 1200, .05 + Math.random()*.05, .06, Math.random()*2.6 + (i/70)*.6, 1.5); },
+  fan(){ [523,523,523,659,784,659,784,1047].forEach((f,i) => tone(f, i === 7 ? .9 : .2,'triangle',.18,i*.16)); [262,330,392].forEach(f => tone(f,1.4,'sine',.07,1.1)); SFX.aplausos(); }
+};
+/* sonidos de interfaz: teclas, botones y descargas */
+document.addEventListener('keydown', e => { if (e.target.matches && e.target.matches('#cod, #nm, #clave') && e.key.length === 1) SFX.tecla(); });
+document.addEventListener('click', e => {
+  if (e.target.closest('a.file')) SFX.descarga();
+  else if (e.target.closest('.btn, .linkbtn') && !e.target.closest('#abrir, #fIni button')) SFX.boton();
+});
+
+/* ---------- música de fondo (sintetizada, cambia con cada candado) ---------- */
+const MUS = (() => {
+  let ctx = null, master = null, cur = null, want = -1, armado = false, timer = null, noise = null, nextT = 0, step = 0;
+  let on = lsGet('cazadoresM6_musica') !== 'no'; window.SILENCIO = !on;
+  const NOMBRES = ['Suspenso','Misterio','Investigación','Contrarreloj','Tensión','Clímax','Victoria'];
+  const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+  function init(){
+    ctx = ac(); if (!ctx) return false; if (master) return true;
+    const comp = ctx.createDynamicsCompressor(); comp.connect(ctx.destination);
+    master = ctx.createGain(); master.gain.value = on ? .3 : 0; master.connect(comp);
+    noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate); const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1;
+    return true;
+  }
+  function env(g, t, a, p, dec){ g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(p, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + dec); }
+  function osc(o, t, f, type, a, p, dec, lp){
+    const s = ctx.createOscillator(), g = ctx.createGain(); s.type = type; s.frequency.setValueAtTime(f, t);
+    let n = s; if (lp) { const fl = ctx.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = lp; s.connect(fl); n = fl; }
+    n.connect(g); g.connect(o); env(g, t, a, p, dec); s.start(t); s.stop(t + a + dec + .05);
+  }
+  function nz(o, t, type, fq, v, d){ const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = noise; f.type = type; f.frequency.value = fq; s.connect(f); f.connect(g); g.connect(o); env(g, t, .002, v, d); s.start(t); s.stop(t + d + .05); }
+  const V = {
+    bass:(o,t,m,d,v=.42)=>osc(o,t,mtof(m),'sawtooth',.01,v,d,360),
+    sub:(o,t,m,d,v=.35)=>osc(o,t,mtof(m),'sine',.4,v,d),
+    pluck:(o,t,m,v=.2)=>osc(o,t,mtof(m),'triangle',.005,v,.32),
+    bell:(o,t,m,v=.14)=>{ osc(o,t,mtof(m),'sine',.005,v,1.6); osc(o,t,mtof(m)*2.76,'sine',.005,v*.3,.8); },
+    pad:(o,t,ms,d,v=.06)=>ms.forEach(m=>{ osc(o,t,mtof(m),'triangle',d*.3,v,d*.8,1800); osc(o,t,mtof(m)*1.005,'sine',d*.3,v*.8,d*.8); }),
+    kick:(o,t,v=.6)=>{ const s = ctx.createOscillator(), g = ctx.createGain(); s.frequency.setValueAtTime(130,t); s.frequency.exponentialRampToValueAtTime(38,t+.18); s.connect(g); g.connect(o); env(g,t,.003,v,.25); s.start(t); s.stop(t+.3); },
+    hat:(o,t,v=.06)=>nz(o,t,'highpass',7000,v,.05),
+    snare:(o,t,v=.16)=>nz(o,t,'bandpass',1800,v,.16),
+    tick:(o,t,f,v=.07)=>osc(o,t,f,'square',.001,v,.03)
+  };
+  const tri = (r, M) => [r, r + (M ? 4 : 3), r + 7];
+  /* cada pieza: tempo, compases y qué suena en cada semicorchea (s = 0..15, b = compás) */
+  const TR = [
+    { bpm:64, prog:[[45],[45],[46],[44]], f(o,t,s,b,c,bar){ /* Suspenso: dron grave, latido y campanas sueltas */
+        if (s === 0) { V.sub(o,t,c[0]-12,bar*1.05); V.pad(o,t,tri(c[0]+12),bar,.05); }
+        if (s === 0 || s === 8) { V.kick(o,t,.5); V.kick(o,t+.24,.32); }
+        if ((s === 6 && b % 2) || (s === 13 && b === 3)) V.bell(o,t,c[0]+24+[0,3,7,10,3][(b+s)%5],.1);
+      } },
+    { bpm:84, prog:[[38],[34,1],[36,1],[33,1]], f(o,t,s,b,c,bar){ /* Misterio */
+        if (s === 0) V.pad(o,t,tri(c[0]+12,c[1]),bar,.05);
+        if (s === 0 || s === 10) V.bass(o,t,c[0],.5,.32);
+        if (s % 2 === 0) { const ch = tri(c[0]+24,c[1]); V.pluck(o,t,[ch[0],ch[1],ch[2],ch[0]+12,ch[2],ch[1],ch[0],ch[1]][s/2],.12); }
+        if (s === 4 || s === 12) V.hat(o,t,.04);
+      } },
+    { bpm:100, prog:[[40],[36,1],[38,1],[35]], f(o,t,s,b,c,bar){ /* Investigación */
+        if (s === 0) V.pad(o,t,tri(c[0]+12,c[1]),bar,.04);
+        if (s % 2 === 0) V.bass(o,t,c[0] + (s % 8 === 6 ? 12 : 0),.18,.34);
+        if (s % 2 === 0) V.hat(o,t, s % 4 ? .05 : .03);
+        if (s === 0 || s === 8) V.kick(o,t,.45);
+        if (s === 3 || s === 11 || (s === 14 && b % 2)) V.pluck(o,t,tri(c[0]+24,c[1])[(s+b)%3],.13);
+      } },
+    { bpm:112, prog:[[36],[32,1],[39,1],[31,1]], f(o,t,s,b,c,bar){ /* Contrarreloj: tic-tac */
+        if (s % 4 === 0) V.tick(o,t, s % 8 ? 1800 : 2400, .06);
+        if (s === 0) V.pad(o,t,tri(c[0]+12,c[1]),bar,.045);
+        if (s % 2 === 0) V.bass(o,t,c[0],.16,.32);
+        if (s === 0 || s === 8) V.kick(o,t,.55);
+        if (s === 12) V.snare(o,t,.12);
+        if (s === 10 && b % 2) V.bell(o,t,c[0]+31,.08);
+      } },
+    { bpm:120, prog:[[42],[38,1],[40,1],[37,1]], f(o,t,s,b,c,bar){ /* Tensión */
+        const ch = tri(c[0]+24,c[1]);
+        V.pluck(o,t,[ch[0],ch[1],ch[2],ch[1]][s%4] + (s >= 8 ? 12 : 0),.09);
+        if (s % 2 === 0) V.bass(o,t,c[0],.15,.36);
+        if (s % 4 === 0) V.kick(o,t,.5);
+        if (s % 4 === 2) V.hat(o,t,.06);
+        if (s === 0) V.pad(o,t,tri(c[0]+12,c[1]),bar,.04);
+      } },
+    { bpm:132, prog:[[43],[39,1],[41,1],[38,1]], f(o,t,s,b,c,bar){ /* Clímax */
+        if (s % 2 === 0) V.bass(o,t,c[0] + (s % 4 === 2 ? 12 : 0),.14,.4);
+        if (s % 4 === 0) V.kick(o,t,.6);
+        if (s === 4 || s === 12) V.snare(o,t,.16);
+        V.hat(o,t, s % 2 ? .03 : .05);
+        if (s === 0) V.pad(o,t,tri(c[0]+12,c[1]),bar,.05);
+        if (s === 0 || s === 6 || s === 12) V.bell(o,t,tri(c[0]+24,c[1])[(s/6 + b) % 3] + 12,.09);
+      } },
+    { bpm:104, prog:[[48,1],[43,1],[45],[41,1]], f(o,t,s,b,c,bar){ /* Victoria */
+        if (s === 0) { V.pad(o,t,tri(c[0]+12,c[1]),bar,.06); V.bass(o,t,c[0]-12,bar*.9,.25); }
+        if (s % 2 === 0) V.pluck(o,t,tri(c[0]+24,c[1])[(s/2) % 3] + (s >= 8 ? 12 : 0),.1);
+        if (s === 0 || s === 8) V.kick(o,t,.4);
+        if (s === 12) V.snare(o,t,.1);
+        if (s === 0 || s === 4 || s === 10) V.bell(o,t,tri(c[0]+36,c[1])[(s + b) % 3],.08);
+      } }
+  ];
+  function tic(){
+    if (!cur || !ctx) return;
+    const T = TR[cur.i], dur = 60 / T.bpm / 4;
+    while (nextT < ctx.currentTime + .15) {
+      const s = step % 64, b = Math.floor(s / 16);
+      try { T.f(cur.g, nextT, s % 16, b, T.prog[b], dur * 16); } catch(e) { window.MUS_ERR = cur.i + ": " + e.message; }
+      nextT += dur; step++;
+    }
+  }
+  function play(i){
+    if (!init()) return; if (cur && cur.i === i) return;
+    const now = ctx.currentTime;
+    if (cur) { const g = cur.g; g.gain.cancelScheduledValues(now); g.gain.setValueAtTime(g.gain.value, now); g.gain.linearRampToValueAtTime(0, now + 1.2); setTimeout(() => g.disconnect(), 1800); }
+    const g = ctx.createGain(); g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(1, now + 1.5); g.connect(master);
+    cur = { i, g }; step = 0; nextT = now + .08;
+    if (!timer) timer = setInterval(tic, 25);
+    boton();
+  }
+  function boton(){
+    let b = document.getElementById('musBtn');
+    if (!b) { b = document.createElement('button'); b.id = 'musBtn'; b.className = 'musbtn'; b.onclick = e => { e.stopPropagation(); alternar(); }; document.body.appendChild(b); }
+    b.innerHTML = on ? '<span class="mi">🔊</span><span>Música: ' + NOMBRES[Math.max(0, want)] + '</span>' : '<span class="mi">🔇</span><span>Activar sonido</span>'; b.classList.toggle('off', !on);
+    b.title = on ? 'Silenciar (tecla M)' : 'Activar sonido (tecla M)'; b.setAttribute('aria-label', b.title); window.SILENCIO = !on;
+  }
+  function alternar(){
+    on = !on; lsSet('cazadoresM6_musica', on ? 'si' : 'no');
+    if (init()) { const n = ctx.currentTime; master.gain.cancelScheduledValues(n); master.gain.setValueAtTime(master.gain.value, n); master.gain.linearRampToValueAtTime(on ? .3 : 0, n + .5); if (on && want >= 0) play(want); }
+    boton();
+  }
+  function armar(){ if (armado) return; armado = true; if (want >= 0) play(want); }
+  document.addEventListener('pointerdown', armar, { capture:true });
+  document.addEventListener('keydown', e => { armar(); if ((e.key === 'm' || e.key === 'M') && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) alternar(); }, { capture:true });
+  document.addEventListener('visibilitychange', () => { if (AC) document.hidden ? AC.suspend() : AC.resume(); });
+  return {
+    want(i){ want = i; boton(); if (armado) play(i); },
+    duck(){ if (!master || !on) return; const n = ctx.currentTime; master.gain.cancelScheduledValues(n); master.gain.setValueAtTime(master.gain.value, n); master.gain.linearRampToValueAtTime(.08, n + .1); master.gain.linearRampToValueAtTime(.3, n + 2.6); }
+  };
+})();
+
+/* ---------- confeti ---------- */
+function confeti(ms){
+  const cv = $('#cf'), cx = cv.getContext('2d'); cv.width = innerWidth; cv.height = innerHeight;
+  const col = ['#F2994A','#ffb877','#4db8ff','#3ddc97','#ff6b81','#ffffff'];
+  const P = Array.from({length:170}, () => ({ x:Math.random()*cv.width, y:-20 - Math.random()*cv.height*.5, vx:(Math.random()-.5)*3, vy:2 + Math.random()*3.5, r:Math.random()*6.28, vr:(Math.random()-.5)*.25, s:6 + Math.random()*7, c:col[Math.floor(Math.random()*col.length)] }));
+  const fin = Date.now() + (ms || 3500);
+  (function f(){ cx.clearRect(0,0,cv.width,cv.height); P.forEach(p => { p.x += p.vx; p.y += p.vy; p.r += p.vr; cx.save(); cx.translate(p.x,p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); cx.restore(); });
+    if (Date.now() < fin) requestAnimationFrame(f); else cx.clearRect(0,0,cv.width,cv.height); })();
+}
+
+/* ---------- vistas ---------- */
+function cabecera(){
+  return `<div class="top"><div class="brand"><span class="ico">🕵️</span><div><b>Cazadores de Datos</b><span>Escape room · Módulo 6 · Power Query</span></div></div>${G ? `<span class="tag" style="color:var(--mand2)">👤 ${esc(G.nombre)}</span>` : ''}</div>`;
+}
+const credito = '<p class="credit">Juego creado por: Jarlin Figueroa, M.A.</p>';
+
+function render(){
+  if (!G) return vistaInicio();
+  if (G.fin != null) return vistaFelicitacion(false);
+  vistaSala();
+}
+
+function vistaInicio(){
+  MUS.want(0);
+  $('#app').innerHTML = `<div class="wrap">${cabecera()}
+  <div class="panel" style="margin-bottom:16px"><div class="kick">Actividad individual</div><h1 style="font-size:clamp(28px,4.5vw,42px)">Abre los diez candados.</h1>
+  <p class="story">${HISTORIA}</p>
+  <div class="mision"><p><b>Cómo se juega</b></p>
+  <p>1. Ten abierto <b>Excel de escritorio (2021 o Microsoft 365)</b>: lo necesitas para leer el PDF. Cada candado te pide una respuesta que sale de tus datos.</p>
+  <p>2. Escribe la respuesta: un número («RD$», las comas y los decimales no importan) o, cuando se pida, el nombre de una persona.</p>
+  <p>3. Los datos llegan de distintas fuentes: una carpeta de Excel, un CSV, un PDF y otra carpeta con 4 archivos. Cada fuente nueva se desbloquea al abrir el candado anterior.</p>
+  <p>4. Si te trabas, tienes dos pistas por candado. Cada pista suma <b>2 minutos</b> a tu tiempo en el ranking de la clase.</p>
+  <p>5. Al abrir el último candado aparecerá una <b>felicitación con tu nombre</b>: tómale una captura de pantalla y envíasela a tu facilitador.</p>
+  <p>🎧 El juego tiene música de suspenso y efectos de sonido. Si necesitas silencio, usa el botón 🔊 de abajo a la derecha (o la tecla M).</p></div>
+  <form id="fIni" style="margin-top:18px" autocomplete="off"><label class="lbl" for="nm">Tu nombre completo (así aparecerá en la felicitación)</label>
+  <div class="code" style="margin-top:0"><input id="nm" type="text" maxlength="50" placeholder="Nombre y apellido"><button class="btn">🔓 Empezar</button></div></form></div>
+  ${credito}</div>`;
+  $('#fIni').onsubmit = ev => { ev.preventDefault(); const n = $('#nm').value.trim().replace(/\s+/g,' ');
+    if (n.length < 3) { toast('Escribe tu nombre completo.'); $('#nm').focus(); return; }
+    ac(); SFX.inicio(); G = { nombre:n, inicio:Date.now(), sala:1, res:{}, resp:{}, tok:{}, pistas:{}, intentos:0, fin:null, noCuenta: lsGet('cazadoresM6_terminado') === '1' }; guardar(); render(); MUS.duck(); };
+}
+
+function filesHtml(nuevo){
+  return Object.keys(FUENTES).map(Number).map(k => { const f = FUENTES[k], tok = k === 1 ? null : G.tok[k], abierto = k === 1 || tok;
+    return abierto ? `<a class="file ${nuevo === k ? 'new' : ''}" href="${k === 1 ? f.ruta : urlArch(k, tok)}" download><span class="fi">${f.ico}</span><div><b>${f.nombre}</b><span>${f.tipo} · ${f.desc}</span></div></a>`
+      : `<div class="file" style="opacity:.45"><span class="fi">🔒</span><div><b>Fuente bloqueada (${f.tipo})</b><span>Se abre con el candado ${k-1}</span></div></div>`; }).join('');
+}
+function pistasHtml(n){
+  const usadas = G.pistas[n] || 0, s = SALAS[n-1];
+  let h = s.pis.slice(0, usadas).map((p,i) => `<div class="pista"><b>Pista ${i+1}.</b> ${p}</div>`).join('');
+  h += usadas < s.pis.length ? `<button class="btn sec sm" id="verPista" style="margin-top:${usadas ? 12 : 0}px">💡 Ver la pista ${usadas+1}</button>`
+    : '<p class="muted" style="font-size:14px;margin:10px 0 0">Ya usaste las dos pistas de este candado.</p>';
+  return h;
+}
+function vistaSala(nuevo){
+  const n = G.sala, s = SALAS[n-1];
+  MUS.want(Math.ceil(n / 2));
+  $('#app').innerHTML = `<div class="wrap">${cabecera()}
+  <div class="hud"><div class="locks">${Array.from({length:NC}, (_, k) => k + 1).map(i => `<div class="lk ${i < n ? 'ok' : i === n ? 'on' : ''}">${i < n ? '🔓' : '🔒'}<small>${i}</small></div>`).join('')}</div>
+  <div style="text-align:right"><div class="clock" id="clk">00:00</div><div class="muted" style="font-size:13px">Tu tiempo</div></div></div>
+  <div class="sala">
+    <div class="panel">
+      <div class="kick">Candado ${n} de ${NC} · Fuente: ${FUENTES[s.fuente].tipo}</div><h2>${s.ico} ${s.t}.</h2>
+      <p class="story">${s.h}</p>
+      <div class="mision">${s.m}</div>
+      <div class="preg">🔑 ${s.p}</div>
+      <form class="code" id="frm" autocomplete="off"><input id="cod" type="text" inputmode="${s.tipo === 'nombre' ? 'text' : 'decimal'}" placeholder="${s.tipo === 'nombre' ? 'Escribe el nombre' : 'Escribe el número'}" aria-label="Código del candado"><button class="btn" id="abrir">Abrir</button></form>
+      <div class="msg" id="msg"></div>
+    </div>
+    <div class="side">
+      <div class="panel blk"><h3>Fuentes de datos</h3>${filesHtml(nuevo)}</div>
+      <div class="panel blk"><h3>Pistas</h3><div id="pistas">${pistasHtml(n)}</div></div>
+    </div>
+  </div>
+  <p class="credit">Juego creado por: Jarlin Figueroa, M.A. · <button class="linkbtn" id="reini">Empezar de nuevo</button></p></div>`;
+  enlazarPista(n);
+  $('#reini').onclick = reiniciar;
+  let cool = 0;
+  $('#frm').onsubmit = async ev => {
+    ev.preventDefault(); const inp = $('#cod'), msg = $('#msg'), f = $('#frm');
+    if (Date.now() < cool) { msg.className = 'msg bad'; msg.textContent = 'Espera un momento antes de intentar otra vez.'; return; }
+    const v = s.tipo === 'nombre' ? normNombre(inp.value) : norm(inp.value);
+    if (!v) { msg.className = 'msg bad'; msg.textContent = s.tipo === 'nombre' ? 'Escribe un nombre.' : 'Escribe un número.'; return; }
+    const hs = [await sha('m6caz|' + n + '|' + v)]; if (s.tipo === 'nombre') hs.push(await sha('m6caz|' + n + '|' + v.split(' ')[0]));
+    if (!hs.some(h => CRYPTO.h[n-1].includes(h))) {
+      G.intentos++; guardar(); SFX.err(); cool = Date.now() + 3000;
+      msg.className = 'msg bad'; msg.textContent = '✖ Esa no es la respuesta. Revisa tus datos y tus pasos.';
+      f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); inp.select(); return;
+    }
+    const tok = s.tipo === 'nombre' ? null : await revelar(n, v);
+    G.res[n] = Date.now() - G.inicio; G.resp[n] = s.tipo === 'nombre' ? inp.value.trim().replace(/\s+/g, ' ').toLowerCase().replace(/(^|\s)\S/g, c => c.toUpperCase()) : Number(v); if (tok) G.tok[n+1] = tok;
+    if (n === NC) { G.fin = Date.now(); guardar(); lsSet('cazadoresM6_terminado','1'); MUS.duck(); SFX.fan(); confeti(6000);
+      G.lugar = await miLugar(); guardar(); vistaFelicitacion(true); return; }
+    G.sala = n + 1; guardar(); MUS.duck(); SFX.unlock(); confeti(2000); vistaSala(tok ? n + 1 : null); celebrar(n, tok ? n + 1 : null);
+  };
+  $('#cod').focus();
+}
+function enlazarPista(n){
+  const b = $('#verPista'); if (!b) return;
+  b.onclick = () => { G.pistas[n] = (G.pistas[n] || 0) + 1; guardar(); SFX.pista(); $('#pistas').innerHTML = pistasHtml(n); enlazarPista(n); };
+}
+function celebrar(n, arch){
+  const ov = document.createElement('div'); ov.className = 'ov';
+  ov.innerHTML = `<div class="card"><div class="big">🔓</div><h2>¡Candado ${n} abierto!</h2><p class="muted" style="font-size:18px">${arch ? 'Se desbloqueó una fuente nueva: <b>' + esc(FUENTES[arch].nombre) + ' (' + FUENTES[arch].tipo + ')' + '</b>.' : 'Sigue con el próximo candado.'}</p><button class="btn" style="margin-top:14px">Continuar</button></div>`;
+  document.body.appendChild(ov);
+  const cerrar = () => { ov.remove(); const c = $('#cod'); if (c) c.focus(); }; ov.querySelector('button').onclick = cerrar; setTimeout(cerrar, 4500);
+}
+function vistaFelicitacion(recien){
+  MUS.want(6);
+  const total = G.fin - G.inicio, pistas = Object.values(G.pistas).reduce((a,b) => a + b, 0);
+  $('#app').innerHTML = `<div class="wrap">
+  <div class="cert" id="cert">
+    <div class="kick">Cazadores de Datos · Módulo 6 · Power Query</div>
+    <div class="seal" style="margin-top:12px">🏆</div>
+    <div class="fel">¡Felicidades,</div>
+    <div class="nom">${esc(G.nombre)}!</div>
+    <p class="lead">Abriste los <b>diez candados</b> de Distribuidora El Faro: obtuviste datos de Excel, CSV y PDF, uniste archivos con Power Query y los consultaste con filtros.</p>
+    <div class="datos"><span>📅 ${fechaLarga(G.fin)}</span><span>⏱️ Tiempo: <b class="mono">${hms(total)}</b></span><span>💡 Pistas: <b>${pistas}</b></span><span>✖ Intentos fallidos: <b>${G.intentos}</b></span>${G.lugar ? `<span style="border-color:var(--mand);color:var(--mand2)">🏅 Lugar <b>${G.lugar.lugar}</b> entre ${G.lugar.de} que han terminado</span>` : ''}</div>
+    <div class="hall">${SALAS.map((x,i) => { const v = G.resp[i+1]; return `<div>✅ ${x.r}<b>${x.fmt === 'rd' ? rd(v) : x.fmt === 'n' ? Number(v).toLocaleString('en-US') : esc(v)}</b></div>`; }).join('')}</div>
+    <p class="pie">Excel Avanzado · Juego creado por: Jarlin Figueroa, M.A.</p>
+  </div>
+  <div class="foto">📸 <b>Toma una captura de pantalla</b> de esta felicitación y envíasela a tu facilitador.</div>
+  <p style="text-align:center"><button class="linkbtn" id="reini">Jugar otra vez</button></p></div>`;
+  $('#reini').onclick = reiniciar;
+  if (!recien) setTimeout(() => confeti(2500), 300);
+}
+function reiniciar(){
+  if (!confirm('¿Empezar de nuevo? Se borra tu avance en este navegador.')) return;
+  try { localStorage.removeItem(KEY); } catch(e) {} G = null; render();
+}
+/* =============== PANTALLA DEL FACILITADOR (?modo=profesor) =============== */
+let J = {}, sonidoProf = false, profIni = 0, vistos = null;
+function vistaProfesor(){
+  if (lsGet('cazadoresM6_prof') !== CLAVE) {
+    $('#app').innerHTML = `<div class="wrap">${cabecera()}<div class="panel" style="max-width:420px;margin:10vh auto"><h2>Pantalla del facilitador.</h2><p class="muted">Escribe la clave para ver el ranking.</p>
+      <form id="fc" class="code"><input id="clave" type="password" placeholder="Clave"><button class="btn">Entrar</button></form></div></div>`;
+    $('#fc').onsubmit = ev => { ev.preventDefault(); if ($('#clave').value === CLAVE) { lsSet('cazadoresM6_prof', CLAVE); vistaProfesor(); } else toast('Clave incorrecta.'); };
+    return;
+  }
+  $('#app').innerHTML = `<div class="wrap scr">
+    <div class="head"><div><div class="kick">Cazadores de Datos · Módulo 6 · Ranking en vivo</div><div class="title">🕵️ Cazadores de Datos</div></div>
+    <div class="row"><div class="tag" id="cuenta"></div></div></div>
+    <div id="podio"></div>
+    <div class="grid2">
+      <div class="panel"><h3>🏁 Terminaron</h3><div id="tabla"></div></div>
+      <div class="panel"><h3>🎮 Jugando ahora</h3><div id="jugando"></div></div>
+    </div>
+    <div class="row" style="justify-content:space-between;margin-top:16px">
+      <div class="ctl"><button class="btn sec sm" id="snd">🔇 Activar el sonido</button><button class="btn sec sm" id="csv">⬇ Descargar CSV</button><button class="btn dang sm" id="rei">↺ Reiniciar ranking</button><button class="btn sec sm" id="sal">Salir</button></div>
+      <span class="muted" style="font-size:14px">Enlace para los estudiantes: <b>${esc(location.href.split('?')[0])}</b></span></div>
+    <p class="credit">Juego creado por: Jarlin Figueroa, M.A.</p></div>`;
+  $('#snd').onclick = () => { sonidoProf = !sonidoProf; ac(); $('#snd').textContent = sonidoProf ? '🔊 Sonido activo' : '🔇 Activar el sonido'; if (sonidoProf) SFX.pista(); };
+  $('#sal').onclick = () => { lsSet('cazadoresM6_prof',''); location.reload(); };
+  $('#csv').onclick = () => {
+    const filas = [['Lugar','Nombre','Estado','Candados abiertos','Tiempo','Pistas','Tiempo con pistas','Intentos fallidos','Terminó']];
+    ordenados().forEach((j,i) => filas.push([j.fin != null ? i+1 : '', j.nombre, j.fin != null ? 'Terminó' : 'Jugando', Math.min(NC,(j.sala||1)-1), j.fin != null ? hms(j.fin-j.inicio) : '', j.pistas||0, j.fin != null ? hms(totalRank(j)) : '', j.intentos||0, j.fin != null ? fechaLarga(j.fin) : '']));
+    const csv = '﻿' + filas.map(f => f.map(x => '"' + String(x).replace(/"/g,'""') + '"').join(';')).join('\r\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv' })); a.download = 'Ranking-Cazadores-de-Datos.csv'; a.click();
+  };
+  $('#rei').onclick = () => { if (confirm('¿Borrar el ranking completo? Esta acción no se puede deshacer.')) window.DB_READY.ref(ROOT + '/jugadores').remove(); };
+  if (!window.DB_READY) { $('#tabla').innerHTML = '<p class="muted">Conectando…</p>'; return; }
+  profIni = Date.now();
+  window.DB_READY.ref(ROOT + '/jugadores').on('value', s => { J = s.val() || {}; pintarRanking(); });
+}
+function ordenados(){
+  return Object.keys(J).map(k => Object.assign({ id:k }, J[k])).sort((a,b) => (a.fin != null) !== (b.fin != null) ? (a.fin != null ? -1 : 1)
+    : a.fin != null ? totalRank(a) - totalRank(b) : (b.sala||1) - (a.sala||1) || a.inicio - b.inicio);
+}
+function pintarRanking(){
+  const L = ordenados(), fin = L.filter(j => j.fin != null), jug = L.filter(j => j.fin == null);
+  $('#cuenta').textContent = `🏁 ${fin.length} ${fin.length === 1 ? 'terminó' : 'terminaron'} · 🎮 ${jug.length} jugando`;
+  const med = ['🥇','🥈','🥉'], alto = [200,150,110], orden = [1,0,2].filter(i => fin[i]);
+  $('#podio').innerHTML = fin.length ? `<div class="podium" style="margin:0 0 22px">${orden.map(i => `<div class="pd" style="--c:${['#F2994A','#a9b4ff','#d08a5a'][i]}">
+      <div class="nm" style="font-size:${i ? 22 : 28}px">${med[i]} ${esc(fin[i].nombre)}</div><div class="muted mono" style="margin-bottom:8px">${hms(totalRank(fin[i]))}</div>
+      <div class="base" style="height:${alto[i]}px">${i+1}</div></div>`).join('')}</div>`
+    : `<div class="panel" style="text-align:center;margin-bottom:18px"><div style="font-size:54px">⏳</div><h2>Todavía nadie ha abierto los diez candados.</h2><p class="muted">El primero en terminar aparecerá aquí en primer lugar.</p></div>`;
+  $('#tabla').innerHTML = fin.length ? `<table class="t"><thead><tr><th>#</th><th>Nombre</th><th>Tiempo</th><th>Pistas</th><th>Total</th></tr></thead><tbody>${fin.map((j,i) =>
+    `<tr${i === 0 ? ' style="color:var(--mand2);font-weight:700"' : ''}><td>${i < 3 ? med[i] : i+1}</td><td>${esc(j.nombre)}</td><td class="mono">${hms(j.fin - j.inicio)}</td><td>${j.pistas||0}</td><td class="mono"><b>${hms(totalRank(j))}</b></td></tr>`).join('')}</tbody></table>`
+    : '<p class="muted">Aún no hay estudiantes que hayan terminado.</p>';
+  $('#jugando').innerHTML = jug.length ? jug.map(j => `<div class="jr"><span>${esc(j.nombre)}</span><span class="mini">${Array.from({length:NC}, (_, k) => k + 1 < (j.sala||1) ? '🔓' : '🔒').join('')}</span></div>`).join('')
+    : '<p class="muted">Nadie está jugando en este momento.</p>';
+  /* aviso cuando alguien termina */
+  const ya = new Set(fin.map(j => j.id));
+  if (vistos) fin.forEach((j,i) => { if (!vistos.has(j.id)) avisoFin(j, i+1); });
+  vistos = ya;
+}
+function avisoFin(j, lugar){
+  const ov = document.createElement('div'); ov.className = 'ov';
+  ov.innerHTML = `<div class="card"><div class="big">${lugar === 1 ? '🥇' : lugar === 2 ? '🥈' : lugar === 3 ? '🥉' : '🏆'}</div><h2 style="color:var(--mand2)">${esc(j.nombre)}</h2><p style="font-size:clamp(22px,3vw,32px);margin:0">¡abrió los diez candados! ${lugar === 1 ? '<b>Primer lugar</b>' : 'Lugar ' + lugar}</p><p class="muted mono" style="font-size:20px">${hms(totalRank(j))}</p></div>`;
+  document.body.appendChild(ov); setTimeout(() => ov.remove(), 5500);
+  confeti(4000); if (sonidoProf) SFX.fan();
+}
+
+setInterval(() => { const c = $('#clk'); if (c && G && G.fin == null) c.textContent = hms(Date.now() - G.inicio); }, 500);
+window.addEventListener('fb-ready', () => { if (MODO === 'profesor') vistaProfesor(); else subir(); });
+if (MODO === 'profesor') vistaProfesor(); else render();
+</script>
+</body>
+</html>
