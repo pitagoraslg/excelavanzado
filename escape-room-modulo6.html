@@ -143,12 +143,12 @@ table.t th{color:var(--muted);font-weight:600}
 .links a{color:var(--mand2);word-break:break-all}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 /* Felicitación */
-.cert{position:relative;max-width:860px;margin:0 auto;border-radius:22px;padding:24px 30px 18px;text-align:center;overflow:hidden;
+.cert{position:relative;max-width:860px;margin:0 auto;border-radius:22px;padding:34px 34px 26px;text-align:center;overflow:hidden;
   background:radial-gradient(600px 300px at 50% -10%,rgba(242,153,74,.28),transparent 70%),linear-gradient(180deg,#1f2668,#151a4a);border:2px solid var(--mand);box-shadow:0 0 0 6px rgba(242,153,74,.12),0 30px 60px rgba(0,0,0,.35)}
-.cert .seal{font-size:50px;line-height:1;animation:pop .7s cubic-bezier(.2,1.6,.4,1)}
+.cert .seal{font-size:64px;line-height:1;animation:pop .7s cubic-bezier(.2,1.6,.4,1)}
 .cert .fel{font-size:clamp(30px,5vw,50px);font-weight:800;margin:10px 0 2px;line-height:1.1}
 .cert .nom{font-size:clamp(28px,5vw,46px);font-weight:800;color:var(--mand2);margin:2px 0 8px;word-break:break-word}
-.cert .lead{font-size:17px;color:#d9dcff;max-width:640px;margin:0 auto 14px}
+.cert .lead{font-size:18px;color:#d9dcff;max-width:640px;margin:0 auto 18px}
 .cert .datos{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
 .cert .datos span{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-size:14px}
 .cert .hall{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left}
@@ -156,13 +156,18 @@ table.t th{color:var(--muted);font-weight:600}
 .cert .hall div{background:#10143a;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:14px}
 .cert .hall b{display:block;color:var(--ok);font-family:'JetBrains Mono',monospace;font-size:15px}
 .cert .pie{margin-top:16px;font-size:13px;color:var(--muted)}
-.foto{max-width:860px;margin:0 auto 14px;text-align:center;background:rgba(61,220,151,.1);border:1px dashed var(--ok);border-radius:14px;padding:12px 16px;font-size:16px}
+.foto{max-width:860px;margin:16px auto 0;text-align:center;background:rgba(61,220,151,.1);border:1px dashed var(--ok);border-radius:14px;padding:12px 16px;font-size:16px}
 .grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
 @media (max-width:900px){.grid2{grid-template-columns:1fr}}
 .jr{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:16px}
 .jr .mini{font-size:15px;letter-spacing:2px;white-space:nowrap}
 .scr .panel h3{font-size:18px}
 table.t td{font-size:16px}
+.musbtn{position:fixed;right:16px;bottom:16px;z-index:80;display:flex;align-items:center;gap:8px;padding:10px 16px 10px 12px;border-radius:99px;border:1px solid var(--mand);background:rgba(13,16,48,.92);color:var(--ink);font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.musbtn .mi{font-size:20px;line-height:1}
+.musbtn.off{border-color:var(--bad);animation:llama 1.8s ease-in-out infinite}
+@keyframes llama{50%{box-shadow:0 0 0 8px rgba(255,107,129,.18)}}
+.wrap{padding-bottom:84px}
 .linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:13px}
 </style>
 </head>
@@ -282,15 +287,172 @@ async function miLugar(){
 /* ---------- sonido ---------- */
 let AC = null;
 function ac(){ if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} } if (AC && AC.state === 'suspended') AC.resume(); return AC; }
-function tone(f, d, type, vol, at){ const a = ac(); if (!a) return; const t = a.currentTime + (at || 0), o = a.createOscillator(), g = a.createGain();
+function tone(f, d, type, vol, at){ if (window.SILENCIO && MODO !== 'profesor') return; const a = ac(); if (!a) return; const t = a.currentTime + (at || 0), o = a.createOscillator(), g = a.createGain();
   o.type = type || 'sine'; o.frequency.setValueAtTime(f, t); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || .18, t + .02); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
   o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + d + .05); }
+/* ruido filtrado: retumbos, soplidos, aplausos */
+let RUIDO = null;
+function ruido(tipo, f1, f2, vol, dur, at, q){
+  if (window.SILENCIO && MODO !== 'profesor') return; const a = ac(); if (!a) return;
+  if (!RUIDO) { RUIDO = a.createBuffer(1, a.sampleRate * 2, a.sampleRate); const d = RUIDO.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1; }
+  const t = a.currentTime + (at || 0), s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+  s.buffer = RUIDO; f.type = tipo; f.Q.value = q || 1; f.frequency.setValueAtTime(f1, t); f.frequency.exponentialRampToValueAtTime(f2, t + dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + Math.min(.05, dur/4)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  s.connect(f); f.connect(g); g.connect(a.destination); s.start(t, Math.random()); s.stop(t + dur + .05);
+}
+function barrido(f1, f2, dur, type, vol, at){ /* tono que sube o baja */
+  if (window.SILENCIO && MODO !== 'profesor') return; const a = ac(); if (!a) return;
+  const t = a.currentTime + (at || 0), o = a.createOscillator(), g = a.createGain(); o.type = type; o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .03); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + dur + .05);
+}
 const SFX = {
-  err(){ tone(140,.32,'sawtooth',.16); tone(110,.4,'square',.08,.08); },
-  pista(){ tone(880,.12,'sine',.12); tone(1320,.18,'sine',.1,.1); },
-  unlock(){ tone(220,.06,'square',.12); tone(320,.06,'square',.12,.06); [523,659,784,1047].forEach((f,i) => tone(f,.35,'triangle',.16,.16 + i*.09)); },
-  fan(){ [523,523,523,659,784,659,784,1047].forEach((f,i) => tone(f, i === 7 ? .9 : .2,'triangle',.18,i*.16)); [262,330,392].forEach(f => tone(f,1.4,'sine',.07,1.1)); }
+  tecla(){ tone(1600 + Math.random()*900, .025, 'square', .025); ruido('highpass', 4000, 3000, .03, .03); },
+  boton(){ tone(520, .05, 'triangle', .09); tone(780, .06, 'triangle', .07, .04); },
+  descarga(){ ruido('bandpass', 400, 3500, .18, .45, 0, 2); barrido(300, 900, .35, 'sine', .07, .05); tone(1175, .25, 'sine', .08, .42); },
+  inicio(){ /* la bóveda se abre: retumbo, golpe metálico y luz */
+    ruido('lowpass', 180, 60, .45, 1.6); barrido(55, 38, 1.4, 'sawtooth', .12);
+    tone(190, .12, 'square', .14, .5); tone(140, .18, 'square', .12, .58); ruido('bandpass', 2500, 1800, .12, .25, .5, 4);
+    barrido(220, 880, 1.2, 'triangle', .07, 1.0); [440, 554, 659, 880].forEach((f, i) => tone(f, .5, 'sine', .07, 1.5 + i*.1)); },
+  err(){ /* el candado traquetea y no abre */
+    [0, .07, .14, .21].forEach((d, i) => { tone(900 + i*60, .04, 'square', .07, d); ruido('bandpass', 3000, 2500, .08, .05, d, 6); });
+    tone(140, .32, 'sawtooth', .14, .28); tone(110, .4, 'square', .07, .34); },
+  pista(){ [1047, 1319, 1568, 2093, 2637].forEach((f, i) => tone(f, .25, 'sine', .07, i*.06)); ruido('highpass', 6000, 9000, .05, .5, 0); },
+  unlock(){ /* clic del candado, chirrido de la puerta y acorde */
+    tone(220, .06, 'square', .12); tone(320, .06, 'square', .12, .06); ruido('bandpass', 2800, 2000, .14, .12, .02, 5);
+    barrido(180, 120, .7, 'sawtooth', .04, .15); ruido('lowpass', 300, 80, .2, .8, .1);
+    [523, 659, 784, 1047].forEach((f, i) => tone(f, .4, 'triangle', .15, .25 + i*.09)); tone(1568, .8, 'sine', .06, .7); },
+  aplausos(){ for (let i = 0; i < 70; i++) ruido('bandpass', 1500 + Math.random()*1500, 1200, .05 + Math.random()*.05, .06, Math.random()*2.6 + (i/70)*.6, 1.5); },
+  fan(){ [523,523,523,659,784,659,784,1047].forEach((f,i) => tone(f, i === 7 ? .9 : .2,'triangle',.18,i*.16)); [262,330,392].forEach(f => tone(f,1.4,'sine',.07,1.1)); SFX.aplausos(); }
 };
+/* sonidos de interfaz: teclas, botones y descargas */
+document.addEventListener('keydown', e => { if (e.target.matches && e.target.matches('#cod, #nm, #clave') && e.key.length === 1) SFX.tecla(); });
+document.addEventListener('click', e => {
+  if (e.target.closest('a.file')) SFX.descarga();
+  else if (e.target.closest('.btn, .linkbtn') && !e.target.closest('#abrir, #fIni button')) SFX.boton();
+});
+
+/* ---------- música de fondo (sintetizada, cambia con cada candado) ---------- */
+const MUS = (() => {
+  let ctx = null, master = null, cur = null, want = -1, armado = false, timer = null, noise = null, nextT = 0, step = 0;
+  let on = lsGet('escapeM6_musica') !== 'no'; window.SILENCIO = !on;
+  const NOMBRES = ['Suspenso','Misterio','Investigación','Contrarreloj','Tensión','Clímax','Victoria'];
+  const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+  function init(){
+    ctx = ac(); if (!ctx) return false; if (master) return true;
+    const comp = ctx.createDynamicsCompressor(); comp.connect(ctx.destination);
+    master = ctx.createGain(); master.gain.value = on ? .3 : 0; master.connect(comp);
+    noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate); const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1;
+    return true;
+  }
+  function env(g, t, a, p, dec){ g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(p, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + dec); }
+  function osc(o, t, f, type, a, p, dec, lp){
+    const s = ctx.createOscillator(), g = ctx.createGain(); s.type = type; s.frequency.setValueAtTime(f, t);
+    let n = s; if (lp) { const fl = ctx.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = lp; s.connect(fl); n = fl; }
+    n.connect(g); g.connect(o); env(g, t, a, p, dec); s.start(t); s.stop(t + a + dec + .05);
+  }
+  function nz(o, t, type, fq, v, d){ const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = noise; f.type = type; f.frequency.value = fq; s.connect(f); f.connect(g); g.connect(o); env(g, t, .002, v, d); s.start(t); s.stop(t + d + .05); }
+  const V = {
+    bass:(o,t,m,d,v=.42)=>osc(o,t,mtof(m),'sawtooth',.01,v,d,360),
+    sub:(o,t,m,d,v=.35)=>osc(o,t,mtof(m),'sine',.4,v,d),
+    pluck:(o,t,m,v=.2)=>osc(o,t,mtof(m),'triangle',.005,v,.32),
+    bell:(o,t,m,v=.14)=>{ osc(o,t,mtof(m),'sine',.005,v,1.6); osc(o,t,mtof(m)*2.76,'sine',.005,v*.3,.8); },
+    pad:(o,t,ms,d,v=.06)=>ms.forEach(m=>{ osc(o,t,mtof(m),'triangle',d*.3,v,d*.8,1800); osc(o,t,mtof(m)*1.005,'sine',d*.3,v*.8,d*.8); }),
+    kick:(o,t,v=.6)=>{ const s = ctx.createOscillator(), g = ctx.createGain(); s.frequency.setValueAtTime(130,t); s.frequency.exponentialRampToValueAtTime(38,t+.18); s.connect(g); g.connect(o); env(g,t,.003,v,.25); s.start(t); s.stop(t+.3); },
+    hat:(o,t,v=.06)=>nz(o,t,'highpass',7000,v,.05),
+    snare:(o,t,v=.16)=>nz(o,t,'bandpass',1800,v,.16),
+    tick:(o,t,f,v=.07)=>osc(o,t,f,'square',.001,v,.03)
+  };
+  const tri = (r, M) => [r, r + (M ? 4 : 3), r + 7];
+  /* cada pieza: tempo, compases y qué suena en cada semicorchea (s = 0..15, b = compás) */
+  const TR = [
+    { bpm:64, prog:[[45],[45],[46],[44]], f(o,t,s,b,c,bar){ /* Suspenso: dron grave, latido y campanas sueltas */
+        if (s === 0) { V.sub(o,t,c[0]-12,bar*1.05); V.pad(o,t,tri(c[0]+12),bar,.05); }
+        if (s === 0 || s === 8) { V.kick(o,t,.5); V.kick(o,t+.24,.32); }
+        if ((s === 6 && b % 2) || (s === 13 && b === 3)) V.bell(o,t,c[0]+24+[0,3,7,10,3][(b+s)%5],.1);
+      } },
+    { bpm:84, prog:[[38],[34,1],[36,1],[33,1]], f(o,t,s,b,c,bar){ /* Misterio */
+        if (s === 0) V.pad(o,t,tri(c[0]+12,c[1]),bar,.05);
+        if (s === 0 || s === 10) V.bass(o,t,c[0],.5,.32);
+        if (s % 2 === 0) { const ch = tri(c[0]+24,c[1]); V.pluck(o,t,[ch[0],ch[1],ch[2],ch[0]+12,ch[2],ch[1],ch[0],ch[1]][s/2],.12); }
+        if (s === 4 || s === 12) V.hat(o,t,.04);
+      } },
+    { bpm:100, prog:[[40],[36,1],[38,1],[35]], f(o,t,s,b,c,bar){ /* Investigación */
+        if (s === 0) V.pad(o,t,tri(c[0]+12,c[1]),bar,.04);
+        if (s % 2 === 0) V.bass(o,t,c[0] + (s % 8 === 6 ? 12 : 0),.18,.34);
+        if (s % 2 === 0) V.hat(o,t, s % 4 ? .05 : .03);
+        if (s === 0 || s === 8) V.kick(o,t,.45);
+        if (s === 3 || s === 11 || (s === 14 && b % 2)) V.pluck(o,t,tri(c[0]+24,c[1])[(s+b)%3],.13);
+      } },
+    { bpm:112, prog:[[36],[32,1],[39,1],[31,1]], f(o,t,s,b,c,bar){ /* Contrarreloj: tic-tac */
+        if (s % 4 === 0) V.tick(o,t, s % 8 ? 1800 : 2400, .06);
+        if (s === 0) V.pad(o,t,tri(c[0]+12,c[1]),bar,.045);
+        if (s % 2 === 0) V.bass(o,t,c[0],.16,.32);
+        if (s === 0 || s === 8) V.kick(o,t,.55);
+        if (s === 12) V.snare(o,t,.12);
+        if (s === 10 && b % 2) V.bell(o,t,c[0]+31,.08);
+      } },
+    { bpm:120, prog:[[42],[38,1],[40,1],[37,1]], f(o,t,s,b,c,bar){ /* Tensión */
+        const ch = tri(c[0]+24,c[1]);
+        V.pluck(o,t,[ch[0],ch[1],ch[2],ch[1]][s%4] + (s >= 8 ? 12 : 0),.09);
+        if (s % 2 === 0) V.bass(o,t,c[0],.15,.36);
+        if (s % 4 === 0) V.kick(o,t,.5);
+        if (s % 4 === 2) V.hat(o,t,.06);
+        if (s === 0) V.pad(o,t,tri(c[0]+12,c[1]),bar,.04);
+      } },
+    { bpm:132, prog:[[43],[39,1],[41,1],[38,1]], f(o,t,s,b,c,bar){ /* Clímax */
+        if (s % 2 === 0) V.bass(o,t,c[0] + (s % 4 === 2 ? 12 : 0),.14,.4);
+        if (s % 4 === 0) V.kick(o,t,.6);
+        if (s === 4 || s === 12) V.snare(o,t,.16);
+        V.hat(o,t, s % 2 ? .03 : .05);
+        if (s === 0) V.pad(o,t,tri(c[0]+12,c[1]),bar,.05);
+        if (s === 0 || s === 6 || s === 12) V.bell(o,t,tri(c[0]+24,c[1])[(s/6 + b) % 3] + 12,.09);
+      } },
+    { bpm:104, prog:[[48,1],[43,1],[45],[41,1]], f(o,t,s,b,c,bar){ /* Victoria */
+        if (s === 0) { V.pad(o,t,tri(c[0]+12,c[1]),bar,.06); V.bass(o,t,c[0]-12,bar*.9,.25); }
+        if (s % 2 === 0) V.pluck(o,t,tri(c[0]+24,c[1])[(s/2) % 3] + (s >= 8 ? 12 : 0),.1);
+        if (s === 0 || s === 8) V.kick(o,t,.4);
+        if (s === 12) V.snare(o,t,.1);
+        if (s === 0 || s === 4 || s === 10) V.bell(o,t,tri(c[0]+36,c[1])[(s + b) % 3],.08);
+      } }
+  ];
+  function tic(){
+    if (!cur || !ctx) return;
+    const T = TR[cur.i], dur = 60 / T.bpm / 4;
+    while (nextT < ctx.currentTime + .15) {
+      const s = step % 64, b = Math.floor(s / 16);
+      try { T.f(cur.g, nextT, s % 16, b, T.prog[b], dur * 16); } catch(e) { window.MUS_ERR = cur.i + ": " + e.message; }
+      nextT += dur; step++;
+    }
+  }
+  function play(i){
+    if (!init()) return; if (cur && cur.i === i) return;
+    const now = ctx.currentTime;
+    if (cur) { const g = cur.g; g.gain.cancelScheduledValues(now); g.gain.setValueAtTime(g.gain.value, now); g.gain.linearRampToValueAtTime(0, now + 1.2); setTimeout(() => g.disconnect(), 1800); }
+    const g = ctx.createGain(); g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(1, now + 1.5); g.connect(master);
+    cur = { i, g }; step = 0; nextT = now + .08;
+    if (!timer) timer = setInterval(tic, 25);
+    boton();
+  }
+  function boton(){
+    let b = document.getElementById('musBtn');
+    if (!b) { b = document.createElement('button'); b.id = 'musBtn'; b.className = 'musbtn'; b.onclick = e => { e.stopPropagation(); alternar(); }; document.body.appendChild(b); }
+    b.innerHTML = on ? '<span class="mi">🔊</span><span>Música: ' + NOMBRES[Math.max(0, want)] + '</span>' : '<span class="mi">🔇</span><span>Activar sonido</span>'; b.classList.toggle('off', !on);
+    b.title = on ? 'Silenciar (tecla M)' : 'Activar sonido (tecla M)'; b.setAttribute('aria-label', b.title); window.SILENCIO = !on;
+  }
+  function alternar(){
+    on = !on; lsSet('escapeM6_musica', on ? 'si' : 'no');
+    if (init()) { const n = ctx.currentTime; master.gain.cancelScheduledValues(n); master.gain.setValueAtTime(master.gain.value, n); master.gain.linearRampToValueAtTime(on ? .3 : 0, n + .5); if (on && want >= 0) play(want); }
+    boton();
+  }
+  function armar(){ if (armado) return; armado = true; if (want >= 0) play(want); }
+  document.addEventListener('pointerdown', armar, { capture:true });
+  document.addEventListener('keydown', e => { armar(); if ((e.key === 'm' || e.key === 'M') && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) alternar(); }, { capture:true });
+  document.addEventListener('visibilitychange', () => { if (AC) document.hidden ? AC.suspend() : AC.resume(); });
+  return {
+    want(i){ want = i; boton(); if (armado) play(i); },
+    duck(){ if (!master || !on) return; const n = ctx.currentTime; master.gain.cancelScheduledValues(n); master.gain.setValueAtTime(master.gain.value, n); master.gain.linearRampToValueAtTime(.08, n + .1); master.gain.linearRampToValueAtTime(.3, n + 2.6); }
+  };
+})();
 
 /* ---------- confeti ---------- */
 function confeti(ms){
@@ -315,6 +477,7 @@ function render(){
 }
 
 function vistaInicio(){
+  MUS.want(0);
   $('#app').innerHTML = `<div class="wrap">${cabecera()}
   <div class="panel" style="margin-bottom:16px"><div class="kick">Actividad individual</div><h1 style="font-size:clamp(28px,4.5vw,42px)">Abre los cinco candados.</h1>
   <p class="story">${HISTORIA}</p>
@@ -323,13 +486,14 @@ function vistaInicio(){
   <p>2. Escribe solo el número: «RD$», las comas y los decimales no importan.</p>
   <p>3. Cada candado que abres te entrega el archivo que necesitas para el siguiente.</p>
   <p>4. Si te trabas, tienes dos pistas por candado. Cada pista suma <b>2 minutos</b> a tu tiempo en el ranking de la clase.</p>
-  <p>5. Al abrir el último candado aparecerá una <b>felicitación con tu nombre</b>: tómale una captura de pantalla y envíasela a tu facilitador.</p></div>
+  <p>5. Al abrir el último candado aparecerá una <b>felicitación con tu nombre</b>: tómale una captura de pantalla y envíasela a tu facilitador.</p>
+  <p>🎧 El juego tiene música de suspenso y efectos de sonido. Si necesitas silencio, usa el botón 🔊 de abajo a la derecha (o la tecla M).</p></div>
   <form id="fIni" style="margin-top:18px" autocomplete="off"><label class="lbl" for="nm">Tu nombre completo (así aparecerá en la felicitación)</label>
   <div class="code" style="margin-top:0"><input id="nm" type="text" maxlength="50" placeholder="Nombre y apellido"><button class="btn">🔓 Empezar</button></div></form></div>
   ${credito}</div>`;
   $('#fIni').onsubmit = ev => { ev.preventDefault(); const n = $('#nm').value.trim().replace(/\s+/g,' ');
     if (n.length < 3) { toast('Escribe tu nombre completo.'); $('#nm').focus(); return; }
-    ac(); G = { nombre:n, inicio:Date.now(), sala:1, res:{}, resp:{}, tok:{}, pistas:{}, intentos:0, fin:null, noCuenta: lsGet('escapeM6_terminado') === '1' }; guardar(); render(); };
+    ac(); SFX.inicio(); G = { nombre:n, inicio:Date.now(), sala:1, res:{}, resp:{}, tok:{}, pistas:{}, intentos:0, fin:null, noCuenta: lsGet('escapeM6_terminado') === '1' }; guardar(); render(); MUS.duck(); };
 }
 
 function filesHtml(nuevo){
@@ -341,12 +505,13 @@ function filesHtml(nuevo){
 function pistasHtml(n){
   const usadas = G.pistas[n] || 0, s = SALAS[n-1];
   let h = s.pis.slice(0, usadas).map((p,i) => `<div class="pista"><b>Pista ${i+1}.</b> ${p}</div>`).join('');
-  h += usadas < s.pis.length ? `<button class="btn sec sm" id="verPista" style="margin-top:${usadas ? 12 : 0}px">💡 Ver la pista ${usadas+1} (+2 min)</button>`
+  h += usadas < s.pis.length ? `<button class="btn sec sm" id="verPista" style="margin-top:${usadas ? 12 : 0}px">💡 Ver la pista ${usadas+1}</button>`
     : '<p class="muted" style="font-size:14px;margin:10px 0 0">Ya usaste las dos pistas de este candado.</p>';
   return h;
 }
 function vistaSala(nuevo){
   const n = G.sala, s = SALAS[n-1];
+  MUS.want(n);
   $('#app').innerHTML = `<div class="wrap">${cabecera()}
   <div class="hud"><div class="locks">${[1,2,3,4,5].map(i => `<div class="lk ${i < n ? 'ok' : i === n ? 'on' : ''}">${i < n ? '🔓' : '🔒'}<small>${i}</small></div>`).join('')}</div>
   <div style="text-align:right"><div class="clock" id="clk">00:00</div><div class="muted" style="font-size:13px">Tu tiempo</div></div></div>
@@ -379,9 +544,9 @@ function vistaSala(nuevo){
     }
     const tok = await revelar(n, v);
     G.res[n] = Date.now() - G.inicio; G.resp[n] = Number(v); if (tok) G.tok[n+1] = tok;
-    if (n === 5) { G.fin = Date.now(); guardar(); lsSet('escapeM6_terminado','1'); SFX.fan(); confeti(6000);
+    if (n === 5) { G.fin = Date.now(); guardar(); lsSet('escapeM6_terminado','1'); MUS.duck(); SFX.fan(); confeti(6000);
       G.lugar = await miLugar(); guardar(); vistaFelicitacion(true); return; }
-    G.sala = n + 1; guardar(); SFX.unlock(); confeti(2000); vistaSala(tok ? n + 1 : null); celebrar(n, tok ? n + 1 : null);
+    G.sala = n + 1; guardar(); MUS.duck(); SFX.unlock(); confeti(2000); vistaSala(tok ? n + 1 : null); celebrar(n, tok ? n + 1 : null);
   };
   $('#cod').focus();
 }
@@ -396,12 +561,12 @@ function celebrar(n, arch){
   const cerrar = () => { ov.remove(); const c = $('#cod'); if (c) c.focus(); }; ov.querySelector('button').onclick = cerrar; setTimeout(cerrar, 4500);
 }
 function vistaFelicitacion(recien){
+  MUS.want(6);
   const total = G.fin - G.inicio, pistas = Object.values(G.pistas).reduce((a,b) => a + b, 0);
-  $('#app').innerHTML = `<div class="wrap" style="padding-top:14px">
-  <div class="foto">📸 <b>Toma una captura de pantalla</b> de esta felicitación y envíasela a tu facilitador.</div>
+  $('#app').innerHTML = `<div class="wrap">
   <div class="cert" id="cert">
     <div class="kick">Escape room · Módulo 6 · Power Query</div>
-    <div class="seal" style="margin-top:8px">🏆</div>
+    <div class="seal" style="margin-top:12px">🏆</div>
     <div class="fel">¡Felicidades,</div>
     <div class="nom">${esc(G.nombre)}!</div>
     <p class="lead">Abriste los <b>cinco candados</b> de la bóveda de Farmacias Brisa Verde: uniste y analizaste los datos con Power Query, y el informe llegó a tiempo a la junta.</p>
@@ -409,6 +574,7 @@ function vistaFelicitacion(recien){
     <div class="hall">${RESUMEN.map((r,i) => `<div>✅ ${r}<b>${rd(G.resp[i+1])}</b></div>`).join('')}</div>
     <p class="pie">Excel Avanzado · Juego creado por: Jarlin Figueroa, M.A.</p>
   </div>
+  <div class="foto">📸 <b>Toma una captura de pantalla</b> de esta felicitación y envíasela a tu facilitador.</div>
   <p style="text-align:center"><button class="linkbtn" id="reini">Jugar otra vez</button></p></div>`;
   $('#reini').onclick = reiniciar;
   if (!recien) setTimeout(() => confeti(2500), 300);
@@ -457,7 +623,7 @@ function ordenados(){
 }
 function pintarRanking(){
   const L = ordenados(), fin = L.filter(j => j.fin != null), jug = L.filter(j => j.fin == null);
-  $('#cuenta').textContent = `🏁 ${fin.length} ${fin.length === 1 ? "terminó" : "terminaron"} · 🎮 ${jug.length} jugando`;
+  $('#cuenta').textContent = `🏁 ${fin.length} terminaron · 🎮 ${jug.length} jugando`;
   const med = ['🥇','🥈','🥉'], alto = [200,150,110], orden = [1,0,2].filter(i => fin[i]);
   $('#podio').innerHTML = fin.length ? `<div class="podium" style="margin:0 0 22px">${orden.map(i => `<div class="pd" style="--c:${['#F2994A','#a9b4ff','#d08a5a'][i]}">
       <div class="nm" style="font-size:${i ? 22 : 28}px">${med[i]} ${esc(fin[i].nombre)}</div><div class="muted mono" style="margin-bottom:8px">${hms(totalRank(fin[i]))}</div>
