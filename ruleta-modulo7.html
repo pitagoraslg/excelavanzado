@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>Ruleta del Módulo 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap">
+<style>
+:root{--bg:#f4eee3;--paper:#fbf7ef;--card:#fff;--ink:#6e1f3a;--ink2:#8c2d4f;--acc:#159a8c;--acc-d:#0b6b61;--acc-soft:#dcf2ef;--oro:#d9a441;--text:#231b20;--muted:#665a55;--line:#e6dccb;
+  --serif:"Source Serif 4",Georgia,serif;--sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif;--mono:"IBM Plex Mono",Consolas,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:radial-gradient(1200px 600px at 50% -10%,#fffaf0,transparent 70%),var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+.app{height:100vh;display:grid;grid-template-rows:auto 1fr auto;padding:18px 28px 14px;gap:12px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+header .t small{display:block;font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-d)}
+header h1{margin:2px 0 0;font-family:var(--serif);font-size:clamp(24px,2.6vw,36px);color:var(--ink);line-height:1.1}
+header img{height:58px}
+main{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:24px;min-height:0}
+/* Ruleta */
+.ruleta{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:0}
+.rueda{position:relative;width:min(56vh,46vw);aspect-ratio:1}
+.rueda canvas{width:100%;height:100%;display:block;filter:drop-shadow(0 14px 26px rgba(110,31,58,.22))}
+.puntero{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:20px solid transparent;border-right:20px solid transparent;border-top:38px solid var(--ink);filter:drop-shadow(0 3px 3px rgba(0,0,0,.25));z-index:2}
+.puntero.tic{animation:tic .12s}
+@keyframes tic{50%{transform:translateX(-50%) rotate(-12deg)}}
+.centro{position:absolute;inset:50%;width:20%;height:20%;transform:translate(-50%,-50%);border-radius:50%;background:var(--paper);border:5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:clamp(20px,2.4vw,34px);box-shadow:0 4px 12px rgba(0,0,0,.18);cursor:pointer;user-select:none}
+.centro:hover{transform:translate(-50%,-50%) scale(1.06)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--sans);font-weight:700;font-size:17px;border:0;border-radius:30px;padding:12px 26px;cursor:pointer;background:var(--ink);color:#fff;box-shadow:0 6px 16px rgba(110,31,58,.25);transition:transform .12s,filter .12s}
+.btn:hover{filter:brightness(1.1)}.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.sec{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none;font-size:14px;padding:9px 16px}
+.btn.big{font-size:21px;padding:15px 36px;animation:pulso 2s infinite}
+@keyframes pulso{0%,100%{box-shadow:0 0 0 0 rgba(110,31,58,.4)}50%{box-shadow:0 0 0 14px rgba(110,31,58,0)}}
+.quedan{font-family:var(--mono);font-size:14px;color:var(--muted)}
+/* Actividades */
+.acts{display:grid;grid-template-rows:1fr 1fr;gap:16px;min-height:0}
+.act{position:relative;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;transition:transform .15s,border-color .15s,box-shadow .15s;min-height:0}
+.act.A{border-top:7px solid var(--ink)}.act.B{border-top:7px solid var(--acc)}
+.act.luz{transform:scale(1.03);box-shadow:0 0 0 5px var(--oro),0 16px 30px rgba(0,0,0,.15);border-color:var(--oro)}
+.act.lleno{opacity:.85}
+.act .cab{display:flex;align-items:flex-start;gap:12px}
+.act .ic{font-size:38px;line-height:1}
+.act h2{margin:0;font-family:var(--serif);font-size:clamp(19px,1.7vw,25px);color:var(--ink);line-height:1.15}
+.act.B h2{color:var(--acc-d)}
+.act p{margin:3px 0 0;font-size:clamp(13px,1.05vw,15px);color:var(--muted);line-height:1.4}
+.act .cupo{margin-left:auto;font-family:var(--mono);font-size:13px;font-weight:600;background:var(--bg);border-radius:20px;padding:3px 10px;white-space:nowrap}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:auto}
+.slot{border:2px dashed var(--line);border-radius:10px;min-height:66px;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-size:clamp(13px,1.1vw,16px);font-weight:600;color:#b7aa9a;background:var(--paper)}
+.slot.ok{border-style:solid;color:#fff;animation:entra .6s cubic-bezier(.2,1.6,.4,1)}
+.act.A .slot.ok{background:var(--ink);border-color:var(--ink)}
+.act.B .slot.ok{background:var(--acc);border-color:var(--acc)}
+@keyframes entra{from{transform:scale(.3);opacity:0}}
+.enl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.enl b{color:var(--ink)}
+.enl button,.enl a{font:600 13px var(--sans);border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:16px;padding:4px 12px;cursor:pointer;text-decoration:none}
+.enl button:hover,.enl a:hover{border-color:var(--ink)}
+.enl button.ok{background:var(--acc);border-color:var(--acc);color:#fff}
+.enl .vacio{font-style:italic}
+footer{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+footer .der{display:flex;gap:8px}
+/* Ventanas */
+.ov{position:fixed;inset:0;background:rgba(251,247,239,.93);display:flex;align-items:center;justify-content:center;z-index:20;animation:fade .25s}
+@keyframes fade{from{opacity:0}}
+.ov .card{text-align:center;max-width:860px;padding:24px}
+.ov .eti{font-family:var(--mono);font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc-d)}
+.ov .nom{font-family:var(--serif);font-size:clamp(40px,6vw,76px);color:var(--ink);line-height:1.08;margin:10px 0 18px;animation:pop .7s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.ov .dos{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:12px 0 22px}
+.ov .op{border:3px solid var(--line);border-radius:16px;background:#fff;padding:18px;transition:all .12s}
+.ov .op .ic{font-size:44px}
+.ov .op b{display:block;font-family:var(--serif);font-size:22px;color:var(--ink);margin-top:6px}
+.ov .op.B b{color:var(--acc-d)}
+.ov .op small{display:block;font-size:14px;color:var(--muted);margin-top:4px}
+.ov .op.on{border-color:var(--oro);box-shadow:0 0 0 6px rgba(217,164,65,.35);transform:scale(1.05)}
+.ov .op.fin{animation:gana .8s ease 2}
+@keyframes gana{50%{transform:scale(1.12)}}
+.ov .op.lleno{opacity:.35}
+.ov .res{font-size:22px;font-weight:600;min-height:32px;color:var(--text)}
+.ov .res b{color:var(--ink)}
+/* Resumen final */
+.resumen{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:16px 0}
+.resumen div{background:#fff;border:2px solid var(--line);border-radius:14px;padding:14px 18px;text-align:left}
+.resumen h3{margin:0 0 8px;font-family:var(--serif);color:var(--ink);font-size:21px}
+.resumen .B h3{color:var(--acc-d)}
+.resumen ol{margin:0;padding-left:22px;font-size:19px;line-height:1.6}
+canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:30}
+@media print{body{overflow:visible;background:#fff}.app,.no-print{display:none!important}.ov{position:static;background:#fff}.ov .btns{display:none}}
+@media (max-width:900px){main{grid-template-columns:1fr;overflow:auto}.rueda{width:min(80vw,60vh)}body{overflow:auto}.app{height:auto}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="t"><small>Módulo 7 · Macros y VBA · Sorteo de actividades</small><h1>🎡 ¿Qué actividad le toca?</h1></div>
+    <img src="img/icadep-isologo.png" alt="ICADEP-XXI">
+  </header>
+  <main>
+    <section class="ruleta">
+      <div class="rueda"><div class="puntero" id="puntero"></div><canvas id="rueda" width="900" height="900"></canvas><div class="centro" id="centro" title="Girar">🎯</div></div>
+      <div class="btns"><button class="btn big" id="girar">🎡 Girar la ruleta</button></div>
+      <div class="quedan" id="quedan"></div>
+    </section>
+    <section class="acts">
+      <div class="act A" id="actA">
+        <div class="cab"><span class="ic">🎤</span><div><h2>Actividad 1 · Exposición teórica</h2><p>Exponer la teoría del Módulo 7 con <b>ejercicios básicos prácticos</b> en Excel y aplicar al grupo una <b>evaluación en Kahoot</b>.</p></div><span class="cupo" id="cupoA"></span></div>
+        <div class="slots" id="slotsA"></div>
+        <div class="enl" id="enlA"></div>
+      </div>
+      <div class="act B" id="actB">
+        <div class="cab"><span class="ic">🎬</span><div><h2>Actividad 2 · Videos y práctica guiada</h2><p>Explicar <b>dos videos de la plataforma</b> y resolver en vivo la <b>práctica guiada</b> del Módulo 7.</p></div><span class="cupo" id="cupoB"></span></div>
+        <div class="slots" id="slotsB"></div>
+        <div class="enl" id="enlB"></div>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <span>Juego creado por: Jarlin Figueroa, M.A.</span>
+    <span class="der"><button class="btn sec" id="snd">🔊 Sonido</button><button class="btn sec" id="deshacer">↶ Deshacer</button><button class="btn sec" id="reiniciar">↺ Reiniciar</button><button class="btn sec" id="verRes">📋 Resultado</button></span>
+  </footer>
+</div>
+<canvas id="cf"></canvas>
+
+<script>
+const NOMBRES = ["Adriana García Hidalgo","Ángel Rodolfo Mariano Ventura","Jorge Antonio Suazo Bello","Katherinne Liliana Paulino Rosario","Rachell Gómez","Yasmiry Mejía Núñez"];
+const CUPO = 3;
+const ACT = {
+  A:{ic:"🎤",t:"Exposición teórica",d:"Teoría + ejercicios básicos + Kahoot"},
+  B:{ic:"🎬",t:"Videos y práctica guiada",d:"Dos videos + práctica guiada en vivo"}
+};
+const COLORES = ["#6e1f3a","#159a8c","#d9a441","#8c2d4f","#0b6b61","#b8641c"];
+const KEY = "ruletaM7";
+const $ = id => document.getElementById(id);
+const corto = n => n.split(" ").slice(0,2).join(" ");
+
+/* ---------- estado ---------- */
+let E = cargar();
+function nuevo(){ return { pend:[...NOMBRES], A:[], B:[], hist:[] }; }
+function cargar(){ try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.pend) return s; } catch(e) {} return nuevo(); }
+function guardar(){ try { localStorage.setItem(KEY, JSON.stringify(E)); } catch(e) {} }
+
+/* ---------- sonido sintetizado ---------- */
+let AC = null, sonido = true;
+try { sonido = localStorage.getItem("ruletaM7son") !== "no"; } catch(e) {}
+function ac(){ if (!AC) { try { AC = new (window.AudioContext||window.webkitAudioContext)(); } catch(e) {} } if (AC && AC.state === "suspended") AC.resume(); return AC; }
+function tono(f, d, tipo="sine", v=.15, at=0){ if (!sonido) return; const a = ac(); if (!a) return; const t = a.currentTime + at, o = a.createOscillator(), g = a.createGain();
+  o.type = tipo; o.frequency.setValueAtTime(f, t); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t+.01); g.gain.exponentialRampToValueAtTime(.0001, t+d); o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+d+.05); }
+const SFX = {
+  tic(){ tono(1500,.035,"square",.05); },
+  redoble(){ for (let i=0;i<14;i++) tono(110+i*4,.07,"triangle",.09,i*.06); },
+  nombre(){ [523,659,784,1047].forEach((f,i)=>tono(f,.4,"triangle",.16,i*.1)); },
+  luz(p){ tono(p?660:880,.08,"sine",.1); },
+  gana(){ [784,988,1175,1568].forEach((f,i)=>tono(f,.5,"triangle",.17,i*.12)); [392,494,587].forEach(f=>tono(f,1.2,"sine",.06,.45)); },
+  fin(){ [523,523,523,659,784,659,784,1047].forEach((f,i)=>tono(f,i===7?1:.2,"triangle",.18,i*.16)); }
+};
+$("snd").onclick = () => { sonido = !sonido; try { localStorage.setItem("ruletaM7son", sonido?"si":"no"); } catch(e) {} $("snd").textContent = sonido ? "🔊 Sonido" : "🔇 Sin sonido"; ac(); };
+$("snd").textContent = sonido ? "🔊 Sonido" : "🔇 Sin sonido";
+
+/* ---------- confeti ---------- */
+function confeti(ms=3500){ const cv=$("cf"), cx=cv.getContext("2d"); cv.width=innerWidth; cv.height=innerHeight;
+  const P=Array.from({length:170},()=>({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*3.5,r:Math.random()*6,vr:(Math.random()-.5)*.25,s:7+Math.random()*7,c:COLORES[Math.floor(Math.random()*COLORES.length)]}));
+  const fin=Date.now()+ms; (function f(){ cx.clearRect(0,0,cv.width,cv.height); P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cx.restore();});
+    if (Date.now()<fin) requestAnimationFrame(f); else cx.clearRect(0,0,cv.width,cv.height); })(); }
+
+/* ---------- ruleta ---------- */
+const cv = $("rueda"), g = cv.getContext("2d"), R = 440, CX = 450, CY = 450;
+let rot = 0, girando = false;
+function dibujar(){
+  g.clearRect(0,0,900,900);
+  const n = E.pend.length;
+  if (!n) { g.beginPath(); g.arc(CX,CY,R,0,Math.PI*2); g.fillStyle="#efe6d6"; g.fill(); g.fillStyle="#6e1f3a"; g.font="600 44px 'Source Serif 4', Georgia"; g.textAlign="center"; g.fillText("¡Todos asignados!",CX,CY-110); return; }
+  const seg = Math.PI*2/n;
+  for (let i=0;i<n;i++){
+    const a0 = -Math.PI/2 + rot + i*seg, a1 = a0 + seg;
+    g.beginPath(); g.moveTo(CX,CY); g.arc(CX,CY,R,a0,a1); g.closePath(); g.fillStyle = COLORES[i % COLORES.length]; g.fill();
+    g.strokeStyle="#fbf7ef"; g.lineWidth=5; g.stroke();
+    g.save(); g.translate(CX,CY); g.rotate(a0+seg/2); g.textAlign="right"; g.fillStyle="#fff";
+    const t = n > 4 ? corto(E.pend[i]) : E.pend[i]; let fs = n===1 ? 40 : 34; g.font=`700 ${fs}px 'IBM Plex Sans', Arial`;
+    while (g.measureText(t).width > R-120 && fs > 18) { fs -= 2; g.font=`700 ${fs}px 'IBM Plex Sans', Arial`; }
+    g.shadowColor="rgba(0,0,0,.3)"; g.shadowBlur=4; g.fillText(t, R-28, fs*.35); g.restore();
+  }
+  g.beginPath(); g.arc(CX,CY,R,0,Math.PI*2); g.lineWidth=12; g.strokeStyle="#6e1f3a"; g.stroke();
+  for (let k=0;k<36;k++){ const a=k*Math.PI/18; g.beginPath(); g.arc(CX+Math.cos(a)*(R-1),CY+Math.sin(a)*(R-1),5,0,Math.PI*2); g.fillStyle=k%2?"#d9a441":"#fbf7ef"; g.fill(); }
+}
+function indiceBajoPuntero(){ const n=E.pend.length, seg=Math.PI*2/n; const a=((-rot)%(Math.PI*2)+Math.PI*2)%(Math.PI*2); return Math.floor(a/seg)%n; }
+function girar(){
+  if (girando || !E.pend.length) return; ac(); girando = true; actualizarBotones();
+  const n = E.pend.length, seg = Math.PI*2/n, elegido = Math.floor(Math.random()*n);
+  const destinoBase = Math.PI*2 - (elegido+.5)*seg + (Math.random()-.5)*seg*.6;
+  const actual = ((rot%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
+  const total = (Math.PI*2)*(6+Math.floor(Math.random()*2)) + ((destinoBase-actual+Math.PI*2)%(Math.PI*2));
+  const r0 = rot, dur = 5200, t0 = performance.now(); let ultimo = indiceBajoPuntero();
+  (function paso(t){ const p = Math.min(1,(t-t0)/dur), e = 1-Math.pow(1-p,4); rot = r0 + total*e; dibujar();
+    const i = indiceBajoPuntero(); if (i !== ultimo){ ultimo = i; SFX.tic(); const pt=$("puntero"); pt.classList.remove("tic"); void pt.offsetWidth; pt.classList.add("tic"); }
+    if (p < 1) requestAnimationFrame(paso); else { girando = false; mostrarNombre(E.pend[indiceBajoPuntero()]); } })(t0);
+}
+
+/* ---------- nombre elegido y sorteo de actividad ---------- */
+function libre(k){ return E[k].length < CUPO; }
+function mostrarNombre(nom){
+  SFX.redoble(); setTimeout(()=>{ SFX.nombre(); confeti(1800); }, 850);
+  const ov = document.createElement("div"); ov.className = "ov";
+  const forzada = !libre("A") ? "B" : !libre("B") ? "A" : null;
+  ov.innerHTML = `<div class="card"><div class="eti">La ruleta eligió a</div><div class="nom">${nom}</div>
+    <div class="dos">${["A","B"].map(k=>`<div class="op ${k} ${libre(k)?'':'lleno'}" id="op${k}"><div class="ic">${ACT[k].ic}</div><b>${ACT[k].t}</b><small>${ACT[k].d}</small><small>${E[k].length} de ${CUPO} lugares ocupados</small></div>`).join("")}</div>
+    <div class="res" id="res">${forzada?`El otro grupo ya está completo: va directo a <b>${ACT[forzada].t}</b>.`:"¿A qué actividad irá?"}</div>
+    <div class="btns" style="margin-top:16px"><button class="btn big" id="sortear">${forzada?"✅ Asignar":"🎲 Sortear actividad"}</button></div></div>`;
+  document.body.appendChild(ov);
+  ov.querySelector("#sortear").onclick = () => sortear(nom, ov, forzada);
+}
+function sortear(nom, ov, forzada){
+  const b = ov.querySelector("#sortear"); b.disabled = true; b.style.animation="none";
+  const destino = forzada || (Math.random() < .5 ? "A" : "B");
+  const pasos = forzada ? 1 : 16 + (destino==="A" ? 0 : 1); let k = 0, actual = "A";
+  (function luz(){
+    ["A","B"].forEach(x=>ov.querySelector("#op"+x).classList.toggle("on", x===actual)); SFX.luz(actual==="A");
+    $("act"+actual).classList.add("luz"); $("act"+(actual==="A"?"B":"A")).classList.remove("luz");
+    k++;
+    if (k < pasos) { actual = actual==="A" ? "B" : "A"; setTimeout(luz, 70 + k*k*2.2); }
+    else { /* resultado */
+      const op = ov.querySelector("#op"+destino); op.classList.add("on","fin");
+      ov.querySelector("#res").innerHTML = `${ACT[destino].ic} <b>${nom.split(" ")[0]}</b> irá a <b>${ACT[destino].t}</b>.`;
+      SFX.gana(); confeti(3000);
+      E.pend = E.pend.filter(x=>x!==nom); E[destino].push(nom); E.hist.push({nom,act:destino}); guardar();
+      setTimeout(()=>{ ov.remove(); ["A","B"].forEach(x=>$("act"+x).classList.remove("luz")); pintar(destino); if (!E.pend.length) setTimeout(final, 900); }, 2600);
+    }
+  })();
+}
+
+/* ---------- enlaces a las instrucciones de cada grupo ---------- */
+const SITIO = "https://pitagoraslg.github.io/excelavanzado/";
+const enlace = k => `${SITIO}actividad-grupal-modulo7.html?g=${k}&n=${encodeURIComponent(E[k].join("|"))}`;
+function enlaceHtml(k){
+  if (!E[k].length) return `<span class="vacio">🔗 El enlace con las instrucciones del grupo aparecerá aquí cuando se asigne el primer integrante.</span>`;
+  return `🔗 <b>Instrucciones del grupo:</b><button type="button" data-copiar="${k}">📋 Copiar enlace</button><a href="${enlace(k)}" target="_blank" rel="noopener">↗ Abrir</a>`;
+}
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-copiar]"); if (!b) return;
+  const url = enlace(b.dataset.copiar);
+  try { await navigator.clipboard.writeText(url); } catch(_) { const t=document.createElement("textarea"); t.value=url; document.body.appendChild(t); t.select(); try{document.execCommand("copy");}catch(__){} t.remove(); }
+  const txt = b.textContent; b.classList.add("ok"); b.textContent = "✔ Copiado"; setTimeout(()=>{ b.classList.remove("ok"); b.textContent = txt; }, 1800);
+});
+
+/* ---------- tablero ---------- */
+function pintar(nuevoEn){
+  ["A","B"].forEach(k=>{
+    $("slots"+k).innerHTML = Array.from({length:CUPO},(_,i)=>{ const n=E[k][i]; return `<div class="slot ${n?'ok':''}" ${n && nuevoEn===k && i===E[k].length-1 ? '' : 'style="animation:none"'}>${n||"Lugar "+(i+1)}</div>`; }).join("");
+    $("cupo"+k).textContent = `${E[k].length} / ${CUPO}`; $("act"+k).classList.toggle("lleno", !libre(k));
+    $("enl"+k).innerHTML = enlaceHtml(k);
+  });
+  $("quedan").textContent = E.pend.length ? `Quedan ${E.pend.length} participante${E.pend.length===1?"":"s"} por sortear` : "¡Sorteo completo!";
+  dibujar(); actualizarBotones();
+}
+function actualizarBotones(){ $("girar").disabled = girando || !E.pend.length; $("deshacer").disabled = girando || !E.hist.length; $("girar").textContent = E.pend.length ? "🎡 Girar la ruleta" : "✅ Sorteo completo"; }
+$("girar").onclick = girar; $("centro").onclick = girar;
+$("deshacer").onclick = () => { const h = E.hist.pop(); if (!h) return; E[h.act] = E[h.act].filter(x=>x!==h.nom); E.pend.push(h.nom); guardar(); pintar(); };
+$("reiniciar").onclick = () => { if (!confirm("¿Reiniciar el sorteo? Se borran todas las asignaciones.")) return; E = nuevo(); guardar(); rot = 0; pintar(); };
+$("verRes").onclick = final;
+document.addEventListener("keydown", e => { if (e.code === "Space" && !document.querySelector(".ov")) { e.preventDefault(); girar(); } });
+
+/* ---------- resultado final ---------- */
+function final(){
+  const completo = !E.pend.length; if (completo) { SFX.fin(); confeti(5000); }
+  const ov = document.createElement("div"); ov.className = "ov";
+  ov.innerHTML = `<div class="card" style="max-width:980px"><div class="eti">Módulo 7 · Macros y VBA</div><div class="nom" style="font-size:clamp(34px,4.5vw,56px)">${completo?"🎉 ¡Sorteo completo!":"Asignaciones hasta ahora"}</div>
+    <div class="resumen">${["A","B"].map(k=>`<div class="${k}"><h3>${ACT[k].ic} ${ACT[k].t}</h3><p style="margin:0 0 8px;color:var(--muted);font-size:15px">${k==="A"?"Exposición teórica con ejercicios básicos prácticos y evaluación en Kahoot.":"Explicación de dos videos de la plataforma y práctica guiada."}</p><ol>${E[k].map(n=>`<li>${n}</li>`).join("")||"<li style='color:#b7aa9a'>Sin asignar todavía</li>"}</ol><div class="enl no-print" style="margin-top:10px">${enlaceHtml(k)}</div><p style="margin:6px 0 0;font-size:12px;color:var(--muted);word-break:break-all">${E[k].length?enlace(k):""}</p></div>`).join("")}</div>
+    ${E.pend.length?`<p style="color:var(--muted)">Pendientes: ${E.pend.join(", ")}</p>`:""}
+    <div class="btns no-print"><button class="btn" id="imp">🖨️ Imprimir o guardar en PDF</button><button class="btn sec" id="cerrar">Cerrar</button></div>
+    <p style="margin-top:14px;font-size:13px;color:var(--muted)">Juego creado por: Jarlin Figueroa, M.A.</p></div>`;
+  document.body.appendChild(ov);
+  ov.querySelector("#imp").onclick = () => window.print();
+  ov.querySelector("#cerrar").onclick = () => ov.remove();
+}
+
+addEventListener("resize", dibujar);
+document.fonts && document.fonts.ready.then(dibujar);
+pintar();
+</script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>Actividad grupal · Módulo 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap">
+<style>
+:root{--bg:#f4eee3;--paper:#fbf7ef;--card:#fff;--ink:#6e1f3a;--acc:#159a8c;--acc-d:#0b6b61;--acc-soft:#dcf2ef;--oro:#d9a441;--text:#231b20;--muted:#665a55;--line:#e6dccb;--neg:#c8553d;--neg-soft:#fbeae5;
+  --serif:"Source Serif 4",Georgia,serif;--sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif;--mono:"IBM Plex Mono",Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16.5px;line-height:1.55}
+.wrap{max-width:900px;margin:0 auto;padding:22px 16px 48px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.top img{height:50px}
+.top small{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-d)}
+.hero{background:var(--paper);border:1px solid var(--line);border-top:7px solid var(--c);border-radius:14px;padding:22px 24px;margin-bottom:16px}
+.hero .ic{font-size:44px;line-height:1}
+.hero h1{margin:8px 0 6px;font-family:var(--serif);font-size:clamp(26px,4vw,38px);color:var(--ink);line-height:1.15}
+.hero p{margin:0;color:#4a3f3b;font-size:17px}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-bottom:14px}
+.sec h2{margin:0 0 10px;font-family:var(--serif);font-size:23px;color:var(--ink)}
+.sec h2 span{font-size:24px;margin-right:6px}
+.int{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.int div{background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:8px;padding:10px 14px}
+.int b{display:block;font-size:17px}
+.int small{color:var(--muted);font-size:14px}
+ol,ul{margin:0;padding-left:22px}
+li{margin-bottom:6px}
+.parte{border-left:4px solid var(--c);background:var(--paper);border-radius:6px;padding:10px 14px;margin:8px 0}
+.parte b.q{color:var(--ink)}
+.parte .quien{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:var(--c);color:#fff;border-radius:4px;padding:1px 8px;margin-bottom:4px}
+.box{border-left:4px solid var(--acc);background:var(--acc-soft);border-radius:6px;padding:10px 14px;margin-top:10px;font-size:15.5px}
+.box.imp{border-color:var(--neg);background:var(--neg-soft)}
+.rec{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.rec a{display:flex;gap:10px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 14px;color:var(--text);text-decoration:none}
+.rec a:hover{border-color:var(--c)}
+.rec a span{font-size:24px}
+.rec a b{display:block;color:var(--ink);font-size:15.5px}
+.rec a small{color:var(--muted);font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{background:var(--ink);color:#fff;text-align:left;padding:7px 10px}
+td{border-bottom:1px solid var(--line);padding:7px 10px;vertical-align:top}
+.pie{text-align:center;color:var(--muted);font-size:13px;margin-top:20px}
+.btnp{display:inline-block;margin-top:10px;font:600 14px var(--sans);border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:20px;padding:7px 16px;cursor:pointer}
+.nada{text-align:center;padding:60px 20px}
+@media print{body{background:#fff}.btnp{display:none}.sec,.hero{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+const P = new URLSearchParams(location.search);
+const G = (P.get("g") || "").toUpperCase();
+const N = (P.get("n") || "").split("|").map(s => s.trim()).filter(Boolean);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const base = "https://pitagoraslg.github.io/excelavanzado/";
+const quien = i => N[i] ? esc(N[i]) : `Integrante ${i+1}`;
+const REC = {
+  pres:["📘","Presentación del Módulo 7","Material de estudio (20 láminas)","modulo7-macros-vba.html"],
+  pdf:["📄","Documento de estudio (PDF)","18 capítulos con ejemplos","Conceptos-Macros-VBA-Modulo7.pdf"],
+  prac:["⚙️","Práctica guiada","El informe mensual en un clic","modulo7-practica-guiada.html"],
+  base:["📥","Base de reclamaciones","Archivo de Excel para los ejercicios","Modulo7-Base-Reclamaciones.xlsx"],
+  kahoot:["🎮","Kahoot","Para crear la evaluación","https://create.kahoot.it/"],
+  v1:["🎬","Video 1 · Iniciando con macros","A2 Capacitación: Excel","https://youtu.be/PvebpkrMG4o"],
+  v2:["🎬","Video 2 · Ejercicios básicos con macros","Super Excel","https://youtu.be/-yl38B6KqA8"],
+  v3:["🎬","Video 3 · Ejercicios para principiantes","El Inge Francisco","https://youtu.be/xIx-gSbSUMk"],
+  v4:["🎬","Video 4 · Aprendizaje desde cero","El Inge Francisco","https://youtu.be/GqpN2oDqRMw"]
+};
+const rec = ks => `<div class="rec">${ks.map(k=>{ const [ic,t,d,u]=REC[k]; return `<a href="${u.startsWith("http")?u:base+u}" target="_blank" rel="noopener"><span>${ic}</span><span style="font-size:inherit"><b>${t}</b><small>${d}</small></span></a>`; }).join("")}</div>`;
+const integrantes = rol => `<div class="int">${[0,1,2].map(i=>`<div><b>${quien(i)}</b><small>${rol[i]}</small></div>`).join("")}</div>`;
+
+const ACT = {
+ A:{ c:"#6e1f3a", ic:"🎤", t:"Exposición teórica con ejercicios básicos y evaluación en Kahoot",
+  intro:"Su grupo explicará al resto de la clase la teoría del Módulo 7 (macros y VBA), la mostrará con ejercicios sencillos hechos en vivo en Excel y cerrará con una evaluación en Kahoot.",
+  roles:["Parte 1 · Fundamentos","Parte 2 · El código","Parte 3 · Decisiones, repeticiones y botón"],
+  cuerpo:()=>`
+  <div class="sec"><h2><span>🧩</span>Qué debe exponer cada integrante</h2>
+   <div class="parte"><span class="quien">${quien(0)}</span><br><b class="q">Parte 1 · Fundamentos.</b> Qué es automatizar y cuándo conviene; qué son las macros y VBA; macro grabada frente a macro escrita; la pestaña Programador, los archivos .xlsm y la seguridad; cómo grabar una macro. <i>(Presentación: láminas 3 a 7 · PDF: capítulos 1 a 5)</i></div>
+   <div class="parte"><span class="quien">${quien(1)}</span><br><b class="q">Parte 2 · El código.</b> El editor de VBA (Alt + F11) y sus ventanas; la estructura de una macro (Sub … End Sub y comentarios); el modelo de objetos (libro, hoja, rango); Range y Cells; variables y tipos de datos. <i>(Láminas 8 a 12 · capítulos 6 a 10)</i></div>
+   <div class="parte"><span class="quien">${quien(2)}</span><br><b class="q">Parte 3 · Decisiones, repeticiones y botón.</b> If…Then…Else; For…Next y For Each; MsgBox e InputBox; cómo crear un botón y depurar errores; buenas prácticas. <i>(Láminas 13 a 19 · capítulos 11 a 17)</i></div>
+  </div>
+  <div class="sec"><h2><span>💻</span>Ejercicios básicos prácticos (en vivo)</h2>
+   <p style="margin:0 0 8px">Cada integrante muestra en Excel <b>al menos un ejercicio</b> relacionado con su parte, usando la base de reclamaciones. Ideas:</p>
+   <table><tr><th>Integrante</th><th>Ejercicio sugerido</th></tr>
+   <tr><td>${quien(0)}</td><td>Grabar una macro que dé formato al encabezado de la hoja Datos (negrita, color, ancho de columnas) y ejecutarla.</td></tr>
+   <tr><td>${quien(1)}</td><td>Escribir una macro que ponga un título en A1 y la fecha de hoy en A2, con comentarios en cada línea.</td></tr>
+   <tr><td>${quien(2)}</td><td>Una macro con For e If que marque en amarillo los montos mayores de RD$ 20,000, y un botón que la ejecute con un MsgBox al final.</td></tr></table>
+   <div class="box">💡 Guarden los ejercicios en un archivo <b>.xlsm</b> y pruébenlos antes de la exposición.</div>
+  </div>
+  <div class="sec"><h2><span>🎮</span>Evaluación en Kahoot</h2>
+   <ol><li>Creen un Kahoot con <b>10 preguntas</b> sobre el contenido que expusieron (de opción múltiple o verdadero/falso).</li><li>Aplíquenlo al final de la exposición: la clase participa desde el celular con el código PIN.</li><li>Tomen una <b>captura del podio final</b> como evidencia.</li></ol>
+   <div class="box">💡 Consejo: que las opciones incorrectas sean creíbles y que la respuesta correcta no sea siempre la más larga.</div>
+  </div>`,
+  evid:["La presentación o el material que usaron.","El archivo <b>.xlsm</b> con los ejercicios funcionando.","El enlace del Kahoot y la captura del podio final."],
+  tiempo:"Unos 35 minutos de exposición y ejercicios, más 10 minutos de Kahoot.",
+  recs:["pres","pdf","base","kahoot"] },
+ B:{ c:"#159a8c", ic:"🎬", t:"Explicación de dos videos y práctica guiada",
+  intro:"Su grupo explicará a la clase dos de los videos de apoyo del Módulo 7, repitiendo en Excel lo que muestran, y luego resolverá en vivo la práctica guiada «El informe mensual en un clic».",
+  roles:["Video 1 y pasos 1 a 3","Video 2 y pasos 4 a 6","Pasos 7 y 8 y cierre"],
+  cuerpo:()=>`
+  <div class="sec"><h2><span>🎬</span>Parte 1 · Explicar dos videos de la plataforma</h2>
+   <ol><li>Entre los tres, elijan <b>dos</b> de los cuatro videos de apoyo que están en la plataforma.</li><li>Para cada video expliquen: <b>qué enseña</b>, <b>qué pasos sigue</b> y <b>para qué sirve</b> en el trabajo.</li><li><b>Repitan en vivo en Excel</b> lo que muestra el video; no lo proyecten completo, muestren los momentos clave.</li></ol>
+   <div class="parte"><span class="quien">${quien(0)}</span> explica el primer video elegido.</div>
+   <div class="parte"><span class="quien">${quien(1)}</span> explica el segundo video elegido.</div>
+   ${rec(["v1","v2","v3","v4"])}
+  </div>
+  <div class="sec"><h2><span>⚙️</span>Parte 2 · La práctica guiada en vivo</h2>
+   <p style="margin:0 0 8px">Resuelvan frente a la clase la práctica guiada del Módulo 7, explicando cada paso y el código:</p>
+   <div class="parte"><span class="quien">${quien(0)}</span><br><b class="q">Pasos 1 a 3:</b> preparar el libro .xlsm, grabar la macro FormatoEncabezado y mostrar y comentar el código grabado.</div>
+   <div class="parte"><span class="quien">${quien(1)}</span><br><b class="q">Pasos 4 a 6:</b> las macros PrepararReporte, GenerarResumen y DarFormato, explicando qué hace cada bloque de código.</div>
+   <div class="parte"><span class="quien">${quien(2)}</span><br><b class="q">Pasos 7 y 8:</b> la macro GenerarInforme con el mensaje final y el botón «Generar informe». Muestra el resultado y responde las tres preguntas de la práctica.</div>
+   <div class="box">✅ Resultado que deben obtener: 120 reclamaciones y un monto total de <b>RD$ 693,850.00</b>.</div>
+  </div>`,
+  evid:["El archivo <b>.xlsm</b> de la práctica guiada con el botón funcionando.","Un resumen breve de los dos videos explicados (qué enseña cada uno).","Las respuestas a las tres preguntas de la práctica."],
+  tiempo:"Unos 20 minutos para los videos y 25 minutos para la práctica guiada.",
+  recs:["prac","base","pres","pdf"] }
+};
+
+const a = ACT[G];
+if (!a) {
+  document.getElementById("app").innerHTML = `<div class="nada"><h1 style="font-family:var(--serif);color:var(--ink)">Actividad grupal · Módulo 7</h1><p>Abra el enlace que le envió su facilitador para ver las instrucciones de su grupo.</p></div>`;
+} else {
+  document.title = `${a.t} · Módulo 7`;
+  document.documentElement.style.setProperty("--c", a.c);
+  document.getElementById("app").innerHTML = `
+  <div class="top"><small>Módulo 7 · Macros y VBA · Actividad grupal</small><img src="img/icadep-isologo.png" alt="ICADEP-XXI"></div>
+  <div class="hero"><div class="ic">${a.ic}</div><h1>${a.t}.</h1><p>${a.intro}</p></div>
+  <div class="sec"><h2><span>👥</span>Integrantes del grupo</h2>${integrantes(a.roles)}</div>
+  ${a.cuerpo()}
+  <div class="sec"><h2><span>📎</span>Qué deben entregar en Moodle</h2><ul>${a.evid.map(x=>`<li>${x}</li>`).join("")}</ul>
+   <div class="box imp">⚠️ Guarden siempre los archivos como <b>Libro de Excel habilitado para macros (.xlsm)</b>: si se guardan como .xlsx, las macros se borran.</div></div>
+  <div class="sec"><h2><span>⏱️</span>Organización</h2><ul><li><b>Duración aproximada:</b> ${a.tiempo}</li><li><b>Participan los tres integrantes</b>, cada uno con su parte.</li><li>Usen <b>Excel de escritorio para Windows</b> (2021 o Microsoft 365) y prueben todo antes de presentar.</li><li>La fecha de presentación la indicará el facilitador.</li></ul></div>
+  <div class="sec"><h2><span>✅</span>Qué se valorará</h2><ul><li>Dominio y claridad al explicar.</li><li>Ejercicios o pasos que funcionan en vivo.</li><li>Participación equilibrada de los tres integrantes.</li><li>Manejo del tiempo y respuestas a las preguntas de la clase.</li></ul></div>
+  <div class="sec"><h2><span>📚</span>Recursos</h2>${rec(a.recs)}</div>
+  <p style="text-align:center"><button class="btnp" onclick="window.print()">🖨️ Imprimir o guardar en PDF</button></p>
+  <p class="pie">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>`;
+}
+</script>
+</body>
+</html>
