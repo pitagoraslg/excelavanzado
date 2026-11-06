@@ -1,0 +1,100 @@
+<!-- Invitación al documento de estudio en PDF del Módulo 7 (Macros y VBA) para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
+<style>
+  @keyframes m7d-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes m7d-pulso { 0%, 100% { box-shadow: 0 0 0 0 rgba(110,31,58,.35); } 50% { box-shadow: 0 0 0 12px rgba(110,31,58,0); } }
+  .m7d-in { animation: m7d-in .7s ease-out both; }
+  .m7d-d1 { animation-delay: .1s; } .m7d-d2 { animation-delay: .25s; } .m7d-d3 { animation-delay: .4s; } .m7d-d4 { animation-delay: .55s; }
+  .m7d-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .m7d-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(110,31,58,.12); }
+  .m7d-btn { animation: m7d-pulso 2.2s ease-in-out infinite; transition: transform .15s ease; }
+  .m7d-btn:hover { transform: scale(1.04); }
+  @media (prefers-reduced-motion: reduce) { .m7d-in, .m7d-btn { animation: none !important; } }
+</style>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #231B20; line-height: 1.55; background-color: #FBF7EF; border-radius: 10px; overflow: hidden; border: 1px solid #E6DCCB;">
+
+  <div style="height: 5px; background-color: #6E1F3A;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 26px 0 18px 26px; vertical-align: top; font-size: 46px; line-height: 1;">📄</td>
+      <td style="padding: 22px 26px 18px 14px; vertical-align: top;">
+        <p class="m7d-in" style="margin: 0 0 6px; font-size: 12.5px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #0B6B61;">Módulo 7 · Documento de estudio (PDF)</p>
+        <h2 class="m7d-in m7d-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 29px; font-weight: bold; line-height: 1.18; color: #6E1F3A;">Automatización con macros y VBA: documento de estudio.</h2>
+        <p class="m7d-in m7d-d2" style="margin: 0; font-size: 15.5px; color: #4A3F3B;">Todo el contenido del módulo en un documento para <strong style="color: #6E1F3A;">descargar, leer con calma, imprimir y consultar</strong> mientras trabaja en Excel. Explica cada concepto con ejemplos, tablas de consulta y código VBA comentado.</p>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Lo que tiene -->
+  <table class="m7d-in m7d-d2" style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 10px; margin: 0;" role="presentation">
+    <tr>
+      <td class="m7d-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E6DCCB; border-top: 4px solid #6E1F3A; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">📚</span><br>
+        <strong style="color: #6E1F3A; font-size: 18px;">18 capítulos</strong><br>
+        <span style="font-size: 13px; color: #665A55;">22 páginas, tamaño carta</span>
+      </td>
+      <td class="m7d-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E6DCCB; border-top: 4px solid #159A8C; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">💻</span><br>
+        <strong style="color: #6E1F3A; font-size: 18px;">Código completo</strong><br>
+        <span style="font-size: 13px; color: #665A55;">El caso integrador comentado</span>
+      </td>
+      <td class="m7d-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E6DCCB; border-top: 4px solid #6E1F3A; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+        <span style="font-size: 26px;">🔖</span><br>
+        <strong style="color: #6E1F3A; font-size: 18px;">Glosario</strong><br>
+        <span style="font-size: 13px; color: #665A55;">Y referencias para seguir aprendiendo</span>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 4px 26px 26px;">
+
+    <!-- Contenido -->
+    <p class="m7d-in m7d-d3" style="margin: 14px 0 8px; font-weight: bold; color: #6E1F3A; font-size: 16px;">🧩 Contenido del documento</p>
+    <table class="m7d-in m7d-d3" style="width: 100%; border-collapse: separate; border-spacing: 0 4px; font-size: 14px;" role="presentation">
+      <tr>
+        <td style="width: 50%; vertical-align: top; padding-right: 10px;">
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">1.</strong> El caso del módulo</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">2.</strong> ¿Qué es automatizar?</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">3.</strong> Macros y VBA</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">4.</strong> Preparar Excel</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">5.</strong> Grabar macros</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">6.</strong> El editor de VBA</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">7.</strong> Estructura de una macro</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">8.</strong> El modelo de objetos</p>
+          <p style="margin: 0;"><strong style="color: #0B6B61;">9.</strong> Trabajar con celdas</p>
+        </td>
+        <td style="width: 50%; vertical-align: top; padding-left: 10px;">
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">10.</strong> Variables y tipos de datos</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">11.</strong> Decisiones: If…Then…Else</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">12.</strong> Repeticiones: For y For Each</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">13.</strong> Hojas y fórmulas desde VBA</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">14.</strong> MsgBox e InputBox</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">15.</strong> Botones y depuración</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">16.</strong> Caso integrador</p>
+          <p style="margin: 0 0 4px;"><strong style="color: #0B6B61;">17.</strong> Buenas prácticas y aplicación</p>
+          <p style="margin: 0;"><strong style="color: #0B6B61;">18.</strong> Glosario</p>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Recomendación -->
+    <table class="m7d-in m7d-d4" style="width: 100%; border-collapse: collapse; margin: 14px 0 0;" role="presentation">
+      <tr>
+        <td style="background-color: #DCF2EF; border-left: 4px solid #159A8C; border-radius: 6px; padding: 12px 16px; font-size: 14.5px;">
+          <strong style="color: #0B6B61;">💡 Cómo usarlo:</strong> léalo junto con la presentación del módulo y téngalo abierto mientras hace la práctica guiada. El capítulo 16 trae el código completo del informe automatizado, con el resultado que debe obtener.
+        </td>
+      </tr>
+    </table>
+
+    <!-- Llamado a la acción -->
+    <div class="m7d-in m7d-d4" style="text-align: center; margin: 24px 0 6px;">
+      <a class="m7d-btn" href="https://pitagoraslg.github.io/excelavanzado/Conceptos-Macros-VBA-Modulo7.pdf" target="_blank" rel="noopener" style="display: inline-block; background-color: #6E1F3A; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px;">📥 Descargar el documento (PDF)</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #665A55;">Se abre en una pestaña nueva; desde allí puede guardarlo o imprimirlo.</p>
+    </div>
+
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #665A55;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+  </div>
+</div>
