@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cazadores de Datos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Orbitron:wght@600;800;900&family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Special+Elite&family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0d1030; --bg2:#151a45; --panel:#1b2157; --panel2:#232a6b; --line:#343c86;
@@ -170,120 +170,118 @@ table.t td{font-size:16px}
 .wrap{padding-bottom:84px}
 .linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:13px}
 .cert{padding:20px 28px 14px}.cert .seal{font-size:40px}.cert .fel{font-size:clamp(26px,4vw,38px);margin-top:4px}.cert .nom{font-size:clamp(26px,4vw,38px);margin-bottom:4px}.cert .lead{font-size:15.5px;margin-bottom:10px}.cert .datos{margin-bottom:12px;gap:8px}.cert .datos span{padding:4px 12px;font-size:13px}.cert .hall{gap:6px}.cert .hall div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 12px;font-size:13.5px}.cert .hall b{display:inline;font-size:14px;white-space:nowrap}.cert .pie{margin-top:10px}
-/* ===== Tema gamer: neón cian + magenta ===== */
-:root{--bg:#05060f;--bg2:#0a0d22;--panel:#0c1030;--panel2:#141a46;--line:rgba(0,229,255,.28);--ink:#e8f7ff;--muted:#93a6cc;
-  --mand:#00e5ff;--mand2:#ffc247;--ok:#39ff9f;--bad:#ff3b6b;--cy:#00e5ff;--mg:#ff2bd6;--am:#ffc247}
-body{font-family:'Chakra Petch',Sora,'Segoe UI',sans-serif;
-  background:radial-gradient(900px 520px at 88% -12%,rgba(255,43,214,.24),transparent 60%),radial-gradient(900px 620px at -12% 112%,rgba(0,229,255,.2),transparent 60%),#05060f}
-body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background-image:linear-gradient(rgba(0,229,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.07) 1px,transparent 1px);background-size:46px 46px;
-  -webkit-mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 80%);mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 80%);animation:rejilla 16s linear infinite}
-@keyframes rejilla{to{background-position:0 46px,46px 0}}
-body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:95;background:repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 3px)}
-h1,h2,h3{font-family:'Chakra Petch',sans-serif;font-weight:700;letter-spacing:.5px}
-h2{color:#fff;text-shadow:0 0 14px rgba(0,229,255,.35)}
-.tg,.ov h2{background:linear-gradient(90deg,#fff,#9ff6ff 45%,#ff9cf0);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
-.emo{display:inline-block;filter:drop-shadow(0 0 10px rgba(0,229,255,.6))}
-.muted{color:var(--muted)}
-.kick{font-family:'Chakra Petch',sans-serif;color:var(--am);letter-spacing:3px;text-shadow:0 0 10px rgba(255,194,71,.45)}
+/* ===== Tema detective / espía: negro mate, dorado y blanco ===== */
+:root{--bg:#0c0c0e;--bg2:#141317;--panel:#17161b;--panel2:#201e25;--line:rgba(212,168,75,.32);--ink:#f5f1e8;--muted:#c9c1b0;
+  --mand:#d4a84b;--mand2:#f0cf7f;--gold:#d4a84b;--gold2:#f0cf7f;--ok:#8fd694;--bad:#ff7b6b;--sello:#d64545}
+body{font-family:Sora,'Segoe UI',Arial,sans-serif;font-size:16.5px;color:var(--ink);-webkit-font-smoothing:antialiased;
+  background:radial-gradient(1100px 600px at 50% -10%,#24201a 0%,transparent 65%),radial-gradient(800px 500px at 100% 100%,#1a1512 0%,transparent 60%),#0c0c0e}
+h1,h2,h3{font-family:'Playfair Display',Georgia,serif;letter-spacing:.2px}
+h2{color:#fff}
+.muted,.lbl,.file span{color:var(--muted)}
+.kick{font-family:'Special Elite','Courier New',monospace;color:var(--gold2);letter-spacing:2px;font-size:14px;font-weight:400}
 
 /* encabezado */
-.brand .ico{filter:drop-shadow(0 0 10px rgba(0,229,255,.7))}
-.brand b{font-size:20px;text-transform:uppercase;letter-spacing:2px}
-.glitch{position:relative;display:inline-block;color:#fff;text-shadow:0 0 12px rgba(0,229,255,.6)}
-.glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;overflow:hidden;width:100%}
-.glitch::before{color:var(--mg);transform:translate(2px,0);clip-path:inset(0 0 55% 0);animation:gl1 3.2s infinite steps(1)}
-.glitch::after{color:var(--cy);transform:translate(-2px,0);clip-path:inset(55% 0 0 0);animation:gl2 2.7s infinite steps(1)}
-@keyframes gl1{0%,88%,100%{transform:translate(0)}90%{transform:translate(-3px,-1px)}94%{transform:translate(3px,1px)}}
-@keyframes gl2{0%,84%,100%{transform:translate(0)}86%{transform:translate(3px,1px)}92%{transform:translate(-3px,0)}}
-.tag{border:1px solid var(--line);background:rgba(0,229,255,.08);border-radius:0;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);color:var(--cy)!important}
+.brand b{font-family:'Playfair Display',Georgia,serif;font-size:22px;color:var(--gold2);letter-spacing:.5px}
+.brand span{color:var(--muted);font-size:13.5px}
+.glitch::before,.glitch::after{display:none}
+.tag{background:transparent;border:1px solid var(--line);color:var(--gold2)!important;border-radius:4px}
 
-/* paneles con esquinas cortadas y soportes neón */
-.panel{position:relative;border-radius:0;background:linear-gradient(160deg,rgba(22,28,78,.82),rgba(7,9,28,.92));border:1px solid var(--line);
-  clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));box-shadow:inset 0 0 50px rgba(0,229,255,.06)}
-.panel::before{content:'';position:absolute;top:0;left:0;width:28px;height:28px;border-top:2px solid var(--cy);border-left:2px solid var(--cy);filter:drop-shadow(0 0 6px var(--cy))}
-.panel::after{content:'';position:absolute;bottom:0;right:0;width:28px;height:28px;border-bottom:2px solid var(--mg);border-right:2px solid var(--mg);filter:drop-shadow(0 0 6px var(--mg))}
-.side h3{color:var(--cy);letter-spacing:3px;text-shadow:0 0 10px rgba(0,229,255,.5)}
+/* paneles: carpetas de expediente */
+.panel{position:relative;background:linear-gradient(180deg,#1b1a1f,#141318);border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:6px;box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.side h3{font-family:'Special Elite','Courier New',monospace;color:var(--gold2);letter-spacing:2px;font-size:15px;text-transform:uppercase}
+
+/* sellos */
+.sello{position:absolute;top:18px;right:20px;font-family:'Special Elite','Courier New',monospace;text-transform:uppercase;letter-spacing:3px;font-size:14px;
+  color:var(--sello);border:2px solid var(--sello);padding:4px 12px;border-radius:4px;transform:rotate(-6deg);opacity:.9;pointer-events:none;
+  box-shadow:inset 0 0 0 2px rgba(214,69,69,.25)}
+.sello-ok{color:var(--ok);border-color:var(--ok);box-shadow:inset 0 0 0 2px rgba(143,214,148,.25);font-size:15px}
+@media (max-width:640px){.sello{position:static;display:inline-block;margin-bottom:10px;transform:rotate(-3deg)}}
 
 /* inicio */
-.hero{font-size:clamp(30px,5vw,52px);text-transform:uppercase;line-height:1.05;margin:.2em 0 .3em}
-.neon{color:var(--cy);text-shadow:0 0 8px var(--cy),0 0 26px rgba(0,229,255,.6)}
-.story{border-left:3px solid var(--mg);color:#dbe6ff;background:linear-gradient(90deg,rgba(255,43,214,.08),transparent 70%)}
-.mision{border-radius:0;background:rgba(0,0,0,.38);border:1px solid rgba(0,229,255,.22);border-left:3px solid var(--cy);box-shadow:inset 0 0 30px rgba(0,229,255,.05)}
-.preg{color:var(--am);text-shadow:0 0 12px rgba(255,194,71,.35);font-size:19px}
+.hero{font-size:clamp(30px,4.6vw,48px);line-height:1.12;margin:.25em 0 .35em;color:#fff;max-width:900px}
+.neon{color:var(--gold2)}
+.story{border-left:3px solid var(--gold);color:#f1ece1;background:rgba(212,168,75,.06);font-size:16.5px}
+.story b,.mision b{color:#fff}
+.mision{background:#0f0e12;border:1px dashed rgba(212,168,75,.45);border-radius:6px;color:#fff;font-size:16px;line-height:1.6}
+.preg{color:var(--gold2);font-size:19px;line-height:1.4}
 
 /* botones */
-.btn{font-family:'Chakra Petch',sans-serif;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;border-radius:0;color:#04050d;
-  background:linear-gradient(90deg,#00e5ff,#7c5cff 55%,#ff2bd6);clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
-  box-shadow:0 0 22px rgba(0,229,255,.35);transition:transform .12s,filter .15s}
-.btn:hover{filter:brightness(1.15) saturate(1.25);transform:translateY(-1px)}
-.btn.sec{background:rgba(0,229,255,.1);color:var(--cy);border:1px solid var(--line);box-shadow:none}
-.btn.sec:hover{background:rgba(0,229,255,.2)}
-.btn.dang{background:rgba(255,59,107,.16);color:#ff9db3;border:1px solid rgba(255,59,107,.45);box-shadow:none}
+.btn{font-family:Sora,'Segoe UI',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-radius:6px;color:#1a1408;
+  background:linear-gradient(180deg,#f0cf7f,#d4a84b);box-shadow:0 6px 18px rgba(212,168,75,.25)}
+.btn:hover{filter:brightness(1.08)}
+.btn.sec{background:transparent;color:var(--gold2);border:1px solid var(--gold);box-shadow:none}
+.btn.sec:hover{background:rgba(212,168,75,.12)}
+.btn.dang{background:transparent;color:#ff9a8d;border:1px solid rgba(255,123,107,.6);box-shadow:none}
 
 /* campos */
-input[type=text],input[type=password],input[type=number]{border-radius:0;background:rgba(0,0,0,.5);border:1px solid var(--line);color:#fff;box-shadow:inset 0 0 16px rgba(0,229,255,.08);font-family:'Chakra Petch',sans-serif}
-input:focus{border-color:var(--cy);box-shadow:0 0 0 2px rgba(0,229,255,.25),inset 0 0 16px rgba(0,229,255,.15)}
-.code input{font-family:'JetBrains Mono',monospace;color:var(--cy)}
-.msg.bad{color:var(--bad);text-shadow:0 0 10px rgba(255,59,107,.5);letter-spacing:.3px}
+input[type=text],input[type=password],input[type=number]{border-radius:6px;background:#0d0c10;border:1px solid var(--line);color:#fff}
+input:focus{border-color:var(--gold2);box-shadow:0 0 0 3px rgba(212,168,75,.2)}
+.code input{color:#fff}
+.msg.bad{color:var(--bad)}
 .msg.ok{color:var(--ok)}
 
-/* HUD: nivel, candados hexagonales y barra de progreso */
-.hud{background:linear-gradient(90deg,rgba(0,229,255,.06),rgba(255,43,214,.06));border:1px solid var(--line);padding:12px 16px;
-  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))}
-.nivel{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;color:var(--muted);margin-bottom:6px}
-.nivel b{color:var(--cy);font-size:18px;text-shadow:0 0 10px var(--cy)}
-.locks{gap:5px}
-.lk{width:40px;height:36px;border:0;border-radius:0;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:rgba(255,255,255,.07);font-size:16px}
-.lk small{font-family:'Orbitron',sans-serif;font-size:8px;bottom:2px;right:auto;left:50%;transform:translateX(-50%);color:#cfe3ff}
-.lk.on{background:linear-gradient(135deg,rgba(0,229,255,.55),rgba(124,92,255,.55));box-shadow:none;animation:latido 1.4s ease-in-out infinite}
-.lk.ok{background:linear-gradient(135deg,rgba(57,255,159,.45),rgba(0,229,255,.25))}
-@keyframes latido{50%{filter:brightness(1.6)}}
-.xp{height:7px;margin-top:9px;background:rgba(255,255,255,.08);position:relative;overflow:hidden;max-width:470px}
-.xp i{display:block;height:100%;background:linear-gradient(90deg,var(--cy),#7c5cff,var(--mg));box-shadow:0 0 12px var(--cy);transition:width .8s ease}
-.xp::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-100%);animation:brillo 2.6s infinite}
-@keyframes brillo{to{transform:translateX(100%)}}
-.clock{font-family:'Orbitron',sans-serif;color:var(--cy);text-shadow:0 0 10px var(--cy),0 0 26px rgba(0,229,255,.5);letter-spacing:2px}
+/* avance del caso */
+.hud{background:#141318;border:1px solid var(--line);border-radius:6px;padding:12px 16px}
+.nivel{font-family:'Special Elite','Courier New',monospace;font-size:14px;letter-spacing:2px;color:#e6dcc6;margin-bottom:7px}
+.nivel b{font-family:'JetBrains Mono',monospace;color:var(--gold2);font-size:18px}
+.locks{gap:6px}
+.lk{width:38px;height:38px;border-radius:50%;background:#1f1d23;border:1px solid rgba(212,168,75,.25);font-size:16px}
+.lk small{font-size:10px;font-weight:700;color:#fff;bottom:-2px;right:-2px;background:#0c0c0e;border-radius:99px;padding:0 4px;line-height:1.5}
+.lk.on{border:2px solid var(--gold2);box-shadow:0 0 0 4px rgba(212,168,75,.18);animation:latido 1.6s ease-in-out infinite}
+.lk.ok{background:linear-gradient(180deg,#f0cf7f,#c49639);border-color:#f0cf7f}
+@keyframes latido{50%{box-shadow:0 0 0 8px rgba(212,168,75,.08)}}
+.xp{height:6px;margin-top:10px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;max-width:460px}
+.xp i{display:block;height:100%;background:linear-gradient(90deg,#c49639,#f0cf7f);border-radius:99px;transition:width .8s ease}
+.clock{font-family:'JetBrains Mono',monospace;color:var(--gold2);letter-spacing:1px}
 
-/* archivos y pistas */
-.file{border-radius:0;background:rgba(0,229,255,.05);border:1px solid var(--line);clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%)}
-.file:hover{border-color:var(--cy);background:rgba(0,229,255,.12);box-shadow:inset 0 0 18px rgba(0,229,255,.15)}
+/* evidencias (archivos) y pistas */
+.file{border-radius:6px;background:#121116;border:1px solid rgba(212,168,75,.22);border-left:4px solid var(--gold)}
+.file b{color:#fff}
+.file:hover{background:#1c1a20;border-color:var(--gold)}
 .file.new{animation:nuevo 1.6s ease-out 4}
-@keyframes nuevo{0%{box-shadow:inset 0 0 0 2px var(--am),0 0 20px var(--am)}100%{box-shadow:none}}
-.pista{border-radius:0;background:rgba(255,43,214,.08);border:1px dashed rgba(255,43,214,.55)}
+@keyframes nuevo{0%{box-shadow:0 0 0 3px rgba(240,207,127,.7)}100%{box-shadow:none}}
+.pista{border-radius:6px;background:rgba(212,168,75,.08);border:1px dashed rgba(212,168,75,.6);color:#fff;font-size:15.5px;line-height:1.55}
 
 /* superposiciones */
-.ov{background:radial-gradient(circle at 50% 45%,rgba(8,30,60,.97),rgba(2,3,10,.97) 65%);backdrop-filter:blur(6px)}
-.ov .big{filter:drop-shadow(0 0 22px rgba(0,229,255,.8))}
-.ov h2{font-size:clamp(30px,5vw,52px);text-transform:uppercase}
-.acceso{display:inline-block;font-family:'Orbitron',sans-serif;font-weight:800;letter-spacing:6px;font-size:clamp(14px,2vw,18px);color:var(--ok);border:1px solid var(--ok);padding:6px 16px;margin-bottom:12px;text-shadow:0 0 10px var(--ok);box-shadow:0 0 18px rgba(57,255,159,.35),inset 0 0 18px rgba(57,255,159,.15);animation:parpadeo .9s steps(2) 3}
-@keyframes parpadeo{50%{opacity:.35}}
-.deny #app{animation:denegado .5s}
-@keyframes denegado{0%,100%{transform:none;filter:none}15%{transform:translateX(-8px);filter:hue-rotate(-50deg) saturate(2.2)}35%{transform:translateX(7px)}55%{transform:translateX(-5px)}75%{transform:translateX(3px)}}
-.deny::before{background-color:rgba(255,59,107,.12)}
+.ov{background:rgba(8,8,10,.96)}
+.ov h2{font-size:clamp(30px,5vw,50px);color:#fff}
+.acceso{display:inline-block;font-family:'Special Elite','Courier New',monospace;letter-spacing:4px;font-size:clamp(15px,2vw,19px);color:var(--ok);
+  border:3px solid var(--ok);padding:6px 18px;margin-bottom:14px;border-radius:4px;transform:rotate(-4deg);animation:sellar .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes sellar{from{transform:rotate(-4deg) scale(2.2);opacity:0}}
+.deny #app{animation:denegado .45s}
+@keyframes denegado{0%,100%{transform:none}20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
 
 /* botón de música */
-.musbtn{border-radius:0;font-family:'Chakra Petch',sans-serif;text-transform:uppercase;letter-spacing:1px;background:rgba(5,6,15,.92);border:1px solid var(--cy);color:var(--cy);
-  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);box-shadow:0 0 18px rgba(0,229,255,.3)}
-.musbtn.off{border-color:var(--bad);color:#ff9db3;box-shadow:0 0 18px rgba(255,59,107,.3)}
+.musbtn{border-radius:6px;background:rgba(12,12,14,.94);border:1px solid var(--gold);color:var(--gold2);font-family:Sora,sans-serif}
+.musbtn.off{border-color:var(--bad);color:#ff9a8d}
 
-/* felicitación: logro desbloqueado */
-.cert{border-radius:0;border:2px solid transparent;
-  background:linear-gradient(170deg,#0d1238,#070a22) padding-box,linear-gradient(120deg,var(--cy),#7c5cff,var(--mg),var(--am)) border-box;
-  box-shadow:0 0 40px rgba(0,229,255,.25),0 0 80px rgba(255,43,214,.15);clip-path:polygon(0 0,calc(100% - 26px) 0,100% 26px,100% 100%,26px 100%,0 calc(100% - 26px))}
-.cert .seal{filter:drop-shadow(0 0 18px rgba(255,194,71,.8))}
-.cert .fel{text-transform:uppercase;letter-spacing:1px}
-.cert .nom{background:linear-gradient(90deg,var(--am),#ff8a3d,var(--mg));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 14px rgba(255,43,214,.35))}
-.cert .datos span{border-radius:0;background:rgba(0,229,255,.07);border:1px solid var(--line)}
-.cert .hall div{border-radius:0;background:rgba(0,0,0,.35);border:1px solid rgba(0,229,255,.2);border-left:3px solid var(--ok)}
-.cert .hall b{color:var(--ok);text-shadow:0 0 8px rgba(57,255,159,.45)}
-.foto{border-radius:0;background:rgba(57,255,159,.08);border:1px dashed var(--ok)}
+/* felicitación: caso resuelto */
+.cert{border-radius:8px;border:2px solid var(--gold);background:linear-gradient(180deg,#1d1b20,#121115);
+  box-shadow:0 0 0 6px #0c0c0e,0 0 0 7px rgba(212,168,75,.45),0 30px 60px rgba(0,0,0,.5)}
+.cert .sello{top:22px;right:26px}
+.cert .fel{font-family:'Playfair Display',Georgia,serif;color:#fff}
+.cert .nom{font-family:'Playfair Display',Georgia,serif;color:var(--gold2)}
+.cert .lead{color:#efe9dc}
+.cert .datos span{border-radius:4px;background:rgba(212,168,75,.07);border:1px solid var(--line);color:#fff}
+.cert .hall div{border-radius:4px;background:#0f0e12;border:1px solid rgba(212,168,75,.2);border-left:3px solid var(--gold);color:#fff;font-size:14px}
+.cert .hall b{color:var(--gold2)}
+.foto{border-radius:6px;background:rgba(143,214,148,.08);border:1px dashed var(--ok)}
 
 /* pantalla del facilitador */
-.scr .title{text-transform:uppercase;letter-spacing:2px;text-shadow:0 0 18px rgba(0,229,255,.5)}
-.pd .base{border-radius:0;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%,0 12px);font-family:'Orbitron',sans-serif;box-shadow:0 0 30px rgba(0,229,255,.25)}
-table.t th{color:var(--cy);letter-spacing:1.5px;text-transform:uppercase;font-size:13px}
-.jr .mini{font-size:13px}
+.scr .title{font-family:'Playfair Display',Georgia,serif;color:var(--gold2)}
+.pd .base{border-radius:6px 6px 0 0;font-family:'Playfair Display',Georgia,serif}
+table.t th{color:var(--gold2);font-family:'Special Elite','Courier New',monospace;letter-spacing:1px}
+table.t td{color:#fff}
+/* ajustes de espacio */
+.sala .sello{position:static;float:right;margin:-4px 0 8px 12px;font-size:12px;padding:3px 10px;transform:rotate(-4deg)}
+.cert{padding:16px 26px 12px}
+.cert .sello{top:14px;right:18px;font-size:13px}
+.cert .seal{font-size:32px;margin-top:2px!important}
+.cert .fel,.cert .nom{font-size:clamp(24px,3.3vw,34px);line-height:1.15}
+.cert .lead{font-size:15px;margin-bottom:8px}
+.cert .datos{margin-bottom:10px}
+.cert .hall div{padding:5px 12px}
+.cert .pie{margin-top:8px}
 
 </style>
 </head>
@@ -627,7 +625,7 @@ function render(){
 function vistaInicio(){
   MUS.want(0);
   $('#app').innerHTML = `<div class="wrap">${cabecera()}
-  <div class="panel" style="margin-bottom:16px"><div class="kick">▶ Misión individual · Escape room</div><h1 class="hero">Abre los <span class="neon">diez candados</span>.</h1>
+  <div class="panel" style="margin-bottom:16px"><span class="sello">Confidencial</span><div class="kick">🔎 Expediente secreto · Misión individual</div><h1 class="hero">Resuelve el caso: abre los <span class="neon">diez candados</span>.</h1>
   <p class="story">${HISTORIA}</p>
   <div class="mision"><p><b>Cómo se juega</b></p>
   <p>1. Ten abierto <b>Excel de escritorio (2021 o Microsoft 365)</b>: lo necesitas para leer el PDF. Cada candado te pide una respuesta que sale de tus datos.</p>
@@ -637,7 +635,7 @@ function vistaInicio(){
   <p>5. Al abrir el último candado aparecerá una <b>felicitación con tu nombre</b>: tómale una captura de pantalla y envíasela a tu facilitador.</p>
   <p>🎧 El juego tiene música de suspenso y efectos de sonido. Si necesitas silencio, usa el botón 🔊 de abajo a la derecha (o la tecla M).</p></div>
   <form id="fIni" style="margin-top:18px" autocomplete="off"><label class="lbl" for="nm">Tu nombre completo (así aparecerá en la felicitación)</label>
-  <div class="code" style="margin-top:0"><input id="nm" type="text" maxlength="50" placeholder="Nombre y apellido"><button class="btn">▶ Iniciar misión</button></div></form></div>
+  <div class="code" style="margin-top:0"><input id="nm" type="text" maxlength="50" placeholder="Nombre y apellido"><button class="btn">🔍 Iniciar investigación</button></div></form></div>
   ${credito}</div>`;
   $('#fIni').onsubmit = ev => { ev.preventDefault(); const n = $('#nm').value.trim().replace(/\s+/g,' ');
     if (n.length < 3) { toast('Escribe tu nombre completo.'); $('#nm').focus(); return; }
@@ -660,11 +658,11 @@ function vistaSala(nuevo){
   const n = G.sala, s = SALAS[n-1];
   MUS.want(Math.ceil(n / 2));
   $('#app').innerHTML = `<div class="wrap">${cabecera()}
-  <div class="hud"><div><div class="nivel">NIVEL <b>${String(n).padStart(2, '0')}</b> / ${NC}</div><div class="locks">${Array.from({length:NC}, (_, k) => k + 1).map(i => `<div class="lk ${i < n ? 'ok' : i === n ? 'on' : ''}">${i < n ? '🔓' : '🔒'}<small>${i}</small></div>`).join('')}</div><div class="xp"><i style="width:${Math.round((n - 1) / NC * 100)}%"></i></div></div>
+  <div class="hud"><div><div class="nivel">AVANCE DEL CASO <b>${String(n).padStart(2, '0')}</b> / ${NC}</div><div class="locks">${Array.from({length:NC}, (_, k) => k + 1).map(i => `<div class="lk ${i < n ? 'ok' : i === n ? 'on' : ''}">${i < n ? '🔓' : '🔒'}<small>${i}</small></div>`).join('')}</div><div class="xp"><i style="width:${Math.round((n - 1) / NC * 100)}%"></i></div></div>
   <div style="text-align:right"><div class="clock" id="clk">00:00</div><div class="muted" style="font-size:13px">Tu tiempo</div></div></div>
   <div class="sala">
     <div class="panel">
-      <div class="kick">Candado ${String(n).padStart(2, '0')}/${NC} // Fuente: ${FUENTES[s.fuente].tipo}</div><h2><span class="emo">${s.ico}</span> <span class="tg">${s.t}.</span></h2>
+      <span class="sello">Clasificado</span><div class="kick">Expediente ${String(n).padStart(2, '0')}/${NC} · Fuente: ${FUENTES[s.fuente].tipo}</div><h2><span class="emo">${s.ico}</span> <span class="tg">${s.t}.</span></h2>
       <p class="story">${s.h}</p>
       <div class="mision">${s.m}</div>
       <div class="preg">🔑 ${s.p}</div>
@@ -714,7 +712,7 @@ function vistaFelicitacion(recien){
   const total = G.fin - G.inicio, pistas = Object.values(G.pistas).reduce((a,b) => a + b, 0);
   $('#app').innerHTML = `<div class="wrap">
   <div class="cert" id="cert">
-    <div class="kick">🏆 Logro desbloqueado · Cazadores de Datos</div>
+    <span class="sello sello-ok">Caso resuelto</span><div class="kick">Expediente cerrado · Cazadores de Datos</div>
     <div class="seal" style="margin-top:12px">🏆</div>
     <div class="fel">¡Felicidades,</div>
     <div class="nom">${esc(G.nombre)}!</div>
