@@ -142,103 +142,108 @@ table.t th{color:var(--muted);font-weight:600}
 .sep{height:1px;background:var(--line);margin:18px 0}
 .links a{color:var(--mand2);word-break:break-all}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* Felicitación */
+.cert{position:relative;max-width:860px;margin:0 auto;border-radius:22px;padding:24px 30px 18px;text-align:center;overflow:hidden;
+  background:radial-gradient(600px 300px at 50% -10%,rgba(242,153,74,.28),transparent 70%),linear-gradient(180deg,#1f2668,#151a4a);border:2px solid var(--mand);box-shadow:0 0 0 6px rgba(242,153,74,.12),0 30px 60px rgba(0,0,0,.35)}
+.cert .seal{font-size:50px;line-height:1;animation:pop .7s cubic-bezier(.2,1.6,.4,1)}
+.cert .fel{font-size:clamp(30px,5vw,50px);font-weight:800;margin:10px 0 2px;line-height:1.1}
+.cert .nom{font-size:clamp(28px,5vw,46px);font-weight:800;color:var(--mand2);margin:2px 0 8px;word-break:break-word}
+.cert .lead{font-size:17px;color:#d9dcff;max-width:640px;margin:0 auto 14px}
+.cert .datos{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.cert .datos span{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-size:14px}
+.cert .hall{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left}
+@media (max-width:640px){.cert .hall{grid-template-columns:1fr}.cert{padding:26px 18px 20px}}
+.cert .hall div{background:#10143a;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:14px}
+.cert .hall b{display:block;color:var(--ok);font-family:'JetBrains Mono',monospace;font-size:15px}
+.cert .pie{margin-top:16px;font-size:13px;color:var(--muted)}
+.foto{max-width:860px;margin:0 auto 14px;text-align:center;background:rgba(61,220,151,.1);border:1px dashed var(--ok);border-radius:14px;padding:12px 16px;font-size:16px}
+.grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.jr{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:16px}
+.jr .mini{font-size:15px;letter-spacing:2px;white-space:nowrap}
+.scr .panel h3{font-size:18px}
+table.t td{font-size:16px}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:13px}
 </style>
 </head>
 <body>
-<div id="app"><div class="loading">Conectando…</div></div>
+<div id="app"><div class="loading">Cargando…</div></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <canvas id="cf"></canvas>
 
 <script>
-/* Firebase (mismo proyecto del curso) */
+/* Firebase (mismo proyecto del curso): solo para el ranking del facilitador. Si falla, el juego sigue funcionando. */
 (function(){
-  var firebaseConfig = {
-    apiKey: "AIzaSyCLrT88lr0by0elfhI6bwdbgFN3u3ORCDI",
-    authDomain: "excel-avanzado-icadep.firebaseapp.com",
-    databaseURL: "https://excel-avanzado-icadep-default-rtdb.firebaseio.com",
-    projectId: "excel-avanzado-icadep",
-    storageBucket: "excel-avanzado-icadep.firebasestorage.app",
-    messagingSenderId: "391674719896",
-    appId: "1:391674719896:web:738cc75c1d9720dd7caaed"
-  };
+  var cfg = { apiKey:"AIzaSyCLrT88lr0by0elfhI6bwdbgFN3u3ORCDI", authDomain:"excel-avanzado-icadep.firebaseapp.com", databaseURL:"https://excel-avanzado-icadep-default-rtdb.firebaseio.com",
+    projectId:"excel-avanzado-icadep", storageBucket:"excel-avanzado-icadep.firebasestorage.app", messagingSenderId:"391674719896", appId:"1:391674719896:web:738cc75c1d9720dd7caaed" };
   var APP = ["https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js","https://cdnjs.cloudflare.com/ajax/libs/firebase/10.13.2/firebase-app-compat.min.js"];
   var DB = ["https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js","https://cdnjs.cloudflare.com/ajax/libs/firebase/10.13.2/firebase-database-compat.min.js"];
   function load(src){return new Promise(function(ok,ko){var s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=ko;document.head.appendChild(s);});}
   function fb(urls){var i=0;function n(){if(i>=urls.length)return Promise.reject();return load(urls[i++]).catch(n);}return n();}
-  function err(){document.getElementById('app').innerHTML='<div class="wrap"><div class="panel" style="text-align:center;margin-top:12vh"><h2>No se pudo conectar.</h2><p class="muted">Revisa tu conexión a internet o intenta desde otra red (por ejemplo, datos móviles) y recarga la página.</p></div></div>';}
-  fb(APP).then(function(){return fb(DB);}).then(function(){
-    if(typeof firebase==='undefined'){err();return;}
-    firebase.initializeApp(firebaseConfig);
-    window.DB_READY=firebase.database();
-    window.dispatchEvent(new Event('fb-ready'));
-  }).catch(err);
+  fb(APP).then(function(){return fb(DB);}).then(function(){ firebase.initializeApp(cfg); window.DB_READY = firebase.database(); window.dispatchEvent(new Event('fb-ready')); })
+    .catch(function(){ window.dispatchEvent(new Event('fb-error')); });
 })();
 </script>
 
 <script>
 'use strict';
-const ROOT = 'escapeM6';
+const KEY = 'escapeM6_individual';
+const ROOT = 'escapeM6ind';
 const CLAVE = '1022';
-const PEN = 120000;           /* cada pista suma 2 minutos */
-const EQS = ['e1','e2','e3'];
-const DEF_NOMBRES = { e1:'Equipo Rubí', e2:'Equipo Zafiro', e3:'Equipo Esmeralda' };
-const COLORES = { e1:'var(--e1)', e2:'var(--e2)', e3:'var(--e3)' };
+const PEN = 120000; /* cada pista suma 2 minutos en el ranking */
+const MODO = new URLSearchParams(location.search).get('modo') || '';
 const CRYPTO = {"h":["a5d774e833ae89cce349dfd161497aaa681bc8eb315863af657e0bea1ba7f24b","b163267c878041688d324e7e95e53da3fd911e38a083a824ad5be681ef83bbfe","e1df344789ec523a3d14a882f98e1fda24a90fb658468f8c0a9d1ab72437acc4","be6ca3bb94eb147136d083b5c56fbcc7b5e25bd348697bc3caee3bacc9649eca","4f055c7a470f150f563895b712ab78d0810e658dd2fb82feb8b634cbedaf6cd2"],"e":[null,"63b7fd701e33e1e09f77","27af733720775729431c","cb712a539af50591dfed",null]};
-const ARCH1 = { nombre:'Ventas-Farmacias.zip', ruta:'escape-m6/3d371476b1/Ventas-Farmacias.zip', desc:'Tres sucursales: Santiago, La Romana y San Cristóbal', ico:'📦', sala:1 };
+const ARCH1 = { nombre:'Ventas-Farmacias.zip', ruta:'escape-m6/3d371476b1/Ventas-Farmacias.zip', desc:'Tres sucursales: Santiago, La Romana y San Cristóbal', ico:'📦' };
 const ARCHS = {
   3:{ nombre:'Sucursal Puerto Plata.xlsx', desc:'Las ventas de la sucursal nueva', ico:'📗' },
   4:{ nombre:'Catalogo-Productos.xlsx', desc:'Código, producto y categoría', ico:'📘' },
   5:{ nombre:'Metas-Sucursales.xlsx', desc:'La meta del trimestre de cada sucursal', ico:'🎯' }
 };
-
-const HISTORIA = 'Son las 4:00 p. m. La junta directiva de <b>Farmacias Brisa Verde</b> se reúne a las 6:00 y la gerente general necesita el informe del primer trimestre de 2026. Los reportes de las sucursales quedaron guardados en una bóveda con <b>cinco candados</b>. Cada candado se abre con un número, y solo lo encontrarán si <b>unen y analizan</b> los datos con Power Query.';
+const HISTORIA = 'Son las 4:00 p. m. La junta directiva de <b>Farmacias Brisa Verde</b> se reúne a las 6:00 y la gerente general necesita el informe del primer trimestre de 2026. Los reportes de las sucursales quedaron guardados en una bóveda con <b>cinco candados</b>. Cada candado se abre con un número, y solo lo encontrarás si <b>unes y analizas</b> los datos con Power Query.';
 
 const SALAS = [
   { t:'La bodega de los reportes', ico:'🗄️',
     h:'Las tres sucursales mandaron su reporte por separado. La gerente no quiere tres archivos: quiere una sola tabla.',
-    m:'<p>1. Descarguen <b>Ventas-Farmacias.zip</b> y extráiganlo. Dentro está la carpeta <b>Ventas Farmacias</b>.</p><p>2. Unan los tres archivos con <b>Datos › Obtener datos › Desde un archivo › Desde una carpeta</b> y carguen la tabla a Excel.</p>',
+    m:'<p>1. Descarga <b>Ventas-Farmacias.zip</b> y extráelo. Dentro está la carpeta <b>Ventas Farmacias</b>.</p><p>2. Une los tres archivos con <b>Datos › Obtener datos › Desde un archivo › Desde una carpeta</b> y carga la tabla a Excel.</p>',
     p:'¿Cuánto vendieron, en total, las tres sucursales? (suma de la columna Monto)',
-    pis:['Seleccionen la <b>carpeta</b> Ventas Farmacias, no un archivo. En la ventana que aparece pulsen <b>Combinar › Combinar y transformar datos</b> y elijan la hoja <b>Ventas</b>.',
-         'La tabla unida debe tener <b>120 filas</b>. Pulsen <b>Cerrar y cargar</b> y sumen la columna Monto, por ejemplo con la fila de totales de la tabla (Diseño de tabla › Fila de totales).'] },
+    pis:['Selecciona la <b>carpeta</b> Ventas Farmacias, no un archivo. En la ventana que aparece pulsa <b>Combinar › Combinar y transformar datos</b> y elige la hoja <b>Ventas</b>.',
+         'La tabla unida debe tener <b>120 filas</b>. Pulsa <b>Cerrar y cargar</b> y suma la columna Monto, por ejemplo con la fila de totales de la tabla (Diseño de tabla › Fila de totales).'] },
   { t:'El cuarto de las sucursales', ico:'🏪',
-    h:'Ya tienen todo junto. Ahora la gerente pregunta: «¿Cuál de mis sucursales vendió más?».',
-    m:'<p>1. Para no perder el detalle, en el editor hagan clic derecho en su consulta › <b>Referencia</b>. Se crea una consulta nueva que parte de la anterior.</p><p>2. En la consulta nueva: <b>Inicio › Agrupar por</b> la columna Sucursal, con la <b>Suma</b> de Monto.</p>',
+    h:'Ya tienes todo junto. Ahora la gerente pregunta: «¿Cuál de mis sucursales vendió más?».',
+    m:'<p>1. Para no perder el detalle, en el editor haz clic derecho en tu consulta › <b>Referencia</b>. Se crea una consulta nueva que parte de la anterior.</p><p>2. En la consulta nueva: <b>Inicio › Agrupar por</b> la columna Sucursal, con la <b>Suma</b> de Monto.</p>',
     p:'¿Cuánto vendió la sucursal que más vendió?',
     pis:['Para volver al editor: <b>Datos › Consultas y conexiones</b> y doble clic en la consulta. También sirve una tabla dinámica con Sucursal en Filas y Monto en Valores.',
-         'En <b>Agrupar por</b>: columna <b>Sucursal</b>; nombre de la columna nueva <b>Ventas</b>; operación <b>Suma</b>; columna <b>Monto</b>. Deben quedar 3 filas: busquen la mayor.'] },
+         'En <b>Agrupar por</b>: columna <b>Sucursal</b>; nombre de la columna nueva <b>Ventas</b>; operación <b>Suma</b>; columna <b>Monto</b>. Deben quedar 3 filas: busca la mayor.'] },
   { t:'Llegó un archivo nuevo', ico:'📬',
     h:'¡Sorpresa! Abrió una cuarta sucursal en Puerto Plata y ya mandó su reporte. Faltan pocos minutos para la junta.',
-    m:'<p>1. Descarguen <b>Sucursal Puerto Plata.xlsx</b> y guárdenlo <b>dentro de la carpeta Ventas Farmacias</b>, junto a los otros tres.</p><p>2. En Excel pulsen <b>Datos › Actualizar todo</b>. No repitan ningún paso: Power Query los rehace solo.</p>',
+    m:'<p>1. Descarga <b>Sucursal Puerto Plata.xlsx</b> y guárdalo <b>dentro de la carpeta Ventas Farmacias</b>, junto a los otros tres.</p><p>2. En Excel pulsa <b>Datos › Actualizar todo</b>. No repitas ningún paso: Power Query los rehace solo.</p>',
     p:'¿Cuál es ahora el total vendido por las cuatro sucursales?',
-    pis:['El archivo debe quedar en la misma carpeta que eligieron en el candado 1, no en Descargas ni en el escritorio.',
+    pis:['El archivo debe quedar en la misma carpeta que elegiste en el candado 1, no en Descargas ni en el escritorio.',
          'Después de <b>Actualizar todo</b>, la tabla unida debe tener <b>160 filas</b> y la agrupación, <b>4 sucursales</b>.'] },
   { t:'El catálogo perdido', ico:'📚',
     h:'La junta quiere ver las ventas por categoría. Pero las ventas solo traen el código del producto, no su categoría.',
-    m:'<p>1. Descarguen <b>Catalogo-Productos.xlsx</b> e impórtenlo: <b>Datos › Obtener datos › Desde un archivo › Desde un libro de Excel</b>, hoja <b>Productos</b>.</p><p>2. En la consulta de ventas: <b>Inicio › Combinar consultas</b> con Productos por la columna <b>Código</b> y traigan la <b>Categoría</b>.</p><p>3. Agrupen por Categoría con la Suma de Monto.</p>',
+    m:'<p>1. Descarga <b>Catalogo-Productos.xlsx</b> e impórtalo: <b>Datos › Obtener datos › Desde un archivo › Desde un libro de Excel</b>, hoja <b>Productos</b>.</p><p>2. En la consulta de ventas: <b>Inicio › Combinar consultas</b> con Productos por la columna <b>Código</b> y trae la <b>Categoría</b>.</p><p>3. Agrupa por Categoría con la Suma de Monto.</p>',
     p:'¿Cuánto vendió la categoría que más vendió? (las cuatro sucursales)',
-    pis:['En <b>Combinar consultas</b>: arriba la tabla de ventas, abajo Productos. Hagan clic en <b>Código</b> en las dos tablas. Tipo de combinación: <b>Externa izquierda</b>.',
-         'Aparece una columna nueva con la palabra «Table». Pulsen el botón <b>Expandir</b> (las dos flechas del encabezado) y marquen solo <b>Categoría</b>. Luego Agrupar por Categoría, Suma de Monto: deben quedar 4 categorías.'] },
+    pis:['En <b>Combinar consultas</b>: arriba la tabla de ventas, abajo Productos. Haz clic en <b>Código</b> en las dos tablas. Tipo de combinación: <b>Externa izquierda</b>.',
+         'Aparece una columna nueva con la palabra «Table». Pulsa el botón <b>Expandir</b> (las dos flechas del encabezado) y marca solo <b>Categoría</b>. Luego Agrupar por Categoría, Suma de Monto: deben quedar 4 categorías.'] },
   { t:'La puerta de las metas', ico:'🎯',
     h:'Última puerta. Cada sucursal tenía una meta para el trimestre. La gerente quiere saber quién no llegó y por cuánto.',
-    m:'<p>1. Descarguen <b>Metas-Sucursales.xlsx</b> e impórtenlo (hoja <b>Metas</b>).</p><p>2. En la consulta agrupada por Sucursal: <b>Inicio › Combinar consultas</b> con Metas por la columna <b>Sucursal</b> y expandan <b>Meta</b>.</p><p>3. <b>Agregar columna › Columna personalizada</b> con la fórmula <span class="mono">[Ventas] - [Meta]</span>. Solo una sucursal no llegó a su meta.</p>',
-    p:'¿Cuánto le faltó a la sucursal que no llegó a su meta? (escriban el número sin el signo menos)',
-    pis:['La columna Sucursal se escribe igual en las dos tablas («Sucursal Santiago», «Sucursal La Romana»…), por eso pueden combinarlas directamente.',
-         'Después de la columna personalizada verán cuatro diferencias. Tres son positivas: esas sucursales sí llegaron. La única <b>negativa</b> es la respuesta.'] }
+    m:'<p>1. Descarga <b>Metas-Sucursales.xlsx</b> e impórtalo (hoja <b>Metas</b>).</p><p>2. En la consulta agrupada por Sucursal: <b>Inicio › Combinar consultas</b> con Metas por la columna <b>Sucursal</b> y expande <b>Meta</b>.</p><p>3. <b>Agregar columna › Columna personalizada</b> con la fórmula <span class="mono">[Ventas] - [Meta]</span>. Solo una sucursal no llegó a su meta.</p>',
+    p:'¿Cuánto le faltó a la sucursal que no llegó a su meta? (escribe el número sin el signo menos)',
+    pis:['La columna Sucursal se escribe igual en las dos tablas («Sucursal Santiago», «Sucursal La Romana»…), por eso puedes combinarlas directamente.',
+         'Después de la columna personalizada verás cuatro diferencias. Tres son positivas: esas sucursales sí llegaron. La única <b>negativa</b> es la respuesta.'] }
 ];
 const RESUMEN = ['Total de las tres sucursales','Venta de la sucursal líder','Total con Puerto Plata','Venta de la categoría líder','Lo que le faltó a la sucursal sin meta'];
 
 /* ---------- utilidades ---------- */
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const params = new URLSearchParams(location.search);
-const MODO = params.get('modo') || 'participante';
 const rd = n => 'RD$ ' + Number(n).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 });
 function toast(t){ const el = $('#toast'); el.innerHTML = t; el.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => el.classList.remove('show'), 2800); }
 function norm(v){
   let s = String(v || '').replace(/[^\d.,]/g, '');
   s = s.replace(/[.,]\d{1,2}$/, '');
-  s = s.replace(/[.,]/g, '').replace(/^0+(?=\d)/, '');
-  return s;
+  return s.replace(/[.,]/g, '').replace(/^0+(?=\d)/, '');
 }
 async function sha(s){ const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join(''); }
 async function revelar(n, v){
@@ -247,374 +252,237 @@ async function revelar(n, v){
   for (let i = 0; i < enc.length / 2; i++) out += String.fromCharCode(parseInt(enc.substr(i*2,2),16) ^ parseInt(k.substr(i*2,2),16));
   return out;
 }
-const mmss = ms => { ms = Math.max(0, Math.round(ms/1000)); const m = Math.floor(ms/60), s = ms % 60; return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0'); };
+const hms = ms => { let s = Math.max(0, Math.round(ms/1000)); const h = Math.floor(s/3600); s -= h*3600; const m = Math.floor(s/60); s -= m*60;
+  return (h ? h + ':' + String(m).padStart(2,'0') : String(m).padStart(2,'0')) + ':' + String(s).padStart(2,'0'); };
 const urlArch = (n, tok) => 'escape-m6/' + tok + '/' + encodeURIComponent(ARCHS[n].nombre);
-const baseUrl = () => location.href.split('?')[0].split('#')[0];
+const fechaLarga = t => new Date(t).toLocaleString('es-DO', { day:'numeric', month:'long', year:'numeric', hour:'numeric', minute:'2-digit' });
+
+/* ---------- progreso (se guarda en este navegador) ---------- */
+let G = cargar();
+function cargar(){ try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch(e) { return null; } }
+function guardar(){ try { localStorage.setItem(KEY, JSON.stringify(G)); } catch(e) {} subir(); }
+const lsGet = k => { try { return localStorage.getItem(k); } catch(e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch(e) {} };
+const UID = lsGet('escapeM6_uid') || ('u' + Math.random().toString(36).slice(2,11)); lsSet('escapeM6_uid', UID);
+const totalRank = j => (j.fin - j.inicio) + (j.pistas || 0) * PEN;
+/* Envía el avance al ranking. Solo cuenta el primer intento completo de cada navegador. */
+function subir(){
+  if (!G || !window.DB_READY || G.noCuenta) return;
+  const pistas = Object.values(G.pistas).reduce((a,b) => a + b, 0);
+  window.DB_READY.ref(ROOT + '/jugadores/' + UID).set({ nombre:G.nombre, inicio:G.inicio, sala:G.fin != null ? 6 : G.sala, fin:G.fin, pistas, intentos:G.intentos, visto:Date.now() }).catch(() => {});
+}
+async function miLugar(){
+  if (!window.DB_READY || G.noCuenta) return null;
+  try { const s = await window.DB_READY.ref(ROOT + '/jugadores').once('value'), v = s.val() || {};
+    const fin = Object.keys(v).filter(k => v[k].fin != null).sort((a,b) => totalRank(v[a]) - totalRank(v[b]));
+    const i = fin.indexOf(UID); return i < 0 ? null : { lugar:i+1, de:fin.length };
+  } catch(e) { return null; }
+}
 
 /* ---------- sonido ---------- */
-let AC = null, sonido = MODO !== 'pantalla';
+let AC = null;
 function ac(){ if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} } if (AC && AC.state === 'suspended') AC.resume(); return AC; }
-function tone(f, d, type, vol, at){ const a = ac(); if (!a || !sonido) return; const t = a.currentTime + (at || 0), o = a.createOscillator(), g = a.createGain();
+function tone(f, d, type, vol, at){ const a = ac(); if (!a) return; const t = a.currentTime + (at || 0), o = a.createOscillator(), g = a.createGain();
   o.type = type || 'sine'; o.frequency.setValueAtTime(f, t); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || .18, t + .02); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
   o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + d + .05); }
 const SFX = {
-  clic(){ tone(660,.08,'triangle',.08); },
   err(){ tone(140,.32,'sawtooth',.16); tone(110,.4,'square',.08,.08); },
   pista(){ tone(880,.12,'sine',.12); tone(1320,.18,'sine',.1,.1); },
   unlock(){ tone(220,.06,'square',.12); tone(320,.06,'square',.12,.06); [523,659,784,1047].forEach((f,i) => tone(f,.35,'triangle',.16,.16 + i*.09)); },
-  fan(){ [523,523,523,659,784,659,784,1047].forEach((f,i) => tone(f, i === 7 ? .9 : .2,'triangle',.18,i*.16)); [262,330,392].forEach(f => tone(f,1.4,'sine',.07,1.1)); },
-  join(){ tone(587,.1,'sine',.08); tone(880,.14,'sine',.07,.08); }
+  fan(){ [523,523,523,659,784,659,784,1047].forEach((f,i) => tone(f, i === 7 ? .9 : .2,'triangle',.18,i*.16)); [262,330,392].forEach(f => tone(f,1.4,'sine',.07,1.1)); }
 };
 
 /* ---------- confeti ---------- */
 function confeti(ms){
   const cv = $('#cf'), cx = cv.getContext('2d'); cv.width = innerWidth; cv.height = innerHeight;
   const col = ['#F2994A','#ffb877','#4db8ff','#3ddc97','#ff6b81','#ffffff'];
-  const P = Array.from({length:160}, () => ({ x:Math.random()*cv.width, y:-20 - Math.random()*cv.height*.5, vx:(Math.random()-.5)*3, vy:2 + Math.random()*3.5, r:Math.random()*6.28, vr:(Math.random()-.5)*.25, s:6 + Math.random()*7, c:col[Math.floor(Math.random()*col.length)] }));
+  const P = Array.from({length:170}, () => ({ x:Math.random()*cv.width, y:-20 - Math.random()*cv.height*.5, vx:(Math.random()-.5)*3, vy:2 + Math.random()*3.5, r:Math.random()*6.28, vr:(Math.random()-.5)*.25, s:6 + Math.random()*7, c:col[Math.floor(Math.random()*col.length)] }));
   const fin = Date.now() + (ms || 3500);
   (function f(){ cx.clearRect(0,0,cv.width,cv.height); P.forEach(p => { p.x += p.vx; p.y += p.vy; p.r += p.vr; cx.save(); cx.translate(p.x,p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); cx.restore(); });
     if (Date.now() < fin) requestAnimationFrame(f); else cx.clearRect(0,0,cv.width,cv.height); })();
 }
 
-/* ---------- estado compartido ---------- */
-let db, off = 0;
-const S = { estado:{ fase:'espera', dur:90 }, equipos:{}, miembros:{}, listo:false };
-const now = () => Date.now() + off;
-function transcurrido(){
-  const e = S.estado; if (!e.inicio) return 0;
-  const ref = e.fase === 'pausa' && e.pausaDesde ? e.pausaDesde : (e.fase === 'fin' && e.finEn ? e.finEn : now());
-  return Math.max(0, ref - e.inicio - (e.pausaAcum || 0));
+/* ---------- vistas ---------- */
+function cabecera(){
+  return `<div class="top"><div class="brand"><span class="ico">🔐</span><div><b>La bóveda de Brisa Verde</b><span>Escape room · Módulo 6 · Power Query</span></div></div>${G ? `<span class="tag" style="color:var(--mand2)">👤 ${esc(G.nombre)}</span>` : ''}</div>`;
 }
-const nombreEq = k => (S.equipos[k] && S.equipos[k].nombre) || DEF_NOMBRES[k];
-const salaEq = k => (S.equipos[k] && S.equipos[k].sala) || 1;
-const pistasEq = k => { const p = (S.equipos[k] && S.equipos[k].pistas) || {}; return Object.values(p).reduce((a,b) => a + (b||0), 0); };
-function ranking(){
-  return EQS.map(k => { const e = S.equipos[k] || {}, res = e.res || {}, n = Object.keys(res).length, ult = n ? Math.max(...Object.values(res)) : 0;
-    return { k, n, fin: e.fin != null ? e.fin + pistasEq(k)*PEN : null, ult: ult + pistasEq(k)*PEN }; })
-   .sort((a,b) => (a.fin != null) !== (b.fin != null) ? (a.fin != null ? -1 : 1) : a.fin != null ? a.fin - b.fin : b.n - a.n || a.ult - b.ult);
+const credito = '<p class="credit">Juego creado por: Jarlin Figueroa, M.A.</p>';
+
+function render(){
+  if (!G) return vistaInicio();
+  if (G.fin != null) return vistaFelicitacion(false);
+  vistaSala();
 }
 
-/* ---------- abrir candado (equipo o profesor) ---------- */
-async function intentar(k, n, valor, quien){
-  const v = norm(valor); if (!v) return { ok:false, vacio:true };
-  const h = await sha('m6esc|' + n + '|' + v);
-  if (h !== CRYPTO.h[n-1]) { db.ref(ROOT + '/equipos/' + k + '/intentos').transaction(x => (x || 0) + 1); return { ok:false }; }
-  const tok = await revelar(n, v), t = transcurrido();
-  const r = await db.ref(ROOT + '/equipos/' + k).transaction(cur => {
-    cur = cur || { nombre: DEF_NOMBRES[k], sala:1 };
-    if ((cur.sala || 1) !== n) return;
-    cur.sala = n + 1; cur.res = cur.res || {}; cur.res[n] = t; cur.resp = cur.resp || {}; cur.resp[n] = Number(v);
-    if (tok) { cur.tok = cur.tok || {}; cur.tok[n+1] = tok; }
-    if (n === 5) cur.fin = t;
-    return cur;
-  });
-  if (r.committed) db.ref(ROOT + '/eventos').push({ tipo: n === 5 ? 'fin' : 'candado', eq:k, sala:n, quien: quien || '', t: firebase.database.ServerValue.TIMESTAMP });
-  return { ok:true };
-}
-
-/* =============== PARTICIPANTE =============== */
-const ME = { uid: lsGet('escM6_uid') || ('u' + Math.random().toString(36).slice(2,10)), nombre: lsGet('escM6_nombre') || '', eq: lsGet('escM6_eq') || '' };
-lsSet('escM6_uid', ME.uid);
-function lsGet(k){ try { return localStorage.getItem(k); } catch(e) { return null; } }
-function lsSet(k, v){ try { localStorage.setItem(k, v); } catch(e) {} }
-let pKey = '', prevSala = null, prevFin = null, cool = 0, nuevos = {};
-
-function unirse(eq){
-  const n = ($('#nm') && $('#nm').value.trim()) || ME.nombre;
-  if (!n) { toast('Escribe tu nombre primero.'); $('#nm') && $('#nm').focus(); return; }
-  if (ME.eq && ME.eq !== eq) db.ref(ROOT + '/miembros/' + ME.eq + '/' + ME.uid).remove();
-  ME.nombre = n.slice(0,40); ME.eq = eq; lsSet('escM6_nombre', ME.nombre); lsSet('escM6_eq', eq);
-  presencia(); SFX.join(); pKey = ''; renderP();
-}
-function presencia(){
-  if (!ME.eq) return;
-  ME.joinT = Date.now();
-  const r = db.ref(ROOT + '/miembros/' + ME.eq + '/' + ME.uid);
-  r.set({ nombre: ME.nombre, on:true, t: firebase.database.ServerValue.TIMESTAMP });
-  r.child('on').onDisconnect().set(false);
-}
-function chipsEq(k, conX){
-  const m = S.miembros[k] || {};
-  const ks = Object.keys(m); if (!ks.length) return '<span class="muted" style="font-size:13px">Sin integrantes todavía</span>';
-  return ks.map(u => `<span class="chip ${m[u].on === false ? 'off' : ''}">${esc(m[u].nombre)}${conX ? `<span class="x" data-quitar="${k}|${u}" title="Quitar">✕</span>` : ''}</span>`).join('');
-}
-function cabecera(extra){
-  return `<div class="top"><div class="brand"><span class="ico">🔐</span><div><b>La bóveda de Brisa Verde</b><span>Escape room · Módulo 6 · Power Query</span></div></div>${extra || ''}</div>`;
-}
-function renderP(){
-  const app = $('#app'), e = S.estado;
-  /* ¿el equipo guardado sigue existiendo como miembro? */
-  if (ME.eq && S.listo && !(S.miembros[ME.eq] || {})[ME.uid] && Date.now() - (ME.joinT || 0) > 6000) { /* quitado por el facilitador o juego reiniciado */ ME.eq = ''; lsSet('escM6_eq',''); }
-  const sala = ME.eq ? salaEq(ME.eq) : 0, fin = ME.eq && S.equipos[ME.eq] && S.equipos[ME.eq].fin != null;
-  const key = !ME.eq ? 'reg' : e.fase === 'espera' ? 'esp' : e.fase === 'fin' ? 'fin' : fin ? 'ok' : 'j' + sala;
-  if (key !== pKey) {
-    pKey = key; CACHE = {};
-    if (key === 'reg') app.innerHTML = vistaRegistro();
-    else if (key === 'esp') app.innerHTML = vistaEspera();
-    else if (key === 'fin' || key === 'ok') app.innerHTML = vistaFinal(key === 'fin');
-    else app.innerHTML = vistaSala(sala);
-    enlazarP();
-  }
-  actualizarP();
-  /* celebraciones del equipo */
-  if (ME.eq && prevSala != null && sala > prevSala) { SFX.unlock(); celebrar(prevSala); }
-  if (ME.eq && fin && prevFin === false) { setTimeout(() => { SFX.fan(); confeti(5000); }, 900); }
-  prevSala = ME.eq ? sala : null; prevFin = ME.eq ? !!fin : null;
-}
-function celebrar(n){
-  const ov = document.createElement('div'); ov.className = 'ov';
-  const sig = ARCHS[n+1] && (S.equipos[ME.eq].tok || {})[n+1];
-  ov.innerHTML = `<div class="card"><div class="big">🔓</div><h2>¡Candado ${n} abierto!</h2><p class="muted" style="font-size:18px">${n < 5 ? (sig ? 'Se desbloqueó un archivo nuevo: <b>' + esc(ARCHS[n+1].nombre) + '</b>.' : 'Pasen a la siguiente sala.') : '¡Abrieron la bóveda!'}</p><button class="btn" style="margin-top:14px">Continuar</button></div>`;
-  document.body.appendChild(ov); confeti(2200);
-  if (sig) nuevos[n+1] = true;
-  const cerrar = () => ov.remove(); ov.querySelector('button').onclick = cerrar; setTimeout(cerrar, 4500);
-}
-function vistaRegistro(){
-  return `<div class="wrap">${cabecera()}
-  <div class="panel" style="margin-bottom:16px"><div class="kick">Antes de empezar</div><h1 style="font-size:clamp(26px,4vw,38px)">Únete a tu equipo.</h1>
-  <p class="muted">Escribe tu nombre y toca el equipo que te asignó el facilitador.</p>
-  <label class="lbl" for="nm">Tu nombre</label><input id="nm" type="text" maxlength="40" placeholder="Nombre y apellido" value="${esc(ME.nombre)}"></div>
-  <div class="grid3">${EQS.map(k => `<button class="team" data-eq="${k}" style="--c:${COLORES[k]}"><div class="tn">${esc(nombreEq(k))}</div><div class="chips" id="ch_${k}"></div></button>`).join('')}</div>
-  <p class="credit">Juego creado por: Jarlin Figueroa, M.A.</p></div>`;
-}
-function vistaEspera(){
-  return `<div class="wrap">${cabecera(`<span class="tag" style="color:${COLORES[ME.eq]}">${esc(nombreEq(ME.eq))}</span>`)}
-  <div class="panel" style="margin-bottom:16px"><div class="kick">La misión</div><h1 style="font-size:clamp(26px,4vw,40px)">Abran los cinco candados.</h1>
+function vistaInicio(){
+  $('#app').innerHTML = `<div class="wrap">${cabecera()}
+  <div class="panel" style="margin-bottom:16px"><div class="kick">Actividad individual</div><h1 style="font-size:clamp(28px,4.5vw,42px)">Abre los cinco candados.</h1>
   <p class="story">${HISTORIA}</p>
-  <div class="mision"><p><b>Reglas del juego</b></p>
-  <p>1. Cada candado se abre con un número que sale de sus datos en Excel.</p>
-  <p>2. Escriban solo el número: «RD$», las comas y los decimales no importan.</p>
-  <p>3. Cualquier integrante puede escribir el código; el avance se comparte con todo el equipo.</p>
-  <p>4. Cada pista suma <b>2 minutos</b> al tiempo del equipo.</p>
-  <p>5. Gana el equipo que abre los cinco candados en menos tiempo.</p></div>
-  <p class="muted" style="margin-top:16px">⏳ Esperando que el facilitador abra la bóveda…</p></div>
-  <div class="panel"><h3>Tu equipo</h3><div class="chips" id="misChips"></div>
-  <button class="btn sec sm" id="cambiar" style="margin-top:14px">Cambiar de equipo</button></div>
-  <p class="credit">Juego creado por: Jarlin Figueroa, M.A.</p></div>`;
+  <div class="mision"><p><b>Cómo se juega</b></p>
+  <p>1. Ten <b>Excel de escritorio</b> abierto. Cada candado te pide un número que sale de tus datos en Power Query.</p>
+  <p>2. Escribe solo el número: «RD$», las comas y los decimales no importan.</p>
+  <p>3. Cada candado que abres te entrega el archivo que necesitas para el siguiente.</p>
+  <p>4. Si te trabas, tienes dos pistas por candado. Cada pista suma <b>2 minutos</b> a tu tiempo en el ranking de la clase.</p>
+  <p>5. Al abrir el último candado aparecerá una <b>felicitación con tu nombre</b>: tómale una captura de pantalla y envíasela a tu facilitador.</p></div>
+  <form id="fIni" style="margin-top:18px" autocomplete="off"><label class="lbl" for="nm">Tu nombre completo (así aparecerá en la felicitación)</label>
+  <div class="code" style="margin-top:0"><input id="nm" type="text" maxlength="50" placeholder="Nombre y apellido"><button class="btn">🔓 Empezar</button></div></form></div>
+  ${credito}</div>`;
+  $('#fIni').onsubmit = ev => { ev.preventDefault(); const n = $('#nm').value.trim().replace(/\s+/g,' ');
+    if (n.length < 3) { toast('Escribe tu nombre completo.'); $('#nm').focus(); return; }
+    ac(); G = { nombre:n, inicio:Date.now(), sala:1, res:{}, resp:{}, tok:{}, pistas:{}, intentos:0, fin:null, noCuenta: lsGet('escapeM6_terminado') === '1' }; guardar(); render(); };
 }
-function vistaSala(n){
-  const s = SALAS[n-1];
-  return `<div class="wrap">${cabecera(`<span class="tag" style="color:${COLORES[ME.eq]}">${esc(nombreEq(ME.eq))}</span>`)}
-  <div class="hud"><div class="locks" id="locks"></div><div style="text-align:right"><div class="clock" id="clk">--:--</div><div class="muted" style="font-size:13px" id="clkLbl">Tiempo restante</div></div></div>
+
+function filesHtml(nuevo){
+  let h = `<a class="file" href="${ARCH1.ruta}" download><span class="fi">${ARCH1.ico}</span><div><b>${ARCH1.nombre}</b><span>${ARCH1.desc}</span></div></a>`;
+  [3,4,5].forEach(n => { const t = G.tok[n]; h += t ? `<a class="file ${nuevo === n ? 'new' : ''}" href="${urlArch(n, t)}" download><span class="fi">${ARCHS[n].ico}</span><div><b>${ARCHS[n].nombre}</b><span>${ARCHS[n].desc}</span></div></a>`
+    : `<div class="file" style="opacity:.45"><span class="fi">🔒</span><div><b>Archivo bloqueado</b><span>Se abre con el candado ${n-1}</span></div></div>`; });
+  return h;
+}
+function pistasHtml(n){
+  const usadas = G.pistas[n] || 0, s = SALAS[n-1];
+  let h = s.pis.slice(0, usadas).map((p,i) => `<div class="pista"><b>Pista ${i+1}.</b> ${p}</div>`).join('');
+  h += usadas < s.pis.length ? `<button class="btn sec sm" id="verPista" style="margin-top:${usadas ? 12 : 0}px">💡 Ver la pista ${usadas+1} (+2 min)</button>`
+    : '<p class="muted" style="font-size:14px;margin:10px 0 0">Ya usaste las dos pistas de este candado.</p>';
+  return h;
+}
+function vistaSala(nuevo){
+  const n = G.sala, s = SALAS[n-1];
+  $('#app').innerHTML = `<div class="wrap">${cabecera()}
+  <div class="hud"><div class="locks">${[1,2,3,4,5].map(i => `<div class="lk ${i < n ? 'ok' : i === n ? 'on' : ''}">${i < n ? '🔓' : '🔒'}<small>${i}</small></div>`).join('')}</div>
+  <div style="text-align:right"><div class="clock" id="clk">00:00</div><div class="muted" style="font-size:13px">Tu tiempo</div></div></div>
   <div class="sala">
     <div class="panel">
       <div class="kick">Candado ${n} de 5</div><h2>${s.ico} ${s.t}.</h2>
       <p class="story">${s.h}</p>
       <div class="mision">${s.m}</div>
       <div class="preg">🔑 ${s.p}</div>
-      <form class="code" id="frm" autocomplete="off"><input id="cod" type="text" inputmode="decimal" placeholder="Escriban el número" aria-label="Código del candado"><button class="btn" id="abrir">Abrir</button></form>
+      <form class="code" id="frm" autocomplete="off"><input id="cod" type="text" inputmode="decimal" placeholder="Escribe el número" aria-label="Código del candado"><button class="btn" id="abrir">Abrir</button></form>
       <div class="msg" id="msg"></div>
     </div>
     <div class="side">
-      <div class="panel blk"><h3>Archivos de la bóveda</h3><div id="files"></div></div>
-      <div class="panel blk"><h3>Pistas</h3><div id="pistas"></div></div>
-      <div class="panel blk"><h3>Tu equipo</h3><div class="chips" id="misChips"></div></div>
+      <div class="panel blk"><h3>Archivos de la bóveda</h3>${filesHtml(nuevo)}</div>
+      <div class="panel blk"><h3>Pistas</h3><div id="pistas">${pistasHtml(n)}</div></div>
     </div>
   </div>
-  <div id="pausa"></div>
-  <p class="credit">Juego creado por: Jarlin Figueroa, M.A.</p></div>`;
-}
-function vistaFinal(todos){
-  const e = S.equipos[ME.eq] || {}, resp = e.resp || {};
-  const pos = ranking().findIndex(r => r.k === ME.eq) + 1;
-  const terminado = e.fin != null;
-  return `<div class="wrap">${cabecera(`<span class="tag" style="color:${COLORES[ME.eq]}">${esc(nombreEq(ME.eq))}</span>`)}
-  <div class="panel" style="text-align:center;margin-bottom:16px"><div style="font-size:72px">${terminado ? '🏆' : '⌛'}</div>
-  <h1 style="font-size:clamp(28px,5vw,46px)">${terminado ? '¡Escaparon de la bóveda!' : 'Se acabó el juego.'}</h1>
-  <p class="muted" style="font-size:18px">${terminado ? `Tiempo: <b class="mono">${mmss(e.fin)}</b> + ${pistasEq(ME.eq)} pista(s) = <b class="mono">${mmss(e.fin + pistasEq(ME.eq)*PEN)}</b>` : `Abrieron ${Object.keys(e.res || {}).length} de 5 candados.`}${todos || terminado ? ` · Lugar <b>${pos}</b> de 3` : ''}</p>
-  ${!todos ? '<p class="muted">Esperen a que los demás equipos terminen. El facilitador mostrará el resultado final.</p>' : ''}</div>
-  <div class="panel"><div class="kick">El informe para la junta</div><h2>Lo que descubrieron.</h2>
-  ${RESUMEN.map((r,i) => `<div class="file"><span class="fi">${resp[i+1] != null ? '✅' : '🔒'}</span><div><b>${r}</b><span>${resp[i+1] != null ? rd(resp[i+1]) : 'Sin abrir'}</span></div></div>`).join('')}</div>
-  <p class="credit">Juego creado por: Jarlin Figueroa, M.A.</p></div>`;
-}
-function enlazarP(){
-  document.querySelectorAll('.team[data-eq]').forEach(b => b.onclick = () => unirse(b.dataset.eq));
-  const nm = $('#nm'); if (nm) nm.onkeydown = ev => { if (ev.key === 'Enter') toast('Ahora toca tu equipo.'); };
-  const cb = $('#cambiar'); if (cb) cb.onclick = () => { db.ref(ROOT + '/miembros/' + ME.eq + '/' + ME.uid).remove(); ME.eq = ''; lsSet('escM6_eq',''); pKey = ''; renderP(); };
-  const f = $('#frm'); if (f) f.onsubmit = async ev => {
-    ev.preventDefault(); const inp = $('#cod'), msg = $('#msg');
-    if (S.estado.fase !== 'juego') { toast('El juego está en pausa.'); return; }
-    if (Date.now() < cool) { msg.className = 'msg bad'; msg.textContent = 'Esperen un momento antes de intentar otra vez.'; return; }
-    const n = salaEq(ME.eq); $('#abrir').disabled = true;
-    const r = await intentar(ME.eq, n, inp.value, ME.nombre);
-    $('#abrir') && ($('#abrir').disabled = false);
-    if (r.vacio) { msg.className = 'msg bad'; msg.textContent = 'Escriban un número.'; return; }
-    if (!r.ok) { SFX.err(); cool = Date.now() + 4000; msg.className = 'msg bad'; msg.textContent = '✖ Ese no es el código. Revisen sus pasos en Power Query.'; f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); inp.select(); }
+  <p class="credit">Juego creado por: Jarlin Figueroa, M.A. · <button class="linkbtn" id="reini">Empezar de nuevo</button></p></div>`;
+  enlazarPista(n);
+  $('#reini').onclick = reiniciar;
+  let cool = 0;
+  $('#frm').onsubmit = async ev => {
+    ev.preventDefault(); const inp = $('#cod'), msg = $('#msg'), f = $('#frm');
+    if (Date.now() < cool) { msg.className = 'msg bad'; msg.textContent = 'Espera un momento antes de intentar otra vez.'; return; }
+    const v = norm(inp.value); if (!v) { msg.className = 'msg bad'; msg.textContent = 'Escribe un número.'; return; }
+    if (await sha('m6esc|' + n + '|' + v) !== CRYPTO.h[n-1]) {
+      G.intentos++; guardar(); SFX.err(); cool = Date.now() + 3000;
+      msg.className = 'msg bad'; msg.textContent = '✖ Ese no es el código. Revisa tus pasos en Power Query.';
+      f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); inp.select(); return;
+    }
+    const tok = await revelar(n, v);
+    G.res[n] = Date.now() - G.inicio; G.resp[n] = Number(v); if (tok) G.tok[n+1] = tok;
+    if (n === 5) { G.fin = Date.now(); guardar(); lsSet('escapeM6_terminado','1'); SFX.fan(); confeti(6000);
+      G.lugar = await miLugar(); guardar(); vistaFelicitacion(true); return; }
+    G.sala = n + 1; guardar(); SFX.unlock(); confeti(2000); vistaSala(tok ? n + 1 : null); celebrar(n, tok ? n + 1 : null);
   };
+  $('#cod').focus();
 }
-function filesHtml(){
-  const e = S.equipos[ME.eq] || {}, tok = e.tok || {};
-  let h = `<a class="file" href="${ARCH1.ruta}" download><span class="fi">${ARCH1.ico}</span><div><b>${ARCH1.nombre}</b><span>${ARCH1.desc}</span></div></a>`;
-  [3,4,5].forEach(n => { h += tok[n] ? `<a class="file ${nuevos[n] ? 'new' : ''}" href="${urlArch(n, tok[n])}" download><span class="fi">${ARCHS[n].ico}</span><div><b>${ARCHS[n].nombre}</b><span>${ARCHS[n].desc}</span></div></a>`
-    : `<div class="file" style="opacity:.45"><span class="fi">🔒</span><div><b>Archivo bloqueado</b><span>Se abre con el candado ${n-1}</span></div></div>`; });
-  return h;
+function enlazarPista(n){
+  const b = $('#verPista'); if (!b) return;
+  b.onclick = () => { G.pistas[n] = (G.pistas[n] || 0) + 1; guardar(); SFX.pista(); $('#pistas').innerHTML = pistasHtml(n); enlazarPista(n); };
 }
-function pistasHtml(n){
-  const usadas = ((S.equipos[ME.eq] || {}).pistas || {})[n] || 0, s = SALAS[n-1];
-  let h = s.pis.slice(0, usadas).map((p,i) => `<div class="pista"><b>Pista ${i+1}.</b> ${p}</div>`).join('');
-  if (usadas < s.pis.length) h += `<button class="btn sec sm" id="verPista" style="margin-top:${usadas ? 12 : 0}px">💡 Ver la pista ${usadas+1} (+2 min)</button>`;
-  else h += '<p class="muted" style="font-size:14px;margin:10px 0 0">Ya usaron las dos pistas de este candado.</p>';
-  return h;
-}
-let CACHE = {};
-/* Solo reescribe un bloque si cambió, para no borrar lo que el equipo está escribiendo */
-function pinta(id, html, alPintar){ const el = $('#' + id); if (!el || CACHE[id] === html) return; el.innerHTML = html; CACHE[id] = html; if (alPintar) alPintar(); }
-function actualizarP(){
-  if (!ME.eq) { EQS.forEach(k => pinta('ch_' + k, chipsEq(k))); return; }
-  pinta('misChips', chipsEq(ME.eq));
-  pinta('files', filesHtml());
-  const n = salaEq(ME.eq);
-  if (n <= 5 && $('#pistas')) pinta('pistas', pistasHtml(n), () => { const b = $('#verPista'); if (b) b.onclick = () => verPista(n); });
-  pinta('locks', [1,2,3,4,5].map(i => `<div class="lk ${i < n ? 'ok' : i === n ? 'on' : ''}">${i < n ? '🔓' : '🔒'}<small>${i}</small></div>`).join(''));
-  pinta('pausa', S.estado.fase === 'pausa' ? '<div class="ov"><div class="card"><div class="big">⏸️</div><h2>Juego en pausa.</h2><p class="muted">El facilitador detuvo el reloj por un momento.</p></div></div>' : '');
-}
-function verPista(n){
-  if (!confirm('¿Usar la pista? Suma 2 minutos al tiempo de todo el equipo.')) return;
-  const usadas = ((S.equipos[ME.eq] || {}).pistas || {})[n] || 0;
-  db.ref(ROOT + '/equipos/' + ME.eq + '/pistas/' + n).transaction(x => (x || 0) === usadas && usadas < 2 ? usadas + 1 : undefined).then(r => {
-    if (r.committed) { SFX.pista(); db.ref(ROOT + '/eventos').push({ tipo:'pista', eq:ME.eq, sala:n, quien:ME.nombre, t: firebase.database.ServerValue.TIMESTAMP }); }
-  });
-}
-function relojes(){
-  const el = $('#clk'); if (!el) return;
-  const rest = (S.estado.dur || 90) * 60000 - transcurrido();
-  el.textContent = (rest < 0 ? '+' : '') + mmss(Math.abs(rest)); el.classList.toggle('extra', rest < 0);
-  const l = $('#clkLbl'); if (l) l.textContent = rest < 0 ? 'Tiempo extra' : S.estado.fase === 'pausa' ? 'En pausa' : 'Tiempo restante';
-}
-
-/* =============== PANTALLA =============== */
-let scrKey = '', vistos = new Set(), cargaT = 0;
-function renderS(){
-  const e = S.estado, app = $('#app');
-  const key = e.fase === 'espera' ? 'esp' : e.fase === 'fin' ? 'fin' : 'jue';
-  if (key !== scrKey) {
-    scrKey = key;
-    if (key === 'fin') { app.innerHTML = vistaPodio(); SFX.fan(); confeti(6000); return; }
-    app.innerHTML = `<div class="wrap scr">
-      <div class="head"><div><div class="kick">Escape room · Módulo 6 · Power Query</div><div class="title">🔐 La bóveda de Brisa Verde</div></div>
-      <div style="text-align:right"><div class="clock" id="clk">--:--</div><div class="muted" id="clkLbl"></div></div>
-      <div class="join"><div id="qr"></div><div><b>Únete con tu equipo</b><span>${esc(baseUrl())}</span></div></div></div>
-      ${key === 'esp' ? `<div class="panel" style="margin-bottom:16px"><p class="story" style="font-size:20px;margin:0">${HISTORIA}</p></div>` : ''}
-      <div class="lanes" id="lanes"></div>
-      <div class="feed" id="feed"></div>
-      <div class="row" style="justify-content:space-between;margin-top:16px"><button class="btn sec sm" id="snd">${sonido ? '🔊 Sonido activo' : '🔇 Activar el sonido'}</button><span class="muted" style="font-size:14px">Juego creado por: Jarlin Figueroa, M.A.</span></div>
-      <div id="pausa"></div></div>`;
-    $('#snd').onclick = () => { sonido = !sonido; ac(); $('#snd').textContent = sonido ? '🔊 Sonido activo' : '🔇 Activar el sonido'; if (sonido) SFX.clic(); };
-    if (window.QRCode) try { new QRCode($('#qr'), { text: baseUrl(), width:96, height:96, correctLevel: QRCode.CorrectLevel.M }); } catch(err) {}
-  }
-  if (key === 'fin') return;
-  $('#lanes').innerHTML = EQS.map(k => {
-    const e2 = S.equipos[k] || {}, sl = salaEq(k), res = e2.res || {}, done = e2.fin != null;
-    return `<div class="lane" style="--c:${COLORES[k]}"><div><div class="nm">${esc(nombreEq(k))}</div><div class="chips">${chipsEq(k)}</div></div>
-      <div class="doors">${[1,2,3,4,5].map(i => `<div class="door ${i < sl ? 'ok' : (i === sl && e.fase !== 'espera') ? 'on' : ''}"><small>${i}</small>${i < sl ? '🔓' : '🔒'}${res[i] != null ? `<span class="t">${mmss(res[i])}</span>` : ''}</div>`).join('')}</div>
-      <div class="st">${done ? `<b style="color:var(--ok)">🏆 ${mmss(e2.fin + pistasEq(k)*PEN)}</b><span class="muted">¡Escaparon!</span>` : `<b>${sl - 1} / 5</b><span class="muted">candados abiertos</span>`}<div class="muted" style="font-size:14px">💡 ${pistasEq(k)} pista(s) · ✖ ${e2.intentos || 0} intento(s)</div></div></div>`;
-  }).join('');
-  const pz = $('#pausa'); pz.innerHTML = e.fase === 'pausa' ? '<div class="ov"><div class="card"><div class="big">⏸️</div><h2>Juego en pausa.</h2></div></div>' : '';
-}
-function vistaPodio(){
-  const R = ranking(), orden = [1,0,2].filter(i => R[i]);
-  const alto = [210,160,120];
-  return `<div class="wrap scr" style="text-align:center"><div class="kick">Escape room · Resultado final</div><h1 style="font-size:clamp(34px,5vw,64px)">🏆 ¡La bóveda está abierta!</h1>
-  <div class="podium">${orden.map(i => { const r = R[i]; return `<div class="pd" style="--c:${COLORES[r.k]}"><div class="nm">${esc(nombreEq(r.k))}</div>
-    <div class="muted" style="margin-bottom:8px">${r.fin != null ? '⏱️ ' + mmss(r.fin) + (pistasEq(r.k) ? ` (incluye ${pistasEq(r.k)} pista(s))` : '') : r.n + ' de 5 candados'}</div>
-    <div class="base" style="height:${alto[i]}px">${i+1}</div></div>`; }).join('')}</div>
-  <p class="muted" style="margin-top:30px">Juego creado por: Jarlin Figueroa, M.A.</p></div>`;
-}
-function evento(ev){
-  if (MODO !== 'pantalla' || !ev || vistos.has(ev.id)) return; vistos.add(ev.id);
-  const quien = ev.quien ? ` <span class="muted">(${esc(ev.quien)})</span>` : '';
-  const txt = ev.tipo === 'pista' ? `💡 ${esc(nombreEq(ev.eq))} usó una pista en el candado ${ev.sala}` : ev.tipo === 'fin' ? `🏆 ${esc(nombreEq(ev.eq))} abrió la bóveda` : `🔓 ${esc(nombreEq(ev.eq))} abrió el candado ${ev.sala}`;
-  const f = $('#feed'); if (f) { f.insertAdjacentHTML('afterbegin', `<span class="ev" style="border-color:${COLORES[ev.eq]}">${txt}${quien}</span>`); while (f.children.length > 8) f.lastChild.remove(); }
-  if (ev.t < cargaT - 3000 || ev.tipo === 'pista') { if (ev.tipo === 'pista' && ev.t >= cargaT) SFX.pista(); return; }
+function celebrar(n, arch){
   const ov = document.createElement('div'); ov.className = 'ov';
-  ov.innerHTML = `<div class="card"><div class="big">${ev.tipo === 'fin' ? '🏆' : '🔓'}</div><h2 style="color:${COLORES[ev.eq]}">${esc(nombreEq(ev.eq))}</h2><p style="font-size:clamp(22px,3vw,34px);margin:0">${ev.tipo === 'fin' ? '¡abrió los cinco candados!' : 'abrió el candado ' + ev.sala}</p></div>`;
-  document.body.appendChild(ov); setTimeout(() => ov.remove(), ev.tipo === 'fin' ? 5000 : 3000);
-  if (ev.tipo === 'fin') { SFX.fan(); confeti(5000); } else { SFX.unlock(); confeti(1600); }
+  ov.innerHTML = `<div class="card"><div class="big">🔓</div><h2>¡Candado ${n} abierto!</h2><p class="muted" style="font-size:18px">${arch ? 'Se desbloqueó un archivo nuevo: <b>' + esc(ARCHS[arch].nombre) + '</b>.' : 'Pasa a la siguiente sala.'}</p><button class="btn" style="margin-top:14px">Continuar</button></div>`;
+  document.body.appendChild(ov);
+  const cerrar = () => { ov.remove(); const c = $('#cod'); if (c) c.focus(); }; ov.querySelector('button').onclick = cerrar; setTimeout(cerrar, 4500);
 }
-
-/* =============== PROFESOR =============== */
-let profOk = lsGet('escM6_prof') === CLAVE, profPintado = false;
-function renderT(){
-  const app = $('#app');
-  if (!profOk) {
-    if (!$('#clave')) { app.innerHTML = `<div class="wrap">${cabecera()}<div class="panel" style="max-width:420px;margin:10vh auto"><h2>Panel del facilitador.</h2><p class="muted">Escribe la clave para entrar.</p><form id="fc" class="code"><input id="clave" type="password" placeholder="Clave"><button class="btn">Entrar</button></form></div></div>`;
-      $('#fc').onsubmit = ev => { ev.preventDefault(); if ($('#clave').value === CLAVE) { profOk = true; lsSet('escM6_prof', CLAVE); renderT(); } else toast('Clave incorrecta.'); }; }
+function vistaFelicitacion(recien){
+  const total = G.fin - G.inicio, pistas = Object.values(G.pistas).reduce((a,b) => a + b, 0);
+  $('#app').innerHTML = `<div class="wrap" style="padding-top:14px">
+  <div class="foto">📸 <b>Toma una captura de pantalla</b> de esta felicitación y envíasela a tu facilitador.</div>
+  <div class="cert" id="cert">
+    <div class="kick">Escape room · Módulo 6 · Power Query</div>
+    <div class="seal" style="margin-top:8px">🏆</div>
+    <div class="fel">¡Felicidades,</div>
+    <div class="nom">${esc(G.nombre)}!</div>
+    <p class="lead">Abriste los <b>cinco candados</b> de la bóveda de Farmacias Brisa Verde: uniste y analizaste los datos con Power Query, y el informe llegó a tiempo a la junta.</p>
+    <div class="datos"><span>📅 ${fechaLarga(G.fin)}</span><span>⏱️ Tiempo: <b class="mono">${hms(total)}</b></span><span>💡 Pistas: <b>${pistas}</b></span><span>✖ Intentos fallidos: <b>${G.intentos}</b></span>${G.lugar ? `<span style="border-color:var(--mand);color:var(--mand2)">🏅 Lugar <b>${G.lugar.lugar}</b> entre ${G.lugar.de} que han terminado</span>` : ''}</div>
+    <div class="hall">${RESUMEN.map((r,i) => `<div>✅ ${r}<b>${rd(G.resp[i+1])}</b></div>`).join('')}</div>
+    <p class="pie">Excel Avanzado · Juego creado por: Jarlin Figueroa, M.A.</p>
+  </div>
+  <p style="text-align:center"><button class="linkbtn" id="reini">Jugar otra vez</button></p></div>`;
+  $('#reini').onclick = reiniciar;
+  if (!recien) setTimeout(() => confeti(2500), 300);
+}
+function reiniciar(){
+  if (!confirm('¿Empezar de nuevo? Se borra tu avance en este navegador.')) return;
+  try { localStorage.removeItem(KEY); } catch(e) {} G = null; render();
+}
+/* =============== PANTALLA DEL FACILITADOR (?modo=profesor) =============== */
+let J = {}, sonidoProf = false, profIni = 0, vistos = null;
+function vistaProfesor(){
+  if (lsGet('escapeM6_prof') !== CLAVE) {
+    $('#app').innerHTML = `<div class="wrap">${cabecera()}<div class="panel" style="max-width:420px;margin:10vh auto"><h2>Pantalla del facilitador.</h2><p class="muted">Escribe la clave para ver el ranking.</p>
+      <form id="fc" class="code"><input id="clave" type="password" placeholder="Clave"><button class="btn">Entrar</button></form></div></div>`;
+    $('#fc').onsubmit = ev => { ev.preventDefault(); if ($('#clave').value === CLAVE) { lsSet('escapeM6_prof', CLAVE); vistaProfesor(); } else toast('Clave incorrecta.'); };
     return;
   }
-  if (!profPintado) {
-    profPintado = true;
-    app.innerHTML = `<div class="wrap">${cabecera('<span class="tag">Panel del facilitador</span>')}
-    <div class="panel" style="margin-bottom:16px">
-      <div class="hud" style="margin:0"><div><div class="kick">Estado</div><h2 id="fase" style="margin:0"></h2></div><div style="text-align:right"><div class="clock" id="clk"></div><div class="muted" id="clkLbl" style="font-size:13px"></div></div></div>
-      <div class="sep"></div>
-      <div class="ctl"><button class="btn" id="bIni">▶ Abrir la bóveda (iniciar)</button><button class="btn sec" id="bPau">⏸ Pausar</button><button class="btn sec" id="bFin">🏁 Terminar y mostrar podio</button></div>
-      <div class="sep"></div>
-      <div class="row" style="align-items:flex-end">
-        ${EQS.map(k => `<div style="flex:1;min-width:180px"><label class="lbl">Nombre ${k.slice(1)}</label><input type="text" id="n_${k}" maxlength="30"></div>`).join('')}
-        <div style="width:120px"><label class="lbl">Duración (min)</label><input type="number" id="dur" min="10" max="240"></div>
-        <button class="btn sec" id="bGuardar">Guardar</button>
-      </div>
+  $('#app').innerHTML = `<div class="wrap scr">
+    <div class="head"><div><div class="kick">Escape room · Módulo 6 · Ranking en vivo</div><div class="title">🔐 La bóveda de Brisa Verde</div></div>
+    <div class="row"><div class="tag" id="cuenta"></div></div></div>
+    <div id="podio"></div>
+    <div class="grid2">
+      <div class="panel"><h3>🏁 Terminaron</h3><div id="tabla"></div></div>
+      <div class="panel"><h3>🎮 Jugando ahora</h3><div id="jugando"></div></div>
     </div>
-    <div class="panel" style="margin-bottom:16px;overflow-x:auto"><h3>Avance de los equipos</h3><table class="t"><thead><tr><th>Equipo</th><th>Integrantes</th><th>Candado</th><th>Tiempos</th><th>Pistas</th><th>Fallos</th><th>Abrir por el equipo</th></tr></thead><tbody id="tb"></tbody></table>
-    <p class="muted" style="font-size:13px;margin:10px 0 0">«Abrir por el equipo»: si un equipo tiene un problema técnico, escribe aquí el código del candado actual (está en el solucionario).</p></div>
-    <div class="panel"><h3>Enlaces</h3><div class="links"><p>Participantes: <a href="${baseUrl()}" target="_blank">${esc(baseUrl())}</a></p><p>Pantalla proyectada: <a href="${baseUrl()}?modo=pantalla" target="_blank">${esc(baseUrl())}?modo=pantalla</a></p></div>
-    <div class="sep"></div><div class="ctl"><button class="btn dang" id="bRei">↺ Reiniciar progreso (mantener equipos)</button><button class="btn dang" id="bTodo">🗑 Reiniciar todo</button><button class="btn sec" id="bSal">Salir del panel</button></div></div>
+    <div class="row" style="justify-content:space-between;margin-top:16px">
+      <div class="ctl"><button class="btn sec sm" id="snd">🔇 Activar el sonido</button><button class="btn sec sm" id="csv">⬇ Descargar CSV</button><button class="btn dang sm" id="rei">↺ Reiniciar ranking</button><button class="btn sec sm" id="sal">Salir</button></div>
+      <span class="muted" style="font-size:14px">Enlace para los estudiantes: <b>${esc(location.href.split('?')[0])}</b></span></div>
     <p class="credit">Juego creado por: Jarlin Figueroa, M.A.</p></div>`;
-    EQS.forEach(k => $('#n_' + k).value = nombreEq(k)); $('#dur').value = S.estado.dur || 90;
-    const ts = firebase.database.ServerValue.TIMESTAMP, est = db.ref(ROOT + '/estado');
-    $('#bIni').onclick = () => { const e = S.estado; if (e.fase === 'juego') return toast('El juego ya está en marcha.');
-      if (e.fase === 'pausa') return toast('Usa «Reanudar».');
-      if (e.fase === 'fin' && !confirm('El juego terminó. ¿Iniciar uno nuevo desde cero? Se borra el avance.')) return;
-      const up = {}; EQS.forEach(k => up['equipos/' + k] = { nombre: nombreEq(k), sala:1 }); up['eventos'] = null;
-      up['estado'] = { fase:'juego', inicio: ts, pausaAcum:0, dur: Number($('#dur').value) || 90 };
-      db.ref(ROOT).update(up); toast('¡La bóveda está abierta!'); };
-    $('#bPau').onclick = () => { const e = S.estado;
-      if (e.fase === 'juego') est.update({ fase:'pausa', pausaDesde: now() });
-      else if (e.fase === 'pausa') est.update({ fase:'juego', pausaAcum: (e.pausaAcum || 0) + (now() - e.pausaDesde), pausaDesde:null }); };
-    $('#bFin').onclick = () => { if (!confirm('¿Terminar el juego y mostrar el podio?')) return; const e = S.estado;
-      const extra = e.fase === 'pausa' ? now() - e.pausaDesde : 0; est.update({ fase:'fin', finEn: now(), pausaAcum: (e.pausaAcum || 0) + extra, pausaDesde:null }); };
-    $('#bGuardar').onclick = () => { const up = {}; EQS.forEach(k => up['equipos/' + k + '/nombre'] = $('#n_' + k).value.trim() || DEF_NOMBRES[k]); up['estado/dur'] = Number($('#dur').value) || 90; db.ref(ROOT).update(up); toast('Guardado.'); };
-    $('#bRei').onclick = () => { if (!confirm('¿Reiniciar el avance? Los integrantes siguen en sus equipos.')) return;
-      const up = { estado:{ fase:'espera', dur: S.estado.dur || 90 }, eventos:null }; EQS.forEach(k => up['equipos/' + k] = { nombre: nombreEq(k), sala:1 }); db.ref(ROOT).update(up); };
-    $('#bTodo').onclick = () => { if (!confirm('¿Borrar TODO (equipos, integrantes y avance)?')) return; db.ref(ROOT).set({ estado:{ fase:'espera', dur:90 } }); };
-    $('#bSal').onclick = () => { lsSet('escM6_prof',''); location.reload(); };
-    $('#tb').addEventListener('click', ev => { const x = ev.target.closest('[data-quitar]'); if (x) { const [k,u] = x.dataset.quitar.split('|'); if (confirm('¿Quitar a este integrante?')) db.ref(ROOT + '/miembros/' + k + '/' + u).remove(); }
-      const b = ev.target.closest('[data-abrir]'); if (b) { const k = b.dataset.abrir, inp = $('#c_' + k); intentar(k, salaEq(k), inp.value, 'Facilitador').then(r => { toast(r.ok ? 'Candado abierto.' : 'Ese código no corresponde al candado actual.'); if (r.ok) inp.value = ''; }); } });
-  }
-  const e = S.estado, F = { espera:'⏳ En espera', juego:'▶ En juego', pausa:'⏸ En pausa', fin:'🏁 Terminado' };
-  $('#fase').textContent = F[e.fase] || e.fase; $('#bPau').textContent = e.fase === 'pausa' ? '▶ Reanudar' : '⏸ Pausar';
-  const R = ranking();
-  /* conservar lo que el facilitador está escribiendo en «Abrir por el equipo» */
-  const guard = {}, foco = document.activeElement && document.activeElement.id;
-  EQS.forEach(k => { const i = $('#c_' + k); if (i) guard[k] = i.value; });
-  $('#tb').innerHTML = EQS.map(k => { const q = S.equipos[k] || {}, res = q.res || {}, pis = q.pistas || {};
-    return `<tr><td><b style="color:${COLORES[k]}">${esc(nombreEq(k))}</b><div class="muted" style="font-size:12px">Lugar ${R.findIndex(r => r.k === k) + 1}</div></td><td><div class="chips" style="margin:0">${chipsEq(k, true)}</div></td>
-      <td>${q.fin != null ? '🏆 Terminó' : salaEq(k) + ' de 5'}</td>
-      <td class="mono" style="font-size:12px">${[1,2,3,4,5].map(i => res[i] != null ? i + ': ' + mmss(res[i]) : '').filter(Boolean).join('<br>') || '—'}</td>
-      <td>${pistasEq(k)}${Object.keys(pis).length ? '<div class="muted" style="font-size:12px">' + Object.keys(pis).map(s => 'C' + s + ': ' + pis[s]).join(' · ') + '</div>' : ''}</td><td>${q.intentos || 0}</td>
-      <td>${q.fin == null ? `<div class="row" style="flex-wrap:nowrap"><input type="text" id="c_${k}" placeholder="Código" style="width:120px;padding:8px"><button class="btn sm sec" data-abrir="${k}">Abrir</button></div>` : '—'}</td></tr>`; }).join('');
-  EQS.forEach(k => { const i = $('#c_' + k); if (i && guard[k]) i.value = guard[k]; });
-  if (foco && $('#' + foco)) $('#' + foco).focus();
+  $('#snd').onclick = () => { sonidoProf = !sonidoProf; ac(); $('#snd').textContent = sonidoProf ? '🔊 Sonido activo' : '🔇 Activar el sonido'; if (sonidoProf) SFX.pista(); };
+  $('#sal').onclick = () => { lsSet('escapeM6_prof',''); location.reload(); };
+  $('#csv').onclick = () => {
+    const filas = [['Lugar','Nombre','Estado','Candados abiertos','Tiempo','Pistas','Tiempo con pistas','Intentos fallidos','Terminó']];
+    ordenados().forEach((j,i) => filas.push([j.fin != null ? i+1 : '', j.nombre, j.fin != null ? 'Terminó' : 'Jugando', Math.min(5,(j.sala||1)-1), j.fin != null ? hms(j.fin-j.inicio) : '', j.pistas||0, j.fin != null ? hms(totalRank(j)) : '', j.intentos||0, j.fin != null ? fechaLarga(j.fin) : '']));
+    const csv = '﻿' + filas.map(f => f.map(x => '"' + String(x).replace(/"/g,'""') + '"').join(';')).join('\r\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv' })); a.download = 'Ranking-Escape-Room-Modulo6.csv'; a.click();
+  };
+  $('#rei').onclick = () => { if (confirm('¿Borrar el ranking completo? Esta acción no se puede deshacer.')) window.DB_READY.ref(ROOT + '/jugadores').remove(); };
+  if (!window.DB_READY) { $('#tabla').innerHTML = '<p class="muted">Conectando…</p>'; return; }
+  profIni = Date.now();
+  window.DB_READY.ref(ROOT + '/jugadores').on('value', s => { J = s.val() || {}; pintarRanking(); });
+}
+function ordenados(){
+  return Object.keys(J).map(k => Object.assign({ id:k }, J[k])).sort((a,b) => (a.fin != null) !== (b.fin != null) ? (a.fin != null ? -1 : 1)
+    : a.fin != null ? totalRank(a) - totalRank(b) : (b.sala||1) - (a.sala||1) || a.inicio - b.inicio);
+}
+function pintarRanking(){
+  const L = ordenados(), fin = L.filter(j => j.fin != null), jug = L.filter(j => j.fin == null);
+  $('#cuenta').textContent = `🏁 ${fin.length} ${fin.length === 1 ? "terminó" : "terminaron"} · 🎮 ${jug.length} jugando`;
+  const med = ['🥇','🥈','🥉'], alto = [200,150,110], orden = [1,0,2].filter(i => fin[i]);
+  $('#podio').innerHTML = fin.length ? `<div class="podium" style="margin:0 0 22px">${orden.map(i => `<div class="pd" style="--c:${['#F2994A','#a9b4ff','#d08a5a'][i]}">
+      <div class="nm" style="font-size:${i ? 22 : 28}px">${med[i]} ${esc(fin[i].nombre)}</div><div class="muted mono" style="margin-bottom:8px">${hms(totalRank(fin[i]))}</div>
+      <div class="base" style="height:${alto[i]}px">${i+1}</div></div>`).join('')}</div>`
+    : `<div class="panel" style="text-align:center;margin-bottom:18px"><div style="font-size:54px">⏳</div><h2>Todavía nadie ha abierto la bóveda.</h2><p class="muted">El primero en terminar aparecerá aquí en primer lugar.</p></div>`;
+  $('#tabla').innerHTML = fin.length ? `<table class="t"><thead><tr><th>#</th><th>Nombre</th><th>Tiempo</th><th>Pistas</th><th>Total</th></tr></thead><tbody>${fin.map((j,i) =>
+    `<tr${i === 0 ? ' style="color:var(--mand2);font-weight:700"' : ''}><td>${i < 3 ? med[i] : i+1}</td><td>${esc(j.nombre)}</td><td class="mono">${hms(j.fin - j.inicio)}</td><td>${j.pistas||0}</td><td class="mono"><b>${hms(totalRank(j))}</b></td></tr>`).join('')}</tbody></table>`
+    : '<p class="muted">Aún no hay estudiantes que hayan terminado.</p>';
+  $('#jugando').innerHTML = jug.length ? jug.map(j => `<div class="jr"><span>${esc(j.nombre)}</span><span class="mini">${[1,2,3,4,5].map(i => i < (j.sala||1) ? '🔓' : '🔒').join('')}</span></div>`).join('')
+    : '<p class="muted">Nadie está jugando en este momento.</p>';
+  /* aviso cuando alguien termina */
+  const ya = new Set(fin.map(j => j.id));
+  if (vistos) fin.forEach((j,i) => { if (!vistos.has(j.id)) avisoFin(j, i+1); });
+  vistos = ya;
+}
+function avisoFin(j, lugar){
+  const ov = document.createElement('div'); ov.className = 'ov';
+  ov.innerHTML = `<div class="card"><div class="big">${lugar === 1 ? '🥇' : lugar === 2 ? '🥈' : lugar === 3 ? '🥉' : '🏆'}</div><h2 style="color:var(--mand2)">${esc(j.nombre)}</h2><p style="font-size:clamp(22px,3vw,32px);margin:0">¡abrió la bóveda! ${lugar === 1 ? '<b>Primer lugar</b>' : 'Lugar ' + lugar}</p><p class="muted mono" style="font-size:20px">${hms(totalRank(j))}</p></div>`;
+  document.body.appendChild(ov); setTimeout(() => ov.remove(), 5500);
+  confeti(4000); if (sonidoProf) SFX.fan();
 }
 
-/* =============== arranque =============== */
-function render(){ if (MODO === 'pantalla') renderS(); else if (MODO === 'profesor') renderT(); else renderP(); }
-function boot(){
-  db = window.DB_READY;
-  db.ref('.info/serverTimeOffset').on('value', s => off = s.val() || 0);
-  let pend = 3; const listo = () => { if (--pend <= 0) { S.listo = true; cargaT = now(); render(); } else if (S.listo) render(); };
-  db.ref(ROOT + '/estado').on('value', s => { S.estado = s.val() || { fase:'espera', dur:90 }; S.listo ? render() : listo(); });
-  db.ref(ROOT + '/equipos').on('value', s => { S.equipos = s.val() || {}; S.listo ? render() : listo(); });
-  db.ref(ROOT + '/miembros').on('value', s => { const ant = S.miembros; S.miembros = s.val() || {}; S.listo ? render() : listo();
-    if (MODO === 'pantalla' && S.listo) { const c = o => EQS.reduce((a,k) => a + Object.keys(o[k] || {}).length, 0); if (c(S.miembros) > c(ant)) SFX.join(); } });
-  if (MODO === 'pantalla') db.ref(ROOT + '/eventos').limitToLast(12).on('child_added', s => { const v = s.val(); v.id = s.key; setTimeout(() => evento(v), S.listo ? 0 : 600); });
-  if (MODO === 'participante' && ME.eq) presencia();
-  setInterval(() => { if (S.listo) relojes(); }, 500);
-}
-if (MODO === 'pantalla') { const q = document.createElement('script'); q.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
-  q.onload = () => { const el = $('#qr'); if (el && !el.innerHTML) try { new QRCode(el, { text: baseUrl(), width:96, height:96, correctLevel: QRCode.CorrectLevel.M }); } catch(err) {} };
-  document.head.appendChild(q); }
-if (window.DB_READY) boot(); else window.addEventListener('fb-ready', boot);
+setInterval(() => { const c = $('#clk'); if (c && G && G.fin == null) c.textContent = hms(Date.now() - G.inicio); }, 500);
+window.addEventListener('fb-ready', () => { if (MODO === 'profesor') vistaProfesor(); else subir(); });
+if (MODO === 'profesor') vistaProfesor(); else render();
 </script>
 </body>
 </html>
