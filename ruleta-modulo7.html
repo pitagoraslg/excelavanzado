@@ -46,6 +46,8 @@ main{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:24px;
 .act .ic{font-size:38px;line-height:1}
 .act h2{margin:0;font-family:var(--serif);font-size:clamp(19px,1.7vw,25px);color:var(--ink);line-height:1.15}
 .act.B h2{color:var(--acc-d)}
+.act p.fecha{margin-top:6px;font-weight:700;color:var(--ink)}
+.act.B p.fecha{color:var(--acc-d)}
 .act p{margin:3px 0 0;font-size:clamp(13px,1.05vw,15px);color:var(--muted);line-height:1.4}
 .act .cupo{margin-left:auto;font-family:var(--mono);font-size:13px;font-weight:600;background:var(--bg);border-radius:20px;padding:3px 10px;white-space:nowrap}
 .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:auto}
@@ -79,6 +81,14 @@ footer .der{display:flex;gap:8px}
 .ov .op.fin{animation:gana .8s ease 2}
 @keyframes gana{50%{transform:scale(1.12)}}
 .ov .op.lleno{opacity:.35}
+/* Actividad ganadora del sorteo: azul y borde grueso */
+.ov .op{position:relative}
+.ov .op.gano{background:#1f5fbf;border:8px solid #0b3a85;box-shadow:0 0 0 10px rgba(31,95,191,.28),0 20px 40px rgba(0,0,0,.25);transform:scale(1.1);animation:ganador .9s ease 2}
+.ov .op.gano b,.ov .op.gano small{color:#fff!important}
+.ov .op.gano::before{content:"✔ ¡Le tocó esta!";position:absolute;top:-22px;left:50%;transform:translateX(-50%);background:#0b3a85;color:#fff;font:700 15px var(--sans);letter-spacing:.04em;padding:5px 16px;border-radius:20px;white-space:nowrap;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+@keyframes ganador{50%{transform:scale(1.16)}}
+.ov .op.pierde{opacity:.28;filter:grayscale(1);transform:scale(.94)}
+.act.gano{border:7px solid #1f5fbf!important;box-shadow:0 0 0 6px rgba(31,95,191,.25),0 16px 30px rgba(0,0,0,.15);transform:scale(1.02)}
 .ov .res{font-size:22px;font-weight:600;min-height:32px;color:var(--text)}
 .ov .res b{color:var(--ink)}
 /* Resumen final */
@@ -106,12 +116,12 @@ canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:30}
     </section>
     <section class="acts">
       <div class="act A" id="actA">
-        <div class="cab"><span class="ic">🎤</span><div><h2>Actividad 1 · Exposición teórica</h2><p>Exponer la teoría del Módulo 7 con <b>ejercicios básicos prácticos</b> en Excel y aplicar al grupo una <b>evaluación en Kahoot</b>.</p></div><span class="cupo" id="cupoA"></span></div>
+        <div class="cab"><span class="ic">🎤</span><div><h2>Actividad 1 · Exposición teórica</h2><p>Exposición teórica del Módulo 7, con <b>ejercicios básicos</b> y <b>evaluación en Kahoot</b>.</p><p class="fecha">📅 Miércoles 11 de noviembre de 2026</p></div><span class="cupo" id="cupoA"></span></div>
         <div class="slots" id="slotsA"></div>
         <div class="enl" id="enlA"></div>
       </div>
       <div class="act B" id="actB">
-        <div class="cab"><span class="ic">🎬</span><div><h2>Actividad 2 · Videos y práctica guiada</h2><p>Explicar <b>dos videos de la plataforma</b> y resolver en vivo la <b>práctica guiada</b> del Módulo 7.</p></div><span class="cupo" id="cupoB"></span></div>
+        <div class="cab"><span class="ic">🎬</span><div><h2>Actividad 2 · Ejercicios prácticos y práctica guiada</h2><p>Explicar en vivo <b>ejercicios prácticos</b> (de los videos publicados en la plataforma o de otros videos independientes) y la <b>práctica guiada</b>.</p><p class="fecha">📅 Viernes 13 de noviembre de 2026</p></div><span class="cupo" id="cupoB"></span></div>
         <div class="slots" id="slotsB"></div>
         <div class="enl" id="enlB"></div>
       </div>
@@ -128,8 +138,8 @@ canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:30}
 const NOMBRES = ["Adriana García Hidalgo","Ángel Rodolfo Mariano Ventura","Jorge Antonio Suazo Bello","Katherinne Liliana Paulino Rosario","Rachell Gómez","Yasmiry Mejía Núñez"];
 const CUPO = 3;
 const ACT = {
-  A:{ic:"🎤",t:"Exposición teórica",d:"Teoría + ejercicios básicos + Kahoot"},
-  B:{ic:"🎬",t:"Videos y práctica guiada",d:"Dos videos + práctica guiada en vivo"}
+  A:{ic:"🎤",t:"Exposición teórica",d:"Teoría + ejercicios básicos + Kahoot",f:"Miércoles 11 de noviembre de 2026"},
+  B:{ic:"🎬",t:"Ejercicios prácticos y práctica guiada",d:"Ejercicios en video + práctica guiada en vivo",f:"Viernes 13 de noviembre de 2026"}
 };
 const COLORES = ["#6e1f3a","#159a8c","#d9a441","#8c2d4f","#0b6b61","#b8641c"];
 const KEY = "ruletaM7";
@@ -138,6 +148,8 @@ const corto = n => n.split(" ").slice(0,2).join(" ");
 
 /* ---------- estado ---------- */
 let E = cargar();
+/* Abrir con ?reiniciar=1 deja el sorteo en cero */
+if (new URLSearchParams(location.search).has("reiniciar")) { E = nuevo(); try { localStorage.setItem(KEY, JSON.stringify(E)); } catch(e) {} try { history.replaceState(null, "", location.pathname); } catch(e) {} }
 function nuevo(){ return { pend:[...NOMBRES], A:[], B:[], hist:[] }; }
 function cargar(){ try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.pend) return s; } catch(e) {} return nuevo(); }
 function guardar(){ try { localStorage.setItem(KEY, JSON.stringify(E)); } catch(e) {} }
@@ -205,7 +217,7 @@ function mostrarNombre(nom){
   const ov = document.createElement("div"); ov.className = "ov";
   const forzada = !libre("A") ? "B" : !libre("B") ? "A" : null;
   ov.innerHTML = `<div class="card"><div class="eti">La ruleta eligió a</div><div class="nom">${nom}</div>
-    <div class="dos">${["A","B"].map(k=>`<div class="op ${k} ${libre(k)?'':'lleno'}" id="op${k}"><div class="ic">${ACT[k].ic}</div><b>${ACT[k].t}</b><small>${ACT[k].d}</small><small>${E[k].length} de ${CUPO} lugares ocupados</small></div>`).join("")}</div>
+    <div class="dos">${["A","B"].map(k=>`<div class="op ${k} ${libre(k)?'':'lleno'}" id="op${k}"><div class="ic">${ACT[k].ic}</div><b>${ACT[k].t}</b><small>${ACT[k].d}</small><small>📅 ${ACT[k].f}</small><small>${E[k].length} de ${CUPO} lugares ocupados</small></div>`).join("")}</div>
     <div class="res" id="res">${forzada?`El otro grupo ya está completo: va directo a <b>${ACT[forzada].t}</b>.`:"¿A qué actividad irá?"}</div>
     <div class="btns" style="margin-top:16px"><button class="btn big" id="sortear">${forzada?"✅ Asignar":"🎲 Sortear actividad"}</button></div></div>`;
   document.body.appendChild(ov);
@@ -221,11 +233,14 @@ function sortear(nom, ov, forzada){
     k++;
     if (k < pasos) { actual = actual==="A" ? "B" : "A"; setTimeout(luz, 70 + k*k*2.2); }
     else { /* resultado */
-      const op = ov.querySelector("#op"+destino); op.classList.add("on","fin");
+      const otro = destino === "A" ? "B" : "A";
+      ["A","B"].forEach(x=>{ ov.querySelector("#op"+x).classList.remove("on"); $("act"+x).classList.remove("luz"); });
+      ov.querySelector("#op"+destino).classList.add("gano"); ov.querySelector("#op"+otro).classList.add("pierde");
+      $("act"+destino).classList.add("gano");
       ov.querySelector("#res").innerHTML = `${ACT[destino].ic} <b>${nom.split(" ")[0]}</b> irá a <b>${ACT[destino].t}</b>.`;
       SFX.gana(); confeti(3000);
       E.pend = E.pend.filter(x=>x!==nom); E[destino].push(nom); E.hist.push({nom,act:destino}); guardar();
-      setTimeout(()=>{ ov.remove(); ["A","B"].forEach(x=>$("act"+x).classList.remove("luz")); pintar(destino); if (!E.pend.length) setTimeout(final, 900); }, 2600);
+      setTimeout(()=>{ ov.remove(); ["A","B"].forEach(x=>$("act"+x).classList.remove("luz")); pintar(destino); setTimeout(()=>$("act"+destino).classList.remove("gano"), 2200); if (!E.pend.length) setTimeout(final, 900); }, 3200);
     }
   })();
 }
@@ -266,7 +281,7 @@ function final(){
   const completo = !E.pend.length; if (completo) { SFX.fin(); confeti(5000); }
   const ov = document.createElement("div"); ov.className = "ov";
   ov.innerHTML = `<div class="card" style="max-width:980px"><div class="eti">Módulo 7 · Macros y VBA</div><div class="nom" style="font-size:clamp(34px,4.5vw,56px)">${completo?"🎉 ¡Sorteo completo!":"Asignaciones hasta ahora"}</div>
-    <div class="resumen">${["A","B"].map(k=>`<div class="${k}"><h3>${ACT[k].ic} ${ACT[k].t}</h3><p style="margin:0 0 8px;color:var(--muted);font-size:15px">${k==="A"?"Exposición teórica con ejercicios básicos prácticos y evaluación en Kahoot.":"Explicación de dos videos de la plataforma y práctica guiada."}</p><ol>${E[k].map(n=>`<li>${n}</li>`).join("")||"<li style='color:#b7aa9a'>Sin asignar todavía</li>"}</ol><div class="enl no-print" style="margin-top:10px">${enlaceHtml(k)}</div><p style="margin:6px 0 0;font-size:12px;color:var(--muted);word-break:break-all">${E[k].length?enlace(k):""}</p></div>`).join("")}</div>
+    <div class="resumen">${["A","B"].map(k=>`<div class="${k}"><h3>${ACT[k].ic} ${ACT[k].t}</h3><p style="margin:0 0 8px;color:var(--muted);font-size:15px">${k==="A"?"Exposición teórica del Módulo 7, con ejercicios básicos y evaluación en Kahoot.":"Explicar en vivo ejercicios prácticos (de los videos publicados en la plataforma o de otros videos independientes) y la práctica guiada."}<br><b style="color:var(--ink)">📅 ${ACT[k].f}</b></p><ol>${E[k].map(n=>`<li>${n}</li>`).join("")||"<li style='color:#b7aa9a'>Sin asignar todavía</li>"}</ol><div class="enl no-print" style="margin-top:10px">${enlaceHtml(k)}</div><p style="margin:6px 0 0;font-size:12px;color:var(--muted);word-break:break-all">${E[k].length?enlace(k):""}</p></div>`).join("")}</div>
     ${E.pend.length?`<p style="color:var(--muted)">Pendientes: ${E.pend.join(", ")}</p>`:""}
     <div class="btns no-print"><button class="btn" id="imp">🖨️ Imprimir o guardar en PDF</button><button class="btn sec" id="cerrar">Cerrar</button></div>
     <p style="margin-top:14px;font-size:13px;color:var(--muted)">Juego creado por: Jarlin Figueroa, M.A.</p></div>`;

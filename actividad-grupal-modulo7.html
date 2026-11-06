@@ -20,6 +20,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);fon
 .hero .ic{font-size:44px;line-height:1}
 .hero h1{margin:8px 0 6px;font-family:var(--serif);font-size:clamp(26px,4vw,38px);color:var(--ink);line-height:1.15}
 .hero p{margin:0;color:#4a3f3b;font-size:17px}
+.hero p.fecha{margin-top:12px;display:inline-block;background:var(--c);color:#fff;font-weight:700;border-radius:20px;padding:6px 16px;font-size:16px}
 .sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-bottom:14px}
 .sec h2{margin:0 0 10px;font-family:var(--serif);font-size:23px;color:var(--ink)}
 .sec h2 span{font-size:24px;margin-right:6px}
@@ -73,8 +74,8 @@ const rec = ks => `<div class="rec">${ks.map(k=>{ const [ic,t,d,u]=REC[k]; retur
 const integrantes = rol => `<div class="int">${[0,1,2].map(i=>`<div><b>${quien(i)}</b><small>${rol[i]}</small></div>`).join("")}</div>`;
 
 const ACT = {
- A:{ c:"#6e1f3a", ic:"🎤", t:"Exposición teórica con ejercicios básicos y evaluación en Kahoot",
-  intro:"Su grupo explicará al resto de la clase la teoría del Módulo 7 (macros y VBA), la mostrará con ejercicios sencillos hechos en vivo en Excel y cerrará con una evaluación en Kahoot.",
+ A:{ c:"#6e1f3a", ic:"🎤", t:"Exposición teórica con ejercicios básicos y evaluación en Kahoot", fecha:"Miércoles 11 de noviembre de 2026",
+  intro:"Exposición teórica del Módulo 7, con ejercicios básicos y evaluación en Kahoot. Su grupo explicará a la clase la teoría de macros y VBA, la mostrará con ejercicios sencillos hechos en vivo en Excel y cerrará con una evaluación en Kahoot.",
   roles:["Parte 1 · Fundamentos","Parte 2 · El código","Parte 3 · Decisiones, repeticiones y botón"],
   cuerpo:()=>`
   <div class="sec"><h2><span>🧩</span>Qué debe exponer cada integrante</h2>
@@ -97,14 +98,14 @@ const ACT = {
   evid:["La presentación o el material que usaron.","El archivo <b>.xlsm</b> con los ejercicios funcionando.","El enlace del Kahoot y la captura del podio final."],
   tiempo:"Unos 35 minutos de exposición y ejercicios, más 10 minutos de Kahoot.",
   recs:["pres","pdf","base","kahoot"] },
- B:{ c:"#159a8c", ic:"🎬", t:"Explicación de dos videos y práctica guiada",
-  intro:"Su grupo explicará a la clase dos de los videos de apoyo del Módulo 7, repitiendo en Excel lo que muestran, y luego resolverá en vivo la práctica guiada «El informe mensual en un clic».",
-  roles:["Video 1 y pasos 1 a 3","Video 2 y pasos 4 a 6","Pasos 7 y 8 y cierre"],
+ B:{ c:"#159a8c", ic:"🎬", t:"Ejercicios prácticos en vivo y práctica guiada", fecha:"Viernes 13 de noviembre de 2026",
+  intro:"Explicar en vivo ejercicios prácticos (de los videos publicados en la plataforma o de otros videos independientes) y la práctica guiada. Su grupo resolverá en Excel, frente a la clase, los ejercicios que muestran esos videos y luego la práctica guiada «El informe mensual en un clic».",
+  roles:["Ejercicio 1 y pasos 1 a 3","Ejercicio 2 y pasos 4 a 6","Pasos 7 y 8 y cierre"],
   cuerpo:()=>`
-  <div class="sec"><h2><span>🎬</span>Parte 1 · Explicar dos videos de la plataforma</h2>
-   <ol><li>Entre los tres, elijan <b>dos</b> de los cuatro videos de apoyo que están en la plataforma.</li><li>Para cada video expliquen: <b>qué enseña</b>, <b>qué pasos sigue</b> y <b>para qué sirve</b> en el trabajo.</li><li><b>Repitan en vivo en Excel</b> lo que muestra el video; no lo proyecten completo, muestren los momentos clave.</li></ol>
-   <div class="parte"><span class="quien">${quien(0)}</span> explica el primer video elegido.</div>
-   <div class="parte"><span class="quien">${quien(1)}</span> explica el segundo video elegido.</div>
+  <div class="sec"><h2><span>🎬</span>Parte 1 · Ejercicios prácticos en vivo</h2>
+   <ol><li>Elijan <b>dos ejercicios</b> de los videos publicados en la plataforma (abajo están los cuatro) o de otros videos independientes sobre macros en Excel.</li><li>Para cada ejercicio expliquen: <b>qué se quiere lograr</b>, <b>qué pasos se siguen</b> y <b>para qué sirve</b> en el trabajo.</li><li><b>Resuélvanlo en vivo en Excel</b>; no proyecten el video completo, muestren ustedes los pasos clave.</li></ol>
+   <div class="parte"><span class="quien">${quien(0)}</span> explica y resuelve el primer ejercicio.</div>
+   <div class="parte"><span class="quien">${quien(1)}</span> explica y resuelve el segundo ejercicio.</div>
    ${rec(["v1","v2","v3","v4"])}
   </div>
   <div class="sec"><h2><span>⚙️</span>Parte 2 · La práctica guiada en vivo</h2>
@@ -114,8 +115,8 @@ const ACT = {
    <div class="parte"><span class="quien">${quien(2)}</span><br><b class="q">Pasos 7 y 8:</b> la macro GenerarInforme con el mensaje final y el botón «Generar informe». Muestra el resultado y responde las tres preguntas de la práctica.</div>
    <div class="box">✅ Resultado que deben obtener: 120 reclamaciones y un monto total de <b>RD$ 693,850.00</b>.</div>
   </div>`,
-  evid:["El archivo <b>.xlsm</b> de la práctica guiada con el botón funcionando.","Un resumen breve de los dos videos explicados (qué enseña cada uno).","Las respuestas a las tres preguntas de la práctica."],
-  tiempo:"Unos 20 minutos para los videos y 25 minutos para la práctica guiada.",
+  evid:["El archivo <b>.xlsm</b> de la práctica guiada con el botón funcionando.","El archivo <b>.xlsm</b> con los dos ejercicios prácticos y el enlace de los videos de donde los tomaron.","Las respuestas a las tres preguntas de la práctica."],
+  tiempo:"Unos 20 minutos para los ejercicios prácticos y 25 minutos para la práctica guiada.",
   recs:["prac","base","pres","pdf"] }
 };
 
@@ -127,12 +128,12 @@ if (!a) {
   document.documentElement.style.setProperty("--c", a.c);
   document.getElementById("app").innerHTML = `
   <div class="top"><small>Módulo 7 · Macros y VBA · Actividad grupal</small><img src="img/icadep-isologo.png" alt="ICADEP-XXI"></div>
-  <div class="hero"><div class="ic">${a.ic}</div><h1>${a.t}.</h1><p>${a.intro}</p></div>
+  <div class="hero"><div class="ic">${a.ic}</div><h1>${a.t}.</h1><p>${a.intro}</p><p class="fecha">📅 Fecha de presentación: ${a.fecha}</p></div>
   <div class="sec"><h2><span>👥</span>Integrantes del grupo</h2>${integrantes(a.roles)}</div>
   ${a.cuerpo()}
   <div class="sec"><h2><span>📎</span>Qué deben entregar en Moodle</h2><ul>${a.evid.map(x=>`<li>${x}</li>`).join("")}</ul>
    <div class="box imp">⚠️ Guarden siempre los archivos como <b>Libro de Excel habilitado para macros (.xlsm)</b>: si se guardan como .xlsx, las macros se borran.</div></div>
-  <div class="sec"><h2><span>⏱️</span>Organización</h2><ul><li><b>Duración aproximada:</b> ${a.tiempo}</li><li><b>Participan los tres integrantes</b>, cada uno con su parte.</li><li>Usen <b>Excel de escritorio para Windows</b> (2021 o Microsoft 365) y prueben todo antes de presentar.</li><li>La fecha de presentación la indicará el facilitador.</li></ul></div>
+  <div class="sec"><h2><span>⏱️</span>Organización</h2><ul><li><b>Duración aproximada:</b> ${a.tiempo}</li><li><b>Participan los tres integrantes</b>, cada uno con su parte.</li><li>Usen <b>Excel de escritorio para Windows</b> (2021 o Microsoft 365) y prueben todo antes de presentar.</li><li><b>Fecha de presentación:</b> ${a.fecha}.</li></ul></div>
   <div class="sec"><h2><span>✅</span>Qué se valorará</h2><ul><li>Dominio y claridad al explicar.</li><li>Ejercicios o pasos que funcionan en vivo.</li><li>Participación equilibrada de los tres integrantes.</li><li>Manejo del tiempo y respuestas a las preguntas de la clase.</li></ul></div>
   <div class="sec"><h2><span>📚</span>Recursos</h2>${rec(a.recs)}</div>
   <p style="text-align:center"><button class="btnp" onclick="window.print()">🖨️ Imprimir o guardar en PDF</button></p>
