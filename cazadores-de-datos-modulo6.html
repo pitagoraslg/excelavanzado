@@ -432,6 +432,8 @@ const fechaLarga = t => new Date(t).toLocaleString('es-DO', { day:'numeric', mon
 
 /* ---------- progreso (se guarda en este navegador) ---------- */
 let G = cargar();
+/* partidas guardadas con nombres que no están en la lista real: se descartan */
+if (G && !ALUMNOS.includes(G.nombre)) { G = null; try { localStorage.removeItem(KEY); localStorage.removeItem('cazadoresM6_terminado'); } catch(e) {} }
 function cargar(){ try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch(e) { return null; } }
 function guardar(){ try { localStorage.setItem(KEY, JSON.stringify(G)); } catch(e) {} subir(); }
 const lsGet = k => { try { return localStorage.getItem(k); } catch(e) { return null; } };
