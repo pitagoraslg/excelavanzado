@@ -1,90 +1,98 @@
 <!-- Invitación al juego «Cazadores de Datos» (Módulo 6) para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
 <!-- Las animaciones del bloque <style> son un extra: si Moodle lo elimina, la invitación se ve igual de bien, solo que sin movimiento. -->
 <style>
-  @keyframes er-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-  @keyframes er-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(242,153,74,.45); } 50% { box-shadow: 0 0 0 12px rgba(242,153,74,0); } }
-  @keyframes er-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(-6deg); } }
-  @keyframes er-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
-  .er-in { animation: er-in .7s ease-out both; }
-  .er-d1 { animation-delay: .1s; } .er-d2 { animation-delay: .25s; } .er-d3 { animation-delay: .4s; } .er-d4 { animation-delay: .55s; }
-  .er-card { transition: transform .2s ease, box-shadow .2s ease; }
-  .er-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(47,58,143,.14); }
-  .er-float { display: inline-block; animation: er-float 3s ease-in-out infinite; }
-  .er-btn { animation: er-pulse 2.2s ease-in-out infinite; transition: transform .15s ease, background-color .15s ease; }
-  .er-btn:hover { transform: scale(1.04); background-color: #232C70 !important; }
-  .er-bar { background: linear-gradient(90deg, #E7E9F6 0%, #2F3A8F 30%, #F2994A 55%, #E7E9F6 80%, #2F3A8F 100%); background-size: 200% 100%; animation: er-shine 7s linear infinite; }
-  @media (prefers-reduced-motion: reduce) { .er-in, .er-btn, .er-float, .er-bar { animation: none !important; } }
+  @keyframes cd-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes cd-sello { from { opacity: 0; transform: rotate(-8deg) scale(1.8); } to { opacity: .95; transform: rotate(-8deg) scale(1); } }
+  @keyframes cd-pulso { 0%, 100% { box-shadow: 0 0 0 0 rgba(240,207,127,.45); } 50% { box-shadow: 0 0 0 12px rgba(240,207,127,0); } }
+  .cd-in { animation: cd-in .7s ease-out both; }
+  .cd-d1 { animation-delay: .1s; } .cd-d2 { animation-delay: .25s; } .cd-d3 { animation-delay: .4s; } .cd-d4 { animation-delay: .55s; }
+  .cd-sello { display: inline-block; animation: cd-sello .6s cubic-bezier(.2,1.6,.4,1) .5s both; }
+  .cd-btn { animation: cd-pulso 2.2s ease-in-out infinite; transition: transform .15s ease; }
+  .cd-btn:hover { transform: scale(1.04); }
+  @media (prefers-reduced-motion: reduce) { .cd-in, .cd-sello, .cd-btn { animation: none !important; } }
 </style>
 
-<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #1F2233; line-height: 1.55; background-color: #F7F6F3; border-radius: 10px; overflow: hidden; border: 1px solid #E2E0EA;">
+<div style="max-width: 860px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #F5F1E8; line-height: 1.55; background-color: #141318; border-radius: 10px; overflow: hidden; border: 1px solid #5A4A26;">
 
-  <div class="er-bar" style="height: 6px; background-color: #2F3A8F;"></div>
+  <div style="height: 5px; background-color: #D4A84B;"></div>
 
   <!-- Encabezado -->
-  <table style="width: 100%; border-collapse: collapse; background-color: #2F3A8F;" role="presentation">
+  <table style="width: 100%; border-collapse: collapse; background-color: #0C0C0E;" role="presentation">
     <tr>
-      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="er-float">🕵️</span></td>
-      <td style="padding: 22px 24px 22px 16px; vertical-align: top;">
-        <p class="er-in" style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #F8C9A0;">Escape room · Actividad individual · Módulo 6</p>
-        <h2 class="er-in er-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 27px; font-weight: normal; line-height: 1.2; color: #FFFFFF;">Cazadores de Datos.</h2>
-        <p class="er-in er-d2" style="margin: 0; font-size: 15px; color: #DADDF2;">Usted es el nuevo analista de Distribuidora El Faro y los datos están dispersos en <strong style="color: #FFFFFF;">Excel, CSV y PDF</strong>. Obténgalos, únalos con Power Query y consúltelos para abrir <strong style="color: #FFFFFF;">diez candados</strong>.</p>
+      <td style="width: 80px; padding: 26px 0 24px 26px; vertical-align: top; font-size: 46px; line-height: 1;">🕵️</td>
+      <td style="padding: 22px 26px 22px 14px; vertical-align: top;">
+        <p class="cd-in" style="margin: 0 0 6px; font-family: 'Courier New', monospace; font-size: 13px; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; color: #F0CF7F;">Expediente secreto · Actividad individual · Módulo 6</p>
+        <h2 class="cd-in cd-d1" style="margin: 0 0 10px; font-family: Georgia, 'Times New Roman', serif; font-size: 30px; font-weight: bold; line-height: 1.15; color: #FFFFFF;">Cazadores de Datos.</h2>
+        <p class="cd-in cd-d2" style="margin: 0; font-size: 15.5px; color: #E8E1D2;">Usted es el nuevo analista de <strong style="color: #F0CF7F;">Distribuidora El Faro</strong>. Los datos de la empresa están dispersos en <strong style="color: #FFFFFF;">Excel, CSV y PDF</strong>. Obténgalos, únalos con <strong style="color: #FFFFFF;">Power Query</strong> y consúltelos para abrir los <strong style="color: #F0CF7F;">diez candados</strong> del caso.</p>
+        <p style="margin: 14px 0 0;"><span class="cd-sello" style="font-family: 'Courier New', monospace; font-size: 13px; font-weight: bold; letter-spacing: 3px; color: #E05A5A; border: 2px solid #E05A5A; padding: 3px 12px; border-radius: 4px; transform: rotate(-8deg);">CONFIDENCIAL</span></p>
       </td>
     </tr>
   </table>
 
   <!-- Lo que tiene el juego -->
-  <table class="er-in er-d2" style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 10px; margin: 4px 0 0;" role="presentation">
+  <table class="cd-in cd-d2" style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 10px; margin: 6px 0 0;" role="presentation">
     <tr>
-      <td class="er-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2E0EA; border-top: 4px solid #2F3A8F; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+      <td style="width: 33%; background-color: #1B1A1F; border: 1px solid #4A3E22; border-top: 3px solid #D4A84B; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
         <span style="font-size: 26px;">🔒</span><br>
-        <strong style="color: #2F3A8F; font-size: 18px;">10 candados</strong><br>
-        <span style="font-size: 13px; color: #5F6275;">Excel, CSV, PDF y 4 archivos</span>
+        <strong style="color: #F0CF7F; font-size: 18px;">10 candados</strong><br>
+        <span style="font-size: 13px; color: #C9C1B0;">Excel, CSV, PDF y 4 archivos</span>
       </td>
-      <td class="er-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2E0EA; border-top: 4px solid #F2994A; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+      <td style="width: 33%; background-color: #1B1A1F; border: 1px solid #4A3E22; border-top: 3px solid #D4A84B; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
         <span style="font-size: 26px;">🧑‍💻</span><br>
-        <strong style="color: #2F3A8F; font-size: 18px;">A su ritmo</strong><br>
-        <span style="font-size: 13px; color: #5F6275;">Lo juega solo, cuando pueda</span>
+        <strong style="color: #F0CF7F; font-size: 18px;">A su ritmo</strong><br>
+        <span style="font-size: 13px; color: #C9C1B0;">Individual, cuando pueda</span>
       </td>
-      <td class="er-card" style="width: 33%; background-color: #FFFFFF; border: 1px solid #E2E0EA; border-top: 4px solid #2A9D8F; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
+      <td style="width: 33%; background-color: #1B1A1F; border: 1px solid #4A3E22; border-top: 3px solid #D4A84B; border-radius: 6px; padding: 14px; vertical-align: top; text-align: center;">
         <span style="font-size: 26px;">🏆</span><br>
-        <strong style="color: #2F3A8F; font-size: 18px;">Ranking</strong><br>
-        <span style="font-size: 13px; color: #5F6275;">El más rápido ocupa el primer lugar</span>
+        <strong style="color: #F0CF7F; font-size: 18px;">Ranking</strong><br>
+        <span style="font-size: 13px; color: #C9C1B0;">El más rápido ocupa el primer lugar</span>
       </td>
     </tr>
   </table>
 
-  <div style="padding: 4px 24px 26px;">
+  <div style="padding: 4px 26px 26px;">
 
-    <!-- Qué van a practicar -->
-    <p class="er-in er-d3" style="margin: 14px 0 8px; font-weight: bold; color: #2F3A8F; font-size: 16px;">🧩 Lo que va a practicar</p>
-    <table class="er-in er-d3" style="width: 100%; border-collapse: separate; border-spacing: 0 8px;" role="presentation">
+    <!-- Qué va a practicar -->
+    <p class="cd-in cd-d3" style="margin: 14px 0 8px; font-weight: bold; color: #F0CF7F; font-size: 16px;">🧩 Lo que va a practicar</p>
+    <table class="cd-in cd-d3" style="width: 100%; border-collapse: separate; border-spacing: 0 8px;" role="presentation">
       <tr>
-        <td style="background-color: #E7E9F6; border-left: 5px solid #2F3A8F; border-radius: 6px; padding: 12px 16px; font-size: 14.5px;">
-          <strong style="color: #2F3A8F;">📥 Obtener y unir:</strong> traer datos desde una carpeta, desde un archivo CSV y desde un PDF, y unir varios archivos en una sola tabla.
+        <td style="background-color: #1B1A1F; border-left: 4px solid #D4A84B; border-radius: 6px; padding: 11px 16px; font-size: 14.5px; color: #F5F1E8;">
+          <strong style="color: #F0CF7F;">📥 Obtener y unir:</strong> traer datos desde una carpeta, desde un archivo CSV y desde un PDF, y unir varios archivos en una sola tabla.
         </td>
       </tr>
       <tr>
-        <td style="background-color: #FFFFFF; border: 1px solid #E2E0EA; border-left: 5px solid #F2994A; border-radius: 6px; padding: 12px 16px; font-size: 14.5px;">
-          <strong style="color: #2F3A8F;">🔎 Consultar:</strong> con la tabla en Excel, usar filtros, ordenar y sumar para responder preguntas como «¿quién vendió más?».
+        <td style="background-color: #1B1A1F; border-left: 4px solid #D4A84B; border-radius: 6px; padding: 11px 16px; font-size: 14.5px; color: #F5F1E8;">
+          <strong style="color: #F0CF7F;">🔎 Consultar:</strong> con la tabla en Excel, usar filtros, ordenar y sumar para responder preguntas como «¿quién vendió más?».
         </td>
       </tr>
     </table>
 
-    <!-- Antes de la clase -->
-    <p class="er-in er-d4" style="margin: 16px 0 8px; font-weight: bold; color: #2F3A8F; font-size: 16px;">✅ Cómo participar</p>
-    <ul class="er-in er-d4" style="margin: 0; padding-left: 22px; font-size: 14.5px;">
-      <li>Tenga abierto <strong>Excel de escritorio (2021 o Microsoft 365)</strong>: lo necesita para leer el PDF.</li>
-      <li>Entre al juego, escriba su <strong>nombre completo</strong> y pulse «Empezar». Su tiempo empieza a correr.</li>
-      <li>Al abrir ciertos candados recibe una fuente de datos nueva: un CSV, un PDF y una carpeta con 4 archivos. Tiene dos pistas por candado; cada pista suma 2 minutos a su tiempo.</li>
-      <li>Al abrir el último candado verá una <strong>felicitación con su nombre</strong>. Tómele una <strong>captura de pantalla</strong> y envíesela al facilitador.</li>
-    </ul>
+    <!-- Cómo participar -->
+    <p class="cd-in cd-d4" style="margin: 16px 0 8px; font-weight: bold; color: #F0CF7F; font-size: 16px;">✅ Cómo participar</p>
+    <ol class="cd-in cd-d4" style="margin: 0; padding-left: 22px; font-size: 14.5px; color: #F5F1E8;">
+      <li style="margin-bottom: 5px;">Tenga abierto <strong>Excel de escritorio (2021 o Microsoft 365)</strong>: lo necesita para leer el PDF.</li>
+      <li style="margin-bottom: 5px;">Entre al juego, <strong>busque su nombre en la lista</strong>, tóquelo y pulse «Iniciar investigación». Su tiempo empieza a correr.</li>
+      <li style="margin-bottom: 5px;">Al abrir ciertos candados recibe una fuente de datos nueva: un CSV, un PDF y una carpeta con 4 archivos. Tiene dos pistas por candado; cada pista suma 2 minutos a su tiempo.</li>
+      <li>Al abrir el último candado verá una <strong>felicitación con su nombre</strong> y el sello «Caso resuelto».</li>
+    </ol>
+
+    <!-- Entrega -->
+    <table class="cd-in cd-d4" style="width: 100%; border-collapse: collapse; margin: 18px 0 0;" role="presentation">
+      <tr>
+        <td style="background-color: #1E2A1F; border: 2px dashed #8FD694; border-radius: 8px; padding: 16px 18px; font-size: 15px; color: #F5F1E8;">
+          <p style="margin: 0 0 6px; font-weight: bold; font-size: 16.5px; color: #8FD694;">📸 Entrega: suba su felicitación aquí en Moodle</p>
+          <p style="margin: 0 0 6px;">En la pantalla de felicitación pulse el botón <strong style="color: #F0CF7F;">«📸 Guardar imagen»</strong>: se descarga una imagen con su nombre en su carpeta de <strong>Descargas</strong>. Si prefiere, también puede tomar una <strong>captura de pantalla</strong> (tecla Impr Pant o Windows + Shift + S).</p>
+          <p style="margin: 0;">Luego <strong>suba esa imagen en esta actividad de Moodle</strong>. Sin la imagen, la actividad no se considera entregada.</p>
+        </td>
+      </tr>
+    </table>
 
     <!-- Llamado a la acción -->
-    <div class="er-in er-d4" style="text-align: center; margin: 22px 0 6px;">
-      <a class="er-btn" href="https://pitagoraslg.github.io/excelavanzado/cazadores-de-datos-modulo6.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #2F3A8F; color: #FFFFFF; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px;">🕵️ Entrar a Cazadores de Datos</a>
-      <p style="margin: 10px 0 0; font-size: 13px; color: #5F6275;">Se abre en una pestaña nueva. Su avance se guarda en el navegador: si cierra la página, continúa donde quedó.</p>
+    <div class="cd-in cd-d4" style="text-align: center; margin: 24px 0 6px;">
+      <a class="cd-btn" href="https://pitagoraslg.github.io/excelavanzado/cazadores-de-datos-modulo6.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #D4A84B; color: #1A1408; text-decoration: none; font-weight: bold; font-size: 18px; padding: 15px 34px; border-radius: 30px;">🔍 Entrar a Cazadores de Datos</a>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #C9C1B0;">Se abre en una pestaña nueva. Su avance se guarda en el navegador: si cierra la página, continúa donde quedó.</p>
     </div>
 
-    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #5F6275;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
+    <p style="margin: 20px 0 0; text-align: center; font-size: 13px; color: #C9C1B0;">Jarlin Figueroa, MA · Facilitador · Instituto ICADEP-XXI</p>
   </div>
 </div>

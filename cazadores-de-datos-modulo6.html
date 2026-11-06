@@ -411,6 +411,10 @@ table.t td{color:#fff}
 /* los 11 nombres caben sin desplazarse */
 .inicio .alumno{font-size:13px;padding:7px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .inicio .lista{max-height:min(42vh,252px)}
+/* barra de «Guardar imagen» */
+.foto{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;text-align:left}
+.foto .btn{padding:9px 18px;font-size:14px}
+.foto span{color:#eef3e6;font-size:14.5px;max-width:560px}
 
 </style>
 </head>
@@ -527,6 +531,29 @@ function armarLista(){
   busca.oninput = pintar;
   busca.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); const v = visibles(); if (v.length === 1) elegir(v[0]); } };
   pintar();
+}
+
+/* Botón «Guardar imagen»: convierte la felicitación en un PNG y lo descarga */
+function cargarH2C(){
+  if (window.html2canvas) return Promise.resolve();
+  return new Promise((ok, ko) => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'; s.onload = ok; s.onerror = ko; document.head.appendChild(s); });
+}
+async function guardarImagen(){
+  const b = $('#guardar'); if (!b || !G) return;
+  b.disabled = true; b.textContent = '⏳ Preparando la imagen…';
+  try {
+    await cargarH2C(); if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    const lienzo = await html2canvas($('#cert'), { backgroundColor:'#0c0c0e', scale:2, useCORS:true, logging:false });
+    const limpio = G.nombre.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const archivo = 'Cazadores-de-Datos-' + limpio + '.png';
+    const blob = await new Promise(r => lienzo.toBlob(r, 'image/png'));
+    const a = document.createElement('a'); a.download = archivo; a.href = URL.createObjectURL(blob); document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+    SFX.boton(); toast('✔ Imagen guardada en tu carpeta de Descargas: <b>' + esc(archivo) + '</b>');
+  } catch (e) {
+    toast('No se pudo crear la imagen. Toma una captura de pantalla (tecla Impr Pant o Windows + Shift + S).');
+  }
+  b.disabled = false; b.innerHTML = '📸 Guardar imagen';
 }
 
 /* ---------- utilidades ---------- */
@@ -866,7 +893,7 @@ function vistaFelicitacion(recien){
     <div class="hall">${SALAS.map((x,i) => { const v = G.resp[i+1]; return `<div>✅ ${x.r}<b>${x.fmt === 'rd' ? rd(v) : x.fmt === 'n' ? Number(v).toLocaleString('en-US') : esc(v)}</b></div>`; }).join('')}</div>
     <p class="pie">Excel Avanzado · Juego creado por: Jarlin Figueroa, M.A.</p>
   </div>
-  <div class="foto">📸 <b>Toma una captura de pantalla</b> de esta felicitación y envíasela a tu facilitador.</div>
+  <div class="foto"><button class="btn" id="guardar" type="button" onclick="guardarImagen()">📸 Guardar imagen</button><span>Guarda tu felicitación y súbela en la actividad de Moodle. También puedes tomar una captura de pantalla.</span></div>
   <p style="text-align:center"><button class="linkbtn" id="reini">Jugar otra vez</button></p></div>`;
   $('#reini').onclick = reiniciar;
   if (!recien) setTimeout(() => confeti(2500), 300);
