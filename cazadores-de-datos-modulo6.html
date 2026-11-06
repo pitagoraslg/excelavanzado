@@ -290,6 +290,128 @@ table.t td{color:#fff}
 .elegido{margin:4px 0 12px;color:var(--muted);font-size:16px}
 .elegido b{color:var(--gold2)}
 
+/* ===== Ajuste a la pantalla (todo visible al 100 % de zoom) ===== */
+.wrap{max-width:1320px;padding:10px 18px 64px}
+.top{margin-bottom:10px}
+.brand .ico{font-size:28px}
+.brand b{font-size:20px}
+.panel{padding:16px 20px}
+.credit{margin-top:12px;font-size:12px}
+/* inicio en dos columnas */
+.inicio{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);column-gap:26px;align-items:start}
+.inicio > .kick,.inicio > .hero{grid-column:1 / -1}
+.inicio > .story{grid-column:1;margin:0 0 10px}
+.inicio > .mision{grid-column:1}
+.inicio > form{grid-column:2;grid-row:3 / span 2;margin-top:0!important}
+.inicio .hero{font-size:clamp(26px,3.4vw,40px);margin:.1em 0 .35em}
+.inicio .story{font-size:15px;line-height:1.5}
+.inicio .mision{font-size:14.5px;line-height:1.5;padding:10px 14px}
+.inicio .mision p{margin:.2em 0}
+.inicio .lista{grid-template-columns:1fr 1fr;max-height:min(46vh,330px);margin:8px 0}
+.inicio .alumno{padding:8px 10px;font-size:14px}
+.inicio .elegido{margin:2px 0 8px;font-size:15px}
+.inicio .lbl{font-size:14px;color:#e6dcc6}
+/* expedientes compactos */
+.hud{padding:8px 14px;margin-bottom:12px}
+.nivel{margin-bottom:5px}
+.xp{margin-top:7px}
+.clock{font-size:26px}
+.sala{gap:14px}
+.sala h2{font-size:clamp(22px,2.4vw,30px);margin-bottom:.2em}
+.sala .story{font-size:15px;line-height:1.5;margin:6px 0 10px;padding:4px 0 4px 12px}
+.sala .mision{font-size:15px;line-height:1.5;padding:10px 14px}
+.sala .mision p{margin:.25em 0}
+.sala .preg{font-size:17px;margin-top:10px}
+.sala .code{margin-top:8px}
+.sala .code input{padding:10px 12px;font-size:19px}
+.sala .msg{min-height:20px;margin-top:6px;font-size:15px}
+.side .blk{margin-bottom:12px}
+.side h3{margin:0 0 8px}
+.file{padding:8px 10px;margin-bottom:7px}
+.file .fi{font-size:22px}
+.file b{font-size:14.5px}
+.file span{font-size:12.5px}
+.pista{font-size:14.5px;padding:8px 12px;margin-top:8px}
+@media (max-width:900px){.inicio{display:block}.inicio .lista{grid-template-columns:1fr;max-height:none}}
+/* ajuste fino para laptops (≈ 1366×657 visibles) */
+.wrap{padding:8px 18px 40px}
+.top{margin-bottom:6px}
+.brand .ico{font-size:24px}
+.brand b{font-size:18px}
+.brand span{font-size:12px}
+.hud{padding:7px 14px;margin-bottom:10px}
+.nivel{font-size:12.5px;margin-bottom:4px}
+.nivel b{font-size:16px}
+.lk{width:32px;height:32px;font-size:14px}
+.xp{margin-top:6px;height:5px}
+.clock{font-size:24px}
+.sala .panel{padding:14px 18px}
+.sala h2{font-size:clamp(21px,2.2vw,27px)}
+.sala .story,.sala .mision{font-size:14.5px}
+.sala .preg{font-size:16.5px}
+.side .blk:first-child{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.side .blk:first-child h3{grid-column:1 / -1;margin:0}
+.side .blk:first-child .file{margin:0}
+.side .blk{padding:12px 14px}
+.credit{margin-top:8px}
+.musbtn{padding:6px 12px 6px 10px;font-size:12.5px}
+.musbtn .mi{font-size:16px}
+/* inicio */
+.inicio{padding:14px 20px}
+.inicio .hero{font-size:clamp(24px,3vw,36px)}
+.inicio .mision{font-size:14px}
+.inicio #busca{padding:9px 12px}
+.inicio .alumno{padding:7px 10px;font-size:13.5px}
+.inicio .lista{gap:6px;max-height:min(44vh,300px)}
+/* felicitación */
+.cert{padding:12px 24px 10px}
+.cert .seal{font-size:26px}
+.cert .fel,.cert .nom{font-size:clamp(22px,2.8vw,30px)}
+.cert .lead{font-size:14.5px;margin-bottom:6px}
+.cert .datos{margin-bottom:8px;gap:6px}
+.cert .datos span{padding:3px 10px;font-size:12.5px}
+.cert .hall{gap:5px}
+.cert .hall div{padding:4px 12px;font-size:13.5px}
+.foto{padding:8px 14px;font-size:15px;margin-bottom:10px}
+@media (max-width:600px){.side .blk:first-child{grid-template-columns:1fr}}
+/* pistas dentro de una caja con desplazamiento propio */
+#pistas{max-height:190px;overflow:auto;padding-right:4px}
+#pistas .pista:first-child{margin-top:0}
+.wrap{padding-bottom:30px}
+.credit{margin-top:4px;font-size:11.5px}
+.sala .story{margin:4px 0 8px}
+.sala .mision{padding:8px 12px}
+/* inicio más compacto */
+.inicio .story{font-size:14px;line-height:1.45;padding:6px 10px}
+.inicio .mision{font-size:13.5px;line-height:1.42;padding:8px 12px}
+.inicio .hero{font-size:clamp(24px,2.8vw,34px);margin:.05em 0 .3em}
+.inicio .lista{max-height:min(40vh,262px)}
+/* fuentes de datos en una línea cada una */
+.side .file > div{min-width:0}
+.side .file b{font-size:13.5px;line-height:1.3;word-break:break-all}
+.side .file span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+.side .file .fi{font-size:19px}
+.side .file{padding:7px 9px;gap:9px}
+#pistas{max-height:150px}
+.inicio .lista{max-height:min(36vh,236px)}
+.inicio .lbl{line-height:1.35}
+/* más ancho para el expediente: menos líneas de texto */
+.sala{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+@media (max-height:700px) and (min-width:901px){
+  .sala .mision{font-size:14px;line-height:1.42}
+  .sala .story{font-size:14px;line-height:1.42}
+  .sala h2{font-size:23px}
+  .sala .preg{font-size:16px;margin-top:8px}
+}
+@media (max-width:900px){.sala{grid-template-columns:1fr}}
+/* la cuadrícula de fuentes no se sale del panel */
+.side .blk:first-child{grid-template-columns:repeat(2,minmax(0,1fr))}
+.side .file{min-width:0;overflow:hidden}
+.side .file b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;word-break:normal}
+/* los 11 nombres caben sin desplazarse */
+.inicio .alumno{font-size:13px;padding:7px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inicio .lista{max-height:min(42vh,252px)}
+
 </style>
 </head>
 <body>
@@ -649,16 +771,15 @@ function render(){
 function vistaInicio(){
   MUS.want(0);
   $('#app').innerHTML = `<div class="wrap">${cabecera()}
-  <div class="panel" style="margin-bottom:16px"><span class="sello">Confidencial</span><div class="kick">🔎 Expediente secreto · Misión individual</div><h1 class="hero">Resuelve el caso: abre los <span class="neon">diez candados</span>.</h1>
+  <div class="panel inicio"><span class="sello">Confidencial</span><div class="kick">🔎 Expediente secreto · Misión individual</div><h1 class="hero">Resuelve el caso: abre los <span class="neon">diez candados</span>.</h1>
   <p class="story">${HISTORIA}</p>
   <div class="mision"><p><b>Cómo se juega</b></p>
   <p>1. Ten abierto <b>Excel de escritorio (2021 o Microsoft 365)</b>: lo necesitas para leer el PDF. Cada candado te pide una respuesta que sale de tus datos.</p>
   <p>2. Escribe la respuesta: un número («RD$», las comas y los decimales no importan) o, cuando se pida, el nombre de una persona.</p>
   <p>3. Los datos llegan de distintas fuentes: una carpeta de Excel, un CSV, un PDF y otra carpeta con 4 archivos. Cada fuente nueva se desbloquea al abrir el candado anterior.</p>
   <p>4. Si te trabas, tienes dos pistas por candado. Cada pista suma <b>2 minutos</b> a tu tiempo en el ranking de la clase.</p>
-  <p>5. Al abrir el último candado aparecerá una <b>felicitación con tu nombre</b>: tómale una captura de pantalla y envíasela a tu facilitador.</p>
-  <p>🎧 El juego tiene música de suspenso y efectos de sonido. Si necesitas silencio, usa el botón 🔊 de abajo a la derecha (o la tecla M).</p></div>
-  <form id="fIni" style="margin-top:18px" autocomplete="off"><label class="lbl" for="busca">¿Quién eres? Busca tu nombre en la lista y tócalo (así aparecerá en la felicitación)</label>
+  <p>5. Al abrir el último candado aparecerá una <b>felicitación con tu nombre</b>: tómale una captura de pantalla y envíasela a tu facilitador.</p></div>
+  <form id="fIni" style="margin-top:18px" autocomplete="off"><label class="lbl" for="busca">¿Quién eres? Busca tu nombre y tócalo:</label>
   <input id="busca" type="text" placeholder="Escribe parte de tu nombre o apellido…"><div class="lista" id="lista"></div><input id="nm" type="hidden"><div class="elegido" id="elegido">Todavía no has elegido tu nombre.</div><button class="btn" id="go" disabled>🔍 Iniciar investigación</button></form></div>
   ${credito}</div>`;
   armarLista(); $('#fIni').onsubmit = ev => { ev.preventDefault(); const n = $('#nm').value.trim().replace(/\s+/g,' ');
