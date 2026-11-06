@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>Automatización con macros y VBA · Módulo 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Escenario fijo 1280×720 escalado a la pantalla. Una idea por lámina y un solo apoyo visual. Paleta del Módulo 7: burdeos + turquesa. */
+:root{
+  --bg:#ece6e9; --paper:#f8f6f4; --card:#ffffff; --ink:#6e1f3a; --text:#231b20; --muted:#6a5c63; --line:#e6dee2; --grid:#d2c6cc;
+  --acc:#159a8c; --acc-d:#0b6b61; --acc-soft:#dcf2ef; --pos:#3b7a2e; --pos-soft:#e5f1df; --neg:#c8553d; --neg-soft:#f8e4df; --ink-soft:#f3e3e9;
+  --serif:"Source Serif 4",Georgia,serif; --sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif; --mono:"IBM Plex Mono",Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;background:var(--paper);transform-origin:center;transform:translate(-50%,-50%);box-shadow:0 10px 40px rgba(110,31,58,.18);border-top:4px solid var(--ink)}
+.slide{position:absolute;inset:0;padding:70px 110px 80px;display:none;flex-direction:column;justify-content:center;gap:28px}
+.slide.on{display:flex;animation:in .35s ease}
+@keyframes in{from{opacity:.3;transform:translateY(6px)}to{opacity:1;transform:none}}
+.top{position:absolute;top:20px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;z-index:3}
+.dots{display:flex;gap:6px}.dots button{width:28px;height:6px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dots button.done{background:var(--grid)}.dots button.cur{background:var(--acc)}
+.bottom{position:absolute;bottom:16px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);z-index:3}
+.navb{display:flex;gap:8px;align-items:center}
+.btn{font-family:var(--mono);font-size:13px;border:1px solid var(--grid);background:var(--card);color:var(--ink);padding:7px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink)} .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+button:focus-visible,a:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+h1,h2{font-family:var(--serif);font-weight:600;margin:0;color:var(--ink);line-height:1.12;text-wrap:balance}
+h2{font-size:56px}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:18px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-d)}
+.apoyo{font-size:30px;line-height:1.38;text-wrap:pretty}
+.lista{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px;font-size:32px;line-height:1.2}
+.lista li{display:grid;grid-template-columns:54px 1fr;align-items:baseline}
+.lista b{font-family:var(--serif);font-weight:600;color:var(--acc)}
+.refs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;font-size:17.5px;line-height:1.35}
+.refs li{padding-left:28px;text-indent:-28px}
+.refs a{color:var(--ink);word-break:break-all;text-decoration:none}
+.ref-t{font-size:44px}
+
+.esq{justify-content:flex-start;padding-top:58px;gap:14px}
+.esq h2{font-size:40px}
+.esq .eyebrow{font-size:15px}
+.nota{font-size:23px;line-height:1.3;color:var(--muted);margin-top:auto}
+.slide:not(.esq) h2{font-size:54px}
+
+/* Código VBA con los colores del editor */
+.code{margin:0;font-family:var(--mono);font-size:23px;line-height:1.55;background:#fff;border:1px solid var(--grid);border-left:6px solid var(--ink);padding:18px 26px;white-space:pre;color:#1b1b1b;overflow:hidden}
+.code.s{font-size:20.5px;padding:14px 22px}
+.code .k{color:#1d47b8;font-weight:600}
+.code .t{color:#a31515}
+.code .c{color:#2e7d32;font-style:italic}
+.code .f{color:#6e1f3a;font-weight:600}
+.lado{display:grid;grid-template-columns:1.15fr 1fr;gap:26px;align-items:start}
+.cuadro{background:#fff;border:1px solid var(--grid);padding:16px 20px;font-size:21px;line-height:1.45}
+.cuadro b{color:var(--ink)}
+.cuadro .t2{font-family:var(--mono);font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-d);margin-bottom:6px;display:block}
+
+/* Mensaje de Windows y barra de seguridad */
+.msgbox{background:#fff;border:1px solid #9aa3a6;box-shadow:0 10px 26px rgba(0,0,0,.16);font-family:"Segoe UI",Arial,sans-serif;width:420px}
+.msgbox .tt{padding:7px 12px;border-bottom:1px solid #ddd;font-size:15px}
+.msgbox .bd{display:flex;gap:14px;padding:18px 18px 8px;font-size:18px;align-items:flex-start}
+.msgbox .bd i{font-style:normal;display:inline-flex;width:34px;height:34px;border-radius:50%;background:#1d6fd6;color:#fff;align-items:center;justify-content:center;font-weight:700;flex:none}
+.msgbox .bt{display:flex;justify-content:flex-end;padding:8px 14px 12px;background:#f0f0f0}
+.msgbox .bt span{border:1px solid #1d6fd6;padding:4px 22px;font-size:15px;background:#fff}
+.seg{display:flex;align-items:center;gap:16px;background:#fff4ce;border:1px solid #e5c76b;padding:12px 18px;font-family:"Segoe UI",Arial,sans-serif;font-size:19px}
+.seg b{font-weight:700}
+.seg span.b{margin-left:auto;border:1px solid #888;background:#fff;padding:5px 14px;font-size:16px}
+.seg.rojo{background:#fde7e9;border-color:#e3a2a8}
+
+.sv{width:100%;height:auto;display:block;font-family:var(--sans);overflow:visible}
+.sv .c{fill:var(--card);stroke:var(--grid);stroke-width:1.5}
+.sv .c.i{fill:var(--ink);stroke:var(--ink)}
+.sv .c.a{fill:var(--acc-soft);stroke:var(--acc)}
+.sv .c.v{fill:var(--pos-soft);stroke:var(--pos)}
+.sv .c.m{fill:var(--neg-soft);stroke:var(--neg)}
+.sv text{fill:var(--text)}
+.sv text.i{fill:#fff;font-weight:600}
+.sv text.r{fill:var(--muted);font-family:var(--mono)}
+.sv .f{stroke:var(--acc);stroke-width:3.5;fill:none}
+.sv .f.d{stroke-dasharray:9 7}
+.sv .p{fill:var(--acc)}
+.sv .b{fill:var(--ink)}.sv .b.g{fill:var(--acc)}
+.cover{gap:22px;background:var(--ink);color:#fff}
+.cover-logo{position:absolute;top:50px;right:72px;height:90px;width:auto;background:#fff;padding:9px 13px}
+.cover .mod{font-family:var(--mono);font-size:18px;letter-spacing:.14em;text-transform:uppercase;color:#8fe0d6}
+.cover h1{font-size:80px;color:#fff}
+.cover .sub{font-size:28px;color:#f1dbe3}
+.cover .by{font-size:26px}.cover .by b{color:#8fe0d6;font-weight:600}
+.cierre{background:var(--ink)}
+.cierre h2{color:#fff;font-size:60px}
+.cierre .apoyo{color:#f1dbe3}
+#stage.oscuro .top,#stage.oscuro .bottom{color:#f1dbe3}
+#stage.oscuro .btn.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+#giroTel{display:none;position:fixed;inset:0;z-index:9;background:var(--ink);color:#fff;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:20px;line-height:1.4}
+@media (max-width:640px) and (orientation:portrait){#giroTel{display:flex}}
+@media (prefers-reduced-motion:reduce){.slide.on{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="giroTel"><p>📱 Gire su teléfono para ver la presentación en horizontal.</p></div>
+<div id="stage">
+  <div class="top"><span id="topL">MACROS Y VBA.</span><div class="dots" id="dots"></div></div>
+  <div id="slides"></div>
+  <div class="bottom">
+    <span>Jarlin Figueroa, MA</span>
+    <div class="navb">
+      <button class="btn" id="snd" title="Sonido (M)">🔊 Sonido</button>
+      <button class="btn" id="fs" title="Pantalla completa (F)">Pantalla completa</button>
+      <button class="btn" id="prev">← Anterior</button>
+      <span id="count" style="min-width:70px;text-align:center"></span>
+      <button class="btn primary" id="next">Siguiente →</button>
+    </div>
+  </div>
+</div>
+<script>
+/* ---------- Dibujos en SVG (lienzo de 1060 de ancho) ---------- */
+const C = (x,y,w,h,txt,cl="",t=24) => { const L=[].concat(txt), y0=y+h/2-(L.length-1)*t*.62; return `<rect class="c ${cl}" x="${x}" y="${y}" width="${w}" height="${h}" rx="6"/>${L.map((l,i)=>`<text class="${cl}" x="${x+w/2}" y="${y0+i*t*1.24+t*.34}" text-anchor="middle" font-size="${t}">${l}</text>`).join("")}`; };
+const F = (x1,y1,x2,y2,cl="") => { const a=Math.atan2(y2-y1,x2-x1), p=(d,b)=>`${x2-d*Math.cos(a-b)},${y2-d*Math.sin(a-b)}`; return `<line class="f ${cl}" x1="${x1}" y1="${y1}" x2="${x2-10*Math.cos(a)}" y2="${y2-10*Math.sin(a)}"/><polygon class="p" points="${x2},${y2} ${p(18,.42)} ${p(18,-.42)}"/>`; };
+const R = (x,y,txt,t=20,an="middle") => `<text class="r" x="${x}" y="${y}" text-anchor="${an}" font-size="${t}">${txt}</text>`;
+const dib = (svg,alt,h=345) => `<svg class="sv" viewBox="0 0 1060 ${h}" role="img" aria-label="${alt}">${svg}</svg>`;
+
+/* Barras horizontales */
+function barras(it,o={}){ const eti=o.eti||260, an=o.an||600, alto=o.alto||46, paso=o.paso||86, t=o.t||25, max=Math.max(...it.map(x=>x[1])), H=it.length*paso;
+  return `<svg class="sv" viewBox="0 0 1060 ${H}" role="img" aria-label="${o.alt||''}">${it.map(([k,v,g],i)=>{ const w=Math.max(8,v/max*an), y=i*paso+(paso-alto)/2; return `<text x="${eti-16}" y="${y+alto/2+t*.34}" text-anchor="end" font-size="${t}">${k}</text><path class="b ${g?'g':''}" d="M${eti} ${y}h${w-4}q4 0 4 4v${alto-8}q0 4-4 4h-${w-4}z"/><text x="${eti+w+14}" y="${y+alto/2+t*.34}" font-size="${t}" font-weight="600">${o.fmt?o.fmt(v):v}</text>`; }).join("")}</svg>`; }
+
+/* Colorea código VBA como el editor: palabras clave en azul, textos en rojo y comentarios en verde */
+const KW = ["Sub","End","Dim","As","Set","If","Then","Else","ElseIf","For","Each","In","Next","To","With","Integer","Long","Double","String","Boolean","Variant","True","False","Nothing","And","Or","Not","Call","Do","Loop","While"];
+function vb(src,cl=""){
+  const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const linea=l=>{ let out="", i=0, enTexto=false, buf="";
+    const pal=s=>esc(s).replace(/\b([A-Za-zÁÉÍÓÚáéíóúñ]+)\b/g,m=>KW.includes(m)?`<span class="k">${m}</span>`:m);
+    for(;i<l.length;i++){ const ch=l[i];
+      if(ch==='"'){ if(!enTexto){ out+=pal(buf); buf='"'; enTexto=true; } else { buf+='"'; out+=`<span class="t">${esc(buf)}</span>`; buf=""; enTexto=false; } continue; }
+      if(ch==="'"&&!enTexto){ out+=pal(buf)+`<span class="c">${esc(l.slice(i))}</span>`; return out; }
+      buf+=ch; }
+    return out+(enTexto?`<span class="t">${esc(buf)}</span>`:pal(buf)); };
+  return `<pre class="code ${cl}">${src.split("\n").map(linea).join("\n")}</pre>`;
+}
+
+/* ---------- Láminas ---------- */
+const S = [];
+const SECC = ["Inicio","Automatizar","Conceptos","Grabar macros","El editor","Objetos","El lenguaje","Interacción","Botón y pruebas","Cierre"];
+const lam = (t,h,cl="") => S.push({t,h:`<div class="slide ${cl}">${h}</div>`});
+const pto = s => /[?.]$/.test(s) ? s : s + ".";
+const idea = (t,ey,tit,apoyo) => lam(t,`<p class="eyebrow">${pto(ey)}</p><h2>${tit}</h2><p class="apoyo">${apoyo}</p>`);
+const gr = (t,ey,tit,cuerpo,nota="") => lam(t,`<p class="eyebrow">${pto(ey)}</p><h2>${tit}</h2>${cuerpo}${nota?`<p class="nota">${nota}</p>`:""}`,"esq");
+
+/* 0 · Inicio */
+lam(0,`<img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI · Instituto de Capacitación y Desarrollo Profesional Siglo XXI">
+  <p class="mod">Módulo 7</p><h1>Automatización con macros y VBA.</h1><p class="sub">Soluciones que convierten tareas repetitivas en procesos de un clic.</p><p class="by">Por: <b>Jarlin Figueroa, MA</b></p>`,"cover");
+lam(0,`<p class="eyebrow">Ruta.</p><h2>Lo que veremos.</h2><ol class="lista">${["¿Qué es automatizar?","Macros y VBA.","Grabar una macro.","El editor y el código.","Objetos, variables, decisiones y ciclos.","Botones, pruebas y buenas prácticas."].map((x,i)=>`<li><b>${i+1}</b>${x}</li>`).join("")}</ol>`);
+gr(0,"Punto de partida","Cada mes, las mismas tareas.",dib(`${["Organizar la información","Aplicar formatos","Actualizar cálculos","Preparar el resumen"].map((t,i)=>C(i*268,60,240,110,t.split(" ").length>2?[t.split(" ").slice(0,2).join(" "),t.split(" ").slice(2).join(" ")]:t,"a",23)+(i<3?F(i*268+242,115,i*268+266,115):"")).join("")}${C(260,230,540,80,["Un analista de una institución de salud","repite este proceso cada mes"],"i",22)}`,"Cuatro tareas repetitivas que el analista hace cada mes.",320),"Caso del módulo: el informe mensual de reclamaciones de una institución del sector salud.");
+
+/* 1 · Automatizar */
+idea(1,"¿Qué es automatizar?","Convertir una tarea repetitiva en un proceso de un clic.","Excel ejecuta los pasos por usted, siempre en el mismo orden y sin olvidar ninguno.");
+gr(1,"¿Por qué automatizar?","Menos tiempo, menos errores.",barras([["A mano",120],["Con macro",1,1]],{alt:"El informe a mano toma 120 minutos y con la macro, 1 minuto.",fmt:v=>v+" min",paso:110,alto:56}),"Ejemplo ilustrativo: el mismo informe mensual, hecho a mano y con una macro.");
+
+/* 2 · Macros y VBA */
+idea(2,"¿Qué es una macro?","Una secuencia de acciones guardada.","Excel la repite exactamente igual cada vez que usted la ejecuta.");
+idea(2,"¿Qué es VBA?","VBA es el lenguaje de las macros.","Visual Basic para Aplicaciones: el código que Excel escribe cuando usted graba, y que también puede escribir o corregir usted.");
+gr(2,"Dos formas de crear una macro","Grabar o escribir.",dib(`${C(0,0,500,70,"Macro grabada","i",28)}${["Excel anota sus clics","No hace falta programar","Repite siempre lo mismo"].map((t,i)=>C(0,84+i*76,500,64,t,"a",23)).join("")}${C(560,0,500,70,"Macro escrita en VBA","i",28)}${["Usted escribe el código","Puede decidir y repetir","Se adapta a datos nuevos"].map((t,i)=>C(560,84+i*76,500,64,t,"v",23)).join("")}`,"Comparación entre una macro grabada y una macro escrita.",312),"Lo habitual es grabar primero y después mejorar el código en el editor.");
+gr(2,"Antes de empezar","La pestaña Programador.",dib(`${["Archivo","Opciones","Personalizar cinta de opciones","☑ Programador"].map((t,i)=>C(i*268,80,236,96,t.length>14?[t.split(" ").slice(0,2).join(" "),t.split(" ").slice(2).join(" ")]:t,i===3?"i":"a",23)+(i<3?F(i*268+238,128,i*268+266,128):"")).join("")}${R(530,250,"Ahí están Grabar macro, Macros, Visual Basic e Insertar.",23)}`,"Ruta para mostrar la pestaña Programador.",280),"Se hace una sola vez en cada computadora.");
+gr(2,"Guardar el libro","Las macros viven en archivos .xlsm.",dib(`${C(40,30,420,120,["Libro.xlsx","no guarda macros"],"m",28)}${C(600,30,420,120,["Libro.xlsm","guarda las macros"],"v",28)}${R(250,200,"Si guarda como .xlsx,",23)}${R(250,236,"Excel elimina el código.",23)}${R(810,200,"Archivo › Guardar como ›",23)}${R(810,236,"Libro habilitado para macros",23)}`,"Diferencia entre .xlsx y .xlsm.",260),"Tipo de archivo: «Libro de Excel habilitado para macros (*.xlsm)».");
+gr(2,"Seguridad","Excel pide permiso antes de ejecutar macros.",`<div style="display:flex;flex-direction:column;gap:18px"><div class="seg"><b>ADVERTENCIA DE SEGURIDAD</b> Las macros se han deshabilitado. <span class="b">Habilitar contenido</span></div><div class="seg rojo"><b>RIESGO DE SEGURIDAD</b> Microsoft ha bloqueado la ejecución de macros porque el origen de este archivo no es de confianza.</div></div>`,"Habilite solo archivos de origen confiable. Si el archivo llegó por internet: clic derecho en el archivo › Propiedades › Desbloquear.");
+
+/* 3 · Grabar macros */
+gr(3,"El grabador de macros","Grabar es como encender una cámara.",dib(`${[["Grabar","macro"],["Nombre y","«Este libro»"],["Hacer las","acciones"],["Detener","grabación"],["Ejecutar","la macro"]].map((t,i)=>C(i*214,70,190,110,t,i===4?"v":i===0?"i":"a",22)+(i<4?F(i*214+192,125,i*214+212,125):"")).join("")}${R(530,240,"Programador › Grabar macro … Programador › Macros › Ejecutar",22)}`,"Pasos para grabar y ejecutar una macro.",270),"Mientras graba, Excel anota cada clic, incluso los errores: planifique antes los pasos.");
+gr(3,"Referencias","Absolutas o relativas.",dib(`${C(0,0,500,64,"Absolutas (por defecto)","i",24)}${C(0,80,500,150,["La macro siempre escribe en B2,","sin importar dónde esté","el cursor."],"a",22)}${C(560,0,500,64,"Relativas","i",24)}${C(560,80,500,150,["La macro escribe una celda","a la derecha de la celda","activa."],"v",22)}${R(530,290,"Programador › Usar referencias relativas",22)}`,"Diferencia entre referencias absolutas y relativas al grabar.",300),"Para informes con celdas fijas conviene la referencia absoluta.");
+
+/* 4 · El editor */
+gr(4,"El editor de VBA","Alt + F11 abre el editor.",dib(`${C(0,0,1060,52,"Menú · Insertar › Módulo · Ejecutar (F5) · Depuración (F8)","i",21)}${C(0,64,250,150,["Explorador","de proyectos"],"a",22)}${C(0,226,250,100,["Ventana","Propiedades"],"",21)}${C(264,64,796,190,["Ventana de código","Aquí se escriben las macros"],"v",24)}${C(264,266,796,60,"Ventana Inmediato (Ctrl + G)","",21)}`,"Partes del editor de Visual Basic.",330),"Las macros se guardan en un Módulo (Insertar › Módulo).");
+gr(4,"Anatomía de una macro","Empieza con Sub y termina con End Sub.",`<div class="lado">${vb(`Sub Saludar()
+    MsgBox "¡Hola, equipo!"
+End Sub`)}<div class="cuadro"><span class="t2">Cómo se lee</span><b>Sub Saludar()</b>: nombre de la macro, sin espacios.<br><b>MsgBox</b>: la instrucción que se ejecuta.<br><b>End Sub</b>: fin de la macro.</div></div>`,"Para ejecutarla: cursor dentro de la macro y F5, o Programador › Macros.");
+gr(4,"Comentarios","El apóstrofo explica el código.",vb(`' Escribe el título del reporte
+Range("A1").Value = "Informe mensual"   ' celda A1
+Range("A1").Font.Bold = True            ' en negrita`),"Lo que va después del apóstrofo ( ' ) aparece en verde y Excel no lo ejecuta. Sirve para que otra persona entienda su macro.");
+
+/* 5 · Objetos */
+gr(5,"El modelo de objetos","Libro › Hoja › Rango.",dib(`${C(0,20,300,90,["Libro","ThisWorkbook"],"i",24)}${F(304,65,376,65)}${C(380,20,300,90,["Hoja","Worksheets(\"Datos\")"],"a",23)}${F(684,65,756,65)}${C(760,20,300,90,["Rango","Range(\"A1\")"],"v",23)}`,"Jerarquía de objetos de Excel.",130)+vb(`ThisWorkbook.Worksheets("Datos").Range("A1").Value`),"Se escribe de lo general a lo particular, separando con puntos.");
+gr(5,"Celdas","Range y Cells.",vb(`Range("B2").Value = 100           ' por dirección
+Cells(2, 2).Value = 100           ' por fila y columna
+Range("A1:C1").Font.Bold = True   ' un rango completo`),"Cells(fila, columna) es muy útil cuando la fila cambia, por ejemplo dentro de una repetición.");
+gr(5,"Propiedades y métodos","Cómo es y qué hace.",dib(`${C(0,0,500,66,"Propiedades: cómo es","i",25)}${[".Value  ·  el valor",".Font.Bold  ·  negrita",".Interior.Color  ·  relleno",".NumberFormat  ·  formato"].map((t,i)=>C(0,78+i*62,500,52,t,"a",21)).join("")}${C(560,0,500,66,"Métodos: qué hace","i",25)}${[".Clear  ·  borra",".Copy  ·  copia",".Delete  ·  elimina",".AutoFit  ·  ajusta el ancho"].map((t,i)=>C(560,78+i*62,500,52,t,"v",21)).join("")}`,"Propiedades y métodos más usados.",330));
+
+/* 6 · El lenguaje */
+gr(6,"Variables","Una variable guarda un dato con nombre.",vb(`Dim total As Double     ' número con decimales
+Dim ars As String       ' texto
+Dim fila As Integer     ' número entero
+
+total = Range("F2").Value`),"Dim reserva el espacio; después se le asigna un valor con el signo igual.");
+gr(6,"Decisiones","If…Then…Else elige un camino.",vb(`If Range("C9").Value > 500000 Then
+    MsgBox "El monto supera el presupuesto"
+Else
+    MsgBox "Monto dentro del presupuesto"
+End If`),"Todo If de varias líneas debe cerrar con End If.");
+gr(6,"Repeticiones","For…Next repite instrucciones.",vb(`For fila = 2 To 121                  ' 120 reclamaciones
+    If Cells(fila, 6).Value > 20000 Then
+        Cells(fila, 6).Interior.Color = RGB(255, 230, 150)
+    End If
+Next fila`,"s"),"Ejemplo: marca en amarillo cada reclamación mayor de RD$ 20,000. Una persona tardaría minutos; la macro, un segundo.");
+gr(6,"Hojas","Crear, limpiar y mostrar hojas.",vb(`Worksheets.Add.Name = "Reporte"      ' crea una hoja
+Worksheets("Reporte").Cells.Clear    ' la deja en blanco
+Worksheets("Datos").Activate         ' muestra la hoja Datos`),"Si la hoja «Reporte» ya existe, Worksheets.Add da error: por eso se borra o se limpia antes.");
+gr(6,"Fórmulas desde VBA","En VBA las funciones van en inglés.",`<div class="lado">${vb(`Range("C9").Formula = "=SUM(C5:C8)"`)}<div class="cuadro"><span class="t2">En la celda se verá</span><span style="font-family:var(--mono);font-size:26px">=SUMA(C5:C8)</span></div></div>`+vb(`Application.WorksheetFunction.SumIf(...)   ' SUMAR.SI`,"s"),"VBA usa los nombres en inglés (SUM, SUMIF, COUNTIF) y la coma como separador. Excel los traduce al mostrarlos.");
+
+/* 7 · Interacción */
+gr(7,"Hablar con el usuario","MsgBox avisa; InputBox pregunta.",`<div style="display:flex;flex-direction:column;gap:18px">${vb(`mes = InputBox("¿De qué mes es el informe?")
+MsgBox "Informe de " & mes & " generado.", _
+       vbInformation, "Informe mensual"`)}<div class="msgbox" style="align-self:center"><div class="tt">Informe mensual</div><div class="bd"><i>i</i><span>Informe de octubre generado.</span></div><div class="bt"><span>Aceptar</span></div></div></div>`,"El signo &amp; une textos. El guion bajo ( _ ) continúa una instrucción en la línea siguiente.");
+
+/* 8 · Botón y pruebas */
+gr(8,"Un botón","Un clic ejecuta la macro.",dib(`${[["Insertar ›","Formas"],["Dibujar el","botón"],["Clic derecho ›","Asignar macro"],["Elegir la","macro"]].map((t,i)=>C(i*268,60,236,110,t,i===3?"i":"a",23)+(i<3?F(i*268+238,115,i*268+266,115):"")).join("")}${C(380,230,300,70,"▶ Generar informe","v",26)}`,"Pasos para crear un botón que ejecuta una macro.",310),"También existe Programador › Insertar › Botón (control de formulario).");
+gr(8,"Depurar","Encontrar y corregir errores.",dib(`${[["F8","Ejecuta línea por línea"],["F9","Pone un punto de interrupción"]].map(([a,b],i)=>C(0,i*86,180,72,a,"i",28)+C(190,i*86,330,72,b,"a",21)).join("")}${[["Subíndice fuera del intervalo","La hoja no existe o el nombre está mal escrito"],["Bloque If sin End If","Falta cerrar una decisión"],["Las macros no se ejecutan","Archivo .xlsx o contenido sin habilitar"]].map(([a,b],i)=>C(560,i*104,500,40,a,"m",19)+C(560,i*104+42,500,50,b,"",18)).join("")}`,"Teclas para depurar y errores comunes.",310),"Leer el mensaje de error con calma ahorra mucho tiempo: casi siempre dice qué falta.");
+lam(8,`<p class="eyebrow">Buenas prácticas.</p><h2>Cinco hábitos.</h2><ol class="lista">${["Guarde una copia antes de probar.","Comente su código.","Use nombres claros, sin espacios.","Pruebe paso a paso (F8).","Habilite solo macros de confianza."].map((x,i)=>`<li><b>${i+1}</b>${x}</li>`).join("")}</ol>`);
+
+/* 9 · Cierre */
+gr(9,"Integrador","El informe mensual en un clic.",dib(`${C(0,110,190,100,["Botón","Generar informe"],"i",21)}${F(194,160,256,160)}${[["PrepararReporte","hoja y títulos"],["GenerarResumen","cálculos por ARS"],["DarFormato","moneda y bordes"]].map(([a,b],i)=>C(260,i*110,420,90,[a,b],"a",22)+F(684,45+i*110,746,160)).join("")}${C(750,110,310,100,["MsgBox","«Informe generado»"],"v",22)}`,"Una macro principal llama a tres macros más pequeñas.",320),"Este es exactamente el proceso que construirá en la práctica guiada.");
+gr(9,"Aplicación","En una institución como SISALRIL.",dib(`${[["⏱️ Menos tiempo","Minutos en vez de horas"],["✔ Menos errores","Siempre los mismos pasos"],["📄 Mismo formato","Informes comparables"],["🔎 Más análisis","Tiempo para interpretar"]].map(([a,b],i)=>C((i%2)*540,Math.floor(i/2)*150,520,130,[a,b],i%2?"v":"a",25)).join("")}`,"Cuatro beneficios de automatizar en una institución.",290),"Las macros ayudan con tareas repetitivas; las decisiones siguen siendo de las personas.");
+lam(9,`<h2>Automatice lo repetitivo.</h2><p class="apoyo">Dedique su tiempo a analizar y decidir.</p>`,"cierre");
+lam(9,`<h2 class="ref-t">Referencias.</h2><ul class="refs">
+  <li>Alexander, M., &amp; Kusleika, D. (2019). <i>Excel 2019 power programming with VBA</i>. Wiley.</li>
+  <li>Figueroa, J. (2026). <i>Base de reclamaciones del Módulo 7</i> [Conjunto de datos ficticio]. Instituto ICADEP-XXI.</li>
+  <li>Microsoft. (s. f.-a). <i>Habilitar o deshabilitar macros en archivos de Microsoft 365</i>. Microsoft Support. <a href="https://support.microsoft.com/es-ES/Office/vba/enable-or-disable-macros-in-microsoft-365-files" target="_blank" rel="noopener">https://support.microsoft.com/es-ES/Office/vba/enable-or-disable-macros-in-microsoft-365-files</a></li>
+  <li>Microsoft. (s. f.-b). <i>Hacer referencia a las hojas por nombre</i>. Microsoft Learn. <a href="https://learn.microsoft.com/es-es/office/vba/excel/concepts/workbooks-and-worksheets/refer-to-sheets-by-name" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/office/vba/excel/concepts/workbooks-and-worksheets/refer-to-sheets-by-name</a></li>
+  <li>Microsoft. (s. f.-c). <i>Protéjase de los virus de macros</i>. Microsoft Support. <a href="https://support.microsoft.com/es-ES/Office/add-ins/protect-yourself-from-macro-viruses" target="_blank" rel="noopener">https://support.microsoft.com/es-ES/Office/add-ins/protect-yourself-from-macro-viruses</a></li>
+  <li>Microsoft. (s. f.-d). <i>Referencia de Visual Basic para Aplicaciones (VBA) de Excel</i>. Microsoft Learn. <a href="https://learn.microsoft.com/es-es/office/vba/api/overview/excel" target="_blank" rel="noopener">https://learn.microsoft.com/es-es/office/vba/api/overview/excel</a></li></ul>`);
+
+/* ---------- Motor ---------- */
+const wrap=document.getElementById("slides"); wrap.innerHTML=S.map(s=>s.h).join("");
+const els=[...wrap.children], $=id=>document.getElementById(id);
+const INI=SECC.map((_,i)=>S.findIndex(s=>s.t===i));
+const dots=$("dots");
+dots.innerHTML=SECC.map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
+dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.t]));
+
+const SND={on:true,ctx:null,ready:false}; try{ SND.on=localStorage.getItem("m7sonido")!=="0"; }catch(e){}
+function sonar(d){ if(!SND.on||!SND.ready) return; try{ const A=window.AudioContext||window.webkitAudioContext; if(!A) return; const c=SND.ctx||(SND.ctx=new A()); if(c.state==="suspended") c.resume(); const o=c.createOscillator(), g=c.createGain(), t=c.currentTime+.01; o.frequency.value=d>0?880:587; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.05,t+.015); g.gain.exponentialRampToValueAtTime(.0001,t+.2); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+.22); }catch(e){} }
+const pintarSnd=()=>{ $("snd").textContent=SND.on?"🔊 Sonido":"🔇 Sin sonido"; };
+$("snd").onclick=e=>{ SND.on=!SND.on; try{ localStorage.setItem("m7sonido",SND.on?"1":"0"); }catch(_){} pintarSnd(); e.currentTarget.blur(); }; pintarSnd();
+
+let cur=0;
+function go(i){ const prev=cur; cur=Math.max(0,Math.min(els.length-1,i)); if(cur!==prev) sonar(cur>prev?1:-1);
+  els.forEach((e,j)=>e.classList.toggle("on",j===cur)); const tp=S[cur].t;
+  $("stage").classList.toggle("oscuro",els[cur].classList.contains("cover")||els[cur].classList.contains("cierre"));
+  dots.querySelectorAll("button").forEach((b,j)=>{ b.classList.toggle("cur",j===tp); b.classList.toggle("done",tp>j); });
+  $("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
+  $("topL").textContent="MACROS Y VBA · "+SECC[tp].toUpperCase()+".";
+  $("prev").disabled=cur===0; $("next").disabled=cur===els.length-1;
+  try{ history.replaceState(null,"","#"+(cur+1)); }catch(e){} }
+$("prev").onclick=()=>go(cur-1); $("next").onclick=()=>go(cur+1);
+$("fs").onclick=e=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(_){} e.currentTarget.blur(); };
+document.addEventListener("keydown",e=>{ const enB=e.target.closest&&e.target.closest("button,a");
+  if(["ArrowRight","PageDown"].includes(e.key)||(e.key===" "&&!enB)){e.preventDefault();go(cur+1);} else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==="Home") go(0); else if(e.key==="End") go(els.length-1); else if(e.key==="f"||e.key==="F") $("fs").click(); else if(e.key==="m"||e.key==="M") $("snd").click(); });
+let tx=null; document.addEventListener("touchstart",e=>{ tx=e.touches[0].clientX; },{passive:true});
+document.addEventListener("touchend",e=>{ if(tx===null) return; const d=e.changedTouches[0].clientX-tx; if(Math.abs(d)>70) go(cur+(d<0?1:-1)); tx=null; },{passive:true});
+function fit(){ const s=Math.min((innerWidth-16)/1280,(innerHeight-16)/720); $("stage").style.transform=`translate(-50%,-50%) scale(${s})`; }
+addEventListener("resize",fit); fit(); go((parseInt(location.hash.slice(1),10)||1)-1); SND.ready=true;
+</script>
+</body>
+</html>

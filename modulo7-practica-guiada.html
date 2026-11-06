@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>Práctica guiada · Módulo 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Láminas de 1280×720. Cada paso = «Haga esto» + «Compruebe». Paleta del Módulo 7: burdeos + turquesa. */
+:root{
+  --bg:#ece6e9; --paper:#f8f6f4; --card:#ffffff; --ink:#6e1f3a; --text:#231b20; --muted:#6a5c63; --line:#e6dee2; --grid:#d2c6cc;
+  --acc:#159a8c; --acc-d:#0b6b61; --acc-soft:#dcf2ef; --pos:#3b7a2e; --pos-soft:#e5f1df; --neg:#c8553d; --neg-soft:#f8e4df; --ink-soft:#f3e3e9;
+  --xl:#217346; --serif:"Source Serif 4",Georgia,serif; --sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif; --mono:"IBM Plex Mono",Consolas,monospace; --win:"Segoe UI",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;background:var(--paper);transform-origin:center;transform:translate(-50%,-50%);box-shadow:0 10px 40px rgba(110,31,58,.18);border-top:4px solid var(--ink)}
+.slide{position:absolute;inset:0;padding:56px 72px 66px;display:none;flex-direction:column;gap:13px}
+.slide.on{display:flex;animation:in .35s ease}
+@keyframes in{from{opacity:.3;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.slide.on{animation:none!important}}
+.top{position:absolute;top:20px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;z-index:3}
+.dots{display:flex;gap:6px}.dots button{width:24px;height:6px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dots button.done{background:var(--grid)}.dots button.cur{background:var(--acc)}
+.bottom{position:absolute;bottom:16px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted);z-index:3}
+.navb{display:flex;gap:8px;align-items:center}
+.btn{font-family:var(--mono);font-size:13px;border:1px solid var(--grid);background:var(--card);color:var(--ink);padding:7px 14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--ink)} .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.acc{background:var(--acc);color:#fff;border-color:var(--acc)}
+.btn:disabled{opacity:.4;cursor:default}
+button:focus-visible,a:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+h1,h2{font-family:var(--serif);font-weight:600;margin:0;color:var(--ink);line-height:1.08;text-wrap:balance}
+h2{font-size:33px}
+p{margin:0}
+b{font-weight:600}
+code{font-family:var(--mono);font-size:.92em;background:var(--ink-soft);color:var(--ink);padding:1px 6px;font-weight:600;white-space:nowrap}
+.eyebrow{font-family:var(--mono);font-size:13.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);display:flex;gap:12px;align-items:center}
+.eyebrow .tag{background:var(--ink);color:#fff;padding:3px 10px;font-size:12.5px}
+.eyebrow .tag.ok{background:var(--pos)}
+.lead{font-size:19px;line-height:1.5}
+.why{display:flex;gap:12px;align-items:baseline;font-size:16px;color:var(--ink);background:var(--ink-soft);padding:7px 14px}
+.why b{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.cols{display:grid;grid-template-columns:470px 1fr;grid-template-rows:minmax(0,1fr);gap:30px;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;gap:11px;min-width:0;min-height:0}
+.tip{border-left:4px solid var(--acc);background:var(--acc-soft);padding:8px 13px;font-size:15px;line-height:1.42}
+.warn{border-left:4px solid var(--neg);background:var(--neg-soft);padding:8px 13px;font-size:15px;line-height:1.42}
+.do{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;counter-reset:n}
+.do li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;font-size:16.5px;line-height:1.4;counter-increment:n}
+.do li::before{content:counter(n);display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:50%;background:var(--acc);color:#fff;font-family:var(--mono);font-size:13px;font-weight:700}
+.do li .h{display:block;font-size:13.5px;color:var(--muted);margin-top:2px;line-height:1.35}
+.path{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px;font-family:var(--win);font-size:14px}
+.path span{background:var(--card);border:1px solid var(--grid);padding:1px 8px;font-weight:600}
+.path i{font-style:normal;color:var(--acc-d);font-weight:700}
+
+/* Código para copiar */
+.codebox{flex:1;display:flex;flex-direction:column;border:1px solid #b9aeb4;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.08);min-height:0}
+.codebox .bar{display:flex;justify-content:space-between;align-items:center;background:#ece8ea;border-bottom:1px solid #d4cbd0;padding:6px 10px;font-family:var(--win);font-size:13px}
+.codebox .bar b{color:var(--ink)}
+.codebox pre{flex:1;min-height:0;margin:0;padding:10px 14px;font-family:var(--mono);font-size:12px;line-height:1.33;white-space:pre;overflow:auto;color:#1b1b1b}
+.codebox .k{color:#1d47b8;font-weight:600}.codebox .t{color:#a31515}.codebox .c{color:#2e7d32}
+.copiar{border:1px solid var(--acc);background:var(--acc);color:#fff;font-family:var(--mono);font-size:12.5px;padding:5px 12px;cursor:pointer}
+.copiar.ok{background:var(--pos);border-color:var(--pos)}
+
+/* Cuadros de diálogo y hoja de Excel */
+.dlg{border:1px solid #9aa3a6;background:#f0f0f0;font-family:var(--win);font-size:14px;box-shadow:0 10px 26px rgba(0,0,0,.16);width:100%;align-self:start}
+.dlg .t{background:#fff;padding:7px 12px;border-bottom:1px solid #d0d0d0;font-weight:600}
+.dlg .b{padding:11px 14px 13px;display:flex;flex-direction:column;gap:8px}
+.dlg .f{background:#fff;border:1px solid #8f979a;padding:4px 8px;min-height:28px}
+.dlg .f.on{border:2px solid var(--acc);background:#f2fbfa;font-weight:600}
+.dlg .k{display:flex;justify-content:flex-end;gap:8px;margin-top:3px}
+.dlg .k span{border:1px solid #8f979a;background:#fdfdfd;padding:3px 15px}
+.dlg .k span.on{border:2px solid var(--acc);background:var(--acc-soft);font-weight:600}
+.dlg .lst{background:#fff;border:1px solid #8f979a;padding:4px;display:flex;flex-direction:column;gap:2px}
+.dlg .lst span{padding:2px 6px}.dlg .lst span.on{background:#cce4f7;outline:2px solid var(--acc);outline-offset:-2px;font-weight:600}
+.sheet{border:1px solid #c6c6c6;background:#fff;font-family:var(--win);font-size:14px;box-shadow:0 8px 20px rgba(0,0,0,.1);align-self:start;width:100%}
+.sheet table{border-collapse:collapse;width:100%}
+.sheet th{background:#f3f3f3;color:#555;font-weight:400;border:1px solid #dadada;padding:3px 6px;font-size:12px}
+.sheet td{border:1px solid #e3e3e3;padding:4px 8px;white-space:nowrap}
+.sheet td.n{text-align:right}
+.sheet td.h{background:#6e1f3a;color:#fff;font-weight:700;border-color:#555}
+.sheet td.b{font-weight:700}
+.sheet td.big{font-weight:700;font-size:17px}
+.sheet .tabs{display:flex;gap:2px;background:#f3f3f3;border-top:1px solid #dadada;padding:3px 8px;font-size:12.5px}
+.sheet .tabs span{padding:2px 12px;color:#555}.sheet .tabs span.on{background:#fff;color:var(--xl);font-weight:700;border-bottom:2px solid var(--xl)}
+.vbe{border:1px solid #9aa3a6;background:#fff;font-family:var(--win);font-size:13px;box-shadow:0 8px 22px rgba(0,0,0,.12);display:grid;grid-template-columns:190px 1fr;min-height:0}
+.vbe .ex{background:#f6f6f6;border-right:1px solid #ccc;padding:8px;display:flex;flex-direction:column;gap:3px;font-size:12.5px}
+.vbe .ex b{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#555}
+.vbe .ex span.on{background:#cce4f7;outline:2px solid var(--acc);outline-offset:-2px;font-weight:600}
+.vbe pre{margin:0;padding:10px 12px;font-family:var(--mono);font-size:12.5px;line-height:1.5;white-space:pre}
+.msgw{background:#fff;border:1px solid #9aa3a6;box-shadow:0 10px 26px rgba(0,0,0,.16);font-family:var(--win);width:380px;align-self:center}
+.msgw .tt{padding:7px 12px;border-bottom:1px solid #ddd;font-size:14px}
+.msgw .bd{display:flex;gap:14px;padding:18px 18px 10px;font-size:16px;align-items:flex-start;line-height:1.45}
+.msgw .bd i{font-style:normal;display:inline-flex;width:32px;height:32px;border-radius:50%;background:#1d6fd6;color:#fff;align-items:center;justify-content:center;font-weight:700;flex:none}
+.msgw .bt{display:flex;justify-content:flex-end;padding:8px 14px 12px;background:#f0f0f0}
+.msgw .bt span{border:1px solid #1d6fd6;padding:4px 22px;font-size:14px;background:#fff}
+.boton-xl{display:inline-flex;align-items:center;justify-content:center;background:#6e1f3a;color:#fff;font-family:var(--win);font-weight:600;font-size:15px;border-radius:10px;padding:10px 22px;box-shadow:0 3px 0 #4a1427}
+
+/* «Compruebe» */
+.okbox{border:2px solid var(--pos);background:var(--pos-soft);padding:13px 17px;display:flex;flex-direction:column;gap:8px;align-self:start;width:100%}
+.okbox .t{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--pos);font-weight:700;display:flex;align-items:center;gap:10px}
+.okbox .t i{font-style:normal;display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--pos);color:#fff;align-items:center;justify-content:center;font-size:16px}
+.okbox p{font-size:16.5px;line-height:1.42}
+.fixbox{align-self:start;width:100%;border:1px solid var(--grid);background:var(--card);padding:13px 17px;display:flex;flex-direction:column;gap:8px}
+.fixbox .t{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--neg);font-weight:700}
+.fixbox ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.fixbox li{display:grid;grid-template-columns:18px 1fr;gap:7px;font-size:14.5px;line-height:1.4}
+.fixbox li::before{content:"→";color:var(--neg);font-weight:700}
+
+/* Portada, misión y cierre */
+.cover{background:var(--ink);color:#fff;justify-content:center;gap:20px;padding:70px 110px}
+.cover-logo{position:absolute;top:50px;right:72px;height:84px;background:#fff;padding:8px 12px}
+.cover .mod{font-family:var(--mono);font-size:17px;letter-spacing:.14em;text-transform:uppercase;color:#8fe0d6}
+.cover h1{font-size:66px;color:#fff}
+.cover .sub{font-size:25px;color:#f1dbe3;line-height:1.4}
+.cover .by{font-size:22px}.cover .by b{color:#8fe0d6}
+.big-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.big-steps div{background:#fff;border:1px solid var(--grid);border-top:4px solid var(--acc);padding:12px 14px;font-size:15.5px;line-height:1.4}
+.big-steps b{display:block;font-family:var(--mono);font-size:12px;color:var(--acc-d);letter-spacing:.08em;margin-bottom:4px}
+.dl{display:flex;align-items:center;gap:16px;background:#fff;border:2px dashed var(--acc);padding:14px 18px}
+.dl .ic{font-size:34px}
+.dl b{font-size:18px;color:var(--ink)}
+.q{font-family:var(--serif);font-size:21px;line-height:1.35;color:var(--ink);border-left:4px solid var(--acc);padding-left:16px}
+#stage.oscuro .top,#stage.oscuro .bottom{color:#f1dbe3}
+#stage.oscuro .btn.primary{background:var(--acc);border-color:var(--acc)}
+#giroTel{display:none;position:fixed;inset:0;z-index:9;background:var(--ink);color:#fff;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:20px;line-height:1.4}
+@media (max-width:640px) and (orientation:portrait){#giroTel{display:flex}}
+#aviso{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--pos);color:#fff;font-family:var(--mono);font-size:14px;padding:9px 16px;opacity:0;transition:opacity .25s;z-index:20;pointer-events:none}
+#aviso.on{opacity:1}
+</style>
+</head>
+<body>
+<div id="giroTel"><p>📱 Gire su teléfono para ver la práctica en horizontal.</p></div>
+<div id="stage">
+  <div class="top"><span id="topL">PRÁCTICA GUIADA.</span><div class="dots" id="dots"></div></div>
+  <div id="slides"></div>
+  <div class="bottom">
+    <span>Jarlin Figueroa, MA</span>
+    <div class="navb">
+      <button class="btn" id="snd" title="Sonido (M)">🔊 Sonido</button>
+      <button class="btn" id="fs" title="Pantalla completa (F)">Pantalla completa</button>
+      <button class="btn" id="prev">← Anterior</button>
+      <span id="count" style="min-width:70px;text-align:center"></span>
+      <button class="btn primary" id="next">Siguiente →</button>
+    </div>
+  </div>
+</div>
+<div id="aviso">✔ Código copiado. Péguelo en el módulo con Ctrl + V.</div>
+<script>
+const CODIGO = {
+ "preparar": "' PASO 4 · Crea (o vuelve a crear) la hoja Reporte con sus títulos\nSub PrepararReporte()\n    Dim hoja As Worksheet                     ' variable que guarda una hoja\n\n    ' 1. Si ya existe una hoja llamada Reporte, se borra\n    Application.DisplayAlerts = False         ' no pedir confirmación al borrar\n    For Each hoja In ThisWorkbook.Worksheets  ' recorre todas las hojas del libro\n        If hoja.Name = \"Reporte\" Then hoja.Delete\n    Next hoja\n    Application.DisplayAlerts = True          ' vuelve a mostrar los avisos\n\n    ' 2. Agrega una hoja nueva al final y le pone nombre\n    Set hoja = ThisWorkbook.Worksheets.Add( _\n        After:=ThisWorkbook.Worksheets(ThisWorkbook.Worksheets.Count))\n    hoja.Name = \"Reporte\"\n\n    ' 3. Escribe el título, la fecha y los encabezados\n    hoja.Range(\"A1\").Value = \"Informe mensual de reclamaciones\"\n    hoja.Range(\"A2\").Value = \"Generado el \" & Format(Date, \"dd/mm/yyyy\")\n    hoja.Range(\"A4\").Value = \"ARS\"\n    hoja.Range(\"B4\").Value = \"Reclamaciones\"\n    hoja.Range(\"C4\").Value = \"Monto\"\nEnd Sub",
+ "resumen": "' PASO 5 · Calcula cuántas reclamaciones y cuánto monto tiene cada ARS\nSub GenerarResumen()\n    Dim datos As Worksheet, rep As Worksheet  ' hoja de origen y hoja de reporte\n    Dim listaARS As Variant                   ' lista con los nombres de las ARS\n    Dim i As Integer, fila As Integer         ' contador y fila donde se escribe\n\n    Set datos = ThisWorkbook.Worksheets(\"Datos\")\n    Set rep = ThisWorkbook.Worksheets(\"Reporte\")\n    listaARS = Array(\"ARS Humano\", \"ARS Primera\", \"ARS Senasa\", \"ARS Universal\")\n\n    fila = 5                                  ' los resultados empiezan en la fila 5\n    For i = 0 To UBound(listaARS)             ' repite una vez por cada ARS\n        rep.Cells(fila, 1).Value = listaARS(i)\n        rep.Cells(fila, 2).Value = Application.WorksheetFunction.CountIf( _\n            datos.Range(\"C:C\"), listaARS(i))                 ' CONTAR.SI\n        rep.Cells(fila, 3).Value = Application.WorksheetFunction.SumIf( _\n            datos.Range(\"C:C\"), listaARS(i), datos.Range(\"F:F\")) ' SUMAR.SI\n        fila = fila + 1                       ' baja a la fila siguiente\n    Next i\n\n    ' Fila de total (fila 9): en VBA las fórmulas se escriben en inglés\n    rep.Range(\"A9\").Value = \"Total\"\n    rep.Range(\"B9\").Formula = \"=SUM(B5:B8)\"\n    rep.Range(\"C9\").Formula = \"=SUM(C5:C8)\"\nEnd Sub",
+ "formato": "' PASO 6 · Da formato al reporte\nSub DarFormato()\n    With ThisWorkbook.Worksheets(\"Reporte\")   ' todo lo que empieza con punto es de esta hoja\n        .Range(\"A1\").Font.Bold = True\n        .Range(\"A1\").Font.Size = 16\n        .Range(\"A4:C4\").Font.Bold = True\n        .Range(\"A4:C4\").Font.Color = RGB(255, 255, 255)        ' letra blanca\n        .Range(\"A4:C4\").Interior.Color = RGB(110, 31, 58)      ' relleno burdeos\n        .Range(\"C5:C9\").NumberFormat = \"\"\"RD$\"\" #,##0.00\"       ' formato de moneda\n        .Range(\"A9:C9\").Font.Bold = True\n        .Range(\"A4:C9\").Borders.LineStyle = xlContinuous       ' bordes en la tabla\n        .Columns(\"A:C\").AutoFit                                ' ajusta el ancho\n    End With\nEnd Sub",
+ "informe": "' PASO 7 · Ejecuta todo el proceso y avisa al terminar\nSub GenerarInforme()\n    Application.ScreenUpdating = False        ' trabaja sin parpadeos\n    PrepararReporte                           ' 1. hoja nueva con títulos\n    GenerarResumen                            ' 2. cálculos por ARS\n    DarFormato                                ' 3. formatos\n    Application.ScreenUpdating = True\n\n    ThisWorkbook.Worksheets(\"Reporte\").Activate\n    MsgBox \"Informe generado.\" & vbCrLf & \"Monto total: RD$ \" & _\n        Format(ThisWorkbook.Worksheets(\"Reporte\").Range(\"C9\").Value, \"#,##0.00\"), _\n        vbInformation, \"Informe mensual\"\nEnd Sub"
+};
+
+/* Colorea el código como el editor de VBA */
+const KW=["Sub","End","Dim","As","Set","If","Then","Else","For","Each","In","Next","To","With","Integer","Variant","Worksheet","True","False"];
+function vb(src){ const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const pal=s=>esc(s).replace(/\b([A-Za-z]+)\b/g,m=>KW.includes(m)?`<span class="k">${m}</span>`:m);
+  return src.split("\n").map(l=>{ let out="",buf="",tx=false; for(let i=0;i<l.length;i++){ const ch=l[i];
+      if(ch==='"'){ if(!tx){out+=pal(buf);buf='"';tx=true;} else {buf+='"';out+=`<span class="t">${esc(buf)}</span>`;buf="";tx=false;} continue; }
+      if(ch==="'"&&!tx){ return out+pal(buf)+`<span class="c">${esc(l.slice(i))}</span>`; } buf+=ch; }
+    return out+(tx?`<span class="t">${esc(buf)}</span>`:pal(buf)); }).join("\n"); }
+const caja=(k,titulo)=>`<div class="codebox"><div class="bar"><b>${titulo}</b><button class="copiar" data-k="${k}">📋 Copiar código</button></div><pre>${vb(CODIGO[k])}</pre></div>`;
+const ruta=(...p)=>`<span class="path">${p.map(x=>`<span>${x}</span>`).join("<i>›</i>")}</span>`;
+const hoja=(filas,pest="Reporte",cols="ABC")=>`<div class="sheet"><table><tr><th></th>${[...cols].map(c=>`<th>${c}</th>`).join("")}</tr>${filas.map((f,i)=>`<tr><th>${i+1}</th>${f.map(c=>{ const [v,cl]=[].concat(c); return `<td class="${cl||''}">${v||''}</td>`; }).join("")}</tr>`).join("")}</table><div class="tabs">${["Datos","Nota","Reporte"].filter(x=>pest==="Datos"?x!=="Reporte":true).map(x=>`<span class="${x===pest?'on':''}">${x}</span>`).join("")}</div></div>`;
+const RES=[["ARS Humano",35,"RD$ 166,200.00"],["ARS Primera",28,"RD$ 141,650.00"],["ARS Senasa",38,"RD$ 225,900.00"],["ARS Universal",19,"RD$ 160,100.00"]];
+
+/* ---------- Láminas ---------- */
+const S=[]; const SECC=["Inicio","Paso 1","Paso 2","Paso 3","Paso 4","Paso 5","Paso 6","Paso 7","Paso 8","Entrega"];
+const lam=(t,h,cl="")=>S.push({t,h:`<div class="slide ${cl}">${h}</div>`});
+const paso=(t,n,titulo,para,izq,der)=>lam(t,`<p class="eyebrow"><span class="tag">Paso ${n} de 8</span>Haga esto</p><h2>${titulo}</h2><p class="why"><b>Para qué</b>${para}</p><div class="cols"${der.includes('codebox')?' style="grid-template-columns:350px 1fr"':''}><div class="col">${izq}</div><div class="col">${der}</div></div>`);
+const comp=(t,n,titulo,ok,der,fix)=>lam(t,`<p class="eyebrow"><span class="tag ok">Paso ${n} de 8</span>Compruebe</p><h2>${titulo}</h2><div class="cols"><div class="col"><div class="okbox"><div class="t"><i>✓</i>Debe ver esto</div>${ok}</div><div class="fixbox"><div class="t">¿Le salió distinto?</div><ul>${fix.map(x=>`<li>${x}</li>`).join("")}</ul></div></div><div class="col">${der}</div></div>`);
+
+lam(0,`<img class="cover-logo" src="img/icadep-isologo.png" alt="ICADEP-XXI"><p class="mod">Módulo 7 · Práctica guiada</p><h1>El informe mensual en un clic.</h1><p class="sub">Grabe su primera macro, escriba código VBA y cree un botón que prepara el reporte de reclamaciones de forma automática.</p><p class="by">Por: <b>Jarlin Figueroa, MA</b></p>`,"cover");
+lam(0,`<p class="eyebrow"><span class="tag">Su misión</span></p><h2>Al terminar, un botón hará el informe por usted.</h2>
+  <div class="cols" style="grid-template-columns:1fr 1fr"><div class="col">
+    <p class="lead">Cada mes, el analista cuenta las reclamaciones de cada ARS, suma sus montos y da formato al reporte. Usted lo va a automatizar en <b>8 pasos</b>.</p>
+    <div class="big-steps" style="grid-template-columns:1fr 1fr"><div><b>PASOS 1 A 3</b>Preparar el libro y grabar una macro.</div><div><b>PASOS 4 A 6</b>Escribir el código del reporte.</div><div><b>PASO 7</b>Unir todo y mostrar un mensaje.</div><div><b>PASO 8</b>Crear el botón.</div></div>
+    <a class="dl" href="Modulo7-Base-Reclamaciones.xlsx" download><span class="ic">📥</span><span><b>Modulo7-Base-Reclamaciones.xlsx</b><br><span style="font-size:15px;color:var(--muted)">120 reclamaciones de octubre de 2026 (datos ficticios)</span></span></a>
+  </div><div class="col"><div style="display:flex;flex-direction:column;gap:12px;align-items:center"><span class="boton-xl">▶ Generar informe</span><span style="font-size:26px;color:var(--acc)">↓</span>
+    ${hoja([[["Informe mensual de reclamaciones","big"],"",""],["Generado el 31/10/2026","",""],["","",""],[["ARS","h"],["Reclamaciones","h"],["Monto","h"]],...RES.map(r=>[r[0],[r[1],"n"],[r[2],"n"]]),[["Total","b"],["120","n b"],["RD$ 693,850.00","n b"]]])}</div></div></div>`);
+lam(0,`<p class="eyebrow"><span class="tag">Antes de empezar</span></p><h2>Lo que necesita.</h2>
+  <div class="cols" style="grid-template-columns:1fr 1fr"><div class="col">
+    <ul class="do"><li><span><b>Excel de escritorio para Windows</b> (2021 o Microsoft 365).<span class="h">Las macros no funcionan en Excel para la web ni en el celular.</span></span></li>
+    <li><span>El archivo <b>Modulo7-Base-Reclamaciones.xlsx</b>, descargado en su computadora.</span></li>
+    <li><span>Unos <b>45 minutos</b> sin interrupciones.</span></li></ul>
+    <div class="tip">💡 En los pasos 4 a 7 no tiene que escribir el código: use el botón <b>📋 Copiar código</b> y péguelo en Excel. Lea los comentarios en verde para entender qué hace cada línea.</div>
+  </div><div class="col"><p class="lead" style="font-size:16px"><b>Así es la hoja Datos</b> (filas 1 a 121):</p>
+    ${hoja([[["Reclamación","b"],["Fecha","b"],["ARS","b"],["Tipo de servicio","b"],["Provincia","b"],["Monto","b"]],["R-1001","01/10/2026","ARS Senasa","Laboratorio","Santiago",["2,950.00","n"]],["R-1002","01/10/2026","ARS Humano","Consulta","La Vega",["1,650.00","n"]],["…","…","…","…","…",["…","n"]]],"Datos","ABCDEF")}
+    <div class="warn">No cambie el nombre de la hoja <b>Datos</b> ni el orden de sus columnas: el código busca la ARS en la columna C y el monto en la columna F.</div>
+  </div></div>`);
+
+/* Paso 1 */
+paso(1,1,"Prepare el libro para macros.","Excel solo guarda macros en archivos .xlsm.",
+  `<ul class="do"><li><span>Abra <b>Modulo7-Base-Reclamaciones.xlsx</b>. Si aparece <b>Habilitar edición</b>, púlselo.</span></li>
+   <li><span>Muestre la pestaña Programador: ${ruta("Archivo","Opciones","Personalizar cinta de opciones")}, marque <b>Programador</b> y pulse <b>Aceptar</b>.<span class="h">Si ya la ve en la cinta, salte este punto.</span></span></li>
+   <li><span>${ruta("Archivo","Guardar como","Examinar")}</span></li>
+   <li><span>En <b>Tipo</b>, elija <b>Libro de Excel habilitado para macros (*.xlsm)</b>.</span></li>
+   <li><span>Nombre: <code>Modulo7_Apellido_Nombre</code> y pulse <b>Guardar</b>.</span></li></ul>`,
+  `<div class="dlg"><div class="t">Guardar como</div><div class="b"><span>Nombre de archivo:</span><div class="f">Modulo7_Perez_Ana</div><span>Tipo:</span><div class="f on">Libro de Excel habilitado para macros (*.xlsm)</div><div class="k"><span class="on">Guardar</span><span>Cancelar</span></div></div></div>
+   <div class="tip">Desde ahora trabaje siempre en el archivo <b>.xlsm</b>. Si lo guarda como .xlsx, Excel borra las macros.</div>`);
+comp(1,1,"Su libro ya admite macros.",`<p>La barra de título dice <b>Modulo7_Apellido_Nombre.xlsm</b>.</p><p>En la cinta aparece la pestaña <b>Programador</b>.</p>`,
+  `<div class="dlg"><div class="t">Modulo7_Perez_Ana.xlsm  -  Excel</div><div class="b"><span class="path"><span>Archivo</span><span>Inicio</span><span>Insertar</span><span>Datos</span><span style="border-color:var(--acc);background:var(--acc-soft)">Programador</span></span></div></div>`,
+  ["Si no ve Programador, repita el punto 2 y revise que la casilla quedó marcada.","Si el nombre termina en .xlsx, vuelva a «Guardar como» y elija el tipo .xlsm."]);
+
+/* Paso 2 */
+paso(2,2,"Grabe su primera macro.","Ver cómo Excel convierte sus clics en una macro.",
+  `<ul class="do"><li><span>${ruta("Programador","Grabar macro")}. Nombre: <code>FormatoEncabezado</code>. Guardar macro en: <b>Este libro</b>. Pulse <b>Aceptar</b>.</span></li>
+   <li><span>Seleccione <code>A1:F1</code> y aplique en Inicio: <b>Negrita</b>, <b>Color de relleno</b> oscuro y <b>Color de fuente</b> blanco.</span></li>
+   <li><span>Seleccione las columnas <b>A a F</b>: ${ruta("Inicio","Formato","Autoajustar ancho de columna")}.</span></li>
+   <li><span>${ruta("Programador","Detener grabación")}</span></li>
+   <li><span>Para probarla: seleccione <code>A1:F1</code>, ${ruta("Inicio","Borrar","Borrar formatos")} y luego ${ruta("Programador","Macros")} › <b>FormatoEncabezado</b> › <b>Ejecutar</b>.</span></li></ul>`,
+  `<div class="dlg"><div class="t">Grabar macro</div><div class="b"><span>Nombre de la macro:</span><div class="f on">FormatoEncabezado</div><span>Guardar macro en:</span><div class="f on">Este libro</div><span>Descripción:</span><div class="f">Formato del encabezado de Datos</div><div class="k"><span class="on">Aceptar</span><span>Cancelar</span></div></div></div>
+   <div class="tip">Mientras graba, cada clic queda anotado. Si se equivoca, siga: puede volver a grabar después.</div>`);
+comp(2,2,"El encabezado recupera su formato solo.",`<p>Al ejecutar <b>FormatoEncabezado</b>, la fila 1 vuelve a quedar en negrita, con relleno oscuro y letra blanca, y las columnas se ajustan.</p>`,
+  hoja([[["Reclamación","h"],["Fecha","h"],["ARS","h"],["Tipo de servicio","h"],["Provincia","h"],["Monto","h"]],["R-1001","01/10/2026","ARS Senasa","Laboratorio","Santiago",["2,950.00","n"]]],"Datos","ABCDEF"),
+  ["Si la macro no aparece en la lista, revise que eligió «Este libro» al grabar.","Si grabó pasos de más, en Programador › Macros, elíjala, pulse Eliminar y grábela otra vez."]);
+
+/* Paso 3 */
+paso(3,3,"Mire el código que grabó.","Descubrir que una macro es código VBA que usted puede leer y comentar.",
+  `<ul class="do"><li><span>${ruta("Programador","Visual Basic")} (o <b>Alt + F11</b>).</span></li>
+   <li><span>En el <b>Explorador de proyectos</b>, abra <b>Módulos</b> y haga doble clic en <b>Módulo1</b>.</span></li>
+   <li><span>Debajo de <code>Sub FormatoEncabezado()</code> escriba un comentario que empiece con apóstrofo:<br><code>' Da formato al encabezado de la hoja Datos</code></span></li>
+   <li><span>Pulse <b>Ctrl + S</b> para guardar. Deje el editor abierto.</span></li></ul>
+   <div class="tip">Su código puede verse un poco distinto al ejemplo: depende de los clics que hizo al grabar.</div>`,
+  `<div class="vbe"><div class="ex"><b>Proyecto</b><span>VBAProject (Modulo7…)</span><span>  Microsoft Excel Objetos</span><span>  Módulos</span><span class="on">    Módulo1</span></div><pre>${vb(`Sub FormatoEncabezado()
+' Da formato al encabezado de la hoja Datos
+    Range("A1:F1").Select
+    Selection.Font.Bold = True
+    With Selection.Interior
+        .Color = 3809854
+    End With
+    Selection.Font.Color = 16777215
+    Columns("A:F").Select
+    Columns("A:F").EntireColumn.AutoFit
+End Sub`)}</pre></div>`);
+comp(3,3,"Su comentario aparece en verde.",`<p>La línea que empieza con <b>'</b> se ve en <b style="color:#2e7d32">verde</b>: Excel la trata como un comentario y no la ejecuta.</p><p>Cada acción que hizo con el ratón es ahora una línea de código.</p>`,
+  `<div class="vbe" style="grid-template-columns:1fr"><pre>${vb(`Sub FormatoEncabezado()
+' Da formato al encabezado de la hoja Datos
+    Range("A1:F1").Select
+    Selection.Font.Bold = True`)}</pre></div>`,
+  ["Si el comentario sale en rojo, falta el apóstrofo ( ' ) al inicio de la línea.","Si no ve el Explorador de proyectos: Ver › Explorador de proyectos (Ctrl + R)."]);
+
+/* Paso 4 */
+paso(4,4,"Escriba la macro PrepararReporte.","Crear la hoja Reporte con su título y encabezados cada vez que se necesite.",
+  `<ul class="do"><li><span>En el editor: ${ruta("Insertar","Módulo")}. Se abre <b>Módulo2</b> en blanco.</span></li>
+   <li><span>Pulse <b>📋 Copiar código</b> y pegue en Módulo2 con <b>Ctrl + V</b>.</span></li>
+   <li><span>Haga clic dentro de la macro (entre <code>Sub</code> y <code>End Sub</code>) y pulse <b>F5</b> para ejecutarla.</span></li>
+   <li><span>Vuelva a Excel (<b>Alt + F11</b>) y mire la hoja nueva.</span></li></ul>
+   <div class="tip">Lea los comentarios en verde: explican cada bloque. <b>For Each</b> recorre las hojas y borra «Reporte» si ya existía.</div>`,
+  caja("preparar","Módulo2 · PrepararReporte",420));
+comp(4,4,"Apareció la hoja Reporte.",`<p>Al final del libro hay una hoja <b>Reporte</b> con el título en <code>A1</code>, la fecha de hoy en <code>A2</code> y los encabezados <b>ARS</b>, <b>Reclamaciones</b> y <b>Monto</b> en <code>A4:C4</code>.</p><p>Si la ejecuta otra vez, la hoja se vuelve a crear: nunca se duplica.</p>`,
+  hoja([["Informe mensual de reclamaciones","",""],["Generado el 31/10/2026","",""],["","",""],["ARS","Reclamaciones","Monto"]]),
+  ["«Error de compilación»: copie el código completo, desde Sub hasta End Sub.","Si F5 abre la lista de macros, el cursor estaba fuera de la macro: elija PrepararReporte y pulse Ejecutar."]);
+
+/* Paso 5 */
+paso(5,5,"Escriba la macro GenerarResumen.","Contar las reclamaciones y sumar el monto de cada ARS, sin fórmulas a mano.",
+  `<ul class="do"><li><span>En <b>Módulo2</b>, haga clic debajo de <code>End Sub</code> de PrepararReporte y deje una línea en blanco.</span></li>
+   <li><span>Copie y pegue el código de la derecha.</span></li>
+   <li><span>Con el cursor dentro de <b>GenerarResumen</b>, pulse <b>F5</b>.</span></li></ul>
+   <div class="tip"><b>For…Next</b> repite el cálculo para las 4 ARS. <b>CountIf</b> es CONTAR.SI y <b>SumIf</b> es SUMAR.SI: en VBA las funciones van en inglés.</div>`,
+  caja("resumen","Módulo2 · GenerarResumen",430));
+comp(5,5,"Los números de cada ARS.",`<p>En la hoja Reporte deben aparecer exactamente estos valores:</p><p><b>ARS Senasa</b> es la que más reclamaciones y monto tiene: <b>38</b> y <b>225,900</b>. En total: <b>120</b> reclamaciones y <b>693,850</b>.</p><p>En <code>C9</code> la barra de fórmulas muestra <code>=SUMA(C5:C8)</code>.</p>`,
+  hoja([["Informe mensual de reclamaciones","",""],["Generado el 31/10/2026","",""],["","",""],["ARS","Reclamaciones","Monto"],["ARS Humano",["35","n"],["166200","n"]],["ARS Primera",["28","n"],["141650","n"]],["ARS Senasa",["38","n"],["225900","n"]],["ARS Universal",["19","n"],["160100","n"]],["Total",["120","n"],["693850","n"]]]),
+  ["«Subíndice fuera del intervalo»: no existe la hoja Reporte. Ejecute primero PrepararReporte (paso 4).","Si salen ceros: la hoja debe llamarse Datos y la ARS estar en la columna C."]);
+
+/* Paso 6 */
+paso(6,6,"Escriba la macro DarFormato.","Que el reporte quede presentable siempre igual: título, colores, moneda y bordes.",
+  `<ul class="do"><li><span>En <b>Módulo2</b>, debajo de la macro anterior, pegue el código de la derecha.</span></li>
+   <li><span>Con el cursor dentro de <b>DarFormato</b>, pulse <b>F5</b>.</span></li></ul>
+   <div class="tip"><b>With … End With</b> evita repetir el nombre de la hoja: cada línea que empieza con punto se aplica a «Reporte». <b>RGB(110, 31, 58)</b> es el color burdeos.</div>`,
+  caja("formato","Módulo2 · DarFormato",360));
+comp(6,6,"El reporte ya tiene formato.",`<p>Título grande en negrita, encabezado burdeos con letra blanca, montos en <b>RD$</b> con dos decimales, fila Total en negrita y bordes en <code>A4:C9</code>.</p>`,
+  hoja([[["Informe mensual de reclamaciones","big"],"",""],["Generado el 31/10/2026","",""],["","",""],[["ARS","h"],["Reclamaciones","h"],["Monto","h"]],...RES.map(r=>[r[0],[r[1],"n"],[r[2],"n"]]),[["Total","b"],["120","n b"],["RD$ 693,850.00","n b"]]]),
+  ["Si C5:C9 muestra «#####», la columna es angosta: ejecute DarFormato otra vez (ajusta el ancho al final).","«No se puede establecer la propiedad…»: revise que copió las comillas dobles del formato tal como están."]);
+
+/* Paso 7 */
+paso(7,7,"Una macro que lo hace todo.","Ejecutar las tres macros en orden con una sola instrucción y avisar al terminar.",
+  `<ul class="do"><li><span>En <b>Módulo2</b>, debajo de DarFormato, pegue el código de la derecha.</span></li>
+   <li><span>Con el cursor dentro de <b>GenerarInforme</b>, pulse <b>F5</b>.</span></li></ul>
+   <div class="tip">Una macro puede <b>llamar</b> a otras por su nombre. <b>ScreenUpdating = False</b> evita que la pantalla parpadee mientras trabaja. El guion bajo ( _ ) continúa la instrucción en la línea siguiente.</div>`,
+  caja("informe","Módulo2 · GenerarInforme",330));
+comp(7,7,"Aparece el mensaje de cierre.",`<p>Excel rehace la hoja Reporte completa y muestra este mensaje con el monto total.</p><p>Pulse <b>Aceptar</b>. Guarde con <b>Ctrl + S</b>.</p>`,
+  `<div class="msgw"><div class="tt">Informe mensual</div><div class="bd"><i>i</i><span>Informe generado.<br>Monto total: RD$ 693,850.00</span></div><div class="bt"><span>Aceptar</span></div></div>`,
+  ["«Sub o Function no definida»: falta alguna de las tres macros anteriores o su nombre tiene otra letra.","Si el monto no es 693,850.00, vuelva al paso 5 y compare con la tabla esperada."]);
+
+/* Paso 8 */
+paso(8,8,"Cree el botón «Generar informe».","Que cualquier persona ejecute el proceso con un clic, sin abrir el editor.",
+  `<ul class="do"><li><span>Vaya a la hoja <b>Datos</b>. ${ruta("Insertar","Ilustraciones","Formas")} › <b>Rectángulo: esquinas redondeadas</b>.</span></li>
+   <li><span>Dibújelo cerca de <code>H2</code> y escriba dentro: <b>Generar informe</b>.</span></li>
+   <li><span>Clic derecho en el borde del botón › <b>Asignar macro…</b> › elija <b>GenerarInforme</b> › <b>Aceptar</b>.</span></li>
+   <li><span>Haga clic en cualquier celda y luego <b>pulse el botón</b>.</span></li>
+   <li><span>Guarde con <b>Ctrl + S</b>. Si Excel pregunta, mantenga el formato <b>.xlsm</b>.</span></li></ul>`,
+  `<div class="dlg"><div class="t">Asignar macro</div><div class="b"><span>Nombre de la macro:</span><div class="f on">GenerarInforme</div><div class="lst"><span>DarFormato</span><span>FormatoEncabezado</span><span class="on">GenerarInforme</span><span>GenerarResumen</span><span>PrepararReporte</span></div><div class="k"><span class="on">Aceptar</span><span>Cancelar</span></div></div></div>
+   <div style="text-align:center"><span class="boton-xl">Generar informe</span></div>`);
+comp(8,8,"Un clic, informe listo.",`<p>Al pulsar el botón, Excel crea de nuevo la hoja <b>Reporte</b> con los datos y el formato, la muestra y avisa con el mensaje del paso 7.</p><p>¡Automatizó el informe mensual!</p>`,
+  `<div style="display:flex;flex-direction:column;gap:14px;align-items:center"><span class="boton-xl">Generar informe</span><span style="font-size:26px;color:var(--acc)">↓</span><div class="msgw"><div class="tt">Informe mensual</div><div class="bd"><i>i</i><span>Informe generado.<br>Monto total: RD$ 693,850.00</span></div><div class="bt"><span>Aceptar</span></div></div></div>`,
+  ["Si al hacer clic se selecciona la forma en vez de ejecutarse, haga clic primero en una celda y vuelva a intentar.","Si dice que las macros están deshabilitadas, cierre y abra el archivo .xlsm y pulse Habilitar contenido.","Si aparece «RIESGO DE SEGURIDAD… bloqueado»: cierre Excel, clic derecho en el archivo › Propiedades › marque Desbloquear › Aceptar."]);
+
+/* Entrega */
+lam(9,`<p class="eyebrow"><span class="tag">Su entrega</span></p><h2>Entregue su archivo .xlsm y responda tres preguntas.</h2>
+  <div class="cols" style="grid-template-columns:1fr 1fr"><div class="col">
+    <ul class="do"><li><span>Agregue una hoja nueva llamada <b>Explicación</b> y responda allí, en pocas líneas:</span></li></ul>
+    <p class="q">1. ¿Qué proceso automatizó?</p><p class="q">2. ¿Qué tareas manuales permite reducir?</p><p class="q">3. ¿Cómo podría esta solución mejorar la eficiencia del trabajo en una institución como SISALRIL?</p>
+  </div><div class="col">
+    <ul class="do" style="counter-reset:n 1"><li><span>Revise que el botón <b>Generar informe</b> funciona y que el código tiene comentarios.</span></li><li><span>Guarde como <b>Modulo7_Apellido_Nombre.xlsm</b>.</span></li><li><span>Súbalo en la actividad de Moodle.</span></li></ul>
+    <div class="tip">💡 ¿Quiere ir más allá? Agregue a GenerarInforme una macro que marque en amarillo, en la hoja Datos, las reclamaciones mayores de RD$ 20,000 (vea el ejemplo de <b>For…Next</b> en la presentación).</div>
+    <div class="warn">Si sube el archivo como <b>.xlsx</b>, las macros se pierden y la actividad no se puede revisar.</div>
+  </div></div>`);
+
+/* ---------- Motor ---------- */
+const wrap=document.getElementById("slides"); wrap.innerHTML=S.map(s=>s.h).join("");
+const els=[...wrap.children], $=id=>document.getElementById(id);
+const INI=SECC.map((_,i)=>S.findIndex(s=>s.t===i));
+const dots=$("dots"); dots.innerHTML=SECC.map((k,i)=>`<button title="${k}" aria-label="Ir a ${k}" data-t="${i}"></button>`).join("");
+dots.querySelectorAll("button").forEach(b=>b.onclick=()=>go(INI[b.dataset.t]));
+/* Copiar código al portapapeles */
+function avisar(){ const a=$("aviso"); a.classList.add("on"); clearTimeout(avisar.h); avisar.h=setTimeout(()=>a.classList.remove("on"),2200); }
+wrap.addEventListener("click",async e=>{ const b=e.target.closest(".copiar"); if(!b) return; const txt=CODIGO[b.dataset.k];
+  try{ await navigator.clipboard.writeText(txt); }catch(_){ const t=document.createElement("textarea"); t.value=txt; document.body.appendChild(t); t.select(); try{document.execCommand("copy");}catch(__){} t.remove(); }
+  b.classList.add("ok"); b.textContent="✔ Copiado"; setTimeout(()=>{ b.classList.remove("ok"); b.textContent="📋 Copiar código"; },2200); avisar(); });
+const SND={on:true,ctx:null,ready:false}; try{ SND.on=localStorage.getItem("m7sonido")!=="0"; }catch(e){}
+function sonar(d){ if(!SND.on||!SND.ready) return; try{ const A=window.AudioContext||window.webkitAudioContext; if(!A) return; const c=SND.ctx||(SND.ctx=new A()); if(c.state==="suspended") c.resume(); const o=c.createOscillator(), g=c.createGain(), t=c.currentTime+.01; o.frequency.value=d>0?880:587; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.05,t+.015); g.gain.exponentialRampToValueAtTime(.0001,t+.2); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+.22); }catch(e){} }
+const pintarSnd=()=>{ $("snd").textContent=SND.on?"🔊 Sonido":"🔇 Sin sonido"; };
+$("snd").onclick=e=>{ SND.on=!SND.on; try{ localStorage.setItem("m7sonido",SND.on?"1":"0"); }catch(_){} pintarSnd(); e.currentTarget.blur(); }; pintarSnd();
+let cur=0;
+function go(i){ const prev=cur; cur=Math.max(0,Math.min(els.length-1,i)); if(cur!==prev) sonar(cur>prev?1:-1);
+  els.forEach((e,j)=>e.classList.toggle("on",j===cur)); const tp=S[cur].t;
+  $("stage").classList.toggle("oscuro",els[cur].classList.contains("cover"));
+  dots.querySelectorAll("button").forEach((b,j)=>{ b.classList.toggle("cur",j===tp); b.classList.toggle("done",tp>j); });
+  $("count").textContent=String(cur+1).padStart(2,"0")+" / "+els.length;
+  $("topL").textContent="PRÁCTICA GUIADA · "+SECC[tp].toUpperCase()+".";
+  $("prev").disabled=cur===0; $("next").disabled=cur===els.length-1;
+  try{ history.replaceState(null,"","#"+(cur+1)); }catch(e){} }
+$("prev").onclick=()=>go(cur-1); $("next").onclick=()=>go(cur+1);
+$("fs").onclick=e=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(_){} e.currentTarget.blur(); };
+document.addEventListener("keydown",e=>{ const enB=e.target.closest&&e.target.closest("button,a");
+  if(["ArrowRight","PageDown"].includes(e.key)||(e.key===" "&&!enB)){e.preventDefault();go(cur+1);} else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==="Home") go(0); else if(e.key==="End") go(els.length-1); else if(e.key==="f"||e.key==="F") $("fs").click(); else if(e.key==="m"||e.key==="M") $("snd").click(); });
+let tx=null; document.addEventListener("touchstart",e=>{ tx=e.touches[0].clientX; },{passive:true});
+document.addEventListener("touchend",e=>{ if(tx===null) return; const d=e.changedTouches[0].clientX-tx; if(Math.abs(d)>70) go(cur+(d<0?1:-1)); tx=null; },{passive:true});
+function fit(){ const s=Math.min((innerWidth-16)/1280,(innerHeight-16)/720); $("stage").style.transform=`translate(-50%,-50%) scale(${s})`; }
+addEventListener("resize",fit); fit(); go((parseInt(location.hash.slice(1),10)||1)-1); SND.ready=true;
+</script>
+</body>
+</html>
