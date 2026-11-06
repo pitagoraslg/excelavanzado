@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cazadores de Datos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Orbitron:wght@600;800;900&family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0d1030; --bg2:#151a45; --panel:#1b2157; --panel2:#232a6b; --line:#343c86;
@@ -170,6 +170,121 @@ table.t td{font-size:16px}
 .wrap{padding-bottom:84px}
 .linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:13px}
 .cert{padding:20px 28px 14px}.cert .seal{font-size:40px}.cert .fel{font-size:clamp(26px,4vw,38px);margin-top:4px}.cert .nom{font-size:clamp(26px,4vw,38px);margin-bottom:4px}.cert .lead{font-size:15.5px;margin-bottom:10px}.cert .datos{margin-bottom:12px;gap:8px}.cert .datos span{padding:4px 12px;font-size:13px}.cert .hall{gap:6px}.cert .hall div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 12px;font-size:13.5px}.cert .hall b{display:inline;font-size:14px;white-space:nowrap}.cert .pie{margin-top:10px}
+/* ===== Tema gamer: neón cian + magenta ===== */
+:root{--bg:#05060f;--bg2:#0a0d22;--panel:#0c1030;--panel2:#141a46;--line:rgba(0,229,255,.28);--ink:#e8f7ff;--muted:#93a6cc;
+  --mand:#00e5ff;--mand2:#ffc247;--ok:#39ff9f;--bad:#ff3b6b;--cy:#00e5ff;--mg:#ff2bd6;--am:#ffc247}
+body{font-family:'Chakra Petch',Sora,'Segoe UI',sans-serif;
+  background:radial-gradient(900px 520px at 88% -12%,rgba(255,43,214,.24),transparent 60%),radial-gradient(900px 620px at -12% 112%,rgba(0,229,255,.2),transparent 60%),#05060f}
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(rgba(0,229,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.07) 1px,transparent 1px);background-size:46px 46px;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 80%);mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 80%);animation:rejilla 16s linear infinite}
+@keyframes rejilla{to{background-position:0 46px,46px 0}}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:95;background:repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 3px)}
+h1,h2,h3{font-family:'Chakra Petch',sans-serif;font-weight:700;letter-spacing:.5px}
+h2{color:#fff;text-shadow:0 0 14px rgba(0,229,255,.35)}
+.tg,.ov h2{background:linear-gradient(90deg,#fff,#9ff6ff 45%,#ff9cf0);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
+.emo{display:inline-block;filter:drop-shadow(0 0 10px rgba(0,229,255,.6))}
+.muted{color:var(--muted)}
+.kick{font-family:'Chakra Petch',sans-serif;color:var(--am);letter-spacing:3px;text-shadow:0 0 10px rgba(255,194,71,.45)}
+
+/* encabezado */
+.brand .ico{filter:drop-shadow(0 0 10px rgba(0,229,255,.7))}
+.brand b{font-size:20px;text-transform:uppercase;letter-spacing:2px}
+.glitch{position:relative;display:inline-block;color:#fff;text-shadow:0 0 12px rgba(0,229,255,.6)}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;overflow:hidden;width:100%}
+.glitch::before{color:var(--mg);transform:translate(2px,0);clip-path:inset(0 0 55% 0);animation:gl1 3.2s infinite steps(1)}
+.glitch::after{color:var(--cy);transform:translate(-2px,0);clip-path:inset(55% 0 0 0);animation:gl2 2.7s infinite steps(1)}
+@keyframes gl1{0%,88%,100%{transform:translate(0)}90%{transform:translate(-3px,-1px)}94%{transform:translate(3px,1px)}}
+@keyframes gl2{0%,84%,100%{transform:translate(0)}86%{transform:translate(3px,1px)}92%{transform:translate(-3px,0)}}
+.tag{border:1px solid var(--line);background:rgba(0,229,255,.08);border-radius:0;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);color:var(--cy)!important}
+
+/* paneles con esquinas cortadas y soportes neón */
+.panel{position:relative;border-radius:0;background:linear-gradient(160deg,rgba(22,28,78,.82),rgba(7,9,28,.92));border:1px solid var(--line);
+  clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));box-shadow:inset 0 0 50px rgba(0,229,255,.06)}
+.panel::before{content:'';position:absolute;top:0;left:0;width:28px;height:28px;border-top:2px solid var(--cy);border-left:2px solid var(--cy);filter:drop-shadow(0 0 6px var(--cy))}
+.panel::after{content:'';position:absolute;bottom:0;right:0;width:28px;height:28px;border-bottom:2px solid var(--mg);border-right:2px solid var(--mg);filter:drop-shadow(0 0 6px var(--mg))}
+.side h3{color:var(--cy);letter-spacing:3px;text-shadow:0 0 10px rgba(0,229,255,.5)}
+
+/* inicio */
+.hero{font-size:clamp(30px,5vw,52px);text-transform:uppercase;line-height:1.05;margin:.2em 0 .3em}
+.neon{color:var(--cy);text-shadow:0 0 8px var(--cy),0 0 26px rgba(0,229,255,.6)}
+.story{border-left:3px solid var(--mg);color:#dbe6ff;background:linear-gradient(90deg,rgba(255,43,214,.08),transparent 70%)}
+.mision{border-radius:0;background:rgba(0,0,0,.38);border:1px solid rgba(0,229,255,.22);border-left:3px solid var(--cy);box-shadow:inset 0 0 30px rgba(0,229,255,.05)}
+.preg{color:var(--am);text-shadow:0 0 12px rgba(255,194,71,.35);font-size:19px}
+
+/* botones */
+.btn{font-family:'Chakra Petch',sans-serif;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;border-radius:0;color:#04050d;
+  background:linear-gradient(90deg,#00e5ff,#7c5cff 55%,#ff2bd6);clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+  box-shadow:0 0 22px rgba(0,229,255,.35);transition:transform .12s,filter .15s}
+.btn:hover{filter:brightness(1.15) saturate(1.25);transform:translateY(-1px)}
+.btn.sec{background:rgba(0,229,255,.1);color:var(--cy);border:1px solid var(--line);box-shadow:none}
+.btn.sec:hover{background:rgba(0,229,255,.2)}
+.btn.dang{background:rgba(255,59,107,.16);color:#ff9db3;border:1px solid rgba(255,59,107,.45);box-shadow:none}
+
+/* campos */
+input[type=text],input[type=password],input[type=number]{border-radius:0;background:rgba(0,0,0,.5);border:1px solid var(--line);color:#fff;box-shadow:inset 0 0 16px rgba(0,229,255,.08);font-family:'Chakra Petch',sans-serif}
+input:focus{border-color:var(--cy);box-shadow:0 0 0 2px rgba(0,229,255,.25),inset 0 0 16px rgba(0,229,255,.15)}
+.code input{font-family:'JetBrains Mono',monospace;color:var(--cy)}
+.msg.bad{color:var(--bad);text-shadow:0 0 10px rgba(255,59,107,.5);letter-spacing:.3px}
+.msg.ok{color:var(--ok)}
+
+/* HUD: nivel, candados hexagonales y barra de progreso */
+.hud{background:linear-gradient(90deg,rgba(0,229,255,.06),rgba(255,43,214,.06));border:1px solid var(--line);padding:12px 16px;
+  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))}
+.nivel{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;color:var(--muted);margin-bottom:6px}
+.nivel b{color:var(--cy);font-size:18px;text-shadow:0 0 10px var(--cy)}
+.locks{gap:5px}
+.lk{width:40px;height:36px;border:0;border-radius:0;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:rgba(255,255,255,.07);font-size:16px}
+.lk small{font-family:'Orbitron',sans-serif;font-size:8px;bottom:2px;right:auto;left:50%;transform:translateX(-50%);color:#cfe3ff}
+.lk.on{background:linear-gradient(135deg,rgba(0,229,255,.55),rgba(124,92,255,.55));box-shadow:none;animation:latido 1.4s ease-in-out infinite}
+.lk.ok{background:linear-gradient(135deg,rgba(57,255,159,.45),rgba(0,229,255,.25))}
+@keyframes latido{50%{filter:brightness(1.6)}}
+.xp{height:7px;margin-top:9px;background:rgba(255,255,255,.08);position:relative;overflow:hidden;max-width:470px}
+.xp i{display:block;height:100%;background:linear-gradient(90deg,var(--cy),#7c5cff,var(--mg));box-shadow:0 0 12px var(--cy);transition:width .8s ease}
+.xp::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-100%);animation:brillo 2.6s infinite}
+@keyframes brillo{to{transform:translateX(100%)}}
+.clock{font-family:'Orbitron',sans-serif;color:var(--cy);text-shadow:0 0 10px var(--cy),0 0 26px rgba(0,229,255,.5);letter-spacing:2px}
+
+/* archivos y pistas */
+.file{border-radius:0;background:rgba(0,229,255,.05);border:1px solid var(--line);clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%)}
+.file:hover{border-color:var(--cy);background:rgba(0,229,255,.12);box-shadow:inset 0 0 18px rgba(0,229,255,.15)}
+.file.new{animation:nuevo 1.6s ease-out 4}
+@keyframes nuevo{0%{box-shadow:inset 0 0 0 2px var(--am),0 0 20px var(--am)}100%{box-shadow:none}}
+.pista{border-radius:0;background:rgba(255,43,214,.08);border:1px dashed rgba(255,43,214,.55)}
+
+/* superposiciones */
+.ov{background:radial-gradient(circle at 50% 45%,rgba(8,30,60,.97),rgba(2,3,10,.97) 65%);backdrop-filter:blur(6px)}
+.ov .big{filter:drop-shadow(0 0 22px rgba(0,229,255,.8))}
+.ov h2{font-size:clamp(30px,5vw,52px);text-transform:uppercase}
+.acceso{display:inline-block;font-family:'Orbitron',sans-serif;font-weight:800;letter-spacing:6px;font-size:clamp(14px,2vw,18px);color:var(--ok);border:1px solid var(--ok);padding:6px 16px;margin-bottom:12px;text-shadow:0 0 10px var(--ok);box-shadow:0 0 18px rgba(57,255,159,.35),inset 0 0 18px rgba(57,255,159,.15);animation:parpadeo .9s steps(2) 3}
+@keyframes parpadeo{50%{opacity:.35}}
+.deny #app{animation:denegado .5s}
+@keyframes denegado{0%,100%{transform:none;filter:none}15%{transform:translateX(-8px);filter:hue-rotate(-50deg) saturate(2.2)}35%{transform:translateX(7px)}55%{transform:translateX(-5px)}75%{transform:translateX(3px)}}
+.deny::before{background-color:rgba(255,59,107,.12)}
+
+/* botón de música */
+.musbtn{border-radius:0;font-family:'Chakra Petch',sans-serif;text-transform:uppercase;letter-spacing:1px;background:rgba(5,6,15,.92);border:1px solid var(--cy);color:var(--cy);
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);box-shadow:0 0 18px rgba(0,229,255,.3)}
+.musbtn.off{border-color:var(--bad);color:#ff9db3;box-shadow:0 0 18px rgba(255,59,107,.3)}
+
+/* felicitación: logro desbloqueado */
+.cert{border-radius:0;border:2px solid transparent;
+  background:linear-gradient(170deg,#0d1238,#070a22) padding-box,linear-gradient(120deg,var(--cy),#7c5cff,var(--mg),var(--am)) border-box;
+  box-shadow:0 0 40px rgba(0,229,255,.25),0 0 80px rgba(255,43,214,.15);clip-path:polygon(0 0,calc(100% - 26px) 0,100% 26px,100% 100%,26px 100%,0 calc(100% - 26px))}
+.cert .seal{filter:drop-shadow(0 0 18px rgba(255,194,71,.8))}
+.cert .fel{text-transform:uppercase;letter-spacing:1px}
+.cert .nom{background:linear-gradient(90deg,var(--am),#ff8a3d,var(--mg));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 14px rgba(255,43,214,.35))}
+.cert .datos span{border-radius:0;background:rgba(0,229,255,.07);border:1px solid var(--line)}
+.cert .hall div{border-radius:0;background:rgba(0,0,0,.35);border:1px solid rgba(0,229,255,.2);border-left:3px solid var(--ok)}
+.cert .hall b{color:var(--ok);text-shadow:0 0 8px rgba(57,255,159,.45)}
+.foto{border-radius:0;background:rgba(57,255,159,.08);border:1px dashed var(--ok)}
+
+/* pantalla del facilitador */
+.scr .title{text-transform:uppercase;letter-spacing:2px;text-shadow:0 0 18px rgba(0,229,255,.5)}
+.pd .base{border-radius:0;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%,0 12px);font-family:'Orbitron',sans-serif;box-shadow:0 0 30px rgba(0,229,255,.25)}
+table.t th{color:var(--cy);letter-spacing:1.5px;text-transform:uppercase;font-size:13px}
+.jr .mini{font-size:13px}
+
 </style>
 </head>
 <body>
@@ -499,7 +614,7 @@ function confeti(ms){
 
 /* ---------- vistas ---------- */
 function cabecera(){
-  return `<div class="top"><div class="brand"><span class="ico">🕵️</span><div><b>Cazadores de Datos</b><span>Escape room · Módulo 6 · Power Query</span></div></div>${G ? `<span class="tag" style="color:var(--mand2)">👤 ${esc(G.nombre)}</span>` : ''}</div>`;
+  return `<div class="top"><div class="brand"><span class="ico">🕵️</span><div><b class="glitch" data-text="Cazadores de Datos">Cazadores de Datos</b><span>Escape room · Módulo 6 · Power Query</span></div></div>${G ? `<span class="tag" style="color:var(--mand2)">👤 ${esc(G.nombre)}</span>` : ''}</div>`;
 }
 const credito = '<p class="credit">Juego creado por: Jarlin Figueroa, M.A.</p>';
 
@@ -512,7 +627,7 @@ function render(){
 function vistaInicio(){
   MUS.want(0);
   $('#app').innerHTML = `<div class="wrap">${cabecera()}
-  <div class="panel" style="margin-bottom:16px"><div class="kick">Actividad individual</div><h1 style="font-size:clamp(28px,4.5vw,42px)">Abre los diez candados.</h1>
+  <div class="panel" style="margin-bottom:16px"><div class="kick">▶ Misión individual · Escape room</div><h1 class="hero">Abre los <span class="neon">diez candados</span>.</h1>
   <p class="story">${HISTORIA}</p>
   <div class="mision"><p><b>Cómo se juega</b></p>
   <p>1. Ten abierto <b>Excel de escritorio (2021 o Microsoft 365)</b>: lo necesitas para leer el PDF. Cada candado te pide una respuesta que sale de tus datos.</p>
@@ -522,7 +637,7 @@ function vistaInicio(){
   <p>5. Al abrir el último candado aparecerá una <b>felicitación con tu nombre</b>: tómale una captura de pantalla y envíasela a tu facilitador.</p>
   <p>🎧 El juego tiene música de suspenso y efectos de sonido. Si necesitas silencio, usa el botón 🔊 de abajo a la derecha (o la tecla M).</p></div>
   <form id="fIni" style="margin-top:18px" autocomplete="off"><label class="lbl" for="nm">Tu nombre completo (así aparecerá en la felicitación)</label>
-  <div class="code" style="margin-top:0"><input id="nm" type="text" maxlength="50" placeholder="Nombre y apellido"><button class="btn">🔓 Empezar</button></div></form></div>
+  <div class="code" style="margin-top:0"><input id="nm" type="text" maxlength="50" placeholder="Nombre y apellido"><button class="btn">▶ Iniciar misión</button></div></form></div>
   ${credito}</div>`;
   $('#fIni').onsubmit = ev => { ev.preventDefault(); const n = $('#nm').value.trim().replace(/\s+/g,' ');
     if (n.length < 3) { toast('Escribe tu nombre completo.'); $('#nm').focus(); return; }
@@ -545,15 +660,15 @@ function vistaSala(nuevo){
   const n = G.sala, s = SALAS[n-1];
   MUS.want(Math.ceil(n / 2));
   $('#app').innerHTML = `<div class="wrap">${cabecera()}
-  <div class="hud"><div class="locks">${Array.from({length:NC}, (_, k) => k + 1).map(i => `<div class="lk ${i < n ? 'ok' : i === n ? 'on' : ''}">${i < n ? '🔓' : '🔒'}<small>${i}</small></div>`).join('')}</div>
+  <div class="hud"><div><div class="nivel">NIVEL <b>${String(n).padStart(2, '0')}</b> / ${NC}</div><div class="locks">${Array.from({length:NC}, (_, k) => k + 1).map(i => `<div class="lk ${i < n ? 'ok' : i === n ? 'on' : ''}">${i < n ? '🔓' : '🔒'}<small>${i}</small></div>`).join('')}</div><div class="xp"><i style="width:${Math.round((n - 1) / NC * 100)}%"></i></div></div>
   <div style="text-align:right"><div class="clock" id="clk">00:00</div><div class="muted" style="font-size:13px">Tu tiempo</div></div></div>
   <div class="sala">
     <div class="panel">
-      <div class="kick">Candado ${n} de ${NC} · Fuente: ${FUENTES[s.fuente].tipo}</div><h2>${s.ico} ${s.t}.</h2>
+      <div class="kick">Candado ${String(n).padStart(2, '0')}/${NC} // Fuente: ${FUENTES[s.fuente].tipo}</div><h2><span class="emo">${s.ico}</span> <span class="tg">${s.t}.</span></h2>
       <p class="story">${s.h}</p>
       <div class="mision">${s.m}</div>
       <div class="preg">🔑 ${s.p}</div>
-      <form class="code" id="frm" autocomplete="off"><input id="cod" type="text" inputmode="${s.tipo === 'nombre' ? 'text' : 'decimal'}" placeholder="${s.tipo === 'nombre' ? 'Escribe el nombre' : 'Escribe el número'}" aria-label="Código del candado"><button class="btn" id="abrir">Abrir</button></form>
+      <form class="code" id="frm" autocomplete="off"><input id="cod" type="text" inputmode="${s.tipo === 'nombre' ? 'text' : 'decimal'}" placeholder="${s.tipo === 'nombre' ? 'Escribe el nombre' : 'Escribe el número'}" aria-label="Código del candado"><button class="btn" id="abrir">🔓 Abrir</button></form>
       <div class="msg" id="msg"></div>
     </div>
     <div class="side">
@@ -572,8 +687,8 @@ function vistaSala(nuevo){
     if (!v) { msg.className = 'msg bad'; msg.textContent = s.tipo === 'nombre' ? 'Escribe un nombre.' : 'Escribe un número.'; return; }
     const hs = [await sha('m6caz|' + n + '|' + v)]; if (s.tipo === 'nombre') hs.push(await sha('m6caz|' + n + '|' + v.split(' ')[0]));
     if (!hs.some(h => CRYPTO.h[n-1].includes(h))) {
-      G.intentos++; guardar(); SFX.err(); cool = Date.now() + 3000;
-      msg.className = 'msg bad'; msg.textContent = '✖ Esa no es la respuesta. Revisa tus datos y tus pasos.';
+      G.intentos++; guardar(); SFX.err(); cool = Date.now() + 3000; document.body.classList.add('deny'); setTimeout(() => document.body.classList.remove('deny'), 550);
+      msg.className = 'msg bad'; msg.textContent = '✖ ACCESO DENEGADO · Esa no es la respuesta. Revisa tus datos y tus pasos.';
       f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); inp.select(); return;
     }
     const tok = s.tipo === 'nombre' ? null : await revelar(n, v);
@@ -590,7 +705,7 @@ function enlazarPista(n){
 }
 function celebrar(n, arch){
   const ov = document.createElement('div'); ov.className = 'ov';
-  ov.innerHTML = `<div class="card"><div class="big">🔓</div><h2>¡Candado ${n} abierto!</h2><p class="muted" style="font-size:18px">${arch ? 'Se desbloqueó una fuente nueva: <b>' + esc(FUENTES[arch].nombre) + ' (' + FUENTES[arch].tipo + ')' + '</b>.' : 'Sigue con el próximo candado.'}</p><button class="btn" style="margin-top:14px">Continuar</button></div>`;
+  ov.innerHTML = `<div class="card"><div class="acceso">✔ ACCESO CONCEDIDO</div><div class="big">🔓</div><h2>¡Candado ${n} abierto!</h2><p class="muted" style="font-size:18px">${arch ? 'Se desbloqueó una fuente nueva: <b>' + esc(FUENTES[arch].nombre) + ' (' + FUENTES[arch].tipo + ')' + '</b>.' : 'Sigue con el próximo candado.'}</p><button class="btn" style="margin-top:14px">Continuar</button></div>`;
   document.body.appendChild(ov);
   const cerrar = () => { ov.remove(); const c = $('#cod'); if (c) c.focus(); }; ov.querySelector('button').onclick = cerrar; setTimeout(cerrar, 4500);
 }
@@ -599,7 +714,7 @@ function vistaFelicitacion(recien){
   const total = G.fin - G.inicio, pistas = Object.values(G.pistas).reduce((a,b) => a + b, 0);
   $('#app').innerHTML = `<div class="wrap">
   <div class="cert" id="cert">
-    <div class="kick">Cazadores de Datos · Módulo 6 · Power Query</div>
+    <div class="kick">🏆 Logro desbloqueado · Cazadores de Datos</div>
     <div class="seal" style="margin-top:12px">🏆</div>
     <div class="fel">¡Felicidades,</div>
     <div class="nom">${esc(G.nombre)}!</div>
