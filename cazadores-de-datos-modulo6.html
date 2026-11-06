@@ -415,6 +415,10 @@ table.t td{color:#fff}
 .foto{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;text-align:left}
 .foto .btn{padding:9px 18px;font-size:14px}
 .foto span{color:#eef3e6;font-size:14.5px;max-width:560px}
+/* datos de evidencia en el aviso de candado abierto */
+.evid{margin:14px 0 4px;font-size:16px;color:#f5f1e8;background:rgba(212,168,75,.1);border:1px solid var(--line);border-radius:6px;padding:8px 14px;display:inline-block}
+.evid b{color:var(--gold2)}
+.evid-nota{margin:6px 0 0;font-size:14.5px;color:#8fd694}
 
 </style>
 </head>
@@ -805,7 +809,7 @@ function vistaInicio(){
   <p>2. Escribe la respuesta: un número («RD$», las comas y los decimales no importan) o, cuando se pida, el nombre de una persona.</p>
   <p>3. Los datos llegan de distintas fuentes: una carpeta de Excel, un CSV, un PDF y otra carpeta con 4 archivos. Cada fuente nueva se desbloquea al abrir el candado anterior.</p>
   <p>4. Si te trabas, tienes dos pistas por candado. Cada pista suma <b>2 minutos</b> a tu tiempo en el ranking de la clase.</p>
-  <p>5. Al abrir el último candado aparecerá una <b>felicitación con tu nombre</b>: tómale una captura de pantalla y envíasela a tu facilitador.</p></div>
+  <p>5. <b>Evidencia:</b> toma una captura cada vez que abras un candado y, al final, guarda tu <b>felicitación</b>. Todo se entrega en Moodle.</p></div>
   <form id="fIni" style="margin-top:18px" autocomplete="off"><label class="lbl" for="busca">¿Quién eres? Busca tu nombre y tócalo:</label>
   <input id="busca" type="text" placeholder="Escribe parte de tu nombre o apellido…"><div class="lista" id="lista"></div><input id="nm" type="hidden"><div class="elegido" id="elegido">Todavía no has elegido tu nombre.</div><button class="btn" id="go" disabled>🔍 Iniciar investigación</button></form></div>
   ${credito}</div>`;
@@ -875,9 +879,9 @@ function enlazarPista(n){
 }
 function celebrar(n, arch){
   const ov = document.createElement('div'); ov.className = 'ov';
-  ov.innerHTML = `<div class="card"><div class="acceso">✔ ACCESO CONCEDIDO</div><div class="big">🔓</div><h2>¡Candado ${n} abierto!</h2><p class="muted" style="font-size:18px">${arch ? 'Se desbloqueó una fuente nueva: <b>' + esc(FUENTES[arch].nombre) + ' (' + FUENTES[arch].tipo + ')' + '</b>.' : 'Sigue con el próximo candado.'}</p><button class="btn" style="margin-top:14px">Continuar</button></div>`;
+  ov.innerHTML = `<div class="card"><div class="acceso">✔ ACCESO CONCEDIDO</div><div class="big">🔓</div><h2>¡Candado ${n} abierto!</h2><p class="muted" style="font-size:18px">${arch ? 'Se desbloqueó una fuente nueva: <b>' + esc(FUENTES[arch].nombre) + ' (' + FUENTES[arch].tipo + ')' + '</b>.' : 'Sigue con el próximo candado.'}</p><p class="evid">👤 <b>${esc(G.nombre)}</b> · ⏱️ ${hms(Date.now() - G.inicio)} · 📅 ${fechaLarga(Date.now())}</p><p class="evid-nota">📸 Toma una captura de esta pantalla para tu evidencia y luego pulsa «Continuar».</p><button class="btn" style="margin-top:10px">Continuar</button></div>`;
   document.body.appendChild(ov);
-  const cerrar = () => { ov.remove(); const c = $('#cod'); if (c) c.focus(); }; ov.querySelector('button').onclick = cerrar; setTimeout(cerrar, 4500);
+  const cerrar = () => { ov.remove(); const c = $('#cod'); if (c) c.focus(); }; ov.querySelector('button').onclick = cerrar;
 }
 function vistaFelicitacion(recien){
   MUS.want(6);
