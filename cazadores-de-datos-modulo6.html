@@ -212,7 +212,7 @@ const HISTORIA = 'Acabas de entrar como analista de datos en <b>Distribuidora El
 const SALAS = [
   { t:'Las tres sucursales', ico:'🏬', tipo:'num', fmt:'rd', r:'Total de las 3 sucursales', fuente:1,
     h:'Primera tarea: las tres sucursales enviaron sus ventas de enero a marzo, cada una en su propio archivo de Excel. El gerente quiere una sola tabla.',
-    m:'<p>1. Descarga <b>Ventas-Sucursales.zip</b> y extráelo (clic derecho › <b>Extraer todo</b>). Verás la carpeta <b>Ventas Sucursales</b>.</p><p>2. En Excel: <b>Datos › Obtener datos › Desde un archivo › Desde una carpeta</b>, elige esa carpeta y pulsa <b>Combinar › Combinar y transformar datos</b> (hoja <b>Ventas</b>).</p><p>3. Pulsa <b>Cerrar y cargar</b>.</p>',
+    m:'<p>1. Descarga <b>Ventas-Sucursales.zip</b> y extráelo (clic derecho › <b>Extraer todo</b>). Dentro está la carpeta <b>Ventas Sucursales</b> con 3 archivos.</p><p>2. En Excel: <b>Datos › Obtener datos › Desde un archivo › Desde una carpeta</b>, elige esa carpeta y pulsa <b>Combinar › Combinar y transformar datos</b> (hoja <b>Ventas</b>).</p><p>3. Pulsa <b>Cerrar y cargar</b>.</p>',
     p:'¿Cuánto vendieron, en total, las tres sucursales? (suma de la columna Monto)',
     pis:['Selecciona la <b>carpeta</b>, no un archivo. En la ventana <b>Combinar archivos</b> elige la hoja <b>Ventas</b> y pulsa <b>Aceptar</b>.',
          'La tabla debe tener <b>90 filas</b>. Haz clic dentro de la tabla › <b>Diseño de tabla</b> › marca <b>Fila de totales</b>: debajo de Monto aparece la suma.'] },
@@ -224,22 +224,22 @@ const SALAS = [
          'La fila de totales solo suma las filas visibles. Deben quedar <b>30 filas</b>.'] },
   { t:'Los pedidos de la tienda en línea', ico:'🧾', tipo:'num', fmt:'n', r:'Pedidos en línea', fuente:3,
     h:'La tienda en línea no usa Excel: su sistema exporta un archivo <b>CSV</b>, que es texto con los datos separados por comas.',
-    m:'<p>1. Descarga <b>Pedidos-Web.csv</b>.</p><p>2. Ve a una hoja nueva: <b>Datos › Obtener datos › Desde un archivo › Desde texto/CSV</b> y elige el archivo.</p><p>3. En la vista previa revisa que el <b>Delimitador</b> sea <b>Coma</b> y que los acentos se vean bien. Pulsa <b>Cargar</b>.</p>',
+    m:'<p>1. Descarga <b>Pedidos-Web.csv</b>.</p><p>2. <b>Datos › Obtener datos › Desde un archivo › Desde texto/CSV</b> y elige el archivo.</p><p>3. En la vista previa revisa que el <b>Delimitador</b> sea <b>Coma</b> y que los acentos se vean bien. Pulsa <b>Cargar</b>.</p>',
     p:'¿Cuántos pedidos (filas) trae el archivo?',
     pis:['Si los acentos se ven raros (por ejemplo «SÃºper»), cambia el <b>Origen de archivo</b> a <b>65001: Unicode (UTF-8)</b>.',
-         'Al cargar, el panel <b>Consultas y conexiones</b> muestra «<b>X filas cargadas</b>». Ese número es la respuesta.'] },
+         'Al cargar, el panel <b>Consultas y conexiones</b> muestra cuántas filas se cargaron. También puedes activar la <b>Fila de totales</b> (Diseño de tabla): debajo de la última columna, Estado, aparece el recuento de filas.'] },
   { t:'Entregados y cancelados', ico:'✅', tipo:'num', fmt:'rd', r:'Pedidos entregados', fuente:3,
     h:'Algunos pedidos se cancelaron. Al jefe solo le interesa el dinero de los pedidos que sí llegaron al cliente.',
-    m:'<p>1. En la tabla de pedidos, filtra la columna <b>Estado</b> y deja solo <b>Entregado</b>.</p><p>2. Suma la columna <b>Monto</b> con la fila de totales.</p>',
-    p:'¿Cuánto suman los pedidos entregados?',
-    pis:['Haz clic en la tabla › <b>Diseño de tabla</b> › marca <b>Fila de totales</b>. Con el filtro aplicado, solo cuenta lo visible.',
-         'Deben quedar <b>40 pedidos</b> entregados.'] },
+    m:'<p>1. En la tabla de pedidos, filtra la columna <b>Estado</b> y deja solo <b>Entregado</b>.</p><p>2. Activa la <b>Fila de totales</b> (Diseño de tabla). Ojo: Excel la pone debajo de Estado y ahí solo cuenta filas. Haz clic en la celda de totales <b>debajo de Monto</b> y elige <b>Suma</b>.</p>',
+    p:'¿Cuánto suman los pedidos entregados? (dinero, no cantidad de pedidos)',
+    pis:['La celda de totales tiene una flechita: ábrela debajo de la columna <b>Monto</b> y elige <b>Suma</b>. Con el filtro aplicado, solo suma lo visible.',
+         'Deben quedar <b>40 pedidos</b> entregados. Si tu respuesta es 40, sumaste la cantidad de pedidos, no el dinero.'] },
   { t:'El reporte del almacén', ico:'📕', tipo:'num', fmt:'n', r:'Unidades en existencia', fuente:5,
     h:'El almacén manda su inventario en un <b>PDF</b>. ¿Copiarlo a mano? ¡No! Power Query puede leer las tablas de un PDF.',
-    m:'<p>1. Descarga <b>Inventario-Almacen.pdf</b>.</p><p>2. Ve a una hoja nueva: <b>Datos › Obtener datos › Desde un archivo › Desde PDF</b> y elige el archivo.</p><p>3. En el <b>Navegador</b> elige la tabla <b>Table001</b> (mira la vista previa) y pulsa <b>Cargar</b>.</p>',
+    m:'<p>1. Descarga <b>Inventario-Almacen.pdf</b>.</p><p>2. <b>Datos › Obtener datos › Desde un archivo › Desde PDF</b> y elige el archivo.</p><p>3. En el <b>Navegador</b> elige la tabla <b>Table001</b> (mira la vista previa) y pulsa <b>Cargar</b>.</p><p>4. Activa la <b>Fila de totales</b>. Ojo: Excel suma la última columna, Costo. Haz clic en la celda de totales <b>debajo de Existencia</b> y elige <b>Suma</b>.</p>',
     p:'¿Cuántas unidades hay en existencia en total? (suma de la columna Existencia)',
-    pis:['En el Navegador aparecen la página (<b>Page001</b>) y la tabla (<b>Table001</b>). Elige la tabla: ya trae los encabezados Código, Producto, Categoría, Existencia y Costo.',
-         'Son <b>16 productos</b>. Activa la fila de totales y elige <b>Suma</b> debajo de Existencia.'] },
+    pis:['En el Navegador aparecen la página (<b>Page001</b>) y la tabla (<b>Table001</b>). Elige la tabla. Si los encabezados salen como Column1, Column2…, pulsa <b>Transformar datos</b> y luego <b>Inicio › Usar la primera fila como encabezado</b>.',
+         'La tabla debe tener <b>16 productos</b> y las columnas Código, Producto, Categoría, Existencia y Costo. Si te salió 3,827, sumaste Costo en vez de Existencia.'] },
   { t:'Productos por agotarse', ico:'⚠️', tipo:'num', fmt:'n', r:'Productos con menos de 50', fuente:5,
     h:'Hay que pedir mercancía de los productos que se están agotando: los que tienen <b>menos de 50 unidades</b>.',
     m:'<p>1. Abre el filtro de la columna <b>Existencia</b> › <b>Filtros de número › Menor que…</b> y escribe <b>50</b>.</p><p>2. Cuenta cuántos productos quedan.</p>',
@@ -248,7 +248,7 @@ const SALAS = [
          'Selecciona las celdas visibles de la columna Producto: la barra de estado de Excel muestra el <b>Recuento</b>.'] },
   { t:'Los cuatro trimestres', ico:'🗂️', tipo:'nombre', fmt:'txt', r:'Venta más grande del año', fuente:7,
     h:'Recursos Humanos quiere premiar a los vendedores de 2025. Las ventas están repartidas en <b>cuatro archivos</b>, uno por trimestre.',
-    m:'<p>1. Descarga <b>Ventas-Vendedores-2025.zip</b> y extráelo: verás la carpeta <b>Ventas Vendedores 2025</b> con 4 archivos.</p><p>2. Únelos con <b>Datos › Obtener datos › Desde un archivo › Desde una carpeta</b> › <b>Combinar y transformar datos</b> (hoja <b>Ventas</b>) y carga la tabla.</p><p>3. Ordena la columna <b>Monto</b> de mayor a menor.</p>',
+    m:'<p>1. Descarga <b>Ventas-Vendedores-2025.zip</b> y extráelo (clic derecho › <b>Extraer todo</b>). Dentro está la carpeta <b>Ventas Vendedores 2025</b> con 4 archivos.</p><p>2. Únelos igual que en el candado 1: <b>Datos › Obtener datos › Desde un archivo › Desde una carpeta</b> › <b>Combinar › Combinar y transformar datos</b> (hoja <b>Ventas</b>) y pulsa <b>Cerrar y cargar</b>.</p><p>3. Ordena la columna <b>Monto</b> de mayor a menor.</p>',
     p:'¿Quién hizo la venta más grande del año? (escribe el nombre del vendedor)',
     pis:['La tabla unida debe tener <b>100 filas</b> y una columna <b>Source.Name</b> con el nombre del archivo de cada fila.',
          'Abre el filtro de Monto › <b>Ordenar de mayor a menor</b>. La primera fila tiene la venta más grande: mira la columna <b>Vendedor</b>.'] },
@@ -257,16 +257,16 @@ const SALAS = [
     m:'<p>1. Filtra la columna <b>Vendedor</b> y deja solo <b>María Santos</b>.</p><p>2. Suma la columna <b>Monto</b> con la fila de totales.</p>',
     p:'¿Cuánto vendió María Santos en 2025?',
     pis:['Si la tabla tiene un orden o filtro anterior, no importa: el filtro de Vendedor es lo que cuenta.',
-         'Deben quedar las ventas de María en los cuatro trimestres. La fila de totales suma solo esas filas.'] },
+         'Deben quedar <b>16 filas</b> de María. La fila de totales (debajo de Monto) suma solo esas filas.'] },
   { t:'El vendedor del año', ico:'🏆', tipo:'nombre', fmt:'txt', r:'Vendedor del año', fuente:7,
     h:'Llega el momento del premio: ¿quién vendió más dinero en todo el año?',
-    m:'<p>Tienes dos caminos:</p><p>• <b>Con filtros:</b> filtra un vendedor a la vez y anota su total (son 6 vendedores).</p><p>• <b>Con Power Query:</b> en el editor, <b>Inicio › Agrupar por</b> Vendedor con la <b>Suma</b> de Monto.</p>',
+    m:'<p>Tienes dos caminos:</p><p>• <b>Con filtros:</b> filtra un vendedor a la vez y anota el total de Monto (son 6 vendedores).</p><p>• <b>Con una tabla dinámica:</b> haz clic en la tabla › <b>Insertar › Tabla dinámica</b>, pon <b>Vendedor</b> en Filas y <b>Monto</b> en Valores.</p><p>No cambies la consulta en Power Query: la vas a necesitar completa para el último candado.</p>',
     p:'¿Quién fue el vendedor que más vendió en el año? (escribe su nombre)',
     pis:['Los vendedores son Ana Pérez, Luis Castillo, María Santos, José Reyes, Carmen Díaz y Pedro Marte.',
          'La venta más grande no siempre gana: cuenta la <b>suma de todas</b> sus ventas. El ganador pasa de RD$ 110,000.'] },
   { t:'El último trimestre', ico:'📅', tipo:'num', fmt:'rd', r:'Ventas del Trimestre 4', fuente:7,
     h:'Última puerta. La gerencia quiere ver el cierre del año: ¿cuánto se vendió en el cuarto trimestre?',
-    m:'<p>Cuando unes archivos desde una carpeta, Power Query agrega la columna <b>Source.Name</b>, que dice de qué archivo viene cada fila.</p><p>1. Quita los filtros anteriores (<b>Datos › Borrar</b>).</p><p>2. Filtra <b>Source.Name</b> y deja solo <b>Trimestre 4.xlsx</b>.</p><p>3. Suma el Monto.</p>',
+    m:'<p>Cuando unes archivos desde una carpeta, Power Query agrega la columna <b>Source.Name</b>, que dice de qué archivo viene cada fila.</p><p>1. Vuelve a la hoja de la tabla de vendedores y quita los filtros anteriores (<b>Datos › Borrar</b>).</p><p>2. Filtra <b>Source.Name</b> y deja solo <b>Trimestre 4.xlsx</b>.</p><p>3. Mira el total de <b>Monto</b> en la fila de totales.</p>',
     p:'¿Cuánto se vendió en el Trimestre 4?',
     pis:['Si no ves la columna Source.Name, revisa en el editor que ningún paso de <b>Pasos aplicados</b> la haya quitado.',
          'Deben quedar <b>25 filas</b>.'] }
@@ -579,7 +579,7 @@ function vistaSala(nuevo){
     const tok = s.tipo === 'nombre' ? null : await revelar(n, v);
     G.res[n] = Date.now() - G.inicio; G.resp[n] = s.tipo === 'nombre' ? inp.value.trim().replace(/\s+/g, ' ').toLowerCase().replace(/(^|\s)\S/g, c => c.toUpperCase()) : Number(v); if (tok) G.tok[n+1] = tok;
     if (n === NC) { G.fin = Date.now(); guardar(); lsSet('cazadoresM6_terminado','1'); MUS.duck(); SFX.fan(); confeti(6000);
-      G.lugar = await miLugar(); guardar(); vistaFelicitacion(true); return; }
+      G.lugar = await Promise.race([miLugar(), new Promise(r => setTimeout(() => r(null), 3000))]); guardar(); vistaFelicitacion(true); return; }
     G.sala = n + 1; guardar(); MUS.duck(); SFX.unlock(); confeti(2000); vistaSala(tok ? n + 1 : null); celebrar(n, tok ? n + 1 : null);
   };
   $('#cod').focus();
