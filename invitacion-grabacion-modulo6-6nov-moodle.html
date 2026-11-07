@@ -1,0 +1,29 @@
+<!-- Etiqueta de Moodle: grabación de la clase del 6 de noviembre, Módulo 6 (Power Query) · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Paleta del Módulo 6: índigo + mandarina. Si Moodle elimina el bloque <style>, la etiqueta se ve igual, solo que sin movimiento. -->
+<style>
+  @keyframes g6-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-4px) rotate(-4deg); } }
+  @keyframes g6-shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+  .g6-float { display: inline-block; animation: g6-float 3s ease-in-out infinite; }
+  .g6-bar { background: linear-gradient(90deg, #2F3A8F 0%, #F2994A 35%, #2F3A8F 70%, #F2994A 100%); background-size: 200% 100%; animation: g6-shine 7s linear infinite; }
+  .g6-btn { transition: transform .2s ease, background-color .2s ease; }
+  .g6-btn:hover { transform: translateY(-2px); background-color: #E0832F !important; }
+  @media (prefers-reduced-motion: reduce) { .g6-float, .g6-bar { animation: none !important; } }
+</style>
+
+<div style="max-width: 900px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #1F2233; line-height: 1.55; background-color: #2F3A8F; border-radius: 10px; overflow: hidden;">
+  <div class="g6-bar" style="height: 6px; background-color: #F2994A;"></div>
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; padding: 18px 22px 14px;">
+    <div style="font-size: 42px; line-height: 1;"><span class="g6-float">🎥</span></div>
+    <div style="flex: 1 1 260px;">
+      <p style="margin: 0 0 4px; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #F8C9A0;">Grabación · 6 de noviembre · Power Query</p>
+      <p style="margin: 0 0 4px; font-family: Georgia, 'Times New Roman', serif; font-size: 22px; line-height: 1.25; color: #FFFFFF;">Revive la clase de Power Query.</p>
+      <p style="margin: 0; font-size: 14.5px; color: #DADDF2;">Aquí tienes la grabación completa de la clase de hoy de Power Query. Mírala con tu Excel abierto para <strong style="color: #FFFFFF;">repetir cada paso de la consulta en tu propio archivo</strong>. Pausa el video cuando lo necesites y sigue a tu ritmo.</p>
+    </div>
+  </div>
+  <div style="padding: 0 22px 14px;">
+    <iframe src="https://www.youtube-nocookie.com/embed/vrcJcqArt-w" title="Grabación de la clase del 6 de noviembre: Power Query" style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 6px; background-color: #000000;" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
+  </div>
+  <div style="padding: 0 22px 18px; text-align: right;">
+    <a class="g6-btn nomediaplugin" href="https://www.youtube.com/watch?v=vrcJcqArt-w" target="_blank" rel="noopener" style="display: inline-block; padding: 8px 16px; border-radius: 6px; background-color: #F2994A; color: #1F2233; font-size: 14px; font-weight: bold; text-decoration: none;">Abrir en YouTube ↗</a>
+  </div>
+</div>
