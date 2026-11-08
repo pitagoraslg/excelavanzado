@@ -3,7 +3,7 @@
 <style>
   @keyframes af-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
   @keyframes af-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-6px) rotate(4deg); } }
-  @keyframes af-pulso { 0%, 100% { box-shadow: 0 0 0 0 rgba(11,107,97,.40); } 50% { box-shadow: 0 0 0 12px rgba(11,107,97,0); } }
+  @keyframes af-pulso { 0%, 100% { box-shadow: 0 0 0 0 rgba(14,110,120,.40); } 50% { box-shadow: 0 0 0 12px rgba(14,110,120,0); } }
   .af-in { animation: af-in .7s ease-out both; }
   .af-d1 { animation-delay: .1s; } .af-d2 { animation-delay: .25s; } .af-d3 { animation-delay: .4s; } .af-d4 { animation-delay: .55s; } .af-d5 { animation-delay: .7s; }
   .af-float { display: inline-block; animation: af-float 3s ease-in-out infinite; }
@@ -12,18 +12,18 @@
   @media (prefers-reduced-motion: reduce) { .af-in, .af-float, .af-btn { animation: none !important; } }
 </style>
 
-<div style="max-width: 900px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #231B20; line-height: 1.55; background-color: #FBF7EF; border-radius: 10px; overflow: hidden; border: 1px solid #E6DCCB;">
+<div style="max-width: 900px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #232A2E; line-height: 1.55; background-color: #FAF7F0; border-radius: 10px; overflow: hidden; border: 1px solid #E3DED0;">
 
-  <div style="height: 6px; background-color: #159A8C;"></div>
+  <div style="height: 6px; background-color: #E8622A;"></div>
 
   <!-- Encabezado -->
-  <table style="width: 100%; border-collapse: collapse; background-color: #6E1F3A;" role="presentation">
+  <table style="width: 100%; border-collapse: collapse; background-color: #12384F;" role="presentation">
     <tr>
       <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="af-float">🎓</span></td>
       <td style="padding: 22px 24px 22px 14px; vertical-align: top;">
-        <p class="af-in" style="margin: 0 0 6px; font-size: 12.5px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #9FE3D9;">Curso Excel Avanzado · Cierre</p>
+        <p class="af-in" style="margin: 0 0 6px; font-size: 12.5px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #9EDDE3;">Curso Excel Avanzado · Cierre</p>
         <h2 class="af-in af-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 28px; font-weight: bold; line-height: 1.2; color: #FFFFFF;">Autoevaluación final del curso.</h2>
-        <p class="af-in af-d2" style="margin: 0; font-size: 15.5px; color: #F1DCE3;">¡Llegamos al final! Ahora le toca mirar hacia atrás y <strong style="color: #FFFFFF;">evaluar su propio desempeño</strong> durante todo el curso. Usted mismo se pondrá la nota, con honestidad y responsabilidad.</p>
+        <p class="af-in af-d2" style="margin: 0; font-size: 15.5px; color: #D6E4EC;">¡Llegamos al final! Ahora le toca mirar hacia atrás y <strong style="color: #FFFFFF;">evaluar su propio desempeño</strong> durante todo el curso. Usted mismo se pondrá la nota, con honestidad y responsabilidad.</p>
       </td>
     </tr>
   </table>
@@ -31,62 +31,62 @@
   <div style="padding: 6px 22px 26px;">
 
     <!-- Qué se evalúa -->
-    <h3 class="af-in af-d2" style="margin: 24px 0 6px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: bold; color: #6E1F3A;">¿Qué va a evaluar?</h3>
-    <p class="af-in af-d2" style="margin: 0 0 12px; font-size: 15px; color: #4A3F3B;">Diez criterios de <strong>0.5 puntos</strong> cada uno, para una nota <strong>sobre 5</strong>. En cada uno elegirá: <strong>Sí, siempre</strong> (0.5) · <strong>A veces</strong> (0.25) · <strong>Casi nunca</strong> (0).</p>
+    <h3 class="af-in af-d2" style="margin: 24px 0 6px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: bold; color: #12384F;">¿Qué va a evaluar?</h3>
+    <p class="af-in af-d2" style="margin: 0 0 12px; font-size: 15px; color: #3F4A50;">Diez criterios de <strong>0.5 puntos</strong> cada uno, para una nota <strong>sobre 5</strong>. En cada uno elegirá: <strong>Sí, siempre</strong> (0.5) · <strong>A veces</strong> (0.25) · <strong>Casi nunca</strong> (0).</p>
 
     <div class="af-in af-d3" style="display: flex; flex-wrap: wrap; gap: 8px;">
-      <span style="background-color: #FFFFFF; border: 1px solid #E6DCCB; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #6E1F3A;">⏰ Puntualidad</span>
-      <span style="background-color: #FFFFFF; border: 1px solid #E6DCCB; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #6E1F3A;">🗓️ Asistencia</span>
-      <span style="background-color: #FFFFFF; border: 1px solid #E6DCCB; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #6E1F3A;">🙋 Participación</span>
-      <span style="background-color: #FFFFFF; border: 1px solid #E6DCCB; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #6E1F3A;">💬 Interacción</span>
-      <span style="background-color: #FFFFFF; border: 1px solid #E6DCCB; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #6E1F3A;">📥 Entrega puntual de actividades</span>
-      <span style="background-color: #FFFFFF; border: 1px solid #E6DCCB; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #6E1F3A;">⚡ Entrega el mismo día de la clase</span>
-      <span style="background-color: #FFFFFF; border: 1px solid #E6DCCB; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #6E1F3A;">🎯 Kahoot y evaluaciones</span>
-      <span style="background-color: #FFFFFF; border: 1px solid #E6DCCB; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #6E1F3A;">🤝 Trabajo en equipo</span>
-      <span style="background-color: #FFFFFF; border: 1px solid #E6DCCB; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #6E1F3A;">📚 Uso de los recursos</span>
-      <span style="background-color: #FFFFFF; border: 1px solid #E6DCCB; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #6E1F3A;">🌟 Actitud y respeto</span>
+      <span style="background-color: #FFFFFF; border: 1px solid #E3DED0; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #12384F;">⏰ Puntualidad</span>
+      <span style="background-color: #FFFFFF; border: 1px solid #E3DED0; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #12384F;">🗓️ Asistencia</span>
+      <span style="background-color: #FFFFFF; border: 1px solid #E3DED0; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #12384F;">🙋 Participación</span>
+      <span style="background-color: #FFFFFF; border: 1px solid #E3DED0; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #12384F;">💬 Interacción</span>
+      <span style="background-color: #FFFFFF; border: 1px solid #E3DED0; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #12384F;">📥 Entrega puntual de actividades</span>
+      <span style="background-color: #FFFFFF; border: 1px solid #E3DED0; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #12384F;">⚡ Entrega el mismo día de la clase</span>
+      <span style="background-color: #FFFFFF; border: 1px solid #E3DED0; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #12384F;">🎯 Kahoot y evaluaciones</span>
+      <span style="background-color: #FFFFFF; border: 1px solid #E3DED0; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #12384F;">🤝 Trabajo en equipo</span>
+      <span style="background-color: #FFFFFF; border: 1px solid #E3DED0; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #12384F;">📚 Uso de los recursos</span>
+      <span style="background-color: #FFFFFF; border: 1px solid #E3DED0; border-radius: 20px; padding: 6px 14px; font-size: 14.5px; font-weight: bold; color: #12384F;">🌟 Actitud y respeto</span>
     </div>
-    <p class="af-in af-d3" style="margin: 10px 0 0; font-size: 14.5px; color: #4A3F3B;">También responderá dos preguntas breves: <strong>¿qué fue lo más valioso que aprendió?</strong> y <strong>¿qué mejoraría de su desempeño?</strong></p>
+    <p class="af-in af-d3" style="margin: 10px 0 0; font-size: 14.5px; color: #3F4A50;">También responderá dos preguntas breves: <strong>¿qué fue lo más valioso que aprendió?</strong> y <strong>¿qué mejoraría de su desempeño?</strong></p>
 
     <!-- Botón -->
     <div class="af-in af-d4" style="margin: 24px 0 0; text-align: center;">
-      <a class="af-btn" href="https://pitagoraslg.github.io/excelavanzado/autoevaluacion-final.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #0B6B61; color: #FFFFFF; text-decoration: none; font-size: 17px; font-weight: bold; border-radius: 28px; padding: 14px 30px;">✍️ Llenar mi autoevaluación</a>
-      <p style="margin: 8px 0 0; font-size: 13px; color: #665A55;">Se abre en una pestaña nueva. Funciona en celular, tableta o computadora.</p>
+      <a class="af-btn" href="https://pitagoraslg.github.io/excelavanzado/autoevaluacion-final.html" target="_blank" rel="noopener" style="display: inline-block; background-color: #0E6E78; color: #FFFFFF; text-decoration: none; font-size: 17px; font-weight: bold; border-radius: 28px; padding: 14px 30px;">✍️ Llenar mi autoevaluación</a>
+      <p style="margin: 8px 0 0; font-size: 13px; color: #5B6469;">Se abre en una pestaña nueva. Funciona en celular, tableta o computadora.</p>
     </div>
 
     <!-- Pasos -->
-    <h3 class="af-in af-d4" style="margin: 26px 0 12px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: bold; color: #6E1F3A;">¿Cómo entrego mi autoevaluación?</h3>
+    <h3 class="af-in af-d4" style="margin: 26px 0 12px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: bold; color: #12384F;">¿Cómo entrego mi autoevaluación?</h3>
 
     <table class="af-in af-d5" style="width: 100%; border-collapse: separate; border-spacing: 0 8px;" role="presentation">
       <tr>
-        <td style="width: 46px; vertical-align: top;"><span style="display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background-color: #6E1F3A; color: #FFFFFF; font-weight: bold;">1</span></td>
+        <td style="width: 46px; vertical-align: top;"><span style="display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background-color: #12384F; color: #FFFFFF; font-weight: bold;">1</span></td>
         <td style="vertical-align: middle; font-size: 15px;">Pulse <strong>Llenar mi autoevaluación</strong>, escriba su nombre completo, elija una opción en cada criterio y responda las dos preguntas.</td>
       </tr>
       <tr>
-        <td style="width: 46px; vertical-align: top;"><span style="display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background-color: #6E1F3A; color: #FFFFFF; font-weight: bold;">2</span></td>
+        <td style="width: 46px; vertical-align: top;"><span style="display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background-color: #12384F; color: #FFFFFF; font-weight: bold;">2</span></td>
         <td style="vertical-align: middle; font-size: 15px;">Pulse <strong>Ver mi tarjeta de nota</strong>. Aparecerá una tarjeta con su nombre, sus puntos y su nota sobre 5.</td>
       </tr>
       <tr>
-        <td style="width: 46px; vertical-align: top;"><span style="display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background-color: #6E1F3A; color: #FFFFFF; font-weight: bold;">3</span></td>
+        <td style="width: 46px; vertical-align: top;"><span style="display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background-color: #12384F; color: #FFFFFF; font-weight: bold;">3</span></td>
         <td style="vertical-align: middle; font-size: 15px;">Tome una <strong>captura de pantalla</strong> de la tarjeta o pulse <strong>Descargar imagen</strong>.</td>
       </tr>
       <tr>
-        <td style="width: 46px; vertical-align: top;"><span style="display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background-color: #6E1F3A; color: #FFFFFF; font-weight: bold;">4</span></td>
+        <td style="width: 46px; vertical-align: top;"><span style="display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background-color: #12384F; color: #FFFFFF; font-weight: bold;">4</span></td>
         <td style="vertical-align: middle; font-size: 15px;">Regrese aquí, pulse <strong>Agregar entrega</strong>, suba la imagen y pulse <strong>Guardar cambios</strong>. El facilitador registrará su nota en <strong>Calificaciones</strong>.</td>
       </tr>
     </table>
 
-    <div class="af-in af-d5" style="margin: 6px 0 0; background-color: #FBECD2; border-left: 5px solid #C8553D; border-radius: 8px; padding: 12px 16px; font-size: 14.5px; color: #231B20;">
-      <strong style="color: #8A3A26;">⚠️ Importante:</strong> la captura debe mostrar la <strong>tarjeta completa</strong>, con su nombre y su nota. Sin la imagen no se puede registrar la calificación.
+    <div class="af-in af-d5" style="margin: 6px 0 0; background-color: #FBECD2; border-left: 5px solid #E8622A; border-radius: 8px; padding: 12px 16px; font-size: 14.5px; color: #232A2E;">
+      <strong style="color: #A8431A;">⚠️ Importante:</strong> la captura debe mostrar la <strong>tarjeta completa</strong>, con su nombre y su nota. Sin la imagen no se puede registrar la calificación.
     </div>
 
     <!-- Reflexión -->
-    <div class="af-in af-d5" style="margin: 22px 0 0; background-color: #F6E7EC; border-left: 5px solid #6E1F3A; border-radius: 8px; padding: 14px 18px;">
-      <p style="margin: 0 0 4px; font-size: 15px; font-weight: bold; color: #6E1F3A;">💡 Para reflexionar.</p>
-      <p style="margin: 0; font-size: 14.5px; color: #231B20;">Evaluarse a uno mismo con honestidad también es una competencia profesional. Reconocer lo que hizo bien y lo que puede mejorar es el primer paso para seguir creciendo. ¡Gracias por su esfuerzo durante todo el curso!</p>
+    <div class="af-in af-d5" style="margin: 22px 0 0; background-color: #E4EDF2; border-left: 5px solid #12384F; border-radius: 8px; padding: 14px 18px;">
+      <p style="margin: 0 0 4px; font-size: 15px; font-weight: bold; color: #12384F;">💡 Para reflexionar.</p>
+      <p style="margin: 0; font-size: 14.5px; color: #232A2E;">Evaluarse a uno mismo con honestidad también es una competencia profesional. Reconocer lo que hizo bien y lo que puede mejorar es el primer paso para seguir creciendo. ¡Gracias por su esfuerzo durante todo el curso!</p>
     </div>
 
-    <p style="margin: 22px 0 0; text-align: center; font-size: 12.5px; color: #8A7F7A;">Creado por <strong style="color: #6E1F3A;">Jarlin Figueroa, M.A.</strong></p>
+    <p style="margin: 22px 0 0; text-align: center; font-size: 12.5px; color: #8A9297;">Creado por <strong style="color: #12384F;">Jarlin Figueroa, M.A.</strong></p>
 
   </div>
 </div>
