@@ -90,7 +90,7 @@ textarea{min-height:92px;resize:vertical}
   <div id="formulario">
     <div class="hero">
       <h1>Autoevaluación final del curso.</h1>
-      <p>Mire hacia atrás y evalúe con honestidad su desempeño durante todo el curso. Son <strong>10 criterios</strong> de <strong>0.5 puntos</strong> cada uno, para una nota <strong>sobre 5</strong>. Al terminar, obtendrá una tarjeta con su nota para capturarla y subirla a Moodle.</p>
+      <p>Mire hacia atrás y evalúe con honestidad su desempeño durante todo el curso. Son <strong>8 criterios</strong> de <strong>1 punto</strong> cada uno, para una nota <strong>sobre 8</strong>. Al terminar, obtendrá una tarjeta con su nota para capturarla y subirla a Moodle.</p>
     </div>
 
     <div class="sec">
@@ -115,8 +115,8 @@ textarea{min-height:92px;resize:vertical}
     </div>
 
     <div class="total" aria-live="polite">
-      <div><small>Mi nota hasta ahora</small><br><b id="tot">0 / 5</b></div>
-      <small id="faltan">Faltan 10 criterios</small>
+      <div><small>Mi nota hasta ahora</small><br><b id="tot">0 / 8</b></div>
+      <small id="faltan">Faltan 8 criterios</small>
     </div>
 
     <div class="aviso" id="aviso"></div>
@@ -166,16 +166,14 @@ const CRIT = [
   {id:"punt", em:"⏰", t:"Puntualidad", q:"¿Me conecté a la hora de inicio y me quedé hasta el final de cada clase?"},
   {id:"asis", em:"🗓️", t:"Asistencia", q:"¿Estuve presente en las clases del curso? Si falté, ¿vi la grabación?"},
   {id:"part", em:"🙋", t:"Participación", q:"¿Hice preguntas, aportes y comentarios durante las clases?"},
-  {id:"inte", em:"💬", t:"Interacción", q:"¿Conversé con el facilitador y mis compañeros por el chat o el micrófono y respondí cuando me dieron la palabra?"},
   {id:"entp", em:"📥", t:"Entrega puntual de actividades", q:"¿Entregué las prácticas y tareas dentro de la fecha límite?"},
   {id:"ents", em:"⚡", t:"Entrega el mismo día de la clase", q:"¿Entregué las actividades el mismo día en que se trabajaron en clase?"},
-  {id:"eval", em:"🎯", t:"Kahoot y evaluaciones", q:"¿Completé los Kahoot, juegos y evaluaciones de cada módulo?"},
   {id:"equi", em:"🤝", t:"Trabajo en equipo", q:"¿Colaboré en las actividades grupales y exposiciones, y apoyé a mis compañeros?"},
   {id:"recu", em:"📚", t:"Uso de los recursos", q:"¿Revisé los videos, manuales, presentaciones y prácticas guiadas de cada módulo?"},
   {id:"acti", em:"🌟", t:"Actitud y respeto", q:"¿Mantuve una actitud positiva, escuché con atención y respeté los turnos de palabra?"}
 ];
-const OPS = [{v:0.5, t:"Sí, siempre"}, {v:0.25, t:"A veces"}, {v:0, t:"Casi nunca"}];
-const KEY = "autoeval-final-excel";
+const OPS = [{v:1, t:"Sí, siempre"}, {v:0.5, t:"A veces"}, {v:0, t:"Casi nunca"}];
+const KEY = "autoeval-final-excel-v8";
 const $ = id => document.getElementById(id);
 
 $("criterios").innerHTML = CRIT.map((c, i) => `
@@ -183,7 +181,7 @@ $("criterios").innerHTML = CRIT.map((c, i) => `
     <h3>${i + 1}. ${c.t}</h3>
     <p>${c.q}</p>
     <div class="ops" role="radiogroup" aria-label="${c.t}">
-      ${OPS.map(o => `<label><input type="radio" name="${c.id}" value="${o.v}"><span>${o.t}<small>${o.v} puntos</small></span></label>`).join("")}
+      ${OPS.map(o => `<label><input type="radio" name="${c.id}" value="${o.v}"><span>${o.t}<small>${o.v} ${o.v === 1 ? "punto" : "puntos"}</small></span></label>`).join("")}
     </div>
   </div>`).join("");
 
@@ -200,7 +198,7 @@ function actualizar(){
     if (r[c.id] === null) faltan++; else { tot += r[c.id]; el.classList.remove("falta"); }
     el.classList.toggle("ok", r[c.id] !== null);
   });
-  $("tot").textContent = tot + " / 5";
+  $("tot").textContent = tot + " / 8";
   $("faltan").textContent = faltan ? `Falta${faltan > 1 ? "n" : ""} ${faltan} criterio${faltan > 1 ? "s" : ""}` : "¡Todo completo!";
   guardar();
   return {r, tot, faltan};
@@ -235,7 +233,7 @@ $("generar").onclick = () => {
     const o = OPS.find(o => o.v === r[c.id]);
     return `<tr><td>${i + 1}. ${c.t}<br><small>${o.t}</small></td><td>${r[c.id]}</td></tr>`;
   }).join("");
-  $("tNota").textContent = tot + " / 5";
+  $("tNota").textContent = tot + " / 8";
   $("tR1").textContent = r1; $("tR2").textContent = r2;
   $("formulario").style.display = "none";
   $("resultado").style.display = "block";
