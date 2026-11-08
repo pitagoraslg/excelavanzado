@@ -16,12 +16,12 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);fon
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
 .top img{height:50px}
 .top small{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-d);text-align:right}
-.hero{background:var(--paper);border:1px solid var(--line);border-top:7px solid #E8622A;border-radius:14px;padding:22px 24px;margin-bottom:16px}
+.hero{background:var(--ink);color:#fff;border:0;border-bottom:4px solid #E8622A;border-radius:8px;padding:22px 24px;margin-bottom:16px}
 .hero .ic{font-size:44px;line-height:1}
-.hero h1{margin:8px 0 6px;font-family:var(--serif);font-size:clamp(26px,4.5vw,38px);color:var(--ink);line-height:1.15}
-.hero p{margin:0;color:#3F4A50;font-size:17px}
-.sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:14px}
-.sec h2{margin:0 0 4px;font-family:var(--serif);font-size:22px;color:var(--ink)}
+.hero h1{margin:0 0 8px;font-family:var(--serif);font-size:clamp(24px,4vw,34px);color:#fff;line-height:1.15}
+.hero p{margin:0;color:#D6E4EC;font-size:16.5px}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px 20px;margin-bottom:14px}
+.sec h2{margin:0 0 10px;padding-bottom:6px;border-bottom:2px solid var(--line);font-family:var(--serif);font-size:21px;color:var(--ink)}
 .sec .ayuda{margin:0 0 12px;color:var(--muted);font-size:15px}
 label.campo{display:block;font-weight:600;margin-bottom:6px}
 input[type=text],textarea{width:100%;font:inherit;font-size:16.5px;padding:11px 13px;border:1.5px solid var(--line);border-radius:9px;background:var(--paper);color:var(--text)}
@@ -30,7 +30,7 @@ textarea{min-height:92px;resize:vertical}
 .crit{border:1px solid var(--line);border-left:5px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;background:var(--paper);transition:border-color .2s}
 .crit.ok{border-left-color:var(--acc)}
 .crit.falta{border-left-color:var(--neg);background:var(--neg-soft)}
-.crit h3{margin:0 0 2px;font-size:18px;color:var(--ink)}
+.crit h3{margin:0 0 2px;font-size:17px;color:var(--ink)}
 .crit p{margin:0 0 10px;color:#3F4A50;font-size:15.5px}
 .ops{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .ops label{cursor:pointer}
@@ -44,7 +44,7 @@ textarea{min-height:92px;resize:vertical}
 .total{position:sticky;bottom:10px;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--ink);color:#fff;border-radius:12px;padding:12px 18px;margin:16px 0;box-shadow:0 8px 22px rgba(18,56,79,.25)}
 .total b{font-family:var(--serif);font-size:28px}
 .total small{color:#D6E4EC;font-size:14px}
-.btn{display:inline-flex;align-items:center;gap:8px;font:700 16.5px var(--sans);border:0;border-radius:24px;padding:13px 26px;cursor:pointer;background:var(--acc-d);color:#fff}
+.btn{display:inline-flex;align-items:center;gap:8px;font:700 16.5px var(--sans);border:0;border-radius:6px;padding:13px 26px;cursor:pointer;background:var(--acc-d);color:#fff}
 .btn:hover{background:#0A5A62}
 .btn.sec2{background:#fff;color:var(--ink);border:1.5px solid var(--line);font-weight:600}
 .acciones{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px}
@@ -52,8 +52,8 @@ textarea{min-height:92px;resize:vertical}
 .aviso.ver{display:block}
 /* Tarjeta de resultado */
 #resultado{display:none}
-.tarjeta{background:#fff;border:2px solid var(--ink);border-radius:16px;overflow:hidden;max-width:640px;margin:0 auto}
-.tarjeta .cab{background:var(--ink);color:#fff;padding:18px 22px;display:flex;gap:14px;align-items:center}
+.tarjeta{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;max-width:640px;margin:0 auto}
+.tarjeta .cab{background:var(--ink);color:#fff;border-bottom:4px solid #E8622A;padding:18px 22px;display:flex;gap:14px;align-items:center}
 .tarjeta .cab .em{font-size:40px;line-height:1}
 .tarjeta .cab small{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#9EDDE3}
 .tarjeta .cab b{display:block;font-family:var(--serif);font-size:22px;line-height:1.2}
@@ -89,7 +89,6 @@ textarea{min-height:92px;resize:vertical}
   <!-- Formulario -->
   <div id="formulario">
     <div class="hero">
-      <div class="ic">🎓</div>
       <h1>Autoevaluación final del curso.</h1>
       <p>Mire hacia atrás y evalúe con honestidad su desempeño durante todo el curso. Son <strong>10 criterios</strong> de <strong>0.5 puntos</strong> cada uno, para una nota <strong>sobre 5</strong>. Al terminar, obtendrá una tarjeta con su nota para capturarla y subirla a Moodle.</p>
     </div>
@@ -122,7 +121,7 @@ textarea{min-height:92px;resize:vertical}
 
     <div class="aviso" id="aviso"></div>
     <div class="acciones">
-      <button class="btn" id="generar">✅ Ver mi tarjeta de nota</button>
+      <button class="btn" id="generar">Ver mi tarjeta de nota</button>
     </div>
   </div>
 
@@ -130,7 +129,6 @@ textarea{min-height:92px;resize:vertical}
   <div id="resultado">
     <div class="tarjeta" id="tarjeta">
       <div class="cab">
-        <div class="em">🎓</div>
         <div><small>Curso Excel Avanzado · ICADEP</small><b>Autoevaluación final.</b></div>
       </div>
       <div class="cuerpo">
@@ -145,7 +143,7 @@ textarea{min-height:92px;resize:vertical}
     </div>
 
     <div class="pasos">
-      <strong>📸 Ahora suba su tarjeta a Moodle.</strong>
+      <strong>Entrega en Moodle.</strong>
       <ol>
         <li>Tome una <strong>captura de pantalla</strong> de la tarjeta (o pulse «Descargar imagen»).</li>
         <li>En Moodle, abra la actividad <strong>Autoevaluación final</strong> y pulse <strong>Agregar entrega</strong>.</li>
@@ -154,8 +152,8 @@ textarea{min-height:92px;resize:vertical}
     </div>
 
     <div class="acciones no-print" style="margin-top:14px">
-      <button class="btn" id="descargar">⬇️ Descargar imagen</button>
-      <button class="btn sec2" id="editar">✏️ Corregir respuestas</button>
+      <button class="btn" id="descargar">Descargar imagen</button>
+      <button class="btn sec2" id="editar">Corregir respuestas</button>
     </div>
   </div>
 
@@ -180,9 +178,9 @@ const OPS = [{v:0.5, t:"Sí, siempre"}, {v:0.25, t:"A veces"}, {v:0, t:"Casi nun
 const KEY = "autoeval-final-excel";
 const $ = id => document.getElementById(id);
 
-$("criterios").innerHTML = CRIT.map(c => `
+$("criterios").innerHTML = CRIT.map((c, i) => `
   <div class="crit" id="c-${c.id}">
-    <h3>${c.em} ${c.t}</h3>
+    <h3>${i + 1}. ${c.t}</h3>
     <p>${c.q}</p>
     <div class="ops" role="radiogroup" aria-label="${c.t}">
       ${OPS.map(o => `<label><input type="radio" name="${c.id}" value="${o.v}"><span>${o.t}<small>${o.v} puntos</small></span></label>`).join("")}
@@ -228,14 +226,14 @@ $("generar").onclick = () => {
   if (faltan) { errores.push(`Elija una opción en ${faltan === 1 ? "el criterio marcado" : "los " + faltan + " criterios marcados"} en rojo.`); CRIT.forEach(c => { if (r[c.id] === null) $("c-" + c.id).classList.add("falta"); }); }
   if (r1.length < 10 || r2.length < 10) errores.push("Responda las <strong>dos preguntas de reflexión</strong>.");
   const av = $("aviso");
-  if (errores.length) { av.innerHTML = "⚠️ " + errores.join("<br>⚠️ "); av.classList.add("ver"); av.scrollIntoView({behavior:"smooth", block:"center"}); return; }
+  if (errores.length) { av.innerHTML = "<strong>Revise lo siguiente:</strong><br>• " + errores.join("<br>• "); av.classList.add("ver"); av.scrollIntoView({behavior:"smooth", block:"center"}); return; }
   av.classList.remove("ver");
 
   $("tNom").textContent = nom;
   $("tFec").textContent = new Date().toLocaleString("es-DO", {dateStyle:"long", timeStyle:"short"});
-  $("tTabla").innerHTML = CRIT.map(c => {
+  $("tTabla").innerHTML = CRIT.map((c, i) => {
     const o = OPS.find(o => o.v === r[c.id]);
-    return `<tr><td>${c.em} ${c.t}<br><small>${o.t}</small></td><td>${r[c.id]}</td></tr>`;
+    return `<tr><td>${i + 1}. ${c.t}<br><small>${o.t}</small></td><td>${r[c.id]}</td></tr>`;
   }).join("");
   $("tNota").textContent = tot + " / 5";
   $("tR1").textContent = r1; $("tR2").textContent = r2;
@@ -246,14 +244,14 @@ $("generar").onclick = () => {
 $("editar").onclick = () => { $("resultado").style.display = "none"; $("formulario").style.display = "block"; window.scrollTo({top:0}); };
 $("descargar").onclick = async () => {
   if (!window.html2canvas) { alert("No se pudo crear la imagen. Tome una captura de pantalla de la tarjeta."); return; }
-  const b = $("descargar"); b.disabled = true; b.textContent = "⏳ Creando imagen…";
+  const b = $("descargar"); b.disabled = true; b.textContent = "Creando imagen…";
   try {
     const cv = await html2canvas($("tarjeta"), {scale:2, backgroundColor:"#ffffff"});
     const a = document.createElement("a");
     a.download = "Autoevaluacion-" + $("tNom").textContent.replace(/[^\p{L}\p{N}]+/gu, "-") + ".png";
     a.href = cv.toDataURL("image/png"); a.click();
   } catch(e) { alert("No se pudo crear la imagen. Tome una captura de pantalla de la tarjeta."); }
-  b.disabled = false; b.textContent = "⬇️ Descargar imagen";
+  b.disabled = false; b.textContent = "Descargar imagen";
 };
 cargar(); actualizar();
 </script>
