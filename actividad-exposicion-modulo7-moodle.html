@@ -1,0 +1,113 @@
+<!-- Actividad «Exposiciones y participación» del Módulo 7 (Macros y VBA) para Moodle · pegar en el editor con el botón "Código HTML" (</>) -->
+<!-- Paleta del Módulo 7: vino + verde azulado. Si Moodle elimina el <style>, se ve igual, solo que sin movimiento. -->
+<style>
+  @keyframes m7x-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes m7x-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-6px) rotate(4deg); } }
+  @keyframes m7x-pulso { 0%, 100% { box-shadow: 0 0 0 0 rgba(21,154,140,.40); } 50% { box-shadow: 0 0 0 10px rgba(21,154,140,0); } }
+  .m7x-in { animation: m7x-in .7s ease-out both; }
+  .m7x-d1 { animation-delay: .1s; } .m7x-d2 { animation-delay: .25s; } .m7x-d3 { animation-delay: .4s; } .m7x-d4 { animation-delay: .55s; } .m7x-d5 { animation-delay: .7s; }
+  .m7x-float { display: inline-block; animation: m7x-float 3s ease-in-out infinite; }
+  .m7x-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .m7x-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(110,31,58,.12); }
+  .m7x-ok { animation: m7x-pulso 2.4s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) { .m7x-in, .m7x-float, .m7x-ok { animation: none !important; } }
+</style>
+
+<div style="max-width: 900px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #231B20; line-height: 1.55; background-color: #FBF7EF; border-radius: 10px; overflow: hidden; border: 1px solid #E6DCCB;">
+
+  <div style="height: 6px; background-color: #159A8C;"></div>
+
+  <!-- Encabezado -->
+  <table style="width: 100%; border-collapse: collapse; background-color: #6E1F3A;" role="presentation">
+    <tr>
+      <td style="width: 80px; padding: 24px 0 24px 24px; vertical-align: top; font-size: 46px; line-height: 1;"><span class="m7x-float">🎤</span></td>
+      <td style="padding: 22px 24px 22px 14px; vertical-align: top;">
+        <p class="m7x-in" style="margin: 0 0 6px; font-size: 12.5px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #9FE3D9;">Módulo 7 · Macros y VBA</p>
+        <h2 class="m7x-in m7x-d1" style="margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; font-size: 28px; font-weight: bold; line-height: 1.2; color: #FFFFFF;">Exposiciones grupales y participación.</h2>
+        <p class="m7x-in m7x-d2" style="margin: 0; font-size: 15.5px; color: #F1DCE3;">Estos son los grupos que expondrán y sus fechas. En este espacio se colocarán las <strong style="color: #FFFFFF;">calificaciones de las exposiciones</strong> y de la <strong style="color: #FFFFFF;">participación</strong> de todo el grupo.</p>
+      </td>
+    </tr>
+  </table>
+
+  <div style="padding: 6px 22px 26px;">
+
+    <!-- Grupos -->
+    <h3 class="m7x-in m7x-d2" style="margin: 24px 0 12px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: bold; color: #6E1F3A;">¿Quiénes exponen y cuándo?</h3>
+
+    <div class="m7x-in m7x-d3" style="display: flex; flex-wrap: wrap; gap: 14px;">
+
+      <!-- Grupo A -->
+      <div class="m7x-card" style="flex: 1 1 300px; background-color: #FFFFFF; border: 1px solid #E6DCCB; border-top: 5px solid #6E1F3A; border-radius: 8px; padding: 16px 18px;">
+        <p style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; color: #665A55;">Grupo A</p>
+        <p style="margin: 0 0 6px; font-family: Georgia, 'Times New Roman', serif; font-size: 19px; font-weight: bold; color: #6E1F3A;">🎤 Exposición teórica.</p>
+        <p style="margin: 0 0 10px; font-size: 14.5px; color: #4A3F3B;">Exposición teórica del Módulo 7, con ejercicios básicos y evaluación en Kahoot.</p>
+        <p style="margin: 0 0 12px; display: inline-block; background-color: #F6E7EC; color: #6E1F3A; border-radius: 20px; padding: 5px 12px; font-size: 14.5px; font-weight: bold;">📅 Miércoles 11 de noviembre de 2026</p>
+        <ol style="margin: 0; padding-left: 22px; font-size: 15.5px;">
+          <li style="margin-bottom: 4px;">Adriana García Hidalgo</li>
+          <li style="margin-bottom: 4px;">Jorge Antonio Suazo Bello</li>
+          <li>Katherinne Liliana Paulino Rosario</li>
+        </ol>
+      </div>
+
+      <!-- Grupo B -->
+      <div class="m7x-card" style="flex: 1 1 300px; background-color: #FFFFFF; border: 1px solid #E6DCCB; border-top: 5px solid #159A8C; border-radius: 8px; padding: 16px 18px;">
+        <p style="margin: 0 0 6px; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; color: #665A55;">Grupo B</p>
+        <p style="margin: 0 0 6px; font-family: Georgia, 'Times New Roman', serif; font-size: 19px; font-weight: bold; color: #0B6B61;">🎬 Ejercicios prácticos y práctica guiada.</p>
+        <p style="margin: 0 0 10px; font-size: 14.5px; color: #4A3F3B;">Explicar en vivo ejercicios prácticos (de los videos publicados en la plataforma o de otros videos independientes) y la práctica guiada.</p>
+        <p style="margin: 0 0 12px; display: inline-block; background-color: #DDF3EF; color: #0B6B61; border-radius: 20px; padding: 5px 12px; font-size: 14.5px; font-weight: bold;">📅 Viernes 13 de noviembre de 2026</p>
+        <ol style="margin: 0; padding-left: 22px; font-size: 15.5px;">
+          <li style="margin-bottom: 4px;">Ángel Rodolfo Mariano Ventura</li>
+          <li style="margin-bottom: 4px;">Rachell Gómez</li>
+          <li>Yasmiry Mejía Núñez</li>
+        </ol>
+      </div>
+
+    </div>
+
+    <!-- Participación del resto -->
+    <div class="m7x-in m7x-d4 m7x-ok" style="margin: 24px 0 0; background-color: #DDF3EF; border: 2px solid #159A8C; border-radius: 10px; padding: 16px 18px;">
+      <table style="width: 100%; border-collapse: collapse;" role="presentation">
+        <tr>
+          <td style="width: 46px; vertical-align: top; font-size: 30px; line-height: 1;">🙋</td>
+          <td style="vertical-align: top;">
+            <p style="margin: 0 0 6px; font-size: 18px; font-weight: bold; color: #0B6B61;">¿No le toca exponer? Su participación también cuenta para la nota.</p>
+            <p style="margin: 0 0 8px; font-size: 15px; color: #231B20;">Quienes no forman parte de un grupo expositor serán evaluados por su <strong>participación activa</strong> durante las dos exposiciones. Se tomará en cuenta:</p>
+            <ul style="margin: 0; padding-left: 20px; font-size: 14.5px;">
+              <li style="margin-bottom: 4px;">Su <strong>asistencia</strong> y <strong>puntualidad</strong> en las dos exposiciones.</li>
+              <li style="margin-bottom: 4px;">Su <strong>participación</strong>: preguntas, aportes, Kahoot y ejercicios.</li>
+              <li style="margin-bottom: 4px;">Su <strong>interacción</strong> con los expositores y compañeros.</li>
+              <li>Su <strong>actitud</strong> y respeto durante la clase.</li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Cómo ver la nota -->
+    <h3 class="m7x-in m7x-d4" style="margin: 26px 0 12px; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: bold; color: #6E1F3A;">¿Cómo veo mi nota?</h3>
+
+    <table class="m7x-in m7x-d5" style="width: 100%; border-collapse: separate; border-spacing: 0 8px;" role="presentation">
+      <tr>
+        <td style="width: 46px; vertical-align: top;"><span style="display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background-color: #6E1F3A; color: #FFFFFF; font-weight: bold;">1</span></td>
+        <td style="vertical-align: middle; font-size: 15px;">No tiene que subir nada: el facilitador colocará la calificación directamente en esta actividad.</td>
+      </tr>
+      <tr>
+        <td style="width: 46px; vertical-align: top;"><span style="display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background-color: #6E1F3A; color: #FFFFFF; font-weight: bold;">2</span></td>
+        <td style="vertical-align: middle; font-size: 15px;">Consúltela aquí mismo o en el menú <strong>Calificaciones</strong> del curso después de cada exposición.</td>
+      </tr>
+      <tr>
+        <td style="width: 46px; vertical-align: top;"><span style="display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background-color: #6E1F3A; color: #FFFFFF; font-weight: bold;">3</span></td>
+        <td style="vertical-align: middle; font-size: 15px;">Si tiene alguna duda sobre su nota, escríbale al facilitador por la mensajería de Moodle.</td>
+      </tr>
+    </table>
+
+    <!-- Reflexión -->
+    <div class="m7x-in m7x-d5" style="margin: 22px 0 0; background-color: #F6E7EC; border-left: 5px solid #6E1F3A; border-radius: 8px; padding: 14px 18px;">
+      <p style="margin: 0 0 4px; font-size: 15px; font-weight: bold; color: #6E1F3A;">💡 Para reflexionar.</p>
+      <p style="margin: 0; font-size: 14.5px; color: #231B20;">Una macro repite lo que se le enseña paso a paso. En una exposición pasa algo parecido: quien explica afianza lo que sabe, y quien pregunta y participa lo convierte en aprendizaje para todos.</p>
+    </div>
+
+    <p style="margin: 22px 0 0; text-align: center; font-size: 12.5px; color: #8A7F7A;">Creado por <strong style="color: #6E1F3A;">Jarlin Figueroa, M.A.</strong></p>
+
+  </div>
+</div>

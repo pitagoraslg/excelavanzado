@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>Autoevaluación final · Excel Avanzado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+:root{--bg:#f4eee3;--paper:#fbf7ef;--card:#fff;--ink:#6e1f3a;--ink-soft:#f6e7ec;--acc:#159a8c;--acc-d:#0b6b61;--acc-soft:#dcf2ef;--oro:#d9a441;--text:#231b20;--muted:#665a55;--line:#e6dccb;--neg:#c8553d;--neg-soft:#fbeae5;
+  --serif:"Source Serif 4",Georgia,serif;--sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif;--mono:"IBM Plex Mono",Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16.5px;line-height:1.55}
+.wrap{max-width:820px;margin:0 auto;padding:22px 16px 48px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.top img{height:50px}
+.top small{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-d);text-align:right}
+.hero{background:var(--paper);border:1px solid var(--line);border-top:7px solid var(--ink);border-radius:14px;padding:22px 24px;margin-bottom:16px}
+.hero .ic{font-size:44px;line-height:1}
+.hero h1{margin:8px 0 6px;font-family:var(--serif);font-size:clamp(26px,4.5vw,38px);color:var(--ink);line-height:1.15}
+.hero p{margin:0;color:#4a3f3b;font-size:17px}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:14px}
+.sec h2{margin:0 0 4px;font-family:var(--serif);font-size:22px;color:var(--ink)}
+.sec .ayuda{margin:0 0 12px;color:var(--muted);font-size:15px}
+label.campo{display:block;font-weight:600;margin-bottom:6px}
+input[type=text],textarea{width:100%;font:inherit;font-size:16.5px;padding:11px 13px;border:1.5px solid var(--line);border-radius:9px;background:var(--paper);color:var(--text)}
+input[type=text]:focus,textarea:focus{outline:none;border-color:var(--acc);background:#fff}
+textarea{min-height:92px;resize:vertical}
+.crit{border:1px solid var(--line);border-left:5px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;background:var(--paper);transition:border-color .2s}
+.crit.ok{border-left-color:var(--acc)}
+.crit.falta{border-left-color:var(--neg);background:var(--neg-soft)}
+.crit h3{margin:0 0 2px;font-size:18px;color:var(--ink)}
+.crit p{margin:0 0 10px;color:#4a3f3b;font-size:15.5px}
+.ops{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ops label{cursor:pointer}
+.ops input{position:absolute;opacity:0;pointer-events:none}
+.ops span{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:62px;padding:8px 6px;border:1.5px solid var(--line);border-radius:9px;background:#fff;font-weight:600;font-size:15px;transition:all .15s}
+.ops span small{font-family:var(--mono);font-weight:500;font-size:12.5px;color:var(--muted)}
+.ops label:hover span{border-color:var(--acc)}
+.ops input:focus-visible+span{outline:3px solid var(--oro);outline-offset:2px}
+.ops input:checked+span{background:var(--acc);border-color:var(--acc);color:#fff}
+.ops input:checked+span small{color:#e6fbf7}
+.total{position:sticky;bottom:10px;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--ink);color:#fff;border-radius:12px;padding:12px 18px;margin:16px 0;box-shadow:0 8px 22px rgba(110,31,58,.25)}
+.total b{font-family:var(--serif);font-size:28px}
+.total small{color:#f1dce3;font-size:14px}
+.btn{display:inline-flex;align-items:center;gap:8px;font:700 16.5px var(--sans);border:0;border-radius:24px;padding:13px 26px;cursor:pointer;background:var(--acc-d);color:#fff}
+.btn:hover{background:#095a52}
+.btn.sec2{background:#fff;color:var(--ink);border:1.5px solid var(--line);font-weight:600}
+.acciones{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px}
+.aviso{border-left:4px solid var(--neg);background:var(--neg-soft);border-radius:6px;padding:10px 14px;margin:10px 0 0;font-size:15px;display:none}
+.aviso.ver{display:block}
+/* Tarjeta de resultado */
+#resultado{display:none}
+.tarjeta{background:#fff;border:2px solid var(--ink);border-radius:16px;overflow:hidden;max-width:640px;margin:0 auto}
+.tarjeta .cab{background:var(--ink);color:#fff;padding:18px 22px;display:flex;gap:14px;align-items:center}
+.tarjeta .cab .em{font-size:40px;line-height:1}
+.tarjeta .cab small{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#9fe3d9}
+.tarjeta .cab b{display:block;font-family:var(--serif);font-size:22px;line-height:1.2}
+.tarjeta .cuerpo{padding:18px 22px}
+.tarjeta .nom{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--ink);margin:0}
+.tarjeta .fec{color:var(--muted);font-size:13.5px;margin:2px 0 14px}
+.tarjeta table{width:100%;border-collapse:collapse;font-size:15px}
+.tarjeta td{padding:5px 4px;border-bottom:1px solid var(--line)}
+.tarjeta td:last-child{text-align:right;font-weight:700;color:var(--ink);white-space:nowrap}
+.tarjeta td small{color:var(--muted)}
+.nota{display:flex;justify-content:space-between;align-items:center;background:var(--acc-soft);border-radius:10px;padding:12px 16px;margin:14px 0}
+.nota span{font-weight:700;color:var(--acc-d)}
+.nota b{font-family:var(--serif);font-size:34px;color:var(--acc-d);line-height:1}
+.refl{background:var(--paper);border-left:4px solid var(--oro);border-radius:6px;padding:10px 14px;margin-top:10px;font-size:14.5px}
+.refl b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+.refl p{margin:0;white-space:pre-wrap;word-wrap:break-word}
+.tarjeta .pie2{text-align:center;color:var(--muted);font-size:12px;padding:10px;border-top:1px solid var(--line);background:var(--paper)}
+.pasos{max-width:640px;margin:16px auto 0;background:var(--acc-soft);border-left:4px solid var(--acc);border-radius:8px;padding:12px 16px;font-size:15.5px}
+.pasos ol{margin:4px 0 0;padding-left:22px}
+.pie{text-align:center;color:var(--muted);font-size:13px;margin-top:20px}
+@media (max-width:520px){.ops{grid-template-columns:1fr}.ops span{flex-direction:row;gap:8px;min-height:46px}.hero{padding:18px}.sec{padding:16px}}
+@media print{body{background:#fff}.no-print,.pasos,.top{display:none!important}.tarjeta{border-width:1px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top no-print">
+    <img src="img/icadep-escudo.png" alt="ICADEP" onerror="this.style.display='none'">
+    <small>Curso Excel Avanzado<br>Cierre del curso</small>
+  </div>
+
+  <!-- Formulario -->
+  <div id="formulario">
+    <div class="hero">
+      <div class="ic">🎓</div>
+      <h1>Autoevaluación final del curso.</h1>
+      <p>Mire hacia atrás y evalúe con honestidad su desempeño durante todo el curso. Son <strong>10 criterios</strong> de <strong>0.5 puntos</strong> cada uno, para una nota <strong>sobre 5</strong>. Al terminar, obtendrá una tarjeta con su nota para capturarla y subirla a Moodle.</p>
+    </div>
+
+    <div class="sec">
+      <h2>1. Sus datos.</h2>
+      <label class="campo" for="nombre">Nombre completo</label>
+      <input type="text" id="nombre" autocomplete="name" placeholder="Ej.: María Rodríguez Peña" maxlength="80">
+    </div>
+
+    <div class="sec">
+      <h2>2. Evalúe su desempeño.</h2>
+      <p class="ayuda">Piense en todos los módulos del curso y elija la opción que mejor lo describe.</p>
+      <div id="criterios"></div>
+    </div>
+
+    <div class="sec">
+      <h2>3. Reflexión.</h2>
+      <p class="ayuda">Responda en una o dos oraciones.</p>
+      <label class="campo" for="r1">¿Qué fue lo más valioso que aprendió en el curso?</label>
+      <textarea id="r1" maxlength="400"></textarea>
+      <label class="campo" for="r2" style="margin-top:12px">¿Qué mejoraría de su desempeño?</label>
+      <textarea id="r2" maxlength="400"></textarea>
+    </div>
+
+    <div class="total" aria-live="polite">
+      <div><small>Mi nota hasta ahora</small><br><b id="tot">0 / 5</b></div>
+      <small id="faltan">Faltan 10 criterios</small>
+    </div>
+
+    <div class="aviso" id="aviso"></div>
+    <div class="acciones">
+      <button class="btn" id="generar">✅ Ver mi tarjeta de nota</button>
+    </div>
+  </div>
+
+  <!-- Resultado -->
+  <div id="resultado">
+    <div class="tarjeta" id="tarjeta">
+      <div class="cab">
+        <div class="em">🎓</div>
+        <div><small>Curso Excel Avanzado · ICADEP</small><b>Autoevaluación final.</b></div>
+      </div>
+      <div class="cuerpo">
+        <p class="nom" id="tNom"></p>
+        <p class="fec" id="tFec"></p>
+        <table id="tTabla"></table>
+        <div class="nota"><span>Mi nota</span><b id="tNota"></b></div>
+        <div class="refl"><b>Lo más valioso que aprendí.</b><p id="tR1"></p></div>
+        <div class="refl"><b>Lo que mejoraría.</b><p id="tR2"></p></div>
+      </div>
+      <div class="pie2">Facilitador: Jarlin Figueroa, M.A.</div>
+    </div>
+
+    <div class="pasos">
+      <strong>📸 Ahora suba su tarjeta a Moodle.</strong>
+      <ol>
+        <li>Tome una <strong>captura de pantalla</strong> de la tarjeta (o pulse «Descargar imagen»).</li>
+        <li>En Moodle, abra la actividad <strong>Autoevaluación final</strong> y pulse <strong>Agregar entrega</strong>.</li>
+        <li>Suba la imagen y pulse <strong>Guardar cambios</strong>.</li>
+      </ol>
+    </div>
+
+    <div class="acciones no-print" style="margin-top:14px">
+      <button class="btn" id="descargar">⬇️ Descargar imagen</button>
+      <button class="btn sec2" id="editar">✏️ Corregir respuestas</button>
+    </div>
+  </div>
+
+  <p class="pie no-print">Creado por: Jarlin Figueroa, M.A.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const CRIT = [
+  {id:"punt", em:"⏰", t:"Puntualidad", q:"¿Me conecté a la hora de inicio y me quedé hasta el final de cada clase?"},
+  {id:"asis", em:"🗓️", t:"Asistencia", q:"¿Estuve presente en las clases del curso? Si falté, ¿vi la grabación?"},
+  {id:"part", em:"🙋", t:"Participación", q:"¿Hice preguntas, aportes y comentarios durante las clases?"},
+  {id:"inte", em:"💬", t:"Interacción", q:"¿Conversé con el facilitador y mis compañeros por el chat o el micrófono y respondí cuando me dieron la palabra?"},
+  {id:"entp", em:"📥", t:"Entrega puntual de actividades", q:"¿Entregué las prácticas y tareas dentro de la fecha límite?"},
+  {id:"ents", em:"⚡", t:"Entrega el mismo día de la clase", q:"¿Entregué las actividades el mismo día en que se trabajaron en clase?"},
+  {id:"eval", em:"🎯", t:"Kahoot y evaluaciones", q:"¿Completé los Kahoot, juegos y evaluaciones de cada módulo?"},
+  {id:"equi", em:"🤝", t:"Trabajo en equipo", q:"¿Colaboré en las actividades grupales y exposiciones, y apoyé a mis compañeros?"},
+  {id:"recu", em:"📚", t:"Uso de los recursos", q:"¿Revisé los videos, manuales, presentaciones y prácticas guiadas de cada módulo?"},
+  {id:"acti", em:"🌟", t:"Actitud y respeto", q:"¿Mantuve una actitud positiva, escuché con atención y respeté los turnos de palabra?"}
+];
+const OPS = [{v:0.5, t:"Sí, siempre"}, {v:0.25, t:"A veces"}, {v:0, t:"Casi nunca"}];
+const KEY = "autoeval-final-excel";
+const $ = id => document.getElementById(id);
+
+$("criterios").innerHTML = CRIT.map(c => `
+  <div class="crit" id="c-${c.id}">
+    <h3>${c.em} ${c.t}</h3>
+    <p>${c.q}</p>
+    <div class="ops" role="radiogroup" aria-label="${c.t}">
+      ${OPS.map(o => `<label><input type="radio" name="${c.id}" value="${o.v}"><span>${o.t}<small>${o.v} puntos</small></span></label>`).join("")}
+    </div>
+  </div>`).join("");
+
+function leer(){
+  const r = {};
+  CRIT.forEach(c => { const s = document.querySelector(`input[name=${c.id}]:checked`); r[c.id] = s ? parseFloat(s.value) : null; });
+  return r;
+}
+function actualizar(){
+  const r = leer();
+  let tot = 0, faltan = 0;
+  CRIT.forEach(c => {
+    const el = $("c-" + c.id);
+    if (r[c.id] === null) faltan++; else { tot += r[c.id]; el.classList.remove("falta"); }
+    el.classList.toggle("ok", r[c.id] !== null);
+  });
+  $("tot").textContent = tot + " / 5";
+  $("faltan").textContent = faltan ? `Falta${faltan > 1 ? "n" : ""} ${faltan} criterio${faltan > 1 ? "s" : ""}` : "¡Todo completo!";
+  guardar();
+  return {r, tot, faltan};
+}
+function guardar(){
+  try { localStorage.setItem(KEY, JSON.stringify({n:$("nombre").value, r:leer(), r1:$("r1").value, r2:$("r2").value})); } catch(e){}
+}
+function cargar(){
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY) || "null"); if (!d) return;
+    $("nombre").value = d.n || ""; $("r1").value = d.r1 || ""; $("r2").value = d.r2 || "";
+    CRIT.forEach(c => { if (d.r && d.r[c.id] !== null && d.r[c.id] !== undefined) { const i = document.querySelector(`input[name=${c.id}][value="${d.r[c.id]}"]`); if (i) i.checked = true; } });
+  } catch(e){}
+}
+document.addEventListener("change", actualizar);
+["nombre","r1","r2"].forEach(id => $(id).addEventListener("input", guardar));
+
+$("generar").onclick = () => {
+  const {r, tot, faltan} = actualizar();
+  const nom = $("nombre").value.trim(), r1 = $("r1").value.trim(), r2 = $("r2").value.trim();
+  const errores = [];
+  if (nom.split(/\s+/).length < 2) errores.push("Escriba su <strong>nombre completo</strong> (nombre y apellido).");
+  if (faltan) { errores.push(`Elija una opción en ${faltan === 1 ? "el criterio marcado" : "los " + faltan + " criterios marcados"} en rojo.`); CRIT.forEach(c => { if (r[c.id] === null) $("c-" + c.id).classList.add("falta"); }); }
+  if (r1.length < 10 || r2.length < 10) errores.push("Responda las <strong>dos preguntas de reflexión</strong>.");
+  const av = $("aviso");
+  if (errores.length) { av.innerHTML = "⚠️ " + errores.join("<br>⚠️ "); av.classList.add("ver"); av.scrollIntoView({behavior:"smooth", block:"center"}); return; }
+  av.classList.remove("ver");
+
+  $("tNom").textContent = nom;
+  $("tFec").textContent = new Date().toLocaleString("es-DO", {dateStyle:"long", timeStyle:"short"});
+  $("tTabla").innerHTML = CRIT.map(c => {
+    const o = OPS.find(o => o.v === r[c.id]);
+    return `<tr><td>${c.em} ${c.t}<br><small>${o.t}</small></td><td>${r[c.id]}</td></tr>`;
+  }).join("");
+  $("tNota").textContent = tot + " / 5";
+  $("tR1").textContent = r1; $("tR2").textContent = r2;
+  $("formulario").style.display = "none";
+  $("resultado").style.display = "block";
+  window.scrollTo({top:0});
+};
+$("editar").onclick = () => { $("resultado").style.display = "none"; $("formulario").style.display = "block"; window.scrollTo({top:0}); };
+$("descargar").onclick = async () => {
+  if (!window.html2canvas) { alert("No se pudo crear la imagen. Tome una captura de pantalla de la tarjeta."); return; }
+  const b = $("descargar"); b.disabled = true; b.textContent = "⏳ Creando imagen…";
+  try {
+    const cv = await html2canvas($("tarjeta"), {scale:2, backgroundColor:"#ffffff"});
+    const a = document.createElement("a");
+    a.download = "Autoevaluacion-" + $("tNom").textContent.replace(/[^\p{L}\p{N}]+/gu, "-") + ".png";
+    a.href = cv.toDataURL("image/png"); a.click();
+  } catch(e) { alert("No se pudo crear la imagen. Tome una captura de pantalla de la tarjeta."); }
+  b.disabled = false; b.textContent = "⬇️ Descargar imagen";
+};
+cargar(); actualizar();
+</script>
+</body>
+</html>
