@@ -162,6 +162,29 @@ textarea{min-height:92px;resize:vertical}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+/* Pantalla en vivo: envía el avance (sin puntos) a Firebase. Si falla, la autoevaluación sigue funcionando. */
+(function(){
+  var cfg = {
+    apiKey: "AIzaSyCLrT88lr0by0elfhI6bwdbgFN3u3ORCDI",
+    authDomain: "excel-avanzado-icadep.firebaseapp.com",
+    databaseURL: "https://excel-avanzado-icadep-default-rtdb.firebaseio.com",
+    projectId: "excel-avanzado-icadep",
+    storageBucket: "excel-avanzado-icadep.firebasestorage.app",
+    messagingSenderId: "391674719896",
+    appId: "1:391674719896:web:738cc75c1d9720dd7caaed"
+  };
+  var APP = ["https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js","https://cdnjs.cloudflare.com/ajax/libs/firebase/10.13.2/firebase-app-compat.min.js"];
+  var DB = ["https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js","https://cdnjs.cloudflare.com/ajax/libs/firebase/10.13.2/firebase-database-compat.min.js"];
+  function load(src){ return new Promise(function(ok, no){ var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }
+  function fb(urls){ var i = 0; function t(){ if (i >= urls.length) return Promise.reject(); return load(urls[i++]).catch(t); } return t(); }
+  fb(APP).then(function(){ return fb(DB); }).then(function(){
+    firebase.initializeApp(cfg);
+    window.VIVO_DB = firebase.database();
+    window.dispatchEvent(new Event("vivo-listo"));
+  }).catch(function(){});
+})();
+</script>
+<script>
 const CRIT = [
   {id:"punt", em:"⏰", t:"Puntualidad", q:"¿Me conecté a la hora de inicio y me quedé hasta el final de cada clase?"},
   {id:"asis", em:"🗓️", t:"Asistencia", q:"¿Estuve presente en las clases del curso? Si falté, ¿vi la grabación?"},
@@ -205,7 +228,24 @@ function actualizar(){
 }
 function guardar(){
   try { localStorage.setItem(KEY, JSON.stringify({n:$("nombre").value, r:leer(), r1:$("r1").value, r2:$("r2").value})); } catch(e){}
+  enviarVivo();
 }
+/* Envío a la pantalla en vivo: solo nombre y la opción elegida (0 Sí, siempre · 1 A veces · 2 Casi nunca), nunca puntos */
+let DEV = null, t0 = Date.now(), finVivo = false, tVivo = null;
+try { const g = +localStorage.getItem("autoeval-final-t0"); if (g) t0 = g; else localStorage.setItem("autoeval-final-t0", t0); } catch(e){}
+try { DEV = localStorage.getItem("autoeval-final-dev"); if (!DEV) { DEV = "d" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); localStorage.setItem("autoeval-final-dev", DEV); } } catch(e){ DEV = "d" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function enviarVivo(){
+  clearTimeout(tVivo);
+  tVivo = setTimeout(() => {
+    if (!window.VIVO_DB) return;
+    const n = $("nombre").value.trim();
+    if (n.length < 3) return;
+    const r = leer();
+    const idx = CRIT.map(c => r[c.id] === null ? -1 : OPS.findIndex(o => o.v === r[c.id]));
+    VIVO_DB.ref("autoevalFinal/" + DEV).update({n, r:idx, fin:finVivo, t0}).catch(() => {});
+  }, 350);
+}
+window.addEventListener("vivo-listo", enviarVivo);
 function cargar(){
   try {
     const d = JSON.parse(localStorage.getItem(KEY) || "null"); if (!d) return;
@@ -226,6 +266,7 @@ $("generar").onclick = () => {
   const av = $("aviso");
   if (errores.length) { av.innerHTML = "<strong>Revise lo siguiente:</strong><br>• " + errores.join("<br>• "); av.classList.add("ver"); av.scrollIntoView({behavior:"smooth", block:"center"}); return; }
   av.classList.remove("ver");
+  finVivo = true; enviarVivo();
 
   $("tNom").textContent = nom;
   $("tFec").textContent = new Date().toLocaleString("es-DO", {dateStyle:"long", timeStyle:"short"});
