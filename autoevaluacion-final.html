@@ -51,6 +51,15 @@ textarea{min-height:92px;resize:vertical}
 .aviso{border-left:4px solid var(--neg);background:var(--neg-soft);border-radius:6px;padding:10px 14px;margin:10px 0 0;font-size:15px;display:none}
 .aviso.ver{display:block}
 #buscar{margin-bottom:12px}
+/* Ritmo del facilitador: un criterio a la vez */
+.crit.oculto{display:none}
+.crit.actual{border-color:var(--oro);border-left-color:var(--oro);box-shadow:0 0 0 3px var(--neg-soft);animation:aparece .45s ease}
+.crit.actual.ok{border-left-color:var(--acc)}
+@keyframes aparece{from{transform:translateY(10px);opacity:0}}
+.turno{display:none;text-align:center;border:2px dashed var(--line);border-radius:10px;padding:14px;color:var(--muted);font-size:15.5px}
+.turno.ver{display:block}
+.turno b{color:var(--ink)}
+.paso-abierto .solo-final{display:none!important}
 .nombres{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;max-height:52vh;overflow:auto;padding:2px}
 .nombres button{font:600 16px var(--sans);text-align:left;padding:13px 14px;border:1.5px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink);cursor:pointer;transition:all .15s}
 .nombres button:hover{border-color:var(--acc);background:#fff}
@@ -143,9 +152,10 @@ textarea{min-height:92px;resize:vertical}
       <h2>1. Evalúe su desempeño.</h2>
       <p class="ayuda">Piense en todos los módulos del curso y elija la opción que mejor lo describe.</p>
       <div id="criterios"></div>
+      <div class="turno" id="turno" aria-live="polite"></div>
     </div>
 
-    <div class="sec">
+    <div class="sec solo-final">
       <h2>2. Reflexión.</h2>
       <p class="ayuda">Responda en una o dos oraciones.</p>
       <label class="campo" for="r1">¿Qué fue lo más valioso que aprendió en el curso?</label>
@@ -154,13 +164,13 @@ textarea{min-height:92px;resize:vertical}
       <textarea id="r2" maxlength="400"></textarea>
     </div>
 
-    <div class="total" aria-live="polite">
+    <div class="total solo-final" aria-live="polite">
       <div><small>Mi nota hasta ahora</small><br><b id="tot">0 / 8</b></div>
       <small id="faltan">Faltan 8 criterios</small>
     </div>
 
     <div class="aviso" id="aviso"></div>
-    <div class="acciones">
+    <div class="acciones solo-final">
       <button class="btn" id="generar">Ver mi tarjeta de nota</button>
     </div>
   </div>
@@ -343,7 +353,7 @@ $("entrar").onclick = entrar;
 function irSegunEstado(){
   const nom = $("nombre").value;
   $("eNom").textContent = nom; $("fNom").textContent = nom;
-  if (iniciado) { if (vista === "acceso" || vista === "espera") verVista("formulario"); }
+  if (iniciado) { if (vista === "acceso" || vista === "espera") { verVista("formulario"); pasoPrevio = -1; aplicarPaso(); } }
   else verVista("espera");
   enviarVivo();
   clearTimeout(tSinCon);
@@ -355,14 +365,43 @@ $("noSoy").onclick = () => {
   $("nombre").value = ""; elegido = null; $("buscar").value = ""; $("otroNom").value = "";
   pintarNombres(); verVista("acceso");
 };
-$("sinCon").onclick = () => verVista("formulario");
+$("sinCon").onclick = () => { paso = CRIT.length + 1; aplicarPaso(); verVista("formulario"); };
+
+/* El facilitador abre un criterio a la vez: paso 0 = espera · 1..8 = criterio abierto · 9 = reflexión y tarjeta */
+let paso = 0, pasoPrevio = -1;
+function aplicarPaso(){
+  const total = CRIT.length, enPasos = paso >= 1 && paso <= total;
+  $("formulario").classList.toggle("paso-abierto", enPasos);
+  const r = leer();
+  CRIT.forEach((c, i) => {
+    const el = $("c-" + c.id);
+    el.classList.toggle("oculto", enPasos && i >= paso);
+    el.classList.toggle("actual", enPasos && i === paso - 1);
+  });
+  const t = $("turno");
+  if (enPasos) {
+    const cur = CRIT[paso - 1], listo = r[cur.id] !== null;
+    t.innerHTML = listo
+      ? (paso < total ? "<b>Listo.</b> Espere a que el facilitador abra el siguiente criterio." : "<b>Listo.</b> Espere a que el facilitador cierre la autoevaluación.")
+      : `Escuche la explicación del facilitador y elija su opción en el criterio <b>${paso}</b>.`;
+    t.classList.add("ver");
+  } else t.classList.remove("ver");
+  if (paso !== pasoPrevio && vista === "formulario") {
+    const el = enPasos ? $("c-" + CRIT[paso - 1].id) : null;
+    if (el) setTimeout(() => el.scrollIntoView({behavior:"smooth", block:"center"}), 60);
+  }
+  pasoPrevio = paso;
+}
+document.addEventListener("change", aplicarPaso);
 
 window.addEventListener("vivo-listo", () => {
   $("eEstado").textContent = "Conectado. Esperando al facilitador…";
   $("sinCon").style.display = "none";
-  VIVO_DB.ref("autoevalFinal/estado/iniciado").on("value", s => {
-    iniciado = s.val() === true;
+  VIVO_DB.ref("autoevalFinal/estado/paso").on("value", s => {
+    paso = Math.max(0, Math.min(CRIT.length + 1, +s.val() || 0));
+    iniciado = paso > 0;
     if (iniciado && vista === "espera") verVista("formulario");
+    aplicarPaso();
   });
   // Si el facilitador limpia la pizarra, el participante vuelve a la lista para entrar de nuevo
   let visto = false;

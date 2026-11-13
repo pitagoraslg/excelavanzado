@@ -27,6 +27,20 @@ html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans
 .iniciar:disabled{cursor:default;animation:none;opacity:.6}
 .iniciar.encurso{background:rgba(255,255,255,.12);color:#9EDDE3;animation:none;opacity:1;cursor:default;font-size:15px}
 @keyframes llama{70%{box-shadow:0 0 0 12px rgba(232,98,42,0)}100%{box-shadow:0 0 0 0 rgba(232,98,42,0)}}
+.mando{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--oro);border-radius:10px;padding:16px 20px;margin-bottom:16px}
+.mtxt{flex:1 1 480px;min-width:0}
+.mtxt small{font:600 12.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--oro)}
+.mtxt h2{margin:2px 0 4px;font-family:var(--serif);font-size:clamp(24px,3vw,34px);color:var(--ink);line-height:1.15}
+.mtxt p{margin:0;font-size:clamp(17px,1.8vw,21px);color:#3F4A50}
+.mtxt .resp{display:inline-block;margin-top:8px;font:600 14px var(--mono);color:var(--acc-d);background:var(--acc-soft);border-radius:99px;padding:4px 12px}
+.mtxt .resp:empty{display:none}
+.mbtns{display:flex;gap:10px;flex-wrap:wrap}
+.btn2{font:600 16px var(--sans);border:1.5px solid var(--line);border-radius:10px;padding:0 18px;min-height:62px;cursor:pointer;background:#fff;color:var(--ink)}
+.btn2:hover:not(:disabled){border-color:var(--acc)}
+.btn2:disabled{opacity:.4;cursor:default}
+.tj li.act{background:var(--oro-soft)}
+.tj li.act .c{color:var(--ink)}
+.tj li.cerr .c{color:#C9CDCF}
 .tj.esp{border-top-color:#B9BEC0}
 .tj .espb{font:700 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:99px;padding:3px 10px;white-space:nowrap}
 .vivo{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9EDDE3}
@@ -81,7 +95,19 @@ html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans
     <div class="cont">
       <div><b id="cEnt">0</b><span>Han entrado</span></div>
       <div><b id="cFin">0</b><span>Terminaron</span></div>
-      <button class="iniciar" id="iniciar" disabled>Iniciar autoevaluación</button>
+    </div>
+  </div>
+
+  <div class="mando" id="mando">
+    <div class="mtxt">
+      <small id="mEtq">Antes de empezar</small>
+      <h2 id="mTit">Espere a que entren los participantes.</h2>
+      <p id="mPreg">Cuando estén todos, pulse «Iniciar» para abrir el criterio 1.</p>
+      <span class="resp" id="mResp"></span>
+    </div>
+    <div class="mbtns">
+      <button class="btn2" id="atras" disabled>◀ Anterior</button>
+      <button class="iniciar" id="iniciar" disabled>Iniciar: criterio 1 ▶</button>
     </div>
   </div>
 
@@ -121,6 +147,17 @@ html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans
 <script>
 const ROOT = "autoevalFinal";
 const CRIT = ["Puntualidad", "Asistencia", "Participación", "Entrega puntual de actividades", "Entrega de actividades durante la clase", "Trabajo en equipo", "Uso de los recursos", "Actitud y respeto"];
+const PREG = [
+  "¿Me conecté a la hora de inicio y me quedé hasta el final de cada clase?",
+  "¿Estuve presente en las clases del curso? Si falté, ¿vi la grabación?",
+  "¿Hice preguntas, aportes y comentarios durante las clases?",
+  "¿Entregué las prácticas y tareas dentro de la fecha límite?",
+  "Cuando el facilitador asignó una actividad para realizar en clase, ¿la terminé y la entregué antes de que finalizara la clase, sin dejarla para después?",
+  "¿Colaboré en las actividades grupales y exposiciones, y apoyé a mis compañeros?",
+  "¿Revisé los videos, manuales, presentaciones y prácticas guiadas de cada módulo?",
+  "¿Mantuve una actitud positiva, escuché con atención y respeté los turnos de palabra?"
+];
+let paso = 0;
 const OPS = ["Sí, siempre", "A veces", "Casi nunca"];
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -134,7 +171,7 @@ function render(data){
     .map(([id, d]) => ({id, n:(d.n || "").trim(), r:Array.isArray(d.r) ? d.r : [], fin:!!d.fin, t0:d.t0 || 0}))
     .filter(p => p.n.length >= 3)
     .sort((a, b) => a.t0 - b.t0);
-  $("cEnt").textContent = lista.length;
+  $("cEnt").textContent = lista.length; contarResp();
   $("cFin").textContent = lista.filter(p => p.fin).length;
   if (!lista.length) { previo = {}; $("grid").innerHTML = VACIO; return; }
   const ahora = {};
@@ -150,7 +187,8 @@ function render(data){
         ${p.fin ? '<span class="ok">Terminó</span>' : esp ? '<span class="espb">Esperando</span>' : `<span>${hechos} de ${CRIT.length}</span>`}</div></div>
       <ol>${CRIT.map((c, i) => {
         const v = r[i], nuevo = v !== null && ant[i] !== v && previo[p.id] !== undefined;
-        return `<li class="${v === null ? "pend" : "hecho"}${nuevo ? " nuevo" : ""}"><span class="n">${i + 1}</span><span class="c">${c}</span><span class="r">${v === null ? "—" : OPS[v]}</span></li>`;
+        const extra = (paso >= 1 && paso <= CRIT.length && i === paso - 1) ? " act" : (v === null && i >= paso && paso <= CRIT.length ? " cerr" : "");
+        return `<li class="${v === null ? "pend" : "hecho"}${extra}${nuevo ? " nuevo" : ""}"><span class="n">${i + 1}</span><span class="c">${c}</span><span class="r">${v === null ? "—" : OPS[v]}</span></li>`;
       }).join("")}</ol></div>`;
   }).join("");
   previo = ahora;
@@ -162,12 +200,11 @@ window.addEventListener("db-listo", () => {
     $("vivo").classList.toggle("off", !on);
     $("vivoTxt").textContent = on ? "En vivo" : "Reconectando…";
   });
-  DB.ref(ROOT + "/estado/iniciado").on("value", s => {
-    iniciado = s.val() === true;
-    const b = $("iniciar");
-    b.disabled = iniciado; b.classList.toggle("encurso", iniciado);
-    b.textContent = iniciado ? "Autoevaluación en curso" : "Iniciar autoevaluación";
-    if (ultimo) render(ultimo);
+  DB.ref(ROOT + "/estado/paso").on("value", s => {
+    paso = Math.max(0, Math.min(CRIT.length + 1, +s.val() || 0));
+    iniciado = paso > 0;
+    pintarMando();
+    render(ultimo);
   });
   DB.ref(ROOT + "/p").on("value", s => {
     const d = s.val();
@@ -175,10 +212,47 @@ window.addEventListener("db-listo", () => {
     render(d);
   });
 });
-$("iniciar").onclick = () => {
-  if (!window.DB || iniciado) return;
-  DB.ref(ROOT + "/estado/iniciado").set(true).catch(() => alert("No se pudo iniciar. Revise la conexión."));
-};
+function pintarMando(){
+  const N = CRIT.length, b = $("iniciar"), a = $("atras");
+  b.disabled = !window.DB || paso > N; a.disabled = !window.DB || paso === 0;
+  b.classList.toggle("encurso", paso > N);
+  if (paso === 0) {
+    $("mEtq").textContent = "Antes de empezar";
+    $("mTit").textContent = "Espere a que entren los participantes.";
+    $("mPreg").textContent = "Cuando estén todos, pulse «Iniciar» para abrir el criterio 1.";
+    b.textContent = "Iniciar: criterio 1 ▶";
+  } else if (paso <= N) {
+    $("mEtq").textContent = `Criterio ${paso} de ${N}`;
+    $("mTit").textContent = CRIT[paso - 1] + ".";
+    $("mPreg").textContent = PREG[paso - 1];
+    b.textContent = paso < N ? `Siguiente: criterio ${paso + 1} ▶` : "Cerrar: abrir reflexión y tarjeta ▶";
+  } else {
+    $("mEtq").textContent = "Cierre";
+    $("mTit").textContent = "Reflexión y tarjeta de nota.";
+    $("mPreg").textContent = "Los participantes responden las dos preguntas de reflexión y generan su tarjeta para Moodle.";
+    b.textContent = "Autoevaluación abierta completa";
+  }
+  contarResp();
+}
+function contarResp(){
+  const N = CRIT.length, lista = Object.values(ultimo || {}).filter(d => (d.n || "").trim().length >= 3);
+  let txt = "";
+  if (paso >= 1 && paso <= N) {
+    const k = lista.filter(d => Array.isArray(d.r) && d.r[paso - 1] >= 0).length;
+    txt = `Respondieron este criterio: ${k} de ${lista.length}`;
+  } else if (paso > N) txt = `Terminaron: ${lista.filter(d => d.fin).length} de ${lista.length}`;
+  $("mResp").textContent = txt;
+}
+function irPaso(n){
+  if (!window.DB) return;
+  DB.ref(ROOT + "/estado/paso").set(n).catch(() => alert("No se pudo cambiar el criterio. Revise la conexión."));
+}
+$("iniciar").onclick = () => { if (paso <= CRIT.length) irPaso(paso + 1); };
+$("atras").onclick = () => { if (paso > 0) irPaso(paso - 1); };
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); if (paso <= CRIT.length) irPaso(paso + 1); }
+  if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); if (paso > 0) irPaso(paso - 1); }
+});
 
 $("limpiar").onclick = () => {
   if (!window.DB) return;
