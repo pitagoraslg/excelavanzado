@@ -22,6 +22,13 @@ html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans
 .cont div{background:rgba(255,255,255,.1);border-radius:10px;padding:8px 16px;text-align:center;min-width:120px}
 .cont b{display:block;font-family:var(--serif);font-size:30px;line-height:1.1}
 .cont span{font-size:13px;color:#D6E4EC}
+.iniciar{font:700 18px var(--sans);border:0;border-radius:10px;padding:0 26px;min-height:62px;cursor:pointer;background:var(--oro);color:#fff;box-shadow:0 0 0 0 rgba(232,98,42,.6);animation:llama 1.8s infinite}
+.iniciar:hover{background:#CF5420}
+.iniciar:disabled{cursor:default;animation:none;opacity:.6}
+.iniciar.encurso{background:rgba(255,255,255,.12);color:#9EDDE3;animation:none;opacity:1;cursor:default;font-size:15px}
+@keyframes llama{70%{box-shadow:0 0 0 12px rgba(232,98,42,0)}100%{box-shadow:0 0 0 0 rgba(232,98,42,0)}}
+.tj.esp{border-top-color:#B9BEC0}
+.tj .espb{font:700 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:99px;padding:3px 10px;white-space:nowrap}
 .vivo{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9EDDE3}
 .vivo i{width:9px;height:9px;border-radius:50%;background:#4ADE80;animation:lat 1.6s infinite}
 .vivo.off i{background:var(--oro);animation:none}
@@ -74,11 +81,12 @@ html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans
     <div class="cont">
       <div><b id="cEnt">0</b><span>Han entrado</span></div>
       <div><b id="cFin">0</b><span>Terminaron</span></div>
+      <button class="iniciar" id="iniciar" disabled>Iniciar autoevaluación</button>
     </div>
   </div>
 
   <div class="grid" id="grid">
-    <div class="vacio"><b>Esperando a los participantes.</b>Cada participante aparecerá aquí en cuanto escriba su nombre en la autoevaluación:<br><a href="autoevaluacion-final.html" id="enlace">autoevaluacion-final.html</a></div>
+    <div class="vacio"><b>Esperando a los participantes.</b>Cada participante aparecerá aquí en cuanto elija su nombre y pulse «Entrar» en:<br><a href="autoevaluacion-final.html" id="enlace">autoevaluacion-final.html</a></div>
   </div>
 
   <div class="pie">
@@ -116,9 +124,10 @@ const CRIT = ["Puntualidad", "Asistencia", "Participación", "Entrega puntual de
 const OPS = ["Sí, siempre", "A veces", "Casi nunca"];
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-let previo = {};
+let previo = {}, iniciado = false, ultimo = null;
 
 $("enlace").href = $("enlace").textContent = new URL("autoevaluacion-final.html", location.href).href;
+const VACIO = $("grid").innerHTML;
 
 function render(data){
   const lista = Object.entries(data || {})
@@ -127,17 +136,18 @@ function render(data){
     .sort((a, b) => a.t0 - b.t0);
   $("cEnt").textContent = lista.length;
   $("cFin").textContent = lista.filter(p => p.fin).length;
-  if (!lista.length) { previo = {}; return; }
+  if (!lista.length) { previo = {}; $("grid").innerHTML = VACIO; return; }
   const ahora = {};
   $("grid").innerHTML = lista.map(p => {
     const ant = previo[p.id] || [];
     const r = CRIT.map((_, i) => (p.r[i] === 0 || p.r[i] === 1 || p.r[i] === 2) ? p.r[i] : null);
     ahora[p.id] = r;
     const hechos = r.filter(x => x !== null).length;
-    return `<div class="tj ${p.fin ? "fin" : ""}${previo[p.id] === undefined ? " llega" : ""}">
+    const esp = !iniciado && !hechos && !p.fin;
+    return `<div class="tj ${p.fin ? "fin" : ""}${esp ? " esp" : ""}${previo[p.id] === undefined ? " llega" : ""}">
       <div class="hd"><p class="nom">${esc(p.n)}</p>
         <div class="meta"><div class="barra"><i style="width:${hechos / CRIT.length * 100}%"></i></div>
-        ${p.fin ? '<span class="ok">Terminó</span>' : `<span>${hechos} de ${CRIT.length}</span>`}</div></div>
+        ${p.fin ? '<span class="ok">Terminó</span>' : esp ? '<span class="espb">Esperando</span>' : `<span>${hechos} de ${CRIT.length}</span>`}</div></div>
       <ol>${CRIT.map((c, i) => {
         const v = r[i], nuevo = v !== null && ant[i] !== v && previo[p.id] !== undefined;
         return `<li class="${v === null ? "pend" : "hecho"}${nuevo ? " nuevo" : ""}"><span class="n">${i + 1}</span><span class="c">${c}</span><span class="r">${v === null ? "—" : OPS[v]}</span></li>`;
@@ -152,12 +162,23 @@ window.addEventListener("db-listo", () => {
     $("vivo").classList.toggle("off", !on);
     $("vivoTxt").textContent = on ? "En vivo" : "Reconectando…";
   });
-  DB.ref(ROOT).on("value", s => {
+  DB.ref(ROOT + "/estado/iniciado").on("value", s => {
+    iniciado = s.val() === true;
+    const b = $("iniciar");
+    b.disabled = iniciado; b.classList.toggle("encurso", iniciado);
+    b.textContent = iniciado ? "Autoevaluación en curso" : "Iniciar autoevaluación";
+    if (ultimo) render(ultimo);
+  });
+  DB.ref(ROOT + "/p").on("value", s => {
     const d = s.val();
-    if (!d) { previo = {}; $("cEnt").textContent = 0; $("cFin").textContent = 0; return; }
+    ultimo = d;
     render(d);
   });
 });
+$("iniciar").onclick = () => {
+  if (!window.DB || iniciado) return;
+  DB.ref(ROOT + "/estado/iniciado").set(true).catch(() => alert("No se pudo iniciar. Revise la conexión."));
+};
 
 $("limpiar").onclick = () => {
   if (!window.DB) return;
