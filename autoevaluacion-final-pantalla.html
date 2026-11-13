@@ -18,7 +18,7 @@ html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans
 .top small{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-d);text-align:right}
 
 /* Inicio */
-#inicio{max-width:760px;margin:6vh auto 0}
+#inicio{max-width:900px;margin:6vh auto 0}
 .hero{background:var(--ink);color:#fff;border-bottom:5px solid var(--oro);border-radius:10px;padding:28px 30px}
 .hero small{font-family:var(--mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#9EDDE3}
 .hero h1{margin:6px 0 10px;font-family:var(--serif);font-size:clamp(28px,4.4vw,44px);line-height:1.12}
@@ -28,6 +28,17 @@ html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans
 .caja input{width:100%;font:inherit;font-size:24px;padding:14px 16px;border:2px solid var(--line);border-radius:10px;background:var(--paper);color:var(--text)}
 .caja input:focus{outline:none;border-color:var(--acc);background:#fff}
 .caja .fila{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:16px}
+.lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.lista button{font:600 18px var(--sans);text-align:left;padding:14px 16px;border:2px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;transition:all .15s}
+.lista button:hover{border-color:var(--acc);background:var(--acc-soft)}
+.lista button:focus-visible{outline:3px solid var(--oro);outline-offset:2px}
+.lista button.listo{opacity:.55}
+.lista button small{font:600 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--acc-d);white-space:nowrap}
+.otro{margin-top:16px;color:var(--muted);font-size:16px}
+.otro summary{cursor:pointer}
+.otro .fila{flex-wrap:nowrap}
+.otro input{font-size:18px;padding:11px 14px}
+@media (max-width:520px){.otro .fila{flex-wrap:wrap}}
 .caja .err{color:var(--oro);font-weight:600;font-size:16px;min-height:1.2em}
 .btn{display:inline-flex;align-items:center;gap:8px;font:700 18px var(--sans);border:0;border-radius:8px;padding:14px 28px;cursor:pointer;background:var(--acc-d);color:#fff}
 .btn:hover{background:#0A5A62}
@@ -108,12 +119,16 @@ html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans
       <p>El participante responde en voz alta cada criterio y se va marcando aquí, renglón por renglón, frente a todo el grupo.</p>
     </div>
     <div class="caja">
-      <label for="nombre">Nombre del participante</label>
-      <input type="text" id="nombre" autocomplete="off" placeholder="Ej.: María Rodríguez Peña" maxlength="80">
-      <div class="fila">
+      <label>¿Quién se autoevalúa ahora? Toque su nombre.</label>
+      <div class="lista" id="lista"></div>
+      <details class="otro">
+        <summary>¿No está en la lista? Escribir otro nombre</summary>
+        <div class="fila">
+          <input type="text" id="nombre" autocomplete="off" placeholder="Nombre del participante" maxlength="80">
+          <button class="btn" id="comenzar">Comenzar</button>
+        </div>
         <span class="err" id="err" aria-live="polite"></span>
-        <button class="btn" id="comenzar">Comenzar autoevaluación</button>
-      </div>
+      </details>
     </div>
   </section>
 
@@ -202,10 +217,24 @@ $("renglones").addEventListener("keydown", e => {
   if (r && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); actual = +r.dataset.ir; pintar(); }
 });
 
-function iniciar(){
-  const nom = $("nombre").value.trim();
+const PARTICIPANTES = [
+  "Adriana García Hidalgo", "Alenny Tejeda Montero", "Ángel Rodolfo Mariano Ventura",
+  "Crispatri Albenia Borbón Silva", "Hector José Donastorg Vásquez", "Jorge Antonio Suazo Bello",
+  "Katherine Suriel", "Katherinne Liliana Paulino Rosario", "Rachell Gómez",
+  "Winnifer Valdez Medina", "Yasmiry Mejía Núñez"
+];
+const listos = new Set();
+function pintarLista(){
+  $("lista").innerHTML = PARTICIPANTES.map(n =>
+    `<button data-nom="${esc(n)}" class="${listos.has(n) ? "listo" : ""}">${esc(n)}${listos.has(n) ? "<small>Ya pasó</small>" : ""}</button>`).join("");
+}
+$("lista").addEventListener("click", e => { const b = e.target.closest("button[data-nom]"); if (b) iniciar(b.dataset.nom); });
+
+function iniciar(elegido){
+  const nom = typeof elegido === "string" ? elegido : $("nombre").value.trim();
   if (nom.length < 3) { $("err").textContent = "Escriba el nombre del participante."; $("nombre").focus(); return; }
   $("err").textContent = "";
+  listos.add(nom);
   $("tNom").textContent = nom;
   resp = CRIT.map(() => null); actual = 0;
   $("inicio").style.display = "none";
@@ -213,7 +242,7 @@ function iniciar(){
   window.scrollTo({top:0});
   pintar();
 }
-$("comenzar").onclick = iniciar;
+$("comenzar").onclick = () => iniciar();
 $("nombre").addEventListener("keydown", e => { if (e.key === "Enter") iniciar(); });
 
 $("atras").onclick = () => { if (actual > 0) { actual--; pintar(); } };
@@ -222,7 +251,8 @@ $("siguiente").onclick = () => {
   if (faltan && !confirm(`Faltan ${faltan} criterio${faltan > 1 ? "s" : ""}. ¿Pasar al siguiente participante?`)) return;
   $("tablero").style.display = "none";
   $("inicio").style.display = "block";
-  $("nombre").value = ""; $("nombre").focus();
+  $("nombre").value = "";
+  pintarLista();
   window.scrollTo({top:0});
 };
 
@@ -231,7 +261,7 @@ document.addEventListener("keydown", e => {
   if (["1","2","3"].includes(e.key)) { e.preventDefault(); responder(+e.key - 1); }
   else if (e.key === "Backspace") { e.preventDefault(); if (actual > 0) { actual--; pintar(); } }
 });
-$("nombre").focus();
+pintarLista();
 </script>
 </body>
 </html>
