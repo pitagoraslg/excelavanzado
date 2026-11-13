@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/icadep-escudo.png">
+<title>Autoevaluación en pantalla · Excel Avanzado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+:root{--bg:#F1EEE6;--paper:#FAF7F0;--card:#fff;--ink:#12384F;--acc:#1BA7B4;--acc-d:#0E6E78;--acc-soft:#DDF2F4;--oro:#E8622A;--oro-soft:#FDEBE2;--text:#232A2E;--muted:#5B6469;--line:#E3DED0;
+  --serif:"Source Serif 4",Georgia,serif;--sans:"IBM Plex Sans","Segoe UI",Arial,sans-serif;--mono:"IBM Plex Mono",Consolas,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:18px;line-height:1.45}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 40px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.top img{height:54px}
+.top small{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-d);text-align:right}
+
+/* Inicio */
+#inicio{max-width:760px;margin:6vh auto 0}
+.hero{background:var(--ink);color:#fff;border-bottom:5px solid var(--oro);border-radius:10px;padding:28px 30px}
+.hero small{font-family:var(--mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#9EDDE3}
+.hero h1{margin:6px 0 10px;font-family:var(--serif);font-size:clamp(28px,4.4vw,44px);line-height:1.12}
+.hero p{margin:0;color:#D6E4EC;font-size:18px}
+.caja{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px 26px;margin-top:16px}
+.caja label{display:block;font-weight:700;color:var(--ink);margin-bottom:8px;font-size:19px}
+.caja input{width:100%;font:inherit;font-size:24px;padding:14px 16px;border:2px solid var(--line);border-radius:10px;background:var(--paper);color:var(--text)}
+.caja input:focus{outline:none;border-color:var(--acc);background:#fff}
+.caja .fila{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:16px}
+.caja .err{color:var(--oro);font-weight:600;font-size:16px;min-height:1.2em}
+.btn{display:inline-flex;align-items:center;gap:8px;font:700 18px var(--sans);border:0;border-radius:8px;padding:14px 28px;cursor:pointer;background:var(--acc-d);color:#fff}
+.btn:hover{background:#0A5A62}
+.btn:focus-visible{outline:3px solid var(--oro);outline-offset:2px}
+.btn.claro{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn.claro:hover{border-color:var(--acc)}
+
+/* Tablero */
+#tablero{display:none}
+.cab{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;background:var(--ink);color:#fff;border-bottom:5px solid var(--oro);border-radius:10px;padding:18px 24px;margin-bottom:14px}
+.cab small{display:block;font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:#9EDDE3}
+.cab h1{margin:2px 0 0;font-family:var(--serif);font-size:clamp(26px,3.6vw,40px);line-height:1.1}
+.prog{min-width:220px;flex:0 1 320px}
+.prog span{display:block;text-align:right;font-family:var(--mono);font-size:14px;color:#D6E4EC;margin-bottom:6px}
+.barra{height:10px;background:rgba(255,255,255,.18);border-radius:99px;overflow:hidden}
+.barra i{display:block;height:100%;width:0;background:var(--acc);border-radius:99px;transition:width .5s ease}
+
+.tabla{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ren{display:grid;grid-template-columns:56px 1fr minmax(170px,240px);align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line);transition:background .3s,opacity .3s}
+.ren:last-child{border-bottom:0}
+.ren .n{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:17px;background:var(--paper);border:1.5px solid var(--line);color:var(--muted)}
+.ren h3{margin:0;font-size:20px;color:var(--ink)}
+.ren p{margin:2px 0 0;color:var(--muted);font-size:16px;display:none}
+.ren .res{justify-self:end;font-weight:700;font-size:17px;color:var(--muted);font-family:var(--mono)}
+/* pendiente */
+.ren.pend{opacity:.45}
+.ren.pend h3{color:var(--muted)}
+/* hecho */
+.ren.hecho{cursor:pointer}
+.ren.hecho:hover{background:var(--paper)}
+.ren.hecho .n{background:var(--acc);border-color:var(--acc);color:#fff}
+.ren.hecho .res{font-family:var(--sans);color:var(--acc-d);background:var(--acc-soft);border-radius:99px;padding:6px 16px;animation:pop .45s ease}
+@keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
+/* actual */
+.ren.actual{grid-template-columns:56px 1fr;background:var(--oro-soft);border-left:6px solid var(--oro);padding:20px 20px 22px 14px}
+.ren.actual .n{background:var(--oro);border-color:var(--oro);color:#fff;width:46px;height:46px;font-size:19px}
+.ren.actual h3{font-family:var(--serif);font-size:clamp(24px,2.8vw,32px)}
+.ren.actual p{display:block;color:#3F4A50;font-size:clamp(18px,2vw,22px);margin-top:4px}
+.ren.actual .res{display:none}
+.ops{grid-column:2;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
+.ops button{font:700 clamp(18px,2vw,22px) var(--sans);padding:16px 10px;border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:10px}
+.ops button kbd{font:600 13px var(--mono);border:1px solid var(--line);border-radius:5px;padding:2px 7px;color:var(--muted);background:var(--paper)}
+.ops button:hover{border-color:var(--acc);background:var(--acc-soft)}
+.ops button.sel{background:var(--acc);border-color:var(--acc);color:#fff}
+.ops button:focus-visible{outline:3px solid var(--oro);outline-offset:2px}
+
+.pie-acc{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-top:14px}
+.pie-acc .ayuda{color:var(--muted);font-size:14.5px}
+.fin{display:none;background:var(--acc-soft);border:1px solid #BFE5E9;border-left:6px solid var(--acc);border-radius:10px;padding:18px 22px;margin-top:14px;animation:pop .5s ease}
+.fin.ver{display:block}
+.fin b{display:block;font-family:var(--serif);font-size:clamp(24px,3vw,32px);color:var(--acc-d)}
+.fin span{color:#2E4A52;font-size:18px}
+.pie{text-align:center;color:var(--muted);font-size:13px;margin-top:22px}
+
+@media (max-width:700px){
+  html,body{font-size:16.5px}
+  .ren{grid-template-columns:44px 1fr;padding:12px 14px}
+  .ren .res{grid-column:2;justify-self:start}
+  .ren.actual{grid-template-columns:44px 1fr}
+  .ops{grid-column:1 / -1;grid-template-columns:1fr}
+  .ops button kbd{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <img src="img/icadep-escudo.png" alt="ICADEP" onerror="this.style.display='none'">
+    <small>Curso Excel Avanzado<br>Cierre del curso</small>
+  </div>
+
+  <!-- Inicio -->
+  <section id="inicio">
+    <div class="hero">
+      <small>Autoevaluación final · En vivo</small>
+      <h1>Autoevaluación en pantalla.</h1>
+      <p>El participante responde en voz alta cada criterio y se va marcando aquí, renglón por renglón, frente a todo el grupo.</p>
+    </div>
+    <div class="caja">
+      <label for="nombre">Nombre del participante</label>
+      <input type="text" id="nombre" autocomplete="off" placeholder="Ej.: María Rodríguez Peña" maxlength="80">
+      <div class="fila">
+        <span class="err" id="err" aria-live="polite"></span>
+        <button class="btn" id="comenzar">Comenzar autoevaluación</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tablero -->
+  <section id="tablero">
+    <div class="cab">
+      <div><small>Autoevaluación final del curso</small><h1 id="tNom"></h1></div>
+      <div class="prog"><span id="tProg">Criterio 1 de 8</span><div class="barra"><i id="tBarra"></i></div></div>
+    </div>
+    <div class="tabla" id="renglones"></div>
+    <div class="fin" id="fin" aria-live="polite"><b>Autoevaluación completada.</b><span>Gracias por su honestidad. Puede tocar cualquier renglón si desea corregir una respuesta.</span></div>
+    <div class="pie-acc">
+      <span class="ayuda">Teclas: <strong>1</strong> Sí, siempre · <strong>2</strong> A veces · <strong>3</strong> Casi nunca · <strong>Retroceso</strong> volver al renglón anterior</span>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn claro" id="atras">Renglón anterior</button>
+        <button class="btn" id="siguiente">Siguiente participante</button>
+      </div>
+    </div>
+  </section>
+
+  <p class="pie">Creado por: Jarlin Figueroa, M.A.</p>
+</div>
+
+<script>
+const CRIT = [
+  {t:"Puntualidad", q:"¿Me conecté a la hora de inicio y me quedé hasta el final de cada clase?"},
+  {t:"Asistencia", q:"¿Estuve presente en las clases del curso? Si falté, ¿vi la grabación?"},
+  {t:"Participación", q:"¿Hice preguntas, aportes y comentarios durante las clases?"},
+  {t:"Entrega puntual de actividades", q:"¿Entregué las prácticas y tareas dentro de la fecha límite?"},
+  {t:"Entrega de actividades durante la clase", q:"Cuando el facilitador asignó una actividad para realizar en clase, ¿la terminé y la entregué antes de que finalizara la clase, sin dejarla para después?"},
+  {t:"Trabajo en equipo", q:"¿Colaboré en las actividades grupales y exposiciones, y apoyé a mis compañeros?"},
+  {t:"Uso de los recursos", q:"¿Revisé los videos, manuales, presentaciones y prácticas guiadas de cada módulo?"},
+  {t:"Actitud y respeto", q:"¿Mantuve una actitud positiva, escuché con atención y respeté los turnos de palabra?"}
+];
+const OPS = ["Sí, siempre", "A veces", "Casi nunca"];
+const $ = id => document.getElementById(id);
+let resp = [], actual = 0;
+
+function esc(s){ return s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function pintar(){
+  const total = CRIT.length, hechos = resp.filter(r => r !== null).length;
+  $("renglones").innerHTML = CRIT.map((c, i) => {
+    const r = resp[i];
+    if (i === actual) {
+      return `<div class="ren actual" id="ren-${i}">
+        <div class="n">${i + 1}</div>
+        <div><h3>${c.t}</h3><p>${c.q}</p></div>
+        <div class="ops" role="group" aria-label="${c.t}">
+          ${OPS.map((o, k) => `<button data-op="${k}" class="${r === k ? "sel" : ""}">${o}<kbd>${k + 1}</kbd></button>`).join("")}
+        </div></div>`;
+    }
+    const cls = r !== null ? "hecho" : "pend";
+    return `<div class="ren ${cls}" data-ir="${i}" ${r !== null ? 'tabindex="0" title="Tocar para corregir"' : ""}>
+      <div class="n">${i + 1}</div>
+      <div><h3>${c.t}</h3></div>
+      <div class="res">${r !== null ? OPS[r] : "—"}</div></div>`;
+  }).join("");
+  const enCurso = actual < total;
+  $("tProg").textContent = enCurso ? `Criterio ${actual + 1} de ${total}` : `${total} de ${total} criterios`;
+  $("tBarra").style.width = (hechos / total * 100) + "%";
+  $("fin").classList.toggle("ver", hechos === total && !enCurso);
+  $("atras").disabled = actual === 0;
+  const el = $("ren-" + actual);
+  if (el) { el.scrollIntoView({behavior:"smooth", block:"center"}); const b = el.querySelector("button.sel") || el.querySelector("button"); b && b.focus({preventScroll:true}); }
+}
+
+function responder(k){
+  if (actual >= CRIT.length) return;
+  resp[actual] = k;
+  // siguiente renglón sin responder
+  let sig = resp.findIndex((r, i) => r === null && i > actual);
+  if (sig === -1) sig = resp.findIndex(r => r === null);
+  actual = sig === -1 ? CRIT.length : sig;
+  pintar();
+}
+
+$("renglones").addEventListener("click", e => {
+  const b = e.target.closest("button[data-op]");
+  if (b) { responder(+b.dataset.op); return; }
+  const r = e.target.closest(".ren.hecho");
+  if (r) { actual = +r.dataset.ir; pintar(); }
+});
+$("renglones").addEventListener("keydown", e => {
+  const r = e.target.closest(".ren.hecho");
+  if (r && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); actual = +r.dataset.ir; pintar(); }
+});
+
+function iniciar(){
+  const nom = $("nombre").value.trim();
+  if (nom.length < 3) { $("err").textContent = "Escriba el nombre del participante."; $("nombre").focus(); return; }
+  $("err").textContent = "";
+  $("tNom").textContent = nom;
+  resp = CRIT.map(() => null); actual = 0;
+  $("inicio").style.display = "none";
+  $("tablero").style.display = "block";
+  window.scrollTo({top:0});
+  pintar();
+}
+$("comenzar").onclick = iniciar;
+$("nombre").addEventListener("keydown", e => { if (e.key === "Enter") iniciar(); });
+
+$("atras").onclick = () => { if (actual > 0) { actual--; pintar(); } };
+$("siguiente").onclick = () => {
+  const faltan = resp.filter(r => r === null).length;
+  if (faltan && !confirm(`Faltan ${faltan} criterio${faltan > 1 ? "s" : ""}. ¿Pasar al siguiente participante?`)) return;
+  $("tablero").style.display = "none";
+  $("inicio").style.display = "block";
+  $("nombre").value = ""; $("nombre").focus();
+  window.scrollTo({top:0});
+};
+
+document.addEventListener("keydown", e => {
+  if ($("tablero").style.display !== "block" || e.target.tagName === "INPUT") return;
+  if (["1","2","3"].includes(e.key)) { e.preventDefault(); responder(+e.key - 1); }
+  else if (e.key === "Backspace") { e.preventDefault(); if (actual > 0) { actual--; pintar(); } }
+});
+$("nombre").focus();
+</script>
+</body>
+</html>
