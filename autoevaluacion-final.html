@@ -50,6 +50,15 @@ textarea{min-height:92px;resize:vertical}
 .acciones{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px}
 .aviso{border-left:4px solid var(--neg);background:var(--neg-soft);border-radius:6px;padding:10px 14px;margin:10px 0 0;font-size:15px;display:none}
 .aviso.ver{display:block}
+#buscar{margin-bottom:12px}
+.nombres{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;padding:2px}
+.nombres button{font:600 16px var(--sans);text-align:left;padding:13px 14px;border:1.5px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink);cursor:pointer;transition:all .15s}
+.nombres button:hover{border-color:var(--acc);background:#fff}
+.nombres button.sel{background:var(--acc);border-color:var(--acc);color:#fff}
+.nombres button:focus-visible{outline:3px solid var(--oro);outline-offset:2px}
+.nombres .mini{color:var(--muted);font-size:14.5px;margin:4px 0}
+.otro{margin-top:14px;color:var(--muted);font-size:15px}
+.otro summary{cursor:pointer;margin-bottom:8px}
 /* Tarjeta de resultado */
 #resultado{display:none}
 .tarjeta{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;max-width:640px;margin:0 auto}
@@ -94,9 +103,15 @@ textarea{min-height:92px;resize:vertical}
     </div>
 
     <div class="sec">
-      <h2>1. Sus datos.</h2>
-      <label class="campo" for="nombre">Nombre completo</label>
-      <input type="text" id="nombre" autocomplete="name" placeholder="Ej.: María Rodríguez Peña" maxlength="80">
+      <h2>1. Busque su nombre.</h2>
+      <p class="ayuda">Escriba parte de su nombre y tóquelo en la lista.</p>
+      <input type="text" id="buscar" autocomplete="off" placeholder="Escriba para buscar su nombre…" aria-label="Buscar su nombre">
+      <div class="nombres" id="nombres" role="listbox" aria-label="Participantes"></div>
+      <details class="otro" id="otroBox">
+        <summary>Mi nombre no aparece en la lista</summary>
+        <input type="text" id="otroNom" autocomplete="name" placeholder="Escriba su nombre completo" maxlength="80">
+      </details>
+      <input type="hidden" id="nombre">
     </div>
 
     <div class="sec">
@@ -220,7 +235,7 @@ $("generar").onclick = () => {
   const {r, tot, faltan} = actualizar();
   const nom = $("nombre").value.trim(), r1 = $("r1").value.trim(), r2 = $("r2").value.trim();
   const errores = [];
-  if (nom.split(/\s+/).length < 2) errores.push("Escriba su <strong>nombre completo</strong> (nombre y apellido).");
+  if (nom.split(/\s+/).length < 2) errores.push("Busque y <strong>toque su nombre</strong> en la lista (o escriba su nombre y apellido en «Mi nombre no aparece»).");
   if (faltan) { errores.push(`Elija una opción en ${faltan === 1 ? "el criterio marcado" : "los " + faltan + " criterios marcados"} en rojo.`); CRIT.forEach(c => { if (r[c.id] === null) $("c-" + c.id).classList.add("falta"); }); }
   if (r1.length < 10 || r2.length < 10) errores.push("Responda las <strong>dos preguntas de reflexión</strong>.");
   const av = $("aviso");
@@ -251,7 +266,37 @@ $("descargar").onclick = async () => {
   } catch(e) { alert("No se pudo crear la imagen. Tome una captura de pantalla de la tarjeta."); }
   b.disabled = false; b.textContent = "Descargar imagen";
 };
+/* Lista de participantes con búsqueda */
+const PARTICIPANTES = [
+  "Adriana García Hidalgo", "Alenny Tejeda Montero", "Ángel Rodolfo Mariano Ventura",
+  "Crispatri Albenia Borbón Silva", "Hector José Donastorg Vásquez", "Jorge Antonio Suazo Bello",
+  "Katherine Suriel", "Katherinne Liliana Paulino Rosario", "Rachell Gómez",
+  "Winnifer Valdez Medina", "Yasmiry Mejía Núñez"
+];
+const sinTildes = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const escH = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function pintarNombres(){
+  const q = sinTildes($("buscar").value.trim()), elegido = $("nombre").value;
+  const lista = PARTICIPANTES.filter(n => !q || sinTildes(n).includes(q));
+  $("nombres").innerHTML = lista.length
+    ? lista.map(n => `<button type="button" role="option" aria-selected="${n === elegido}" class="${n === elegido ? "sel" : ""}" data-n="${escH(n)}">${escH(n)}</button>`).join("")
+    : `<p class="mini">No hay coincidencias. Revise lo escrito o use «Mi nombre no aparece».</p>`;
+}
+function elegir(n){ $("nombre").value = n; guardar(); pintarNombres(); }
+$("buscar").addEventListener("input", () => {
+  const q = sinTildes($("buscar").value.trim());
+  const m = PARTICIPANTES.filter(n => q && sinTildes(n).includes(q));
+  if (m.length === 1) { $("otroNom").value = ""; elegir(m[0]); } else pintarNombres();
+});
+$("nombres").addEventListener("click", e => {
+  const b = e.target.closest("button[data-n]"); if (!b) return;
+  $("otroNom").value = ""; elegir(b.dataset.n);
+});
+$("otroNom").addEventListener("input", () => elegir($("otroNom").value.trim()));
+
 cargar(); actualizar();
+if ($("nombre").value && !PARTICIPANTES.includes($("nombre").value)) { $("otroNom").value = $("nombre").value; $("otroBox").open = true; }
+pintarNombres();
 </script>
 </body>
 </html>
