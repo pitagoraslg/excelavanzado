@@ -112,7 +112,7 @@ html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans
   </div>
 
   <div class="grid" id="grid">
-    <div class="vacio"><b>Esperando a los participantes.</b>Cada participante aparecerá aquí en cuanto elija su nombre y pulse «Entrar» en:<br><a href="autoevaluacion-final.html" id="enlace">autoevaluacion-final.html</a></div>
+    <div class="vacio"><b>Esperando a los participantes.</b>Cada participante aparecerá aquí en cuanto elija su nombre y pulse «Entrar» en:<br><a href="autoevaluacion-final-envivo.html" id="enlace">autoevaluacion-final-envivo.html</a></div>
   </div>
 
   <div class="pie">
@@ -163,7 +163,7 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let previo = {}, iniciado = false, ultimo = null;
 
-$("enlace").href = $("enlace").textContent = new URL("autoevaluacion-final.html", location.href).href;
+$("enlace").href = $("enlace").textContent = new URL("autoevaluacion-final-envivo.html", location.href).href;
 const VACIO = $("grid").innerHTML;
 
 function render(data){
