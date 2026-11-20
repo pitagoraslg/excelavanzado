@@ -87,6 +87,19 @@ header h1 svg{width:36px;height:36px}
 #ban h2{font-size:clamp(34px,5.4vw,80px);margin-top:14px;color:var(--gold);text-shadow:0 4px 0 #0008}
 #ban p{font:600 clamp(18px,2.2vw,30px) "Space Grotesk";margin:6px 0 0}
 #fx{position:fixed;inset:0;z-index:45;pointer-events:none;width:100vw;height:100vh}
+#rf{position:fixed;inset:0;z-index:30;background:radial-gradient(ellipse at 50% 110%,#1f4c86,#0a1530 70%);display:none;overflow:auto;text-align:center;padding:40px 4vw}
+#rf.on{display:block}
+.pod{display:grid;grid-template-columns:repeat(3,minmax(0,240px));justify-content:center;align-items:end;gap:16px}
+.pc{display:flex;flex-direction:column;align-items:center;gap:6px}
+.pn{font:700 clamp(18px,2.2vw,28px) 'Space Grotesk';text-align:center}
+.pt{color:var(--gold);font:600 18px Inter}
+.ped{width:100%;border-radius:14px 14px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:12px;font-size:44px;animation:rise .9s cubic-bezier(.3,1.4,.5,1)}
+.ped b{font:700 40px 'Space Grotesk';color:#2b1d02}
+.ped.p0{background:linear-gradient(#ffe29a,#f0c24b)}.ped.p1{background:linear-gradient(#e6edf5,#aab8c8)}.ped.p2{background:linear-gradient(#f3c39f,#c98a5a)}
+@keyframes rise{from{transform:scaleY(0);transform-origin:bottom}}
+.rest{max-width:640px;margin:22px auto 0;text-align:left}
+.rest div{display:flex;justify-content:space-between;padding:8px 14px;border-top:1px solid var(--line);font:600 19px 'Space Grotesk'}
+.rest div span:last-child{color:var(--gold)}
 dialog{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:18px;padding:24px;max-width:440px}
 dialog::backdrop{background:#000a}
 @media(max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}.pano{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.pk{padding:8px 4px}.pk h3{font-size:12px}.pk .c{font-size:18px}}
@@ -108,6 +121,7 @@ dialog::backdrop{background:#000a}
   <button class="btn go" id="bIni">▶ Iniciar</button>
   <button class="btn sec" id="bPau" hidden>⏸ Pausar</button>
   <button class="btn sec" id="bRes">↺ Reiniciar</button>
+  <button class="btn sec" id="bFin">🏆 Ranking final</button>
   <button class="ib" id="snd" aria-label="Silenciar">♪</button>
   <button class="ib" id="fs" aria-label="Pantalla completa">⛶</button>
 </header>
@@ -121,6 +135,7 @@ dialog::backdrop{background:#000a}
       <div class="n" id="nJ">0</div><div style="color:var(--mute);margin-top:-6px">estudiantes conectados</div>
     </div>
     <div class="card" id="podio" hidden></div>
+    <p style="color:var(--mute);font-size:14px;text-align:center;margin:0">Juego creado por: Jarlin Figueroa M.A.</p>
   </aside>
   <section>
     <div class="pano" id="pano"></div>
@@ -129,6 +144,7 @@ dialog::backdrop{background:#000a}
 </div>
 
 <div id="ban" aria-live="polite"><div class="in"><svg viewBox="0 0 96 112" aria-hidden="true"><path class="sh" d="M24 54V36a24 24 0 0 1 48 0v18"/><rect class="bd" x="8" y="50" width="80" height="58" rx="14"/><rect x="14" y="56" width="68" height="8" rx="4" fill="#fff" opacity=".22"/><circle cx="48" cy="80" r="14" fill="#2a3a52" stroke="#c3cfdf" stroke-width="3"/><text id="banN" x="48" y="86" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="17" fill="#f0c24b">1</text></svg><h2 id="banT"></h2><p id="banP"></p></div></div>
+<div id="rf"><button class="ib" id="rfX" aria-label="Cerrar" style="position:absolute;top:16px;right:16px">✕</button><div id="rfIn"></div></div>
 <canvas id="fx"></canvas>
 <dialog id="dlg"><h3 style="font-size:22px">¿Reiniciar el juego?</h3><p style="color:var(--mute)">Se abre una sala nueva: todos los estudiantes vuelven a la sala de espera con el avance en cero. El ranking actual deja de mostrarse.</p><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sec" id="dNo">Cancelar</button><button class="btn" id="dSi">Sí, reiniciar</button></div></dialog>
 
@@ -213,8 +229,16 @@ function pintar(){const L=lista();$('#nJ').textContent=L.length;
   const ini=E.inicio||now(),med=['🥇','🥈','🥉'];
   m.innerHTML=`<div class="sec-t"><h2>Ranking en vivo</h2><span style="color:var(--mute)">${L.filter(j=>j.fin).length} abrieron la bóveda</span></div>
    <div class="rk">${L.map((j,i)=>{const t=j.fin||j.t;return `<div class="pl ${j.fin?'fin':''}" id="p_${j.id}"><div class="pos">${(j.a||0)>0&&i<3?med[i]:i+1}</div><div><div class="nm">${j.fin?'👑 ':''}${esc(j.n)}</div><div class="lks">${Array.from({length:NC},(_,k)=>`<i class="${k<(j.a||0)?'o':''}"></i>`).join('')}</div></div><div class="tm">${j.a||0}/5<br>${t?clock(t-ini):'—'}</div></div>`}).join('')||'<p class="empty">Nadie conectado.</p>'}</div>`;
-  const F=L.filter(j=>j.fin).sort((a,b)=>a.fin-b.fin).slice(0,3);const pd=$('#podio');pd.hidden=!F.length;
-  pd.innerHTML=`<h3 style="font-size:20px;margin-bottom:8px">🏆 Bóveda abierta</h3>${F.map((j,i)=>`<div style="display:flex;justify-content:space-between;gap:8px;font:600 17px 'Space Grotesk';padding:6px 0;border-top:1px solid var(--line)"><span>${med[i]} ${esc(j.n)}</span><span style="color:var(--gold)">${clock(j.fin-ini)}</span></div>`).join('')}`}
+  const F=L.filter(j=>j.fin).sort((a,b)=>a.fin-b.fin);const pd=$('#podio');pd.hidden=!F.length;pintarFinal(L,F,ini);
+  pd.innerHTML=`<h3 style="font-size:20px;margin-bottom:8px">🏁 Orden de llegada</h3><div style="max-height:46vh;overflow:auto">${F.map((j,i)=>`<div style="display:flex;justify-content:space-between;gap:8px;font:600 17px 'Space Grotesk';padding:6px 0;border-top:1px solid var(--line)"><span>${i<3?med[i]:(i+1)+'.'} ${esc(j.n)}</span><span style="color:var(--gold)">${clock(j.fin-ini)}</span></div>`).join('')}</div>`}
+function pintarFinal(L,F,ini){const o=$('#rf');if(!o.classList.contains('on'))return;const med=['🥇','🥈','🥉'],h=[150,200,115],ord=[1,0,2];
+  const R=L.filter(j=>!j.fin);
+  $('#rfIn').innerHTML=`<h2 style="font-size:clamp(34px,4.6vw,60px);color:var(--gold)">🏆 Ranking final</h2><p style="color:var(--mute);font-size:20px;margin:6px 0 24px">Orden en que abrieron la bóveda</p>
+   <div class="pod">${ord.map(i=>F[i]?`<div class="pc"><div class="pn">${esc(F[i].n)}</div><div class="pt">${clock(F[i].fin-ini)}</div><div class="ped p${i}" style="height:${h[i]}px">${med[i]}<b>${i+1}</b></div></div>`:'<div class="pc"></div>').join('')}</div>
+   ${F.length>3?`<div class="rest">${F.slice(3).map((j,k)=>`<div><span>${k+4}. ${esc(j.n)}</span><span>${clock(j.fin-ini)}</span></div>`).join('')}</div>`:''}
+   ${!F.length?'<p style="font-size:22px">Todavía nadie ha abierto la bóveda.</p>':''}
+   ${R.length?`<p style="color:var(--mute);margin:18px 0 6px">Aún jugando:</p><div class="chips" style="margin-top:0">${R.map(j=>`<span style="font-size:15px">${esc(j.n)} · ${j.a||0}/5</span>`).join('')}</div>`:''}
+   <p style="color:var(--mute);margin-top:22px">Juego creado por: Jarlin Figueroa M.A.</p>`}
 setInterval(()=>{$('#clk').textContent=E.iniciado&&E.inicio?clock(now()-E.inicio):'0:00'},500);
 
 /* datos */
@@ -232,6 +256,7 @@ addEventListener('fb-error',()=>{$('#st').textContent='Sin conexión: recarga la
 const sv=()=>firebase.database.ServerValue.TIMESTAMP;
 $('#bIni').onclick=()=>{if(!window.DBR)return;ac();const u={iniciado:true,pausa:false};if(!E.inicio)u.inicio=sv();DBR.ref(`${ROOT}/estado`).update(u);if(!E.iniciado){S.start();confetti(90)}};
 $('#bPau').onclick=()=>{if(window.DBR)DBR.ref(`${ROOT}/estado`).update({pausa:true})};
+$('#bFin').onclick=()=>{const o=$('#rf');o.classList.add('on');pintar();if(lista().some(j=>j.fin)){S.fan();confetti()}};$('#rfX').onclick=()=>$('#rf').classList.remove('on');
 $('#bRes').onclick=()=>$('#dlg').showModal();$('#dNo').onclick=()=>$('#dlg').close();
 $('#dSi').onclick=()=>{$('#dlg').close();if(window.DBR)DBR.ref(`${ROOT}/estado`).set({ronda:'r'+Date.now(),iniciado:false,pausa:false})};
 pintar();
