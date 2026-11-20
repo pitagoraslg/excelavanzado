@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Bóveda: pantalla del profesor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--night:#0a1530;--card:#15284c;--card2:#1b3260;--line:#2f4a7a;--ink:#f3f7fc;--mute:#bccbe0;--acc:#e8875f;--mint:#5fe0b0;--gold:#f0c24b;--no:#ef6b55;--sky:#8cc0f0}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(ellipse at 50% 120%,#1f4c86 0%,#132a55 40%,#0a1530 75%) fixed;color:var(--ink);font:17px/1.5 Inter,system-ui,sans-serif;overflow-x:hidden}
+h1,h2,h3{font-family:"Space Grotesk",Arial,sans-serif;line-height:1.1;margin:0}
+button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.btn{font:700 16px Inter;min-height:46px;padding:0 18px;border-radius:12px;border:0;background:var(--acc);color:#1a0f08;cursor:pointer;box-shadow:0 5px 0 #a65232}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #a65232}
+.btn.sec{background:var(--card2);color:var(--ink);border:1px solid var(--line);box-shadow:0 5px 0 #0d1a33}
+.btn.go{background:var(--mint);box-shadow:0 5px 0 #2a9c74}
+.btn[hidden]{display:none}
+.inp{font:20px Inter;min-height:54px;padding:0 16px;border-radius:12px;border:2px solid var(--line);background:#0d1c3a;color:var(--ink);text-align:center;letter-spacing:.3em;width:200px}
+/* gate */
+#gate{position:fixed;inset:0;display:grid;place-items:center;z-index:50;background:var(--night)}
+#gate .box{text-align:center;padding:30px;max-width:420px}
+/* top */
+header{display:flex;gap:12px;align-items:center;padding:12px 2.4vw;border-bottom:1px solid var(--line);background:#0a1530d9;position:sticky;top:0;z-index:10;flex-wrap:wrap}
+header h1{font-size:clamp(20px,2vw,28px);flex:1;display:flex;gap:10px;align-items:center}
+header h1 svg{width:36px;height:36px}
+.pill{font:700 14px Inter;border-radius:20px;padding:6px 14px;background:var(--card2);border:1px solid var(--line)}
+.pill.live{background:#163a2a;border-color:var(--mint);color:var(--mint)}.pill.pause{background:#3a2f12;border-color:var(--gold);color:var(--gold)}
+.clock{font:700 clamp(22px,2.2vw,32px) "Space Grotesk";min-width:96px;text-align:center}
+.ib{min-width:46px;min-height:46px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;font-size:18px}
+/* layout */
+.wrap{display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr);gap:22px;padding:20px 2.4vw 30px}
+.card{background:#15284ccc;border:1px solid var(--line);border-radius:18px;padding:18px}
+.join{text-align:center}
+.join .qr{background:#fff;border-radius:14px;padding:10px;display:inline-block;margin:10px 0}
+.join .qr svg,.join .qr img{display:block;width:min(100%,230px);height:auto}
+.join .url{font:600 13px Inter;color:var(--sky);word-break:break-all}
+.join .n{font:700 46px "Space Grotesk";color:var(--gold)}
+/* panorama de candados */
+.pano{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.pk{background:#15284ccc;border:1px solid var(--line);border-radius:18px;padding:14px 10px;text-align:center;position:relative;overflow:hidden}
+.pk svg{width:min(100%,120px);height:auto;overflow:visible;filter:drop-shadow(0 8px 10px #0008)}
+.pk .sh{fill:none;stroke:#c3cfdf;stroke-width:8;stroke-linecap:round;transform-box:view-box;transform-origin:48px 40px;transition:transform .7s cubic-bezier(.3,1.8,.5,1)}
+.pk.all .sh{transform:translateY(-10px) rotate(28deg);stroke:#ffe29a}
+.pk .lv{transition:y .8s,height .8s}
+.pk h3{font-size:16px;margin-top:6px}
+.pk .c{font:700 26px "Space Grotesk";color:var(--gold)}
+.pk small{color:var(--mute);font-size:13px}
+.pk.hit{animation:hit .8s}
+@keyframes hit{30%{transform:scale(1.07);box-shadow:0 0 0 4px var(--gold)}}
+/* ranking */
+.rk{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.pl{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;transition:transform .4s}
+.pl.fin{border-color:var(--gold);background:linear-gradient(120deg,#2a2410,#15284c)}
+.pl.flash{animation:hit .9s}
+.pl .pos{font:700 22px "Space Grotesk";text-align:center;color:var(--mute)}
+.pl .nm{font:600 17px "Space Grotesk";white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl .lks{display:flex;gap:4px;margin-top:12px}
+.pl .lks i{width:22px;height:26px;border-radius:5px 5px 6px 6px;background:#3b4d6a;position:relative;font-style:normal}
+.pl .lks i::before{content:"";position:absolute;left:5px;right:5px;top:-7px;height:10px;border:3px solid #7d8ea7;border-bottom:0;border-radius:8px 8px 0 0}
+.pl .lks i.o{background:var(--gold)}.pl .lks i.o::before{border-color:#ffe29a;transform:translate(4px,-4px) rotate(18deg)}
+.pl .tm{font:600 14px Inter;color:var(--mute);text-align:right;white-space:nowrap}
+.sec-t{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 12px}
+.sec-t h2{font-size:24px}
+/* espera */
+.waitbig{text-align:center;padding:20px 10px}
+.waitbig h2{font-size:clamp(30px,4vw,52px)}
+.waitbig .wheel{width:150px;height:150px;animation:spin 8s linear infinite;margin:0 auto 12px;display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
+.chips span{background:var(--card2);border:1px solid var(--line);border-radius:22px;padding:8px 16px;font:600 18px "Space Grotesk";animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(.2);opacity:0}}
+.empty{color:var(--mute);text-align:center;padding:30px}
+/* banner */
+#ban{position:fixed;inset:0;z-index:40;display:grid;place-items:center;pointer-events:none;background:#0a1530b0;opacity:0;transition:opacity .3s}
+#ban.on{opacity:1}
+#ban .in{text-align:center;transform:scale(.6);transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
+#ban.on .in{transform:none}
+#ban svg{width:min(40vw,240px);height:auto;overflow:visible;filter:drop-shadow(0 20px 30px #000a)}
+#ban .sh{fill:none;stroke:#c3cfdf;stroke-width:8;stroke-linecap:round;transform-box:view-box;transform-origin:48px 40px;transition:transform .7s cubic-bezier(.3,1.8,.5,1) .35s,stroke .3s .35s}
+#ban .bd{fill:#7d8ea7;stroke:#4c5c76;stroke-width:2;transition:fill .3s .35s}
+#ban.open .sh{transform:translateY(-10px) rotate(28deg);stroke:#ffe29a}
+#ban.open .bd{fill:var(--gold)}
+#ban h2{font-size:clamp(34px,5.4vw,80px);margin-top:14px;color:var(--gold);text-shadow:0 4px 0 #0008}
+#ban p{font:600 clamp(18px,2.2vw,30px) "Space Grotesk";margin:6px 0 0}
+#fx{position:fixed;inset:0;z-index:45;pointer-events:none;width:100vw;height:100vh}
+dialog{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:18px;padding:24px;max-width:440px}
+dialog::backdrop{background:#000a}
+@media(max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}.pano{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.pk{padding:8px 4px}.pk h3{font-size:12px}.pk .c{font-size:18px}}
+</style>
+</head>
+<body>
+<div id="gate"><div class="box">
+  <h2 style="font-size:30px">🔐 La Bóveda de la Nube</h2>
+  <p style="color:var(--mute)">Pantalla del profesor. Escribe la clave para entrar.</p>
+  <input class="inp" id="clave" type="password" inputmode="numeric" maxlength="8" aria-label="Clave">
+  <div style="margin-top:14px"><button class="btn" id="gIn">Entrar</button></div>
+  <p id="gW" style="color:#ffb3a5;min-height:1.4em;font-weight:600"></p>
+</div></div>
+
+<header>
+  <h1><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="#3b5274" stroke="#9fb1c8" stroke-width="3"/><circle cx="20" cy="20" r="6" fill="none" stroke="#f0c24b" stroke-width="3"/><path d="M20 8v6M20 26v6M8 20h6M26 20h6" stroke="#f0c24b" stroke-width="3" stroke-linecap="round"/></svg>La Bóveda de la Nube</h1>
+  <span class="pill" id="st">Conectando…</span>
+  <span class="clock" id="clk">0:00</span>
+  <button class="btn go" id="bIni">▶ Iniciar</button>
+  <button class="btn sec" id="bPau" hidden>⏸ Pausar</button>
+  <button class="btn sec" id="bRes">↺ Reiniciar</button>
+  <button class="ib" id="snd" aria-label="Silenciar">♪</button>
+  <button class="ib" id="fs" aria-label="Pantalla completa">⛶</button>
+</header>
+
+<div class="wrap">
+  <aside style="display:grid;gap:16px;align-content:start">
+    <div class="card join">
+      <h3 style="font-size:20px">Entra al juego</h3>
+      <div class="qr" id="qr"></div>
+      <div class="url" id="url"></div>
+      <div class="n" id="nJ">0</div><div style="color:var(--mute);margin-top:-6px">estudiantes conectados</div>
+    </div>
+    <div class="card" id="podio" hidden></div>
+  </aside>
+  <section>
+    <div class="pano" id="pano"></div>
+    <div id="main"></div>
+  </section>
+</div>
+
+<div id="ban" aria-live="polite"><div class="in"><svg viewBox="0 0 96 112" aria-hidden="true"><path class="sh" d="M24 54V36a24 24 0 0 1 48 0v18"/><rect class="bd" x="8" y="50" width="80" height="58" rx="14"/><rect x="14" y="56" width="68" height="8" rx="4" fill="#fff" opacity=".22"/><circle cx="48" cy="80" r="14" fill="#2a3a52" stroke="#c3cfdf" stroke-width="3"/><text id="banN" x="48" y="86" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="17" fill="#f0c24b">1</text></svg><h2 id="banT"></h2><p id="banP"></p></div></div>
+<canvas id="fx"></canvas>
+<dialog id="dlg"><h3 style="font-size:22px">¿Reiniciar el juego?</h3><p style="color:var(--mute)">Se abre una sala nueva: todos los estudiantes vuelven a la sala de espera con el avance en cero. El ranking actual deja de mostrarse.</p><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sec" id="dNo">Cancelar</button><button class="btn" id="dSi">Sí, reiniciar</button></div></dialog>
+
+<script>
+(function(){
+  var cfg = { apiKey:"AIzaSyCLrT88lr0by0elfhI6bwdbgFN3u3ORCDI", authDomain:"excel-avanzado-icadep.firebaseapp.com", databaseURL:"https://excel-avanzado-icadep-default-rtdb.firebaseio.com",
+    projectId:"excel-avanzado-icadep", storageBucket:"excel-avanzado-icadep.firebasestorage.app", messagingSenderId:"391674719896", appId:"1:391674719896:web:738cc75c1d9720dd7caaed" };
+  var APP = ["https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js","https://cdnjs.cloudflare.com/ajax/libs/firebase/10.13.2/firebase-app-compat.min.js"];
+  var DB = ["https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js","https://cdnjs.cloudflare.com/ajax/libs/firebase/10.13.2/firebase-database-compat.min.js"];
+  function load(src){return new Promise(function(ok,ko){var s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=ko;document.head.appendChild(s);});}
+  function fb(urls){var i=0;function n(){if(i>=urls.length)return Promise.reject();return load(urls[i++]).catch(n);}return n();}
+  fb(APP).then(function(){return fb(DB);}).then(function(){ firebase.initializeApp(cfg); window.DBR = firebase.database(); window.dispatchEvent(new Event('fb-ready')); })
+    .catch(function(){ window.dispatchEvent(new Event('fb-error')); });
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+'use strict';
+{
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const QS=new URLSearchParams(location.search);
+const ROOT=QS.get('raiz')||'bovedaGHD';
+const CLAVE='1022',NC=5;
+const JG=[['🐍','Serpiente'],['🚀','Nave antispam'],['☁️','Vuelo a la nube'],['🧱','Rompebloques'],['🧰','Memoria']];
+const URLJ=new URL('boveda-de-la-nube.html'+(QS.get('raiz')?'?raiz='+encodeURIComponent(ROOT):''),location.href).href;
+let E={},J={},OFF=0,prev=null,first=true;
+const now=()=>Date.now()+OFF;
+const clock=ms=>{ms=Math.max(0,ms||0);const m=Math.floor(ms/60000),s=Math.floor(ms/1000)%60;return `${m}:${String(s).padStart(2,'0')}`};
+
+/* sonido */
+let AC=null,muted=false;try{muted=localStorage.getItem('ghd-mute-p')==='1'}catch(e){}
+const ac=()=>{if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC};
+const tone=(f,d=.15,type='sine',v=.16,t0=0,f2)=>{const a=ac();if(!a||muted)return;const t=a.currentTime+t0,o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d+.05)};
+const noise=(d,f,v,type,t0=0)=>{const a=ac();if(!a||muted)return;const n=Math.floor(a.sampleRate*d),b=a.createBuffer(1,n,a.sampleRate),c=b.getChannelData(0);for(let i=0;i<n;i++)c[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);const s=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain();s.buffer=b;fl.type=type;fl.frequency.value=f;g.gain.value=v;s.connect(fl).connect(g).connect(a.destination);s.start(a.currentTime+t0)};
+const S={clack:()=>{noise(.08,3500,.5,'highpass',.35);tone(2400,.06,'square',.05,.35);tone(90,.25,'sine',.25,.37,50);[784,988,1175,1568].forEach((f,i)=>tone(f,.3,'sine',.09,.45+i*.08))},
+  fan:()=>{[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,.26,'triangle',.13,i*.11));[262,392,523].forEach(f=>tone(f,1.3,'sine',.05,.8))},
+  join:()=>tone(880,.1,'triangle',.07),start:()=>[392,523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.12,i*.1))};
+const updSnd=()=>{$('#snd').textContent=muted?'✕':'♪'};$('#snd').onclick=()=>{muted=!muted;try{localStorage.setItem('ghd-mute-p',muted?'1':'0')}catch(e){}updSnd()};updSnd();
+$('#fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}catch(e){}};
+
+/* confeti */
+const fx=$('#fx'),fc=fx.getContext('2d');let parts=[],on=false;const fit=()=>{fx.width=innerWidth;fx.height=innerHeight};fit();addEventListener('resize',fit);
+const confetti=(n=200)=>{for(let i=0;i<n;i++)parts.push({x:Math.random()*innerWidth,y:-20-Math.random()*400,vx:(Math.random()-.5)*3,vy:2+Math.random()*3,l:260,c:['#f0c24b','#e8875f','#5fe0b0','#8cc0f0','#d26a8e','#fff'][Math.floor(Math.random()*6)],s:7+Math.random()*7,r:Math.random()*6});if(!on){on=true;requestAnimationFrame(loop)}};
+function loop(){fc.clearRect(0,0,fx.width,fx.height);parts=parts.filter(p=>p.l>0&&p.y<fx.height+30);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.03;p.l--;p.r+=.15;fc.save();fc.translate(p.x,p.y);fc.rotate(p.r);fc.fillStyle=p.c;fc.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);fc.restore()});if(parts.length)requestAnimationFrame(loop);else{on=false;fc.clearRect(0,0,fx.width,fx.height)}}
+
+/* clave */
+const entrar=()=>{if($('#clave').value.trim()===CLAVE){try{sessionStorage.setItem('bovedaP','1')}catch(e){}$('#gate').remove();ac();S.join()}else{$('#gW').textContent='Clave incorrecta.'}};
+$('#gIn').onclick=entrar;$('#clave').addEventListener('keydown',e=>{if(e.key==='Enter')entrar()});
+try{if(sessionStorage.getItem('bovedaP')==='1')$('#gate').remove()}catch(e){}
+addEventListener('pointerdown',()=>ac(),{once:true});
+
+/* QR */
+$('#url').textContent=URLJ;
+try{const q=qrcode(0,'M');q.addData(URLJ);q.make();$('#qr').innerHTML=q.createSvgTag({cellSize:6,margin:2,scalable:true})}catch(e){$('#qr').hidden=true}
+
+/* panorama */
+const plSVG=k=>`<svg viewBox="0 0 96 112" aria-hidden="true"><defs><clipPath id="cp${k}"><rect x="8" y="50" width="80" height="58" rx="14"/></clipPath></defs><path class="sh" d="M24 54V36a24 24 0 0 1 48 0v18"/><rect x="8" y="50" width="80" height="58" rx="14" fill="#7d8ea7" stroke="#4c5c76" stroke-width="2"/><rect class="lv" id="lv${k}" clip-path="url(#cp${k})" x="8" y="108" width="80" height="0" fill="#f0c24b"/><rect x="14" y="56" width="68" height="8" rx="4" fill="#fff" opacity=".22"/><text x="48" y="90" text-anchor="middle" font-size="26">${JG[k][0]}</text></svg>`;
+$('#pano').innerHTML=JG.map((g,k)=>`<div class="pk" id="pk${k}">${plSVG(k)}<h3>${k+1}. ${g[1]}</h3><div class="c" id="pc${k}">0</div><small>abrieron</small></div>`).join('');
+
+/* banner en cola */
+const cola=[];let banOn=false;
+function anuncio(nom,k,fin){cola.push({nom,k,fin});if(!banOn)sigBan()}
+function sigBan(){const b=cola.shift();const ban=$('#ban');if(!b){banOn=false;return}banOn=true;
+  $('#banN').textContent=b.fin?'★':b.k;ban.classList.remove('open');$('#banT').textContent=b.fin?`¡${b.nom} abrió la bóveda!`:`¡${b.nom}!`;
+  $('#banP').textContent=b.fin?'👑 Abrió los 5 candados':`abrió el candado ${b.k}: ${JG[b.k-1][0]} ${JG[b.k-1][1]}`;
+  ban.classList.add('on');setTimeout(()=>ban.classList.add('open'),50);if(b.fin){S.fan();confetti()}else S.clack();
+  const pk=$('#pk'+(b.k-1));if(pk){pk.classList.remove('hit');void pk.offsetWidth;pk.classList.add('hit')}
+  const dur=cola.length>3?1300:b.fin?3600:2300;setTimeout(()=>{ban.classList.remove('on');setTimeout(sigBan,350)},dur)}
+
+/* pintar */
+function lista(){return Object.entries(J).filter(([,j])=>j&&j.n).map(([id,j])=>({id,...j})).sort((a,b)=>(b.a||0)-(a.a||0)||((a.fin||a.t||9e15)-(b.fin||b.t||9e15))||((a.c||0)-(b.c||0)))}
+function pintar(){const L=lista();$('#nJ').textContent=L.length;
+  for(let k=0;k<NC;k++){const c=L.filter(j=>(j.a||0)>k).length,fr=L.length?c/L.length:0;$('#pc'+k).textContent=L.length?`${c}/${L.length}`:'0';
+    const lv=$('#lv'+k);lv.setAttribute('y',108-58*fr);lv.setAttribute('height',58*fr);$('#pk'+k).classList.toggle('all',L.length>0&&c===L.length)}
+  const st=$('#st');st.className='pill'+(E.iniciado?(E.pausa?' pause':' live'):'');st.textContent=!E.ronda?'Preparando…':E.iniciado?(E.pausa?'En pausa':'En juego'):'Sala de espera';
+  $('#bIni').hidden=!!(E.iniciado&&!E.pausa);$('#bIni').textContent=E.iniciado&&E.pausa?'▶ Continuar':'▶ Iniciar';$('#bPau').hidden=!(E.iniciado&&!E.pausa);
+  const m=$('#main');
+  if(!E.iniciado){m.innerHTML=`<div class="card waitbig"><svg class="wheel" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="#c3cfdf" stroke-width="7"/><g stroke="#c3cfdf" stroke-width="7" stroke-linecap="round"><path d="M50 8v84M8 50h84M20 20l60 60M80 20L20 80"/></g><circle cx="50" cy="50" r="15" fill="#22344f" stroke="#f0c24b" stroke-width="5"/></svg>
+    <h2>Sala de espera</h2><p style="color:var(--mute);font-size:20px;margin:8px 0 0">Escanea el código o abre el enlace y escribe tu nombre y apellido.</p>
+    <div class="chips">${L.length?L.slice().sort((a,b)=>(a.c||0)-(b.c||0)).map(j=>`<span>${esc(j.n)}</span>`).join(''):'<p class="empty">Todavía no ha entrado nadie.</p>'}</div></div>`;$('#podio').hidden=true;return}
+  const ini=E.inicio||now(),med=['🥇','🥈','🥉'];
+  m.innerHTML=`<div class="sec-t"><h2>Ranking en vivo</h2><span style="color:var(--mute)">${L.filter(j=>j.fin).length} abrieron la bóveda</span></div>
+   <div class="rk">${L.map((j,i)=>{const t=j.fin||j.t;return `<div class="pl ${j.fin?'fin':''}" id="p_${j.id}"><div class="pos">${(j.a||0)>0&&i<3?med[i]:i+1}</div><div><div class="nm">${j.fin?'👑 ':''}${esc(j.n)}</div><div class="lks">${Array.from({length:NC},(_,k)=>`<i class="${k<(j.a||0)?'o':''}"></i>`).join('')}</div></div><div class="tm">${j.a||0}/5<br>${t?clock(t-ini):'—'}</div></div>`}).join('')||'<p class="empty">Nadie conectado.</p>'}</div>`;
+  const F=L.filter(j=>j.fin).sort((a,b)=>a.fin-b.fin).slice(0,3);const pd=$('#podio');pd.hidden=!F.length;
+  pd.innerHTML=`<h3 style="font-size:20px;margin-bottom:8px">🏆 Bóveda abierta</h3>${F.map((j,i)=>`<div style="display:flex;justify-content:space-between;gap:8px;font:600 17px 'Space Grotesk';padding:6px 0;border-top:1px solid var(--line)"><span>${med[i]} ${esc(j.n)}</span><span style="color:var(--gold)">${clock(j.fin-ini)}</span></div>`).join('')}`}
+setInterval(()=>{$('#clk').textContent=E.iniciado&&E.inicio?clock(now()-E.inicio):'0:00'},500);
+
+/* datos */
+let jRef=null;
+function escuchar(){if(jRef)jRef.off();J={};prev=null;first=true;if(!E.ronda)return;jRef=DBR.ref(`${ROOT}/jugadores/${E.ronda}`);
+  jRef.on('value',s=>{J=s.val()||{};const P={};Object.entries(J).forEach(([id,j])=>{if(j&&j.n)P[id]=j.a||0});
+    if(prev&&!first){Object.entries(P).forEach(([id,a])=>{const b=prev[id];if(b===undefined){if(!E.iniciado)S.join();return}if(a>b)anuncio(J[id].n,a,a>=NC)})}
+    prev=P;first=false;pintar();
+    })}
+addEventListener('fb-ready',()=>{
+  DBR.ref('.info/serverTimeOffset').on('value',s=>{OFF=s.val()||0});
+  DBR.ref(`${ROOT}/estado`).on('value',s=>{const e=s.val();if(!e||!e.ronda){DBR.ref(`${ROOT}/estado`).set({ronda:'r'+Date.now(),iniciado:false,pausa:false});return}
+    const r=E.ronda;E=e;if(r!==E.ronda)escuchar();pintar()})});
+addEventListener('fb-error',()=>{$('#st').textContent='Sin conexión: recarga la página'});
+const sv=()=>firebase.database.ServerValue.TIMESTAMP;
+$('#bIni').onclick=()=>{if(!window.DBR)return;ac();const u={iniciado:true,pausa:false};if(!E.inicio)u.inicio=sv();DBR.ref(`${ROOT}/estado`).update(u);if(!E.iniciado){S.start();confetti(90)}};
+$('#bPau').onclick=()=>{if(window.DBR)DBR.ref(`${ROOT}/estado`).update({pausa:true})};
+$('#bRes').onclick=()=>$('#dlg').showModal();$('#dNo').onclick=()=>$('#dlg').close();
+$('#dSi').onclick=()=>{$('#dlg').close();if(window.DBR)DBR.ref(`${ROOT}/estado`).set({ronda:'r'+Date.now(),iniciado:false,pausa:false})};
+pintar();
+}
+</script>
+</body>
+</html>
