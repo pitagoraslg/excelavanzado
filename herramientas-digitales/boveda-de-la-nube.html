@@ -129,10 +129,10 @@ main{max-width:1100px;margin:0 auto;padding:22px max(4vw,16px) 40px}
 /* simon */
 .simon{position:relative;width:min(88vw,calc(100dvh - 300px),480px);min-width:260px;aspect-ratio:1;margin:0 auto}
 .simon .core{position:absolute;left:31%;top:31%;width:38%;height:38%;border-radius:50%;background:radial-gradient(circle at 40% 35%,#2b4a80,#12244a);border:3px solid var(--line);display:grid;place-items:center;text-align:center;font:700 clamp(13px,2.2vw,17px) "Space Grotesk";padding:10%}
-.simon .tl{position:absolute;width:23%;aspect-ratio:1;margin:-11.5% 0 0 -11.5%;border-radius:22px;background:#fff;border:4px solid #2f4a7a;display:grid;place-items:center;cursor:pointer;transition:transform .12s,box-shadow .12s,filter .12s;filter:saturate(.55) brightness(.8)}
+.simon .tl{position:absolute;width:18.5%;aspect-ratio:1;margin:-9.25% 0 0 -9.25%;border-radius:18px;background:#fff;border:4px solid #2f4a7a;display:grid;place-items:center;cursor:pointer;transition:transform .12s,box-shadow .12s,filter .12s;filter:saturate(.55) brightness(.8)}
 .simon .tl svg{width:70%;height:auto}
 .simon .tl.on{transform:scale(1.14);filter:none;box-shadow:0 0 0 6px var(--gold),0 0 40px var(--gold)}
-.simon .tl small{position:absolute;bottom:-22px;font:600 12px Inter;color:var(--mute);white-space:nowrap}
+.simon .tl small{position:absolute;bottom:-20px;font:600 11px Inter;color:var(--mute);white-space:nowrap}
 .simon.shake{animation:shk .4s}
 /* candado */
 .lockv{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:30px;align-items:center}
@@ -178,7 +178,7 @@ main{max-width:1100px;margin:0 auto;padding:22px max(4vw,16px) 40px}
 #toast{pointer-events:none;position:fixed;left:50%;bottom:24px;transform:translate(-50%,calc(100% + 40px));z-index:70;background:var(--card2);border:1px solid var(--gold);color:var(--ink);padding:12px 20px;border-radius:14px;font-weight:600;transition:transform .35s;max-width:92vw;text-align:center}
 #toast.on{transform:translate(-50%,0)}
 @media(max-width:820px){.hero,.lockv{grid-template-columns:minmax(0,1fr)}.hero{min-height:0}.hero .vault{width:min(80vw,330px)}.steps{grid-template-columns:repeat(5,minmax(0,1fr))}.steps div{font-size:11px;padding:6px 2px}.steps div b{font-size:12px}}
-@media(max-width:520px){#hRe .lbl,#sndHint .lbl{display:none}header .chip{overflow:hidden;text-overflow:ellipsis;max-width:34vw}.cert{padding-top:64px}.cert .seal{width:72px;height:72px;font-size:10px;right:-6px;top:-12px}header .brand span{display:none}.chip{font-size:12px;padding:3px 8px}.slots b{width:24px;height:30px;font-size:15px}.code b{width:30px;height:40px;font-size:20px}.steps div small{display:none}}
+@media(max-width:520px){.simon .tl .mn{display:none}.simon .tl small{font-size:13px;bottom:-21px}.gtop h2{flex-basis:100%;order:3}#hRe .lbl,#sndHint .lbl{display:none}header .chip{overflow:hidden;text-overflow:ellipsis;max-width:34vw}.cert{padding-top:64px}.cert .seal{width:72px;height:72px;font-size:10px;right:-6px;top:-12px}header .brand span{display:none}.chip{font-size:12px;padding:3px 8px}.slots b{width:24px;height:30px;font-size:15px}.code b{width:30px;height:40px;font-size:20px}.steps div small{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
 </style>
 </head>
@@ -404,7 +404,7 @@ const JG=[
  {nom:'Rompebloques del correo',em:'🧱',corto:'Bloques',code:'BJ0TSJVQ',
   how:'Mueve la barra y rebota la pelota. Rompe los <b>6 bloques naranjas</b>: son las partes del correo y cada uno te da una letra del código. Tienes 3 vidas.'},
  {nom:'Memoria de la caja',em:'🧰',corto:'Memoria',code:'=cTQKF0Q',
-  how:'Mira el orden en que se encienden las herramientas y repítelo tocándolas (o con las teclas 1 a 7). Supera <b>6 rondas</b> para abrir el último candado.'}];
+  how:'Mira el orden en que se encienden las herramientas y repítelo tocándolas (o con las teclas 1 a 9 y 0). Son <b>10 piezas</b> y la secuencia crece en cada ronda: supera <b>9 rondas</b> para abrir el último candado.'}];
 const Q=[
  {q:'¿Qué significa «gestión de herramientas digitales»?',o:['Saber elegir, usar y organizar programas y servicios digitales para estudiar y trabajar mejor','Comprar la computadora más cara que exista','Usar el celular solo para redes sociales','Instalar todos los programas posibles en la computadora'],a:0,
   ex:'Gestionar es elegir, usar y organizar la herramienta correcta para cada tarea.'},
@@ -643,8 +643,11 @@ function mkBloques(api){const W=400,H=560,COLS=5,ROWS=4,BW=(W-40-(COLS-1)*8)/COL
     key(e,d){if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A'){e.preventDefault();kl=d?1:0;tx=null}else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D'){e.preventDefault();kr=d?1:0;tx=null}else if(d&&(e.key===' '||e.key==='ArrowUp')){e.preventDefault();launch()}}}}
 
 /* ===== 5. Memoria de la caja ===== */
-function mkMemoria(api){const ROUNDS=6,F=[262,294,330,392,440,523,587];const box=document.createElement('div');box.className='simon';api.stage.append(box);
-  box.innerHTML=`<div class="core" id="sCore"></div>`+TOOLS.map((t,k)=>{const a=-Math.PI/2+k/7*Math.PI*2;return `<button class="tl" data-k="${k}" style="left:${50+37*Math.cos(a)}%;top:${50+37*Math.sin(a)}%" aria-label="${t[1]} (${k+1})">${I[t[0]]}<small>${k+1} · ${t[1]}</small></button>`}).join('');
+const MEMT=TOOLS.concat([['mail','Correo'],['escudo','Seguridad'],['carpeta','Carpeta']]);
+I.escudo=`<svg viewBox="0 0 48 48"><path d="M24 5l15 6v11c0 10-6.5 17-15 21C15.5 39 9 32 9 22V11z" fill="#fff" stroke="#2f8f6f" stroke-width="2.5"/><path d="M17 24l5 5 9-10" stroke="#2f8f6f" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+I.carpeta=`<svg viewBox="0 0 48 48"><path d="M6 14a3 3 0 0 1 3-3h10l4 4h16a3 3 0 0 1 3 3v17a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3z" fill="#f5d06a" stroke="#c99a2e" stroke-width="2.5"/><path d="M6 20h36" stroke="#c99a2e" stroke-width="2.5"/></svg>`;
+function mkMemoria(api){const ROUNDS=9,N=MEMT.length,F=[262,294,330,392,440,523,587,659,784,880];const box=document.createElement('div');box.className='simon';api.stage.append(box);
+  box.innerHTML=`<div class="core" id="sCore"></div>`+MEMT.map((t,k)=>{const a=-Math.PI/2+k/N*Math.PI*2;return `<button class="tl" data-k="${k}" style="left:${50+39*Math.cos(a)}%;top:${50+39*Math.sin(a)}%" aria-label="${t[1]} (${(k+1)%10})">${I[t[0]]}<small>${(k+1)%10}<span class="mn"> · ${t[1]==='Presentaciones'?'Presentar':t[1]}</span></small></button>`}).join('');
   $('#jWrap').style.overflow='visible';$('#jWrap').style.border='0';$('#jWrap').style.boxShadow='none';$('#jWrap').style.padding='6px 6px 26px';
   let seq,idx,round,done=0,lock=true,tms=[],run=false;
   const core=h=>$('#sCore').innerHTML=h;
@@ -652,14 +655,14 @@ function mkMemoria(api){const ROUNDS=6,F=[262,294,330,392,440,523,587];const box
   const later=(f,ms)=>tms.push(setTimeout(f,ms));
   const lit=(k,ms=360)=>{const b=box.querySelector(`[data-k="${k}"]`);b.classList.add('on');S.note(F[k]);later(()=>b.classList.remove('on'),ms)};
   function play(){lock=true;core(`👀<br>Mira con atención`);const sp=Math.max(420,700-round*40);seq.forEach((k,i)=>later(()=>lit(k,sp*.6),500+i*sp));later(()=>{lock=false;idx=0;core(`👆<br>¡Tu turno!<br><small style="font-weight:500">${seq.length} toque${seq.length>1?'s':''}</small>`)},500+seq.length*sp)}
-  function next(){round++;seq.push(rnd(7));hud();play()}
+  function next(){round++;seq.push(rnd(N));hud();play()}
   function press(k){if(!run||lock)return;lit(k,220);if(k!==seq[idx]){lock=true;S.no();shake(box);core('😅<br>¡Casi!<br>Mira otra vez');later(play,1300);return}
     idx++;if(idx===seq.length){lock=true;done=round;hud();if(round>=ROUNDS){core('🏆<br>¡Memoria perfecta!');later(api.win,700)}else{core('✨<br>¡Bien!');later(()=>S.ok(),150);later(next,1100)}}}
   box.querySelectorAll('.tl').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();press(+b.dataset.k)}));
   return {reset(){tms.forEach(clearTimeout);tms=[];seq=[];idx=0;round=0;done=0;lock=true;core('🧰<br>Memoria de la caja');hud()},
     start(){run=true;if(!seq.length)later(next,300);else play()},stop(){run=false;tms.forEach(clearTimeout);tms=[];box.querySelectorAll('.tl').forEach(b=>b.classList.remove('on'))},
     destroy(){const w=$('#jWrap');w.style.overflow=w.style.border=w.style.boxShadow=w.style.padding=''},
-    key(e,d){if(d&&/^[1-7]$/.test(e.key))press(+e.key-1)}}}
+    key(e,d){if(d&&/^[0-9]$/.test(e.key))press(e.key==='0'?9:+e.key-1)}}}
 const MK=[mkSnake,mkNave,mkVuelo,mkBloques,mkMemoria];
 
 /* ---------- candado: pregunta + código ---------- */
