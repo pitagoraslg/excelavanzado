@@ -161,6 +161,33 @@ nav .kit b{font-size:13px;color:var(--mute);margin-right:6px;font-weight:600}
 nav .num{font:600 15px "Space Grotesk",Arial,sans-serif;min-width:52px;text-align:center}
 nav .btn{min-width:44px;padding:0 12px}
 .prog{position:fixed;left:0;bottom:64px;height:4px;background:var(--acc);transition:width .35s}
+/* tamaño de proyección: letras más grandes y contenido que llena la pantalla */
+@media(min-width:1000px){
+ body{font-size:clamp(20px,1.45vw,26px)}
+ h2{font-size:clamp(40px,3.9vw,64px)}h3{font-size:clamp(24px,1.8vw,32px)}
+ .body{max-width:min(94vw,1800px)}
+ .strip{padding:22px max(4vw,16px)}.strip small{font-size:clamp(18px,1.35vw,24px)}.strip .mod{font-size:16px;padding:4px 12px}
+ .lead{font-size:clamp(22px,1.75vw,30px);max-width:none}
+ .btn{font-size:clamp(18px,1.3vw,22px);min-height:54px;padding:0 24px}
+ .note{font-size:clamp(16px,1.1vw,19px)}
+ .tabs button{font-size:clamp(18px,1.3vw,22px);min-height:52px;padding:0 20px}
+ .cover h1{font-size:clamp(60px,6.4vw,110px)}.cover p{font-size:clamp(22px,1.9vw,32px)}.cover .by{font-size:clamp(18px,1.3vw,22px)}
+ .orbit{max-width:560px}.orbit .t{font-size:16px}
+ .words button{font-size:clamp(30px,3.2vw,52px);padding:16px 26px}
+ .flip,.flip .in{min-height:250px}.flip .f small{font-size:16px}.flip .b{font-size:clamp(19px,1.35vw,24px)}
+ .per ul{font-size:clamp(18px,1.3vw,22px)}.dev{font-size:16px;width:90px}
+ .sky{height:400px}
+ .addr{font-size:clamp(32px,3.6vw,58px)}
+ .mail .fld b{font-size:17px;width:80px}.clip{font-size:17px}
+ .svc .gb{font-size:40px}.meterR{font-size:17px;grid-template-columns:140px minmax(0,1fr) 70px}
+ .sit{font-size:clamp(28px,2.6vw,42px)}
+ .ans button{font-size:clamp(20px,1.5vw,26px);min-height:76px}
+ .big{font-size:clamp(60px,6.5vw,110px)}
+ .node{font-size:17px}.node small{font-size:14px}
+ .docbar button{font-size:18px;min-height:48px}
+ .xl{font-size:18px}.xl input{font-size:19px}
+ .prompt{font-size:17px}
+}
 @media(max-width:860px){.two,.cover{grid-template-columns:minmax(0,1fr)}.route{grid-template-columns:repeat(4,minmax(0,1fr))}.route::before,.route .pr{display:none}}
 @media(max-width:600px){body{font-size:16px}nav .kit b{display:none}nav .kit span{width:24px;height:24px}#fs{display:none}.vs,.ans{grid-template-columns:minmax(0,1fr)}.bin{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.slide,.flip .in,.lid,.bin .t,.orbit .t,.time i{transition:none}.caret{animation:none}.conf{display:none}}
@@ -389,6 +416,7 @@ nav .btn{min-width:44px;padding:0 12px}
   <div class="kit" id="kit"><b>Tu caja</b></div>
   <span class="num" id="num">1 / 18</span>
   <button class="btn" id="next" aria-label="Siguiente">›</button>
+  <button class="btn" id="sndHint" style="background:var(--acc);border-color:var(--acc);color:#1a0f08;font-weight:700" aria-label="Activar sonido">🔊 Activar sonido</button>
   <button class="btn ghost" id="snd" aria-label="Silenciar">♪</button>
   <button class="btn ghost" id="fs" aria-label="Pantalla completa">⛶</button>
 </nav>
@@ -414,12 +442,19 @@ const MODS=[['nube','Nube','Módulo 1'],['word','Word','Módulo 2'],['excel','Ex
 /* ---------- sonido (Web Audio, sin archivos) ---------- */
 let AC=null,muted=false;try{muted=localStorage.getItem('ghd-mute')==='1'}catch(e){}
 const ac=()=>{if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC};
+/* salida común con volumen alto y compresor (para que se oiga en el aula) */
+let OUTN=null;const OUT=a=>{if(!OUTN){const m=a.createGain(),c=a.createDynamicsCompressor();m.gain.value=2.6;c.threshold.value=-10;c.ratio.value=4;m.connect(c).connect(a.destination);OUTN=m}return OUTN};
+try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+const unlockAudio=()=>{const a=ac();if(!a)return;if(!a.__u){try{const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0);a.__u=1}catch(e){}}if(a.state!=='running')a.resume().catch(()=>{});setTimeout(updAudio,150)};
+['pointerdown','touchend','click','keydown'].forEach(t=>document.addEventListener(t,unlockAudio,true));
+function updAudio(){const b=document.getElementById('sndHint');if(b)b.hidden=!!(AC&&AC.state==='running')&&!muted}
+setInterval(updAudio,1000);
 const tone=(f,d=.15,type='sine',v=.18,t0=0)=>{const a=ac();if(!a||muted)return;const t=a.currentTime+t0,o=a.createOscillator(),g=a.createGain();
-  o.type=type;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.015);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d+.05)};
+  o.type=type;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.015);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(OUT(a));o.start(t);o.stop(t+d+.05)};
 const noise=(dur,f0,f1,v=.2,q=1.2)=>{const a=ac();if(!a||muted)return;const n=Math.floor(a.sampleRate*dur),b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0);
   for(let i=0;i<n;i++){const p=i/n;d[i]=(Math.random()*2-1)*Math.sin(Math.PI*p)}
   const s=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain(),t=a.currentTime;s.buffer=b;fl.type='bandpass';fl.Q.value=q;
-  fl.frequency.setValueAtTime(f0,t);fl.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.value=v;s.connect(fl).connect(g).connect(a.destination);s.start()};
+  fl.frequency.setValueAtTime(f0,t);fl.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.value=v;s.connect(fl).connect(g).connect(OUT(a));s.start()};
 let lastHover=0;
 const S={
   nav:(dir=1)=>{noise(.32,dir>0?500:2600,dir>0?2600:500,.22);
@@ -436,19 +471,30 @@ const S={
   no:()=>{tone(220,.25,'square',.06);tone(185,.3,'square',.05,.12)},
   pop:i=>tone(500+i*90,.14,'sine',.12),
   whoosh:()=>{const a=ac();if(!a||muted)return;const n=a.sampleRate*.6,b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);
-    const s=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain();s.buffer=b;fl.type='bandpass';fl.frequency.setValueAtTime(400,a.currentTime);fl.frequency.exponentialRampToValueAtTime(3000,a.currentTime+.5);g.gain.value=.25;s.connect(fl).connect(g).connect(a.destination);s.start()},
+    const s=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain();s.buffer=b;fl.type='bandpass';fl.frequency.setValueAtTime(400,a.currentTime);fl.frequency.exponentialRampToValueAtTime(3000,a.currentTime+.5);g.gain.value=.25;s.connect(fl).connect(g).connect(OUT(a));s.start()},
   welcome:()=>[[523,0],[659,.15],[784,.3],[1047,.45],[988,.7],[1047,.85]].forEach(([f,t])=>{tone(f,.3,'triangle',.12,t);tone(f/2,.35,'sine',.06,t)}),
   party:()=>{[392,523,659,784,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.13,i*.12));[262,330,392].forEach(f=>tone(f,1.2,'sine',.05,.84))}};
 const updSnd=()=>{$('#snd').textContent=muted?'✕':'♪';$('#snd').setAttribute('aria-label',muted?'Activar sonido':'Silenciar')};
-$('#snd').onclick=()=>{muted=!muted;try{localStorage.setItem('ghd-mute',muted?'1':'0')}catch(e){}updSnd();if(!muted)S.click()};updSnd();
+$('#snd').onclick=()=>{muted=!muted;try{localStorage.setItem('ghd-mute',muted?'1':'0')}catch(e){}updSnd();updAudio();if(!muted)S.click()};updSnd();
+document.getElementById('sndHint').onclick=()=>{if(muted){muted=false;try{localStorage.setItem('ghd-mute','0')}catch(e){}updSnd()}unlockAudio();setTimeout(()=>S.ok(),150)};
 /* clic en cualquier botón; los que ya tienen sonido propio no se duplican */
-const OWN='#prev,#next,#snd,#start,#send,#up,#party,#openB,#fs,#ans,#fmB,#aiB,.flip';
+const OWN='#sndHint,#prev,#next,#snd,#start,#send,#up,#party,#openB,#fs,#ans,#fmB,#aiB,.flip';
 document.addEventListener('pointerdown',()=>ac(),true);
 document.addEventListener('click',e=>{const b=e.target.closest('button,a,[role=button],label,input[type=radio],input[type=checkbox],.t');if(!b||b.closest(OWN))return;
   if(b.closest('.tabs button,.words button,.addr button,.fld,.svc,.node,.docbar button,.sw button'))S.click();else S.tap()},true);
 document.addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const b=e.target.closest('button,a,.flip,.t,label');if(b&&!b.contains(e.relatedTarget))S.hover()});
 document.addEventListener('input',e=>{if(e.target.matches('input[type=text],input:not([type]),textarea,[contenteditable]'))S.key()});
 document.addEventListener('fullscreenchange',()=>S.screen(!!document.fullscreenElement));
+
+/* ---------- ajuste a pantalla: agranda el contenido para que no queden espacios vacíos ---------- */
+const fit=()=>{const s=document.querySelector('.slide.on');if(!s)return;const b=s.querySelector('.body');if(!b)return;
+  if(innerWidth<1000||!('zoom' in b.style)){b.style.zoom='';b.style.maxWidth='';return}
+  const st=s.querySelector('.strip'),avail=s.clientHeight-(st?st.offsetHeight:0)-12;
+  const set=z=>{b.style.zoom=z.toFixed(3);b.style.maxWidth=(innerWidth*.94/z)+'px';return b.getBoundingClientRect().height<=avail};
+  let lo=1,hi=1.6;if(!set(lo)){set(1);return}if(set(hi))return;
+  for(let k=0;k<9;k++){const m=(lo+hi)/2;if(set(m))lo=m;else hi=m}set(lo)};
+addEventListener('resize',()=>requestAnimationFrame(fit));
+let fitT;document.addEventListener('click',()=>{clearTimeout(fitT);fitT=setTimeout(fit,450)});
 
 /* ---------- navegación + caja ---------- */
 const slides=$$('.slide');let cur=0;
@@ -460,6 +506,7 @@ const go=(i,silent)=>{const n=Math.max(0,Math.min(slides.length-1,i));
   $('#prog').style.width=((cur+1)/slides.length*100)+'%';slides[cur].scrollTop=0;
   const g=Math.round(cur/(slides.length-1)*7);kit.forEach((k,j)=>k.classList.toggle('got',j<g));if(g>got&&!silent)setTimeout(()=>S.pop(g),180);got=g;
   try{history.replaceState(null,'','#l'+(cur+1))}catch(e){}
+  requestAnimationFrame(fit);
   if(slides[cur].dataset.t==='Diferencia')showVs(vsI)};
 $('#prev').onclick=()=>go(cur-1);$('#next').onclick=()=>go(cur+1);
 document.addEventListener('keydown',e=>{if(/INPUT|TEXTAREA/.test(e.target.tagName)||e.target.isContentEditable)return;
