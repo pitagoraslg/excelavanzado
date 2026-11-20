@@ -493,8 +493,8 @@ $('#jBack').onclick=()=>{S.click();irBoveda()};
 /* ===== 1. Serpiente ===== */
 function mkSnake(api){const N=15,C=26,W=N*C;const [cv,x]=mkCanvas(W,W);api.stage.append(cv);
   const WORD=dec(JG[0].code);let sn,q,dir,ap,got,run=false,acc=0,lt=0,raf,pulse=0;
-  const SPD=g=>Math.max(85,195-g*12);
-  const hud=()=>api.hud(`🍎 ${got}/10 ${slots(WORD,got)} <span title="Velocidad">⚡ x${(195/SPD(got)).toFixed(1)}</span>`);
+  const SPD=g=>Math.max(102,234-g*14.4);
+  const hud=()=>api.hud(`🍎 ${got}/10 ${slots(WORD,got)} <span title="Velocidad">⚡ x${(234/SPD(got)).toFixed(1)}</span>`);
   const place=()=>{let p;do{p={x:rnd(N),y:rnd(N)}}while(sn.some(s=>s.x===p.x&&s.y===p.y)||(Math.abs(p.x-sn[0].x)+Math.abs(p.y-sn[0].y)<3));ap=p};
   const turn=(dx,dy)=>{if(!run)return;const l=q.length?q[q.length-1]:dir;if((l.x===-dx&&l.y===-dy)||(l.x===dx&&l.y===dy))return;if(q.length<3)q.push({x:dx,y:dy})};
   function step(){if(q.length)dir=q.shift();const h={x:sn[0].x+dir.x,y:sn[0].y+dir.y};
