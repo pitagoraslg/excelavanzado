@@ -396,7 +396,7 @@ const shake=el=>{el.classList.remove('shake');void el.offsetWidth;el.classList.a
 const dec=s=>atob(s.split('').reverse().join(''));
 const JG=[
  {nom:'La serpiente de la nube',em:'🐍',corto:'Serpiente',code:'==QQSV1RFNVRCVlT',
-  how:'Mueve la serpiente con las <b>flechas</b>, deslizando el dedo o con los botones. Come las <b>10 manzanas</b>: cada una trae una letra del código. No choques con las paredes ni con tu cola.'},
+  how:'Mueve la serpiente con las <b>flechas</b>, deslizando el dedo o con los botones. Come las <b>10 manzanas</b>: cada una trae una letra del código, y la serpiente se vuelve <b>más rápida</b> con cada una. No choques con las paredes ni con tu cola.'},
  {nom:'Nave antispam',em:'🚀',corto:'Nave',code:'=0UQQNVSU5UQ',
   how:'Mueve la nave y dispara <b>solo a los correos rojos</b> (spam y engaños). Deja pasar los <b>verdes</b>: son correos reales. Destruye <b>12 spam</b> para ganar. Tienes 3 escudos.'},
  {nom:'Vuelo a la nube',em:'☁️',corto:'Vuelo',code:'==QNxUkVJJFR',
@@ -493,12 +493,13 @@ $('#jBack').onclick=()=>{S.click();irBoveda()};
 /* ===== 1. Serpiente ===== */
 function mkSnake(api){const N=15,C=26,W=N*C;const [cv,x]=mkCanvas(W,W);api.stage.append(cv);
   const WORD=dec(JG[0].code);let sn,q,dir,ap,got,run=false,acc=0,lt=0,raf,pulse=0;
-  const hud=()=>api.hud(`🍎 ${got}/10 ${slots(WORD,got)}`);
+  const SPD=g=>Math.max(85,195-g*12);
+  const hud=()=>api.hud(`🍎 ${got}/10 ${slots(WORD,got)} <span title="Velocidad">⚡ x${(195/SPD(got)).toFixed(1)}</span>`);
   const place=()=>{let p;do{p={x:rnd(N),y:rnd(N)}}while(sn.some(s=>s.x===p.x&&s.y===p.y)||(Math.abs(p.x-sn[0].x)+Math.abs(p.y-sn[0].y)<3));ap=p};
   const turn=(dx,dy)=>{if(!run)return;const l=q.length?q[q.length-1]:dir;if((l.x===-dx&&l.y===-dy)||(l.x===dx&&l.y===dy))return;if(q.length<3)q.push({x:dx,y:dy})};
   function step(){if(q.length)dir=q.shift();const h={x:sn[0].x+dir.x,y:sn[0].y+dir.y};
     if(h.x<0||h.y<0||h.x>=N||h.y>=N||sn.slice(0,-1).some(s=>s.x===h.x&&s.y===h.y)){draw(true);return api.lose('Chocaste. La serpiente debe evitar las paredes y su propia cola. Tus letras se reinician.')}
-    sn.unshift(h);if(h.x===ap.x&&h.y===ap.y){got++;S.eat(got);hud();const r=cv.getBoundingClientRect();burst(r.left+(ap.x+.5)/N*r.width,r.top+(ap.y+.5)/N*r.height,18,['#ff6b6b','#ffd166','#5fe0b0'],4);
+    sn.unshift(h);if(h.x===ap.x&&h.y===ap.y){got++;S.eat(got);if(got<WORD.length)tone(500+got*60,.12,'sine',.05,.1,900+got*80);hud();const r=cv.getBoundingClientRect();burst(r.left+(ap.x+.5)/N*r.width,r.top+(ap.y+.5)/N*r.height,18,['#ff6b6b','#ffd166','#5fe0b0'],4);
       if(got>=WORD.length){draw();return api.win()}place()}else sn.pop()}
   function draw(dead){for(let i=0;i<N;i++)for(let j=0;j<N;j++){x.fillStyle=(i+j)%2?'#123a3a':'#164545';x.fillRect(i*C,j*C,C,C)}
     pulse+=.12;const ax=ap.x*C+C/2,ay=ap.y*C+C/2,ar=C*.42+Math.sin(pulse)*1.2;
@@ -509,7 +510,7 @@ function mkSnake(api){const N=15,C=26,W=N*C;const [cv,x]=mkCanvas(W,W);api.stage
     for(let i=sn.length-1;i>=0;i--){const s=sn[i],t=i/Math.max(1,sn.length-1);x.fillStyle=dead?`hsl(8,70%,${60-t*20}%)`:`hsl(${160-t*12},70%,${62-t*22}%)`;rr(x,s.x*C+2,s.y*C+2,C-4,C-4,9);x.fill()}
     const h=sn[0],cx=h.x*C+C/2,cy=h.y*C+C/2,px=-dir.y,py=dir.x;
     [1,-1].forEach(sg=>{const ex=cx+dir.x*4+px*5*sg,ey=cy+dir.y*4+py*5*sg;x.fillStyle='#fff';x.beginPath();x.arc(ex,ey,4,0,7);x.fill();x.fillStyle='#0a1530';x.beginPath();x.arc(ex+dir.x*1.5,ey+dir.y*1.5,2,0,7);x.fill()})}
-  function loop(t){if(!run)return;const dt=Math.min(120,t-(lt||t));lt=t;acc+=dt;const sp=175-got*7;while(acc>=sp&&run){acc-=sp;step()}if(run){draw();raf=requestAnimationFrame(loop)}}
+  function loop(t){if(!run)return;const dt=Math.min(120,t-(lt||t));lt=t;acc+=dt;const sp=SPD(got);while(acc>=sp&&run){acc-=sp;step()}if(run){draw();raf=requestAnimationFrame(loop)}}
   let sw=null;cv.addEventListener('pointerdown',e=>{sw={x:e.clientX,y:e.clientY}});
   cv.addEventListener('pointerup',e=>{if(!sw)return;const dx=e.clientX-sw.x,dy=e.clientY-sw.y;sw=null;if(Math.max(Math.abs(dx),Math.abs(dy))<18)return;Math.abs(dx)>Math.abs(dy)?turn(Math.sign(dx),0):turn(0,Math.sign(dy))});
   api.ctrl.innerHTML=`<div class="pad"><button data-d="0,-1" aria-label="Arriba">▲</button><button data-d="-1,0" aria-label="Izquierda">◀</button><button data-d="0,1" aria-label="Abajo">▼</button><button data-d="1,0" aria-label="Derecha">▶</button></div>`;
