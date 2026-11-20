@@ -236,6 +236,7 @@ main{max-width:1100px;margin:0 auto;padding:22px max(4vw,16px) 40px}
   <div class="gtop">
     <button class="btn sec" id="jBack" style="min-height:44px;padding:0 14px">← Bóveda</button>
     <h2 id="jTit"></h2>
+    <button class="btn sec" id="jMus" style="min-height:44px;padding:0 14px;font-size:15px"></button>
   </div>
   <div class="hud" id="jHud"></div>
   <div class="gbody"><div class="cvw" id="jWrap"><div id="jStage"></div><div class="ov" id="jOv" hidden><div class="in" id="jOvIn"></div></div></div>
@@ -340,6 +341,37 @@ const updSnd=()=>{$('#snd').textContent=muted?'✕':'♪';$('#snd').setAttribute
 $('#snd').onclick=()=>{muted=!muted;try{localStorage.setItem('ghd-mute',muted?'1':'0')}catch(e){}updSnd();if(!muted)S.click()};updSnd();
 document.addEventListener('pointerdown',()=>ac(),{once:true});
 
+
+/* ---------- música de fondo (chiptune sintetizado, una pista por candado) ---------- */
+let musOn=true;try{musOn=localStorage.getItem('ghd-music')!=='0'}catch(e){}
+const mf=m=>440*Math.pow(2,(m-69)/12);
+const TR=[
+ {bpm:124,lead:'square',lv:.028,ch:[[48,60,64,67],[45,57,60,64],[41,53,57,60],[43,55,59,62]],
+  mel:[[72,0,76,79,76,0,72,74],[76,0,72,69,72,0,0,0],[69,0,72,77,76,74,72,0],[71,0,74,79,77,76,74,0]],dr:1},
+ {bpm:132,lead:'square',lv:.026,ch:[[45,57,60,64],[41,53,57,60],[48,60,64,67],[40,56,59,64]],
+  mel:[[81,0,79,76,0,76,74,76],[77,0,76,72,0,72,74,76],[79,0,76,72,0,74,76,79],[80,0,76,71,0,74,76,0]],dr:1},
+ {bpm:104,lead:'triangle',lv:.06,ch:[[41,53,57,60],[48,60,64,67],[38,50,53,57],[46,58,62,65]],
+  mel:[[77,0,0,81,79,0,77,0],[76,0,0,79,77,0,72,0],[74,0,77,81,79,0,77,76],[74,0,0,0,70,0,72,0]],dr:.5},
+ {bpm:116,lead:'square',lv:.026,ch:[[43,55,59,62],[40,52,55,59],[48,60,64,67],[38,50,54,57]],
+  mel:[[74,0,71,74,79,0,78,0],[76,0,71,0,74,76,0,0],[72,0,76,79,81,0,79,76],[78,0,74,0,76,78,81,0]],dr:1},
+ {bpm:92,lead:'sine',lv:0,ch:[[48,60,64,67],[45,57,60,64],[41,53,57,60],[43,55,59,62]],mel:null,dr:.3,soft:.6}];
+const MU={tm:null,step:0,next:0,t:null,g:null};
+function mNote(f,t,d,type,v){const a=AC;const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.012);g.gain.exponentialRampToValueAtTime(.0008,t+d);o.connect(g).connect(MU.g);o.start(t);o.stop(t+d+.05)}
+function mDrum(t,kind,v){const a=AC;if(kind==='k'){const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(130,t);o.frequency.exponentialRampToValueAtTime(45,t+.12);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+.15);o.connect(g).connect(MU.g);o.start(t);o.stop(t+.2);return}
+  const n=Math.floor(a.sampleRate*(kind==='s'?.12:.04)),b=a.createBuffer(1,n,a.sampleRate),c=b.getChannelData(0);for(let i=0;i<n;i++)c[i]=(Math.random()*2-1)*(1-i/n);
+  const sr=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain();sr.buffer=b;fl.type='highpass';fl.frequency.value=kind==='s'?1800:7000;g.gain.value=v;sr.connect(fl).connect(g).connect(MU.g);sr.start(t)}
+function mSched(){const a=AC,T=MU.t;if(!a||!T)return;const sd=60/T.bpm/4,sf=T.soft||1;
+  while(MU.next<a.currentTime+.15){const st=MU.step%64,bar=Math.floor(st/16),i=st%16,ch=T.ch[bar],t=MU.next;
+    if(!muted&&musOn){
+      if(i%4===0)mNote(mf(i%8===0?ch[0]:ch[0]+(i===4?12:7)),t,sd*3.2,'triangle',.075*sf);
+      if(i%2===0)mNote(mf(ch[1+[0,1,2,1][(i/2)%4]]+12),t,sd*1.6,'sine',.022*sf);
+      if(T.mel&&i%2===0){const m=T.mel[bar][i/2];if(m)mNote(mf(m),t,sd*1.8,T.lead,T.lv)}
+      if(T.dr){if(i===0||i===8)mDrum(t,'k',.16*T.dr);if(i===4||i===12)mDrum(t,'s',.05*T.dr);if(i%2===1)mDrum(t,'h',.018*T.dr)}}
+    MU.next+=sd;MU.step++}}
+function mStart(k){mStop(true);const a=ac();if(!a||k<0||!TR[k])return;MU.g=a.createGain();MU.g.gain.value=1;MU.g.connect(a.destination);MU.t=TR[k];MU.step=0;MU.next=a.currentTime+.08;mSched();MU.tm=setInterval(mSched,30)}
+function mStop(now){clearInterval(MU.tm);MU.tm=null;MU.t=null;const g=MU.g;MU.g=null;if(g&&AC){try{if(now){g.disconnect()}else{g.gain.setValueAtTime(g.gain.value,AC.currentTime);g.gain.linearRampToValueAtTime(0,AC.currentTime+.4);setTimeout(()=>g.disconnect(),600)}}catch(e){}}}
+const updMus=()=>{const b=$('#jMus');if(b){b.textContent=musOn?'🎵 Música: sí':'🔇 Música: no';b.setAttribute('aria-pressed',musOn)}};
+
 /* ---------- cielo ---------- */
 (()=>{const s=$('#sky');let h='';for(let i=0;i<70;i++)h+=`<i style="left:${Math.random()*100}%;top:${Math.random()*70}%;animation-delay:${Math.random()*3}s"></i>`;
  for(let i=0;i<4;i++)h+=`<div class="cl" style="top:${10+i*22}%;animation-duration:${70+i*25}s;animation-delay:-${i*30}s"></div>`;s.innerHTML=h})();
@@ -436,20 +468,21 @@ function abrirJuego(k){stopGame();gk=k;show('Juego');const D=JG[k];
   const api={hud:h=>$('#jHud').innerHTML=h,stage:$('#jStage'),ctrl:$('#jCtrl'),
     win:()=>ganar(k),lose:m=>perder(m)};
   G=MK[k](api);G.reset();
-  ov(`<h3>${D.em} ${D.nom}</h3><p>${D.how}</p><button class="btn" id="ovGo">¡Jugar!</button>`);$('#ovGo').onclick=()=>{ovOff();gRun=true;G.start()};setTimeout(()=>$('#ovGo')&&$('#ovGo').focus(),50)}
-function perder(m){if(!G)return;G.stop();gRun=false;S.lose();shake($('#jWrap'));
-  ov(`<h3>¡Uy! 😅</h3><p>${m}</p><button class="btn" id="ovGo">Intentar de nuevo</button>`);$('#ovGo').onclick=()=>{ovOff();G.reset();gRun=true;G.start()};setTimeout(()=>$('#ovGo')&&$('#ovGo').focus(),50)}
-function ganar(k){if(!G)return;G.stop();gRun=false;P.won[k]=1;save();S.win();const r=$('#jWrap').getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,90);
+  ov(`<h3>${D.em} ${D.nom}</h3><p>${D.how}</p><button class="btn" id="ovGo">¡Jugar!</button>`);$('#ovGo').onclick=()=>{ovOff();gRun=true;G.start();mStart(gk)};setTimeout(()=>$('#ovGo')&&$('#ovGo').focus(),50)}
+function perder(m){if(!G)return;G.stop();gRun=false;mStop();S.lose();shake($('#jWrap'));
+  ov(`<h3>¡Uy! 😅</h3><p>${m}</p><button class="btn" id="ovGo">Intentar de nuevo</button>`);$('#ovGo').onclick=()=>{ovOff();G.reset();gRun=true;G.start();mStart(gk)};setTimeout(()=>$('#ovGo')&&$('#ovGo').focus(),50)}
+function ganar(k){if(!G)return;G.stop();gRun=false;mStop(true);P.won[k]=1;save();S.win();const r=$('#jWrap').getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,90);
   const c=dec(JG[k].code);
   ov(`<h3>¡Lo lograste! 🎉</h3><p>Este es el código del candado ${k+1}. Anótalo o recuérdalo:</p><div class="code">${[...c].map((ch,i)=>`<b style="animation-delay:${i*.08}s">${ch}</b>`).join('')}</div><button class="btn" id="ovGo">Ir al candado ${k+1} 🔐</button>`);
   $('#ovGo').onclick=()=>abrirCandado(k)}
-function stopGame(){if(G){try{G.stop();G.destroy&&G.destroy()}catch(e){}}G=null;gRun=false;gk=-1}
-function pausarJuego(){if(G&&gRun&&$('#jOv').hidden){G.stop();gRun=false;ov(`<h3>Pausa</h3><p>Tu partida está detenida.</p><button class="btn" id="ovGo">Continuar</button>`);$('#ovGo').onclick=()=>{ovOff();gRun=true;G.start()}}}
+function stopGame(){mStop();if(G){try{G.stop();G.destroy&&G.destroy()}catch(e){}}G=null;gRun=false;gk=-1}
+function pausarJuego(){if(G&&gRun&&$('#jOv').hidden){G.stop();gRun=false;mStop();ov(`<h3>Pausa</h3><p>Tu partida está detenida.</p><button class="btn" id="ovGo">Continuar</button>`);$('#ovGo').onclick=()=>{ovOff();gRun=true;G.start();mStart(gk)}}}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pausarJuego()});
 document.addEventListener('keydown',e=>{if(vista==='Juego'&&G&&G.key&&!/INPUT/.test(e.target.tagName)){
   if(!$('#jOv').hidden){if(e.key==='Enter'||e.key===' '){const b=$('#ovGo');if(b){e.preventDefault();b.click()}}return}
   G.key(e,true)}});
 document.addEventListener('keyup',e=>{if(vista==='Juego'&&G&&G.key&&gRun)G.key(e,false)});
+$('#jMus').onclick=()=>{musOn=!musOn;try{localStorage.setItem('ghd-music',musOn?'1':'0')}catch(e){}updMus();S.click()};updMus();
 $('#jBack').onclick=()=>{S.click();irBoveda()};
 
 /* ===== 1. Serpiente ===== */
