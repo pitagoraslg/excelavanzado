@@ -100,6 +100,8 @@ header h1 svg{width:36px;height:36px}
 .rest{max-width:640px;margin:22px auto 0;text-align:left}
 .rest div{display:flex;justify-content:space-between;padding:8px 14px;border-top:1px solid var(--line);font:600 19px 'Space Grotesk'}
 .rest div span:last-child{color:var(--gold)}
+@keyframes pulse{50%{box-shadow:0 5px 0 #a65232,0 0 0 8px #e8875f55}}
+#sndHint[hidden]{display:none}
 dialog{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:18px;padding:24px;max-width:440px}
 dialog::backdrop{background:#000a}
 @media(max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}.pano{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.pk{padding:8px 4px}.pk h3{font-size:12px}.pk .c{font-size:18px}}
@@ -122,6 +124,7 @@ dialog::backdrop{background:#000a}
   <button class="btn sec" id="bPau" hidden>⏸ Pausar</button>
   <button class="btn sec" id="bRes">↺ Reiniciar</button>
   <button class="btn sec" id="bFin">🏆 Ranking final</button>
+  <button class="btn" id="sndHint" style="animation:pulse 1.4s infinite">🔊 Activar sonido</button>
   <button class="ib" id="snd" aria-label="Silenciar">♪</button>
   <button class="ib" id="fs" aria-label="Pantalla completa">⛶</button>
 </header>
@@ -184,6 +187,7 @@ const S={clack:()=>{noise(.08,3500,.5,'highpass',.35);tone(2400,.06,'square',.05
   fan:()=>{[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,.26,'triangle',.13,i*.11));[262,392,523].forEach(f=>tone(f,1.3,'sine',.05,.8))},
   join:()=>tone(880,.1,'triangle',.07),start:()=>[392,523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.12,i*.1))};
 const updSnd=()=>{$('#snd').textContent=muted?'✕':'♪'};$('#snd').onclick=()=>{muted=!muted;try{localStorage.setItem('ghd-mute-p',muted?'1':'0')}catch(e){}updSnd()};updSnd();
+$('#sndHint').onclick=()=>{if(muted){muted=false;try{localStorage.setItem('ghd-mute-p','0')}catch(e){}updSnd()}unlockAudio();setTimeout(()=>S.join(),120)};
 $('#fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}catch(e){}};
 
 /* confeti */
@@ -195,7 +199,9 @@ function loop(){fc.clearRect(0,0,fx.width,fx.height);parts=parts.filter(p=>p.l>0
 const entrar=()=>{if($('#clave').value.trim()===CLAVE){try{sessionStorage.setItem('bovedaP','1')}catch(e){}$('#gate').remove();ac();S.join()}else{$('#gW').textContent='Clave incorrecta.'}};
 $('#gIn').onclick=entrar;$('#clave').addEventListener('keydown',e=>{if(e.key==='Enter')entrar()});
 try{if(sessionStorage.getItem('bovedaP')==='1')$('#gate').remove()}catch(e){}
-addEventListener('pointerdown',()=>ac(),{once:true});
+const unlockAudio=()=>{const a=ac();if(!a)return;if(!a.__u){try{const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0);a.__u=1}catch(e){}}if(a.state!=='running')a.resume().catch(()=>{});setTimeout(updAudio,150)};
+['pointerdown','touchend','click','keydown'].forEach(t=>document.addEventListener(t,unlockAudio,true));
+setInterval(()=>updAudio(),1000);function updAudio(){const b=$('#sndHint');if(b)b.hidden=!!(AC&&AC.state==='running')||muted}
 
 /* QR */
 $('#url').textContent=URLJ;
