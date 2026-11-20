@@ -416,9 +416,21 @@ let AC=null,muted=false;try{muted=localStorage.getItem('ghd-mute')==='1'}catch(e
 const ac=()=>{if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC};
 const tone=(f,d=.15,type='sine',v=.18,t0=0)=>{const a=ac();if(!a||muted)return;const t=a.currentTime+t0,o=a.createOscillator(),g=a.createGain();
   o.type=type;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.015);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d+.05)};
+const noise=(dur,f0,f1,v=.2,q=1.2)=>{const a=ac();if(!a||muted)return;const n=Math.floor(a.sampleRate*dur),b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0);
+  for(let i=0;i<n;i++){const p=i/n;d[i]=(Math.random()*2-1)*Math.sin(Math.PI*p)}
+  const s=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain(),t=a.currentTime;s.buffer=b;fl.type='bandpass';fl.Q.value=q;
+  fl.frequency.setValueAtTime(f0,t);fl.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.value=v;s.connect(fl).connect(g).connect(a.destination);s.start()};
+let lastHover=0;
 const S={
-  nav:()=>{tone(660,.12,'sine',.1);tone(880,.16,'sine',.08,.07)},
-  click:()=>tone(1200,.06,'triangle',.08),
+  nav:(dir=1)=>{noise(.32,dir>0?500:2600,dir>0?2600:500,.22);
+    const n=dir>0?[587,784,988]:[988,784,587];n.forEach((f,i)=>tone(f,.16,'sine',.07,.1+i*.06))},
+  end:()=>{noise(.32,500,2600,.2);[523,659,784,1047,1319].forEach((f,i)=>tone(f,.3,'triangle',.1,.1+i*.09))},
+  edge:()=>{tone(180,.12,'triangle',.08);tone(150,.14,'triangle',.06,.06)},
+  click:()=>{tone(1400,.04,'square',.035);tone(700,.07,'triangle',.08,.01)},
+  tap:()=>{tone(900,.05,'triangle',.06);tone(1350,.05,'sine',.04,.03)},
+  hover:()=>{const now=performance.now();if(now-lastHover<90)return;lastHover=now;tone(1800,.03,'sine',.025)},
+  key:()=>tone(1500+Math.random()*500,.025,'square',.025),
+  screen:on=>on?[392,587,784].forEach((f,i)=>tone(f,.14,'triangle',.08,i*.06)):[784,587,392].forEach((f,i)=>tone(f,.14,'triangle',.08,i*.06)),
   flip:()=>{tone(520,.08,'triangle',.08);tone(780,.1,'triangle',.06,.05)},
   ok:()=>[523,659,784,1047].forEach((f,i)=>tone(f,.22,'triangle',.13,i*.08)),
   no:()=>{tone(220,.25,'square',.06);tone(185,.3,'square',.05,.12)},
@@ -429,13 +441,21 @@ const S={
   party:()=>{[392,523,659,784,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.13,i*.12));[262,330,392].forEach(f=>tone(f,1.2,'sine',.05,.84))}};
 const updSnd=()=>{$('#snd').textContent=muted?'✕':'♪';$('#snd').setAttribute('aria-label',muted?'Activar sonido':'Silenciar')};
 $('#snd').onclick=()=>{muted=!muted;try{localStorage.setItem('ghd-mute',muted?'1':'0')}catch(e){}updSnd();if(!muted)S.click()};updSnd();
-document.addEventListener('click',e=>{if(e.target.closest('.tabs button,.words button,.addr button,.fld,.svc,.node,.docbar button,.sw button'))S.click()},true);
+/* clic en cualquier botón; los que ya tienen sonido propio no se duplican */
+const OWN='#prev,#next,#snd,#start,#send,#up,#party,#openB,#fs,#ans,#fmB,#aiB,.flip';
+document.addEventListener('pointerdown',()=>ac(),true);
+document.addEventListener('click',e=>{const b=e.target.closest('button,a,[role=button],label,input[type=radio],input[type=checkbox],.t');if(!b||b.closest(OWN))return;
+  if(b.closest('.tabs button,.words button,.addr button,.fld,.svc,.node,.docbar button,.sw button'))S.click();else S.tap()},true);
+document.addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const b=e.target.closest('button,a,.flip,.t,label');if(b&&!b.contains(e.relatedTarget))S.hover()});
+document.addEventListener('input',e=>{if(e.target.matches('input[type=text],input:not([type]),textarea,[contenteditable]'))S.key()});
+document.addEventListener('fullscreenchange',()=>S.screen(!!document.fullscreenElement));
 
 /* ---------- navegación + caja ---------- */
 const slides=$$('.slide');let cur=0;
 $('#kit').insertAdjacentHTML('beforeend',MODS.map(m=>`<span title="${m[1]}">${I[m[0]]}</span>`).join(''));
 const kit=$$('#kit span');let got=0;
-const go=(i,silent)=>{const n=Math.max(0,Math.min(slides.length-1,i));if(n!==cur&&!silent)S.nav();cur=n;
+const go=(i,silent)=>{const n=Math.max(0,Math.min(slides.length-1,i));
+  if(!silent){if(n===cur&&i!==cur)S.edge();else if(n!==cur){n===slides.length-1?S.end():S.nav(n>cur?1:-1)}}cur=n;
   slides.forEach((s,k)=>s.classList.toggle('on',k===cur));$('#num').textContent=`${cur+1} / ${slides.length}`;
   $('#prog').style.width=((cur+1)/slides.length*100)+'%';slides[cur].scrollTop=0;
   const g=Math.round(cur/(slides.length-1)*7);kit.forEach((k,j)=>k.classList.toggle('got',j<g));if(g>got&&!silent)setTimeout(()=>S.pop(g),180);got=g;
