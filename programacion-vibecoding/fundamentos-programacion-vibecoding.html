@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Fundamentos de Programación con VibeCoding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: bienvenida a un curso técnico, con energía de laboratorio, para proyectar con sonido
+   IDEA: la computadora se enciende y el curso "arranca" como un programa; fotos reales del hardware
+   COLOUR and TYPE: noche azul con verde terminal, cian y violeta IA; Sora + Inter + JetBrains Mono
+   LAYOUT: lámina a pantalla completa, foto real grande + panel interactivo, transición tipo escáner */
+:root{color-scheme:dark;--bg:#0a0f1c;--p1:#111a2e;--p2:#17223b;--line:#283657;--ink:#eef3ff;--mute:#b3c0dc;
+ --g:#3ee39f;--c:#4cc9f0;--v:#b197fc;--a:#ffb547;--r:#ff6b6b;--mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 Inter,system-ui,sans-serif;overflow:hidden}
+h1,h2,h3{font-family:Sora,Arial,sans-serif;line-height:1.08;margin:0;text-wrap:balance}
+h2{font-size:clamp(28px,3.4vw,46px)}h3{font-size:21px;margin-bottom:6px}
+p{margin:0 0 12px}
+code,.mono{font-family:var(--mono)}
+.deck{position:fixed;inset:0 0 68px 0}
+.slide{position:absolute;inset:0;overflow-y:auto;visibility:hidden;opacity:0;background:var(--bg)}
+.slide.on{visibility:visible;opacity:1;animation:revF .7s cubic-bezier(.6,0,.2,1)}
+.slide.on.back{animation:revB .7s cubic-bezier(.6,0,.2,1)}
+@keyframes revF{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0 0 0 0)}}
+@keyframes revB{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+#scan{position:fixed;top:0;bottom:68px;width:6px;background:var(--g);box-shadow:0 0 24px 8px #3ee39f88;left:-20px;z-index:20;pointer-events:none;opacity:0}
+#scan.go{animation:scanF .7s cubic-bezier(.6,0,.2,1)}#scan.goB{animation:scanB .7s cubic-bezier(.6,0,.2,1)}
+@keyframes scanF{0%{left:100%;opacity:1}100%{left:0;opacity:0}}
+@keyframes scanB{0%{left:0;opacity:1}100%{left:100%;opacity:0}}
+.hd{padding:20px max(4vw,16px) 14px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;border-bottom:1px solid var(--line);background:linear-gradient(90deg,#3ee39f14,transparent 60%)}
+.hd .tag{font:600 14px var(--mono);color:var(--g)}
+.hd small{color:var(--mute);font-size:15px}
+.body{padding:clamp(18px,2.6vw,36px) max(4vw,16px);max-width:1280px;margin:0 auto}
+.lead{font-size:clamp(18px,1.6vw,22px);color:var(--mute);margin:0 0 18px}
+.two{display:grid;gap:26px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+.two.w{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.panel{background:var(--p1);border:1px solid var(--line);border-radius:14px;padding:18px}
+.btn{font:600 16px Inter,sans-serif;min-height:46px;padding:0 18px;border-radius:10px;border:2px solid var(--g);background:var(--g);color:#06231a;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn.ghost{background:transparent;color:var(--g)}
+.btn.v{background:var(--v);border-color:var(--v);color:#1d1238}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.note{font-size:14px;color:var(--mute);margin-top:10px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.chips button{min-height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--line);background:var(--p2);color:var(--ink);font:600 15px Inter;cursor:pointer}
+.chips button.on{background:var(--c);border-color:var(--c);color:#04202b}
+.rv{opacity:0;transform:translateY(16px)}
+.slide.on .rv{animation:up .55s ease forwards;animation-delay:calc(var(--i,0)*90ms + 250ms)}
+@keyframes up{to{opacity:1;transform:none}}
+/* fotos reales */
+.ph{position:relative;margin:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#000;aspect-ratio:4/3}
+.ph img{width:100%;height:100%;object-fit:cover;display:block;transform-origin:center}
+.slide.on .ph img{animation:kb 16s ease-out forwards}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.09)}}
+.ph figcaption{position:absolute;left:0;right:0;bottom:0;padding:6px 10px;font-size:11px;color:#dfe7f7;background:linear-gradient(transparent,#000b);text-align:right}
+.ph .lbl{position:absolute;left:12px;top:12px;font:700 14px var(--mono);background:#0a0f1ccc;color:var(--g);padding:4px 10px;border-radius:8px}
+.ph.wide{aspect-ratio:16/9}.ph.tall{aspect-ratio:1}
+/* terminal / editor */
+.term{background:#060a14;border:1px solid var(--line);border-radius:12px;overflow:hidden;font:15px/1.6 var(--mono)}
+.term .bar{display:flex;gap:6px;align-items:center;padding:8px 12px;background:#0f1628;color:var(--mute);font-size:13px}
+.term .bar i{width:11px;height:11px;border-radius:50%;background:#ff5f57}.term .bar i+i{background:#febc2e}.term .bar i+i+i{background:#28c840}
+.term .bar span{margin-left:8px}
+.term pre{margin:0;padding:14px 16px;white-space:pre-wrap;word-break:break-word;min-height:3em;color:#d6e2ff}
+.term .out{border-top:1px dashed var(--line);color:var(--g);min-height:3.2em}
+.k{color:var(--v)}.s{color:var(--a)}.f{color:var(--c)}.cm{color:#7f8db0}
+.caret::after{content:"▋";color:var(--g);animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+/* portada */
+.cover{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:36px;align-items:center;padding:max(4vw,20px)}
+.cover .bg{position:absolute;inset:0;background:url(img/programador.jpg) center/cover;filter:brightness(.32) saturate(.8);transform:scale(1.05)}
+.slide.on .cover .bg{animation:kb 20s ease-out forwards}
+.cover>*{position:relative}
+.cover .k1{font:600 clamp(15px,1.2vw,20px) var(--mono);color:var(--g);margin-bottom:12px}
+.cover h1{font-size:clamp(42px,5.6vw,92px);font-weight:800}
+.cover h1 em{font-style:normal;background:linear-gradient(90deg,var(--g),var(--c),var(--v));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover p{font-size:clamp(18px,1.6vw,26px);color:#dbe4f7;max-width:36ch;margin:16px 0 22px}
+.cover .by{margin-top:22px;font-weight:600;color:#dbe4f7}
+.cover .credit{position:absolute;right:10px;bottom:6px;font-size:11px;color:#c7d2e8aa}
+#boot{min-height:300px}
+@media(min-width:1000px){.cover .term{font-size:clamp(16px,1.25vw,23px)}.cover .btn{font-size:clamp(20px,1.4vw,26px);min-height:60px;padding:0 28px}.cover .by{font-size:clamp(18px,1.3vw,24px)}}
+/* tarjetas volteables */
+.flip{perspective:900px;min-height:200px;cursor:pointer;background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left}
+.flip .in{position:relative;min-height:200px;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.on .in{transform:rotateY(180deg)}
+.flip .f,.flip .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.flip .f{background:var(--p1);border:1px solid var(--line)}
+.flip .f .ico{font-size:38px;line-height:1}
+.flip .f small{color:var(--mute);font-size:13px}
+.flip .b{background:linear-gradient(135deg,#1a3a5c,#2a1f52);border:1px solid var(--c);transform:rotateY(180deg);font-size:17px}
+/* medidores */
+.meter{display:grid;grid-template-columns:150px minmax(0,1fr) 60px;gap:10px;align-items:center;margin:8px 0;font-size:15px}
+.meter .tr{height:18px;border-radius:9px;background:var(--p2);overflow:hidden}
+.meter .tr i{display:block;height:100%;width:0;border-radius:9px;background:var(--c);transition:width .8s cubic-bezier(.3,1.3,.5,1)}
+.meter b{text-align:right;font-variant-numeric:tabular-nums}
+/* juego */
+.sit{font:700 clamp(24px,2.6vw,36px) Sora,Arial,sans-serif;min-height:3em;display:grid;place-items:center;text-align:center;background:var(--p1);border:2px solid var(--line);border-radius:14px;padding:18px;transition:border-color .3s}
+.sit.ok{border-color:var(--g)}.sit.no{border-color:var(--r)}
+.ans{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));margin-top:12px}
+.ans button{min-height:62px;font:700 18px Sora,Arial,sans-serif;border-radius:12px;border:2px solid var(--line);background:var(--p2);color:var(--ink);cursor:pointer;padding:8px 12px}
+.ans button.ok{border-color:var(--g);background:#123d2e}.ans button.no{border-color:var(--r);background:#41191d}
+.fbk{min-height:2.4em;margin-top:10px;color:var(--mute)}
+.score{font:700 15px var(--mono);color:var(--a)}
+/* ruta */
+.route{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.node{background:var(--p1);border:2px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;padding:0;color:var(--ink);font:inherit;text-align:left;transition:transform .3s,border-color .3s,box-shadow .3s}
+.node img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;filter:grayscale(.85) brightness(.6);transition:filter .5s}
+.node div{padding:10px 12px}.node b{display:block;font:700 15px var(--mono);color:var(--g)}.node span{font:600 16px Sora,Arial,sans-serif}
+.node.lit img{filter:none}.node.lit{border-color:var(--g);box-shadow:0 0 22px #3ee39f44}
+.node.sel{transform:translateY(-6px);border-color:var(--c)}
+/* capas */
+.stack{display:flex;flex-direction:column;gap:8px}
+.lay{border-radius:12px;padding:14px 18px;border:2px solid transparent;cursor:pointer;font:700 19px Sora,Arial,sans-serif;color:#081222;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:transform .25s,box-shadow .25s}
+.lay small{font:500 14px Inter;opacity:.85}
+.lay.on{transform:scale(1.03);box-shadow:0 0 0 3px var(--ink)}
+/* flujo */
+.flow{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch}
+.st{flex:1 1 130px;background:var(--p1);border:2px solid var(--line);border-radius:12px;padding:12px;text-align:center;transition:all .35s}
+.st .e{font-size:32px;display:block}.st b{display:block;font-size:15px}.st small{color:var(--mute);font-size:13px}
+.st.on{border-color:var(--g);background:#123d2e;transform:translateY(-4px)}
+.st.done{border-color:#3ee39f66}
+/* cpu */
+.cores{display:grid;gap:6px;margin-top:10px}
+.core{display:flex;gap:4px;align-items:center;min-height:30px;background:var(--p2);border-radius:8px;padding:4px 8px;font:600 13px var(--mono);color:var(--mute)}
+.task{width:22px;height:22px;border-radius:5px;background:var(--c);animation:pop .3s}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+/* ram */
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:8px}
+.apps button{display:flex;justify-content:space-between;gap:8px;align-items:center;min-height:48px;padding:6px 12px;border-radius:10px;border:2px solid var(--line);background:var(--p2);color:var(--ink);font:600 15px Inter;cursor:pointer;text-align:left}
+.apps button.on{border-color:var(--c);background:#0f3346}
+.ramb{height:44px;border-radius:12px;background:var(--p2);overflow:hidden;display:flex;border:2px solid var(--line);margin:12px 0 6px}
+.ramb i{height:100%;transition:width .5s}
+.ramb.full{border-color:var(--r);animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* carrera */
+.race{display:grid;grid-template-columns:170px minmax(0,1fr) 90px;gap:10px;align-items:center;margin:10px 0;font-size:15px}
+.race .tr{height:26px;border-radius:13px;background:var(--p2);overflow:hidden}
+.race .tr i{display:block;height:100%;width:0;border-radius:13px}
+.race b{font:700 15px var(--mono);text-align:right}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.trio .ph{aspect-ratio:4/3}
+/* red */
+.net{display:flex;align-items:center;justify-content:space-between;gap:6px;position:relative;margin:12px 0}
+.net .n{flex:none;width:96px;text-align:center;font-size:13px;color:var(--mute)}
+.net .n span{display:grid;place-items:center;width:64px;height:64px;margin:0 auto 4px;border-radius:16px;background:var(--p2);border:2px solid var(--line);font-size:30px;transition:all .3s}
+.net .n.on span{border-color:var(--g);box-shadow:0 0 18px #3ee39f66}
+.net .ln{flex:1;height:3px;background:var(--line)}
+.log{font:14px/1.7 var(--mono);color:var(--g);background:#060a14;border-radius:10px;padding:12px 14px;min-height:150px;border:1px solid var(--line)}
+/* demos */
+.prev{background:#f4f7fb;color:#13203a;border-radius:12px;min-height:160px;padding:16px;display:grid;place-items:center;font-family:Inter,Arial,sans-serif;border:1px solid var(--line)}
+.demoB{font:700 22px Inter;padding:14px 26px;border-radius:12px;border:0;background:#2563eb;color:#fff;cursor:pointer}
+table.db{width:100%;border-collapse:collapse;font-size:15px}
+table.db th,table.db td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+table.db th{color:var(--c);font:600 14px var(--mono)}
+table.db tr.hit td{background:#123d2e}
+.big{font:800 clamp(44px,5vw,78px) Sora,Arial,sans-serif;background:linear-gradient(90deg,var(--g),var(--c));-webkit-background-clip:text;background-clip:text;color:transparent}
+.warn{border-left:5px solid var(--a);background:#2d2412;border-radius:10px;padding:12px 16px;color:#ffe3b0}
+.cycle{position:relative;width:min(100%,380px);aspect-ratio:1;margin:0 auto}
+.cycle .cn{position:absolute;width:44%;padding:12px;border-radius:14px;background:var(--p1);border:2px solid var(--line);text-align:center;transition:all .35s}
+.cycle .cn b{display:block;font:700 18px Sora}.cycle .cn small{color:var(--mute);font-size:13px}
+.cycle .cn.on{border-color:var(--v);background:#2a1f52;transform:scale(1.06)}
+.cycle .c0{left:28%;top:0}.cycle .c1{right:0;top:36%}.cycle .c2{left:28%;bottom:0}.cycle .c3{left:0;top:36%}
+.cycle .mid{position:absolute;inset:34%;display:grid;place-items:center;font-size:44px;animation:spin 8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.conf{position:fixed;top:-20px;width:10px;height:16px;z-index:30;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+/* módulo portada */
+.mcover{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:max(5vw,20px)}
+.mcover .bg{position:absolute;inset:0;background:center/cover;filter:brightness(.38)}
+.slide.on .mcover .bg{animation:kb 18s ease-out forwards}
+.mcover>*{position:relative}
+.mcover .n{font:800 clamp(80px,12vw,200px) Sora;color:transparent;-webkit-text-stroke:2px var(--g);line-height:.9}
+.mcover h2{font-size:clamp(38px,5vw,80px);max-width:18ch}
+.mcover p{font-size:clamp(18px,1.7vw,26px);color:#dbe4f7;max-width:46ch;margin-top:12px}
+.mcover .credit{position:absolute;right:10px;bottom:6px;font-size:11px;color:#c7d2e8aa}
+/* nav */
+nav{position:fixed;left:0;right:0;bottom:0;height:68px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 max(2vw,10px);background:#070b16;border-top:1px solid var(--line);z-index:10}
+nav .mid{display:flex;align-items:center;gap:14px;min-width:0}
+nav .sec{font:600 14px var(--mono);color:var(--g);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav .num{font:600 15px var(--mono);color:var(--mute);min-width:60px;text-align:center}
+nav .btn{min-width:46px;padding:0 12px;justify-content:center}
+nav .right{display:flex;gap:8px;align-items:center}
+#sndHint{background:var(--a);border-color:var(--a);color:#2a1a00}
+.prog{position:fixed;left:0;bottom:68px;height:4px;background:linear-gradient(90deg,var(--g),var(--c),var(--v));transition:width .4s;z-index:11}
+/* proyección */
+@media(min-width:1000px){
+ body{font-size:clamp(20px,1.4vw,26px)}
+ h2{font-size:clamp(40px,3.8vw,62px)}h3{font-size:clamp(23px,1.7vw,30px)}
+ .body{max-width:min(94vw,1800px)}
+ .hd small{font-size:clamp(17px,1.2vw,21px)}.hd .tag{font-size:clamp(16px,1.1vw,19px)}
+ .lead{font-size:clamp(22px,1.7vw,29px)}
+ .btn{font-size:clamp(18px,1.25vw,21px);min-height:54px}
+ .chips button{font-size:clamp(17px,1.2vw,20px);min-height:50px}
+ .note{font-size:clamp(15px,1vw,18px)}
+ .term{font-size:clamp(16px,1.15vw,20px)}
+ .flip,.flip .in{min-height:230px}.flip .b{font-size:clamp(18px,1.3vw,23px)}.flip .f .ico{font-size:48px}
+ .meter,.race,table.db{font-size:clamp(16px,1.1vw,19px)}.meter{grid-template-columns:190px minmax(0,1fr) 70px}.race{grid-template-columns:210px minmax(0,1fr) 110px}
+ .apps button{font-size:clamp(16px,1.1vw,19px);min-height:54px}
+ .node span{font-size:clamp(16px,1.15vw,20px)}
+ .lay{font-size:clamp(20px,1.5vw,26px)}.lay small{font-size:clamp(15px,1vw,18px)}
+ .st b{font-size:clamp(16px,1.1vw,19px)}.st small{font-size:clamp(14px,.95vw,16px)}
+ .log{font-size:clamp(15px,1.05vw,18px)}
+ .ans button{font-size:clamp(19px,1.4vw,24px);min-height:72px}
+}
+@media(max-width:900px){.two,.two.w,.cover{grid-template-columns:minmax(0,1fr)}.route{grid-template-columns:repeat(3,minmax(0,1fr))}.cover{position:relative;min-height:100%}}
+@media(max-width:600px){body{font-size:16px}nav .sec{display:none}#fs{display:none}.trio{grid-template-columns:minmax(0,1fr)}.route{grid-template-columns:repeat(2,minmax(0,1fr))}.meter{grid-template-columns:100px minmax(0,1fr) 48px}.race{grid-template-columns:110px minmax(0,1fr) 70px}.net .n{width:60px}.net .n span{width:46px;height:46px;font-size:22px}#sndHint .t{display:none}}
+@media(prefers-reduced-motion:reduce){.slide.on,.slide.on.back,#scan,.slide.on .ph img,.cycle .mid,.conf{animation:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- 1 PORTADA -->
+<section class="slide" data-t="Portada">
+ <div class="cover">
+  <div class="bg"></div>
+  <div>
+   <div class="k1">&gt; curso.iniciar()</div>
+   <h1>Fundamentos de Programación con <em>VibeCoding</em></h1>
+   <p>Entiende cómo funciona la computadora, aprende a programar y crea con la ayuda de la inteligencia artificial.</p>
+   <button class="btn" id="start">▶ Encender con sonido</button>
+   <div class="by">Jarlin Figueroa, MA</div>
+  </div>
+  <div class="term" id="boot"><div class="bar"><i></i><i></i><i></i><span>arranque.sh</span></div><pre id="bootTxt" class="caret"></pre></div>
+  <div class="credit" data-cr="programador"></div>
+ </div>
+</section>
+
+<!-- 2 QUÉ ES PROGRAMAR -->
+<section class="slide" data-t="¿Qué es programar?">
+ <header class="hd"><span class="tag">// el curso</span><h2>¿Qué es la programación?</h2><small>Toca cada palabra y ejecuta el código</small></header>
+ <div class="body two">
+  <div>
+   <p class="lead rv">Programar es <b style="color:var(--ink)">darle instrucciones precisas y en orden a una computadora</b>, en un lenguaje que ella entiende, para que resuelva un problema o haga una tarea.</p>
+   <div class="chips rv" style="--i:1" id="pgChips"></div>
+   <div class="panel rv" style="--i:2" id="pgDef"><h3>Algoritmo</h3><p style="margin:0">Una lista de pasos ordenados para resolver un problema, como una receta de cocina.</p></div>
+  </div>
+  <div class="rv" style="--i:2">
+   <div class="term"><div class="bar"><i></i><i></i><i></i><span>saludo.py</span></div>
+    <pre id="pyCode"></pre><pre class="out" id="pyOut"></pre></div>
+   <div class="row"><label for="pyName" style="font-weight:600">Tu nombre:</label><input id="pyName" value="Ana" maxlength="14" style="font:600 18px Inter;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:var(--p2);color:var(--ink);width:180px"><button class="btn" id="pyRun">▶ Ejecutar</button></div>
+  </div>
+ </div>
+</section>
+
+<!-- 3 LENGUAJES -->
+<section class="slide" data-t="Lenguajes">
+ <header class="hd"><span class="tag">// el curso</span><h2>Los idiomas de la computadora</h2><small>Un mismo saludo en cuatro lenguajes</small></header>
+ <div class="body two w">
+  <figure class="ph rv"><img data-k="web" src="img/web.jpg" alt="Pantalla con código de una página web"><span class="lbl">código real</span></figure>
+  <div class="rv" style="--i:1">
+   <div class="chips" id="lgTabs"></div>
+   <div class="term"><div class="bar"><i></i><i></i><i></i><span id="lgFile">hola.py</span></div><pre id="lgCode"></pre></div>
+   <div class="panel" style="margin-top:12px"><h3 id="lgT">Python</h3><p id="lgD" style="margin:0"></p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 4 VIBECODING -->
+<section class="slide" data-t="¿Qué es VibeCoding?">
+ <header class="hd"><span class="tag">// el curso</span><h2>¿Qué es el VibeCoding?</h2><small>Elige un pedido y mira a la IA programar</small></header>
+ <div class="body two">
+  <div>
+   <p class="lead rv">Es <b style="color:var(--ink)">programar conversando con la inteligencia artificial</b>: describes en tu idioma lo que quieres, la IA escribe el código y tú lo pruebas, lo revisas y pides mejoras.</p>
+   <div class="panel rv" style="--i:1"><p style="margin:0">El término lo popularizó <b>Andrej Karpathy</b>, cofundador de OpenAI, en febrero de 2025. Hoy es una de las formas más rápidas de crear páginas, apps y prototipos.</p></div>
+   <p class="rv" style="--i:2;margin-top:16px;font-weight:600">¿Qué le pides a la IA?</p>
+   <div class="chips rv" style="--i:3" id="vbChips"></div>
+  </div>
+  <div class="rv" style="--i:2">
+   <div class="term"><div class="bar"><i></i><i></i><i></i><span>asistente-ia</span></div>
+    <pre id="vbPrompt" style="color:var(--v);min-height:2em">Tú: …</pre><pre id="vbCode" style="min-height:7.5em"></pre></div>
+   <div class="prev" id="vbPrev" style="margin-top:12px"><span style="color:#5b6b8c">Aquí aparecerá el resultado</span></div>
+  </div>
+ </div>
+</section>
+
+<!-- 5 CICLO + ROLES -->
+<section class="slide" data-t="Tú + IA">
+ <header class="hd"><span class="tag">// el curso</span><h2>El ciclo del VibeCoding</h2><small>La IA escribe, pero tú diriges</small></header>
+ <div class="body two">
+  <div class="rv">
+   <div class="cycle" id="cyc">
+    <div class="cn c0"><b>1. Describe</b><small>Explicas qué quieres</small></div>
+    <div class="cn c1"><b>2. Genera</b><small>La IA escribe el código</small></div>
+    <div class="cn c2"><b>3. Prueba</b><small>Lo ejecutas y revisas</small></div>
+    <div class="cn c3"><b>4. Ajusta</b><small>Pides cambios precisos</small></div>
+    <div class="mid">🔁</div>
+   </div>
+   <div class="row" style="justify-content:center"><button class="btn v" id="cycB">Girar el ciclo</button></div>
+  </div>
+  <div>
+   <div class="grid rv" style="--i:1;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))">
+    <div class="panel"><h3 style="color:var(--v)">🤖 La IA</h3><ul style="margin:0;padding-left:20px"><li>Escribe código en segundos</li><li>Sugiere ideas y soluciones</li><li>Explica errores</li></ul></div>
+    <div class="panel"><h3 style="color:var(--g)">🧑‍💻 Tú</h3><ul style="margin:0;padding-left:20px"><li>Decides qué construir</li><li>Revisas que funcione bien</li><li>Cuidas la seguridad y los datos</li></ul></div>
+   </div>
+   <div class="warn rv" style="--i:2;margin-top:16px"><b>Importante:</b> la IA también se equivoca. Quien entiende los fundamentos detecta el error; quien no, copia el problema.</div>
+  </div>
+ </div>
+</section>
+
+<!-- 6 VENTAJAS CAPACITACIÓN -->
+<section class="slide" data-t="Ventajas del curso">
+ <header class="hd"><span class="tag">// el curso</span><h2>Ventajas de esta capacitación</h2><small>Toca cada tarjeta</small></header>
+ <div class="body"><div class="grid" id="vtGrid"></div></div>
+</section>
+
+<!-- 7 PROGRAMACIÓN + IA -->
+<section class="slide" data-t="Programar + IA">
+ <header class="hd"><span class="tag">// el curso</span><h2>Saber programar y usar la IA</h2><small>Compara los tres perfiles</small></header>
+ <div class="body two">
+  <div>
+   <div class="chips rv" id="pfChips"></div>
+   <div class="panel rv" style="--i:1"><h3 id="pfT"></h3><p id="pfD" style="color:var(--mute)"></p><div id="pfM"></div><p class="note">Comparación ilustrativa para el aula.</p></div>
+  </div>
+  <div class="rv" style="--i:2">
+   <h3>Lo que ganas en el trabajo</h3>
+   <ul style="padding-left:22px;margin:8px 0 0;display:grid;gap:10px">
+    <li><b>Más oportunidades:</b> casi todas las empresas necesitan software, páginas web y datos.</li>
+    <li><b>Productividad:</b> automatizas tareas repetitivas y entregas en horas lo que tomaba días.</li>
+    <li><b>Emprender:</b> puedes crear tu propia página, tienda o app sin depender de otros.</li>
+    <li><b>Destacar:</b> quien sabe dirigir a la IA y revisar su trabajo vale más que quien solo copia.</li>
+    <li><b>Trabajo remoto:</b> la programación se puede hacer desde cualquier lugar.</li>
+   </ul>
+  </div>
+ </div>
+</section>
+
+<!-- 8 TENDENCIAS -->
+<section class="slide" data-t="Tendencias">
+ <header class="hd"><span class="tag">// el curso</span><h2>La programación hoy</h2><small>Tendencias que mueven al mundo · toca cada una</small></header>
+ <div class="body two w">
+  <div>
+   <figure class="ph wide rv"><img data-k="datacenter" src="img/datacenter.jpg" alt="Centro de datos con filas de servidores iluminados"><span class="lbl">centro de datos</span></figure>
+   <div class="panel rv" style="--i:2;margin-top:12px"><h3 id="tdT"></h3><p id="tdD" style="margin:0"></p></div>
+  </div>
+  <div class="grid rv" style="--i:1;grid-template-columns:repeat(2,minmax(0,1fr))" id="tdGrid"></div>
+ </div>
+</section>
+
+<!-- 9 MAPA -->
+<section class="slide" data-t="Mapa del curso">
+ <header class="hd"><span class="tag">// el curso</span><h2>El mapa del curso</h2><small>Seis módulos · recorre la ruta y toca cada uno</small></header>
+ <div class="body">
+  <div class="route rv" id="route"></div>
+  <div class="row rv" style="--i:1"><button class="btn" id="walk">▶ Recorrer la ruta</button></div>
+  <div class="panel rv" style="--i:2;margin-top:14px"><h3 id="mpT">Toca un módulo</h3><p id="mpD" style="margin:0;color:var(--mute)">Cada módulo suma una pieza para que al final puedas crear y publicar tu propio proyecto.</p></div>
+ </div>
+</section>
+
+<!-- 10 MÓDULO 1 PORTADA -->
+<section class="slide" data-t="Módulo 1">
+ <div class="mcover"><div class="bg" style="background-image:url(img/placa.jpg)"></div>
+  <div class="n">01</div><h2>Hardware y Software enfocado a la programación</h2>
+  <p>Antes de darle órdenes a una computadora, conoce cómo está hecha por dentro y cómo piensa.</p>
+  <div class="credit" data-cr="placa"></div></div>
+</section>
+
+<!-- 11 HARDWARE VS SOFTWARE -->
+<section class="slide" data-t="Hardware y software">
+ <header class="hd"><span class="tag">// módulo 1</span><h2>Hardware y software</h2><small>Reto: clasifica cada elemento</small></header>
+ <div class="body two">
+  <div class="rv">
+   <div class="panel" style="margin-bottom:12px"><h3 style="color:var(--c)">🔩 Hardware</h3><p style="margin:0">Las partes <b>físicas</b> de la computadora: las puedes tocar. Procesador, memoria, discos, pantalla, teclado.</p></div>
+   <div class="panel"><h3 style="color:var(--v)">💾 Software</h3><p style="margin:0">Los <b>programas e instrucciones</b> que le dicen al hardware qué hacer. No se tocan: se instalan y se ejecutan.</p></div>
+   <p class="note">Sin software, el hardware no sabe qué hacer. Sin hardware, el software no tiene dónde funcionar.</p>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="row" style="justify-content:space-between;margin:0 0 10px"><b id="hsN">1 de 10</b><span class="score">Puntos: <span id="hsS">0</span></span></div>
+   <div class="sit" id="hsQ"></div>
+   <div class="ans" id="hsA"><button data-v="H">🔩 Hardware</button><button data-v="S">💾 Software</button></div>
+   <div class="fbk" id="hsF"></div>
+   <button class="btn ghost" id="hsR" style="display:none">Jugar de nuevo</button>
+  </div>
+ </div>
+</section>
+
+<!-- 12 CPU -->
+<section class="slide" data-t="CPU">
+ <header class="hd"><span class="tag">// módulo 1 · hardware</span><h2>CPU: el procesador</h2><small>El cerebro que ejecuta tu código</small></header>
+ <div class="body two w">
+  <div>
+   <figure class="ph rv"><img data-k="cpu" src="img/cpu.jpg" alt="Procesador AMD Ryzen 9 9950X"><span class="lbl">AMD Ryzen 9 9950X</span></figure>
+  </div>
+  <div>
+   <p class="lead rv">Ejecuta, una tras otra, <b style="color:var(--ink)">miles de millones de instrucciones por segundo</b>. Cada programa que escribas termina aquí.</p>
+   <div class="grid rv" style="--i:1;grid-template-columns:repeat(3,minmax(0,1fr))">
+    <div class="panel"><b style="color:var(--c)">Núcleos</b><br>Pequeños procesadores dentro del chip. Hoy: de 4 a 16 o más.</div>
+    <div class="panel"><b style="color:var(--c)">Hilos</b><br>Tareas que cada núcleo puede atender a la vez.</div>
+    <div class="panel"><b style="color:var(--c)">GHz</b><br>Velocidad: 4 GHz = 4 mil millones de ciclos por segundo.</div>
+   </div>
+   <div class="panel rv" style="--i:2;margin-top:12px">
+    <b>Prueba: procesar 16 tareas</b>
+    <div class="row" style="margin-top:8px"><button class="btn ghost" data-c="1">1 núcleo</button><button class="btn ghost" data-c="4">4 núcleos</button><button class="btn" data-c="8">8 núcleos</button><span class="score" id="cpT"></span></div>
+    <div class="cores" id="cores"></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 13 RAM -->
+<section class="slide" data-t="RAM">
+ <header class="hd"><span class="tag">// módulo 1 · hardware</span><h2>RAM: la memoria de trabajo</h2><small>Abre programas y mira cómo se llena</small></header>
+ <div class="body two w">
+  <div>
+   <figure class="ph wide rv"><img data-k="ram" src="img/ram.jpg" alt="Módulo de memoria RAM DDR4"><span class="lbl">módulo DDR4</span></figure>
+   <div class="panel rv" style="--i:1;margin-top:12px"><p style="margin:0">Guarda lo que estás usando <b>ahora mismo</b>: programas abiertos, pestañas, tu código en ejecución. Es muy rápida pero <b>temporal</b>: al apagar, se borra. Hoy se usan DDR4 y DDR5.</p></div>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="chips" id="ramSz"></div>
+   <div class="apps" id="apps"></div>
+   <div class="ramb" id="ramB"></div>
+   <div class="row" style="margin-top:0;justify-content:space-between"><b id="ramT">0 de 8 GB</b><span id="ramM" style="font-weight:600"></span></div>
+   <p class="note">Consumos aproximados, solo para comparar.</p>
+  </div>
+ </div>
+</section>
+
+<!-- 14 ALMACENAMIENTO -->
+<section class="slide" data-t="Almacenamiento">
+ <header class="hd"><span class="tag">// módulo 1 · hardware</span><h2>Discos: del HDD al NVMe</h2><small>Donde tus archivos se quedan aunque apagues</small></header>
+ <div class="body">
+  <div class="trio rv">
+   <figure class="ph"><img data-k="hdd" src="img/hdd.jpg" alt="Disco duro HDD abierto"><span class="lbl">HDD · disco con platos</span></figure>
+   <figure class="ph"><img data-k="ssd" src="img/ssd.jpg" alt="Unidad SSD SATA de 2.5 pulgadas"><span class="lbl">SSD SATA</span></figure>
+   <figure class="ph"><img data-k="nvme" src="img/nvme.jpg" alt="Unidad SSD NVMe M.2 Samsung 980 PRO"><span class="lbl">SSD NVMe M.2</span></figure>
+  </div>
+  <div class="two rv" style="--i:1;margin-top:16px">
+   <div class="panel">
+    <b>Carrera: copiar un proyecto de 5 GB</b>
+    <div id="race"></div>
+    <div class="row"><button class="btn" id="raceB">▶ ¡Arrancar!</button></div>
+   </div>
+   <div class="panel"><p><b style="color:var(--a)">HDD:</b> platos que giran y un brazo que lee. Barato, pero lento.</p><p><b style="color:var(--c)">SSD SATA:</b> chips de memoria, sin partes móviles. Unas 4 veces más rápido.</p><p style="margin:0"><b style="color:var(--g)">NVMe M.2:</b> los discos nuevos. Del tamaño de un chicle, conectados directo a la placa por PCIe: hasta 7 000 MB/s (Gen 4) y 14 000 MB/s (Gen 5).</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 15 PLACA Y GPU -->
+<section class="slide" data-t="Placa y GPU">
+ <header class="hd"><span class="tag">// módulo 1 · hardware</span><h2>Placa madre y tarjeta de video</h2><small>La que conecta todo y la que acelera la IA</small></header>
+ <div class="body two">
+  <div class="rv"><figure class="ph wide"><img data-k="placa" src="img/placa.jpg" alt="Interior de una computadora con la placa madre"><span class="lbl">placa madre</span></figure>
+   <div class="panel" style="margin-top:12px"><p style="margin:0">Es la "ciudad" donde viven y se comunican la CPU, la RAM, los discos y la tarjeta de video. Trae la <b>UEFI/BIOS</b>, el pequeño programa que enciende la computadora y busca el sistema operativo.</p></div></div>
+  <div class="rv" style="--i:1"><figure class="ph wide"><img data-k="gpu" src="img/gpu.jpg" alt="Tarjeta de video Nvidia GeForce RTX 5060 Ti"><span class="lbl">GPU · RTX 5060 Ti</span></figure>
+   <div class="panel" style="margin-top:12px"><p style="margin:0">La <b>GPU</b> tiene miles de núcleos pequeños que trabajan en paralelo. Dibuja gráficos y videojuegos, y es la pieza clave para <b>entrenar y ejecutar inteligencia artificial</b>.</p></div></div>
+ </div>
+</section>
+
+<!-- 16 CAPAS DEL SOFTWARE -->
+<section class="slide" data-t="Capas del software">
+ <header class="hd"><span class="tag">// módulo 1 · software</span><h2>Las capas del software</h2><small>Toca cada capa, de arriba hacia abajo</small></header>
+ <div class="body two">
+  <div class="stack rv" id="stack"></div>
+  <div class="rv" style="--i:1">
+   <div class="panel" style="min-height:220px"><h3 id="lyT"></h3><p id="lyD" style="margin:0 0 10px"></p><p id="lyE" class="mono" style="color:var(--g);margin:0;font-size:.9em"></p></div>
+   <div class="grid" style="margin-top:12px;grid-template-columns:repeat(3,minmax(0,1fr))">
+    <div class="panel"><b style="color:var(--c)">De sistema</b><br><small>Windows, Linux, drivers</small></div>
+    <div class="panel"><b style="color:var(--c)">De aplicación</b><br><small>Navegador, Word, juegos</small></div>
+    <div class="panel"><b style="color:var(--c)">De programación</b><br><small>Editores, compiladores</small></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 17 KERNEL -->
+<section class="slide" data-t="Kernel">
+ <header class="hd"><span class="tag">// módulo 1 · software</span><h2>El kernel: el núcleo del sistema</h2><small>Envía una petición y síguela</small></header>
+ <div class="body two">
+  <div>
+   <p class="lead rv">Es la parte más importante del sistema operativo: <b style="color:var(--ink)">el puente entre los programas y el hardware</b>. Ningún programa toca el disco o la memoria directamente: se lo pide al kernel.</p>
+   <div class="grid rv" style="--i:1;grid-template-columns:repeat(2,minmax(0,1fr))">
+    <div class="panel"><b style="color:var(--g)">Procesos</b><br>Reparte la CPU entre los programas.</div>
+    <div class="panel"><b style="color:var(--g)">Memoria</b><br>Da a cada programa su espacio en la RAM.</div>
+    <div class="panel"><b style="color:var(--g)">Dispositivos</b><br>Habla con el hardware mediante drivers.</div>
+    <div class="panel"><b style="color:var(--g)">Archivos</b><br>Organiza lo que se guarda en el disco.</div>
+   </div>
+   <p class="note rv" style="--i:2">Ejemplos: <b>Linux</b> (Android y casi todos los servidores), <b>Windows NT</b> y <b>XNU</b> (macOS e iPhone).</p>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="flow" id="kFlow" style="flex-direction:column"></div>
+   <div class="row"><button class="btn" id="kB">💾 Guardar tarea.docx</button></div>
+  </div>
+ </div>
+</section>
+
+<!-- 18 EJECUCIÓN -->
+<section class="slide" data-t="Cómo se ejecuta">
+ <header class="hd"><span class="tag">// módulo 1 · hardware + software</span><h2>¿Qué pasa cuando ejecutas un programa?</h2><small>Paso a paso</small></header>
+ <div class="body">
+  <div class="flow rv" id="exFlow"></div>
+  <div class="row rv" style="--i:1"><button class="btn" id="exB">Siguiente paso ▶</button><button class="btn ghost" id="exAll">Ejecutar todo</button></div>
+  <div class="two rv" style="--i:2;margin-top:14px">
+   <div class="panel" id="exD" style="min-height:120px"><b>Toca «Siguiente paso»</b> para seguir el viaje de tu código.</div>
+   <div class="panel"><p><b style="color:var(--c)">Compilado:</b> se traduce todo antes de ejecutar (C, C++, Rust, Go).</p><p style="margin:0"><b style="color:var(--v)">Interpretado:</b> se traduce mientras se ejecuta (Python, JavaScript).</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 19 TU EQUIPO -->
+<section class="slide" data-t="Tu equipo">
+ <header class="hd"><span class="tag">// módulo 1</span><h2>¿Tu computadora está lista para programar?</h2><small>Elige lo que tienes</small></header>
+ <div class="body two">
+  <div class="rv">
+   <p style="font-weight:700;margin-bottom:6px">Procesador</p><div class="chips" data-q="cpu"></div>
+   <p style="font-weight:700;margin-bottom:6px">Memoria RAM</p><div class="chips" data-q="ram"></div>
+   <p style="font-weight:700;margin-bottom:6px">Almacenamiento</p><div class="chips" data-q="dsk"></div>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="panel" style="min-height:260px"><div class="big" id="eqV">?</div><h3 id="eqT">Elige tus piezas</h3><ul id="eqL" style="margin:8px 0 0;padding-left:20px"></ul></div>
+   <p class="note">Recomendado: 6 núcleos o más, 16 GB de RAM y SSD NVMe. Con 8 GB y SSD también se puede empezar.</p>
+  </div>
+ </div>
+</section>
+
+<!-- 20 RETO -->
+<section class="slide" data-t="Reto módulo 1">
+ <header class="hd"><span class="tag">// módulo 1</span><h2>Reto: ¿cuánto sabes de tu máquina?</h2><small>8 preguntas</small></header>
+ <div class="body">
+  <div class="row" style="justify-content:space-between;margin:0 0 10px"><b id="qzN"></b><span class="score">Puntos: <span id="qzS">0</span></span></div>
+  <div class="sit" id="qzQ"></div>
+  <div class="ans" id="qzA"></div>
+  <div class="fbk" id="qzF"></div>
+  <button class="btn ghost" id="qzR" style="display:none">Jugar de nuevo</button>
+ </div>
+</section>
+
+<!-- 21 REDES -->
+<section class="slide" data-t="Módulo 2 · Redes">
+ <header class="hd"><span class="tag">// módulo 2</span><h2>Principios de Redes</h2><small>¿Qué pasa cuando abres una página?</small></header>
+ <div class="body two w">
+  <div>
+   <div class="two" style="gap:12px">
+    <figure class="ph rv"><img data-k="router" src="img/router.jpg" alt="Router Wi-Fi con antenas"><span class="lbl">router</span></figure>
+    <figure class="ph rv" style="--i:1"><img data-k="switch" src="img/switch.jpg" alt="Switch de red con cables conectados"><span class="lbl">switch y cables</span></figure>
+   </div>
+   <p class="rv" style="--i:2;margin-top:12px">Cómo se conectan las computadoras para compartir información: desde la red de tu casa hasta internet. Sin redes no existirían la web, la nube ni la IA en línea.</p>
+   <div class="chips rv" style="--i:3" data-cc="net"></div><div class="panel rv" style="--i:3" data-cd="net"></div>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="net" id="net"></div>
+   <div class="log" id="netLog">&gt; Presiona «Visitar sitio»</div>
+   <div class="row"><button class="btn" id="netB">🌐 Visitar sitio</button></div>
+  </div>
+ </div>
+</section>
+
+<!-- 22 INTRO PROGRAMACIÓN -->
+<section class="slide" data-t="Módulo 3 · Programación">
+ <header class="hd"><span class="tag">// módulo 3</span><h2>Introducción a la Programación</h2><small>Mueve la nota y mira decidir al programa</small></header>
+ <div class="body two w">
+  <div>
+   <figure class="ph wide rv"><img data-k="codigo" src="img/codigo.webp" alt="Editor de código con un programa abierto"><span class="lbl">editor de código</span></figure>
+   <p class="rv" style="--i:1;margin-top:12px">Las bases que usan todos los lenguajes: guardar datos, tomar decisiones, repetir tareas y organizar el código. Practicaremos con <b>Python</b>.</p>
+   <div class="chips rv" style="--i:2" data-cc="prg"></div><div class="panel rv" style="--i:2" data-cd="prg"></div>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="term"><div class="bar"><i></i><i></i><i></i><span>nota.py</span></div><pre id="ntCode"></pre><pre class="out" id="ntOut"></pre></div>
+   <div class="row"><label for="ntR" style="font-weight:700">Nota:</label><input type="range" id="ntR" min="0" max="100" value="85" style="flex:1;accent-color:#3ee39f;min-width:160px"><b id="ntV" class="mono" style="font-size:1.4em">85</b></div>
+  </div>
+ </div>
+</section>
+
+<!-- 23 WEB -->
+<section class="slide" data-t="Módulo 4 · Web">
+ <header class="hd"><span class="tag">// módulo 4</span><h2>Principios de Programación Web</h2><small>Enciende cada capa de una página</small></header>
+ <div class="body two w">
+  <div>
+   <figure class="ph wide rv"><img data-k="web" src="img/web.jpg" alt="Código HTML y CSS en una pantalla"><span class="lbl">HTML · CSS · JS</span></figure>
+   <p class="rv" style="--i:1;margin-top:12px">Cómo se construyen las páginas que ves en el navegador. Tres lenguajes que trabajan juntos: estructura, diseño e interacción.</p>
+   <div class="chips rv" style="--i:2" data-cc="web"></div><div class="panel rv" style="--i:2" data-cd="web"></div>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="chips" id="wbT"><button data-l="html" class="on">HTML</button><button data-l="css">+ CSS</button><button data-l="js">+ JavaScript</button></div>
+   <div class="prev" id="wbP" style="min-height:250px"></div>
+   <div class="term" style="margin-top:10px"><pre id="wbC" style="min-height:5em"></pre></div>
+  </div>
+ </div>
+</section>
+
+<!-- 24 VIBECODING MÓDULO -->
+<section class="slide" data-t="Módulo 5 · VibeCoding">
+ <header class="hd"><span class="tag">// módulo 5</span><h2>VibeCoding</h2><small>El poder está en cómo pides</small></header>
+ <div class="body two w">
+  <div>
+   <figure class="ph wide rv"><img data-k="programador" src="img/programador.jpg" alt="Persona programando en una laptop"><span class="lbl">tú + IA</span></figure>
+   <p class="rv" style="--i:1;margin-top:12px">Crearás proyectos completos con asistentes de IA como <b>Claude</b>, <b>ChatGPT</b>, <b>GitHub Copilot</b> o <b>Cursor</b>: escribir buenos pedidos, revisar, corregir y publicar.</p>
+   <div class="chips rv" style="--i:2" data-cc="vib"></div><div class="panel rv" style="--i:2" data-cd="vib"></div>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="chips" id="prT"><button data-p="0" class="on">😕 Pedido vago</button><button data-p="1">🎯 Pedido claro</button></div>
+   <div class="term"><pre id="prQ" style="color:var(--v);min-height:4.5em"></pre></div>
+   <div class="prev" id="prP" style="margin-top:10px;min-height:230px"></div>
+  </div>
+ </div>
+</section>
+
+<!-- 25 BD Y SERVIDOR -->
+<section class="slide" data-t="Módulo 6 · Datos y servidor">
+ <header class="hd"><span class="tag">// módulo 6</span><h2>Bases de Datos y Servidor Web</h2><small>Hazle preguntas a la base de datos</small></header>
+ <div class="body two w">
+  <div>
+   <figure class="ph wide rv"><img data-k="servidores" src="img/servidores.jpg" alt="Servidores en un rack de un centro de datos"><span class="lbl">servidores</span></figure>
+   <p class="rv" style="--i:1;margin-top:12px">Dónde viven los datos de una app (usuarios, notas, ventas) y cómo un servidor web los entrega a cada visitante. Usaremos <b>SQL</b>, el lenguaje de las bases de datos.</p>
+   <div class="chips rv" style="--i:2" data-cc="bd"></div><div class="panel rv" style="--i:2" data-cd="bd"></div>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="chips" id="sqT"></div>
+   <div class="term"><pre id="sqC" style="min-height:2.4em"></pre></div>
+   <div class="panel" style="margin-top:10px;padding:8px 12px"><table class="db" id="sqTb"></table></div>
+  </div>
+ </div>
+</section>
+
+<!-- 26 CIERRE -->
+<section class="slide" data-t="Bienvenidos">
+ <header class="hd"><span class="tag">// listo</span><h2>¡Bienvenidos al curso!</h2></header>
+ <div class="body two">
+  <div>
+   <div class="term rv"><div class="bar"><i></i><i></i><i></i><span>bienvenida.py</span></div><pre id="byC"></pre><pre class="out" id="byO"></pre></div>
+   <div class="row rv" style="--i:1"><button class="btn" id="party">🎉 Ejecutar y celebrar</button><button class="btn ghost" id="crB">Créditos de fotos</button></div>
+   <div class="panel" id="crL" hidden style="margin-top:12px;font-size:13px;max-height:260px;overflow:auto"></div>
+  </div>
+  <div class="rv" style="--i:1">
+   <p class="lead" style="font-size:clamp(24px,2.2vw,38px);color:var(--ink);font-family:Sora">«La mejor manera de predecir el futuro es inventarlo.»</p>
+   <p style="color:var(--mute)">— Alan Kay, pionero de la computación</p>
+   <p style="margin-top:28px;font-weight:600">Realizado por Jarlin Figueroa M.A.</p>
+  </div>
+ </div>
+</section>
+
+</div>
+<div id="scan"></div>
+<div class="prog" id="prog"></div>
+<nav aria-label="Navegación de láminas">
+ <button class="btn ghost" id="prev" aria-label="Anterior">‹</button>
+ <div class="mid"><span class="sec" id="sec"></span><span class="num" id="num"></span></div>
+ <div class="right">
+  <button class="btn" id="sndHint" aria-label="Activar sonido">🔊<span class="t"> Activar sonido</span></button>
+  <button class="btn ghost" id="snd" aria-label="Silenciar">♪</button>
+  <button class="btn ghost" id="fs" aria-label="Pantalla completa">⛶</button>
+  <button class="btn" id="next" aria-label="Siguiente">›</button>
+ </div>
+</nav>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ---------- créditos de fotos (Wikimedia Commons) ---------- */
+const CR={programador:['Crew crew','CC0','Programmer_at_work_(Unsplash).jpg'],web:['Sai Kiran Anagani','CC0','CSS_code_on_a_screen_(Unsplash).jpg'],codigo:['Wikideas1','CC0','Coder_screen_shot.webp'],
+ datacenter:['BalticServers.com','CC BY-SA 3.0','BalticServers_data_center.jpg'],placa:['Kurt Kaiser','CC0','Computer_motherboard_11.jpg'],cpu:['4300streetcar','CC BY 4.0','AMD_Ryzen_9_9950X.jpg'],
+ ram:['ElooKoN','CC BY-SA 4.0','RAM_Module_(SDRAM-DDR4).jpg'],hdd:['Evan-Amos','CC BY-SA 3.0','Laptop-hard-drive-exposed.jpg'],ssd:['D-Kuru','CC BY-SA 3.0 AT','Vertex_2_Solid_State_Drive_by_OCZ-top_oblique_PNr°0307.jpg'],
+ nvme:['D-Kuru','CC BY-SA 4.0','Samsung_980_PRO_PCIe_4.0_NVMe_SSD_1TB-top_PNr°0915.jpg'],gpu:['FreeMediaKid!','CC BY-SA 4.0','Nvidia_GeForce_RTX_5060_Ti_16GB,_PNY_Overclocked_Dual_Fan,_front.jpg'],
+ router:['Dinkun Chen','CC BY-SA 4.0','ASUS_Wi-Fi_ROUTER_TUF_6500.jpg'],switch:['ProjectManhattan','CC BY-SA 3.0','Network_cables_and_switch.jpg'],servidores:['Victorgrigas','CC BY-SA 3.0','Wikimedia_Foundation_Servers-8055_13.jpg']};
+const crTxt=k=>`Foto: ${CR[k][0]} · ${CR[k][1]} · Wikimedia Commons`;
+$$('img[data-k]').forEach(i=>{const f=document.createElement('figcaption');f.textContent=crTxt(i.dataset.k);i.after(f)});
+$$('[data-cr]').forEach(d=>d.textContent=crTxt(d.dataset.cr));
+$('#crL').innerHTML='<b>Fotografías de Wikimedia Commons</b><ul style="margin:6px 0 0;padding-left:18px">'+Object.entries(CR).map(([k,c])=>`<li>${esc(c[2].replace(/_/g,' '))}: ${esc(c[0])}, ${c[1]} — <a style="color:var(--c)" target="_blank" rel="noopener" href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(c[2])}">ver</a></li>`).join('')+'</ul>';
+
+/* ---------- sonido (Web Audio, sin archivos) ---------- */
+let AC=null,muted=false;try{muted=localStorage.getItem('pvc-mute')==='1'}catch(e){}
+const ac=()=>{if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume().catch(()=>{});return AC};
+let OUTN=null;const OUT=a=>{if(!OUTN){const m=a.createGain(),c=a.createDynamicsCompressor();m.gain.value=2.6;c.threshold.value=-10;c.ratio.value=4;m.connect(c).connect(a.destination);OUTN=m}return OUTN};
+try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+const unlockAudio=()=>{const a=ac();if(!a)return;if(!a.__u){try{const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0);a.__u=1}catch(e){}}if(a.state!=='running')a.resume().catch(()=>{});setTimeout(updAudio,150)};
+['pointerdown','touchend','click','keydown'].forEach(t=>document.addEventListener(t,unlockAudio,true));
+function updAudio(){$('#sndHint').hidden=!!(AC&&AC.state==='running')&&!muted}
+setInterval(updAudio,1000);
+const tone=(f,d=.15,type='sine',v=.18,t0=0,f2)=>{const a=ac();if(!a||muted)return;const t=a.currentTime+t0,o=a.createOscillator(),g=a.createGain();
+ o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.012);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(OUT(a));o.start(t);o.stop(t+d+.05)};
+const noise=(dur,f0,f1,v=.2,q=1.2,t0=0)=>{const a=ac();if(!a||muted)return;const n=Math.floor(a.sampleRate*dur),b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0);
+ for(let i=0;i<n;i++){d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n)}
+ const s=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain(),t=a.currentTime+t0;s.buffer=b;fl.type='bandpass';fl.Q.value=q;fl.frequency.setValueAtTime(f0,t);fl.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.value=v;s.connect(fl).connect(g).connect(OUT(a));s.start(t)};
+let lastH=0,lastK=0;
+const S={
+ nav:dir=>{noise(.38,dir>0?3000:400,dir>0?400:3000,.2,2);tone(dir>0?880:440,.09,'square',.03,.02);tone(dir>0?1320:330,.12,'sine',.06,.12)},
+ click:()=>{tone(1500,.035,'square',.03);tone(760,.07,'triangle',.08,.01)},
+ tap:()=>{tone(950,.05,'triangle',.06);tone(1420,.05,'sine',.04,.03)},
+ hover:()=>{const n=performance.now();if(n-lastH<90)return;lastH=n;tone(2000,.025,'sine',.022)},
+ key:()=>{const n=performance.now();if(n-lastK<28)return;lastK=n;noise(.025,2500+Math.random()*1500,2000,.12,3);tone(180+Math.random()*60,.02,'square',.015)},
+ beep:(f=880)=>tone(f,.08,'square',.05),
+ ok:()=>[523,659,784,1047].forEach((f,i)=>tone(f,.22,'triangle',.13,i*.07)),
+ no:()=>{tone(260,.18,'sawtooth',.06,0,180);tone(170,.28,'square',.05,.12)},
+ pop:i=>tone(480+(i%8)*85,.12,'sine',.12),
+ whoosh:()=>noise(.5,300,3200,.25),
+ boot:()=>{tone(110,1.2,'sawtooth',.05,0,440);[262,392,523,784].forEach((f,i)=>tone(f,.5,'triangle',.1,.5+i*.12));tone(1047,.9,'sine',.08,1.05)},
+ power:()=>{tone(60,.4,'sine',.2,0,120);noise(.3,200,800,.15)},
+ party:()=>{[392,523,659,784,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.13,i*.11));[262,330,392].forEach(f=>tone(f,1.2,'sine',.05,.8))},
+ glitch:()=>{for(let i=0;i<5;i++)tone(200+Math.random()*1800,.03,'square',.04,i*.035)},
+ edge:()=>{tone(180,.12,'triangle',.08);tone(150,.14,'triangle',.06,.06)},
+ screen:on=>[392,587,784].forEach((f,i,a)=>tone(on?f:a[a.length-1-i],.14,'triangle',.08,i*.06))};
+const updSnd=()=>{$('#snd').textContent=muted?'✕':'♪';$('#snd').setAttribute('aria-label',muted?'Activar sonido':'Silenciar')};
+$('#snd').onclick=()=>{muted=!muted;try{localStorage.setItem('pvc-mute',muted?'1':'0')}catch(e){}updSnd();updAudio();if(!muted)S.click()};updSnd();
+$('#sndHint').onclick=()=>{if(muted){muted=false;try{localStorage.setItem('pvc-mute','0')}catch(e){}updSnd()}unlockAudio();setTimeout(()=>S.ok(),150)};
+const OWN='#sndHint,#prev,#next,#snd,#fs,#start,.flip,.ans button,#party,#raceB,#walk,#cycB,#netB,#kB,#exB,#exAll,#pyRun';
+document.addEventListener('click',e=>{const b=e.target.closest('button,a,input[type=range]');if(!b||b.closest(OWN))return;if(b.closest('.chips,.apps,.lay,.node'))S.click();else S.tap()},true);
+document.addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const b=e.target.closest('button,a,.flip');if(b&&!b.contains(e.relatedTarget))S.hover()});
+document.addEventListener('input',e=>{if(e.target.matches('input[type=text],input:not([type])'))S.key();if(e.target.type==='range')tone(300+e.target.value*8,.03,'sine',.04)});
+document.addEventListener('fullscreenchange',()=>S.screen(!!document.fullscreenElement));
+
+/* escribir código con efecto de tecleo */
+const typeTo=async(el,txt,spd=14,html)=>{el.classList.add('caret');el.textContent='';const tok=el.__tok=Symbol();
+ for(let i=0;i<txt.length;i++){if(el.__tok!==tok)return false;el.textContent+=txt[i];if(txt[i]!==' '&&txt[i]!=='\n')S.key();await wait(txt[i]==='\n'?spd*4:spd)}
+ el.classList.remove('caret');if(html)el.innerHTML=html;return true};
+const hl=s=>esc(s).replace(/(#.*|\/\/.*|--.*)$/gm,'<span class="cm">$1</span>').replace(/(&quot;.*?&quot;|'.*?')/g,'<span class="s">$1</span>').replace(/\b(for|in|if|else|elif|def|return|let|const|function|SELECT|FROM|WHERE|ORDER BY|DESC|COUNT|print|console|document)\b/g,'<span class="k">$1</span>');
+
+/* ---------- ajuste a pantalla ---------- */
+const fit=()=>{const s=document.querySelector('.slide.on');if(!s)return;const b=s.querySelector('.body');if(!b)return;
+ if(innerWidth<1000||!('zoom' in b.style)){b.style.zoom='';b.style.maxWidth='';return}
+ const hd=s.querySelector('.hd'),avail=s.clientHeight-(hd?hd.offsetHeight:0)-12;
+ const set=z=>{b.style.zoom=z.toFixed(3);b.style.maxWidth=(innerWidth*.94/z)+'px';return b.getBoundingClientRect().height<=avail};
+ let lo=1,hi=1.75;if(!set(lo)){set(1);return}if(set(hi))return;for(let k=0;k<9;k++){const m=(lo+hi)/2;if(set(m))lo=m;else hi=m}set(lo)};
+addEventListener('resize',()=>requestAnimationFrame(fit));
+let fitT;document.addEventListener('click',()=>{clearTimeout(fitT);fitT=setTimeout(fit,500)});
+
+/* ---------- navegación ---------- */
+const slides=$$('.slide');let cur=0;const enter={};
+const go=(i,silent)=>{const n=Math.max(0,Math.min(slides.length-1,i));
+ if(!silent){if(n===cur&&i!==cur){S.edge();return}if(n!==cur){const d=n>cur?1:-1;S.nav(d);const sc=$('#scan');sc.className='';void sc.offsetWidth;sc.className=d>0?'go':'goB';slides[n].classList.toggle('back',d<0)}}
+ cur=n;slides.forEach((s,k)=>s.classList.toggle('on',k===cur));
+ $('#num').textContent=`${cur+1} / ${slides.length}`;$('#sec').textContent=slides[cur].dataset.t;
+ $('#prog').style.width=((cur+1)/slides.length*100)+'%';slides[cur].scrollTop=0;
+ try{history.replaceState(null,'','#l'+(cur+1))}catch(e){}
+ const f=enter[slides[cur].dataset.t];if(f)f();requestAnimationFrame(fit)};
+$('#prev').onclick=()=>go(cur-1);$('#next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+ if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(cur+1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(cur-1)}
+ if(e.key==='Home')go(0);if(e.key==='End')go(slides.length-1)});
+let tx=null;document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>70&&!e.target.closest('input,.term,.route'))go(cur+(dx<0?1:-1));tx=null});
+$('#fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+
+/* ---------- 1 portada: arranque ---------- */
+const BOOT=['> Encendiendo la computadora…','  CPU ............ OK','  Memoria RAM .... OK','  Disco NVMe ..... OK','> Cargando el kernel…','> Iniciando sistema operativo…','> Abriendo: Fundamentos de Programación','> ¡Listo! Bienvenidos 🚀'];
+let booted=false;
+const runBoot=async()=>{const el=$('#bootTxt');el.textContent='';el.classList.add('caret');S.power();
+ for(const [i,l] of BOOT.entries()){for(const ch of l){el.textContent+=ch;if(ch!==' '&&ch!=='.')S.key();await wait(ch==='.'?6:16)}el.textContent+='\n';if(/OK/.test(l))S.beep(660+i*90);await wait(160)}
+ el.classList.remove('caret');S.boot();booted=true};
+$('#start').onclick=async()=>{unlockAudio();$('#start').disabled=true;await runBoot();setTimeout(()=>go(1),1500)};
+$('#bootTxt').textContent=BOOT.join('\n');
+
+/* ---------- 2 qué es programar ---------- */
+const PG=[['Algoritmo','Una lista de pasos ordenados para resolver un problema, como una receta de cocina.'],['Lenguaje','El idioma con reglas exactas que usamos para escribir instrucciones: Python, JavaScript, SQL…'],['Código','El texto que escribimos en ese lenguaje. Una coma de más puede cambiarlo todo.'],['Programa','El código ya listo y funcionando: una app, un juego, una página web.']];
+$('#pgChips').innerHTML=PG.map((p,i)=>`<button data-i="${i}" class="${i?'':'on'}">${p[0]}</button>`).join('');
+$$('#pgChips button').forEach(b=>b.onclick=()=>{const p=PG[b.dataset.i];$$('#pgChips button').forEach(x=>x.classList.toggle('on',x===b));$('#pgDef').innerHTML=`<h3>${p[0]}</h3><p style="margin:0">${p[1]}</p>`});
+const pyTxt=n=>`nombre = "${n}"\nfor vez in range(3):\n    print("¡Hola,", nombre + "!")`;
+const pyName=()=>($('#pyName').value.trim()||'Ana').replace(/["\\]/g,'');
+const pyShow=()=>{$('#pyCode').innerHTML=hl(pyTxt(pyName()))};pyShow();
+$('#pyName').oninput=()=>{pyShow();$('#pyOut').textContent=''};
+$('#pyRun').onclick=async()=>{S.beep(990);const o=$('#pyOut');o.textContent='';for(let i=0;i<3;i++){await wait(320);o.textContent+=`¡Hola, ${pyName()}!\n`;S.pop(i*2)}S.ok()};
+
+/* ---------- 3 lenguajes ---------- */
+const LG=[['Python','hola.py','nombre = "Ana"\nprint("¡Hola,", nombre + "!")','Fácil de leer. El favorito para inteligencia artificial, datos y automatizar tareas.'],
+ ['JavaScript','hola.js','let nombre = "Ana";\nconsole.log("¡Hola, " + nombre + "!");','El lenguaje de la web: da vida a las páginas y también funciona en servidores.'],
+ ['HTML','hola.html','<h1>¡Hola, Ana!</h1>\n<p>Bienvenida a mi página</p>','No es de programación, es de marcado: define la estructura de una página web.'],
+ ['SQL','consulta.sql',"SELECT nombre FROM estudiantes\nWHERE nombre = 'Ana';",'Para pedirle datos a una base de datos: buscar, ordenar, contar.']];
+$('#lgTabs').innerHTML=LG.map((l,i)=>`<button data-i="${i}" class="${i?'':'on'}">${l[0]}</button>`).join('');
+const lgShow=(i,anim)=>{const l=LG[i];$$('#lgTabs button').forEach((b,k)=>b.classList.toggle('on',k==i));$('#lgFile').textContent=l[1];$('#lgT').textContent=l[0];$('#lgD').textContent=l[3];
+ if(anim)typeTo($('#lgCode'),l[2],12,hl(l[2]));else $('#lgCode').innerHTML=hl(l[2])};
+$$('#lgTabs button').forEach(b=>b.onclick=()=>lgShow(b.dataset.i,true));lgShow(0);
+
+/* ---------- 4 vibecoding demo ---------- */
+const VB=[
+ {p:'Haz un botón que cuente cuántas veces lo presiono',c:'<button id="b">Clics: 0</button>\n<script>\n  let n = 0;\n  b.onclick = () => b.textContent = "Clics: " + (++n);\n<\/script>',
+  r:el=>{el.innerHTML='<button class="demoB">Clics: 0</button>';let n=0;const b=el.firstChild;b.onclick=()=>{b.textContent='Clics: '+(++n);S.pop(n)}}},
+ {p:'Haz una tarjeta de bienvenida con mi nombre: Ana',c:'<div class="tarjeta">\n  <h2>¡Hola, Ana!</h2>\n  <p>Bienvenida al curso de programación</p>\n</div>',
+  r:el=>{el.innerHTML='<div style="text-align:center"><h2 style="font:800 30px Sora,Arial;margin:0 0 6px">¡Hola, Ana!</h2><p style="margin:0">Bienvenida al curso de programación</p></div>'}},
+ {p:'Ponle colores y un cohete a la tarjeta',c:'.tarjeta {\n  background: linear-gradient(#4cc9f0, #b197fc);\n  border-radius: 16px;  color: white;\n}\nh2::after { content: " 🚀"; }',
+  r:el=>{el.innerHTML='<div style="text-align:center;background:linear-gradient(135deg,#4cc9f0,#b197fc);color:#fff;border-radius:16px;padding:22px 30px;box-shadow:0 10px 30px #0003"><h2 style="font:800 30px Sora,Arial;margin:0 0 6px">¡Hola, Ana! 🚀</h2><p style="margin:0">Bienvenida al curso de programación</p></div>'}}];
+$('#vbChips').innerHTML=VB.map((v,i)=>`<button data-i="${i}">${['🔢 Contador','👋 Tarjeta','🎨 Colores'][i]}</button>`).join('');
+let vbBusy=false;
+$$('#vbChips button').forEach(b=>b.onclick=async()=>{if(vbBusy)return;vbBusy=true;const v=VB[b.dataset.i];$$('#vbChips button').forEach(x=>x.classList.toggle('on',x===b));
+ $('#vbPrev').innerHTML='<span style="color:#5b6b8c">La IA está escribiendo…</span>';$('#vbCode').textContent='';
+ await typeTo($('#vbPrompt'),'Tú: '+v.p,18);S.glitch();$('#vbCode').innerHTML='<span class="cm">// IA pensando…</span>';await wait(600);
+ await typeTo($('#vbCode'),v.c,9,hl(v.c));S.whoosh();v.r($('#vbPrev'));S.ok();vbBusy=false});
+
+/* ---------- 5 ciclo ---------- */
+let cyI=-1,cyT=null;
+$('#cycB').onclick=()=>{clearInterval(cyT);let k=0;const step=()=>{cyI=(cyI+1)%4;$$('#cyc .cn').forEach((c,j)=>c.classList.toggle('on',j===cyI));tone([523,659,784,988][cyI],.2,'triangle',.12);if(++k>=8){clearInterval(cyT);S.ok()}};step();cyT=setInterval(step,700)};
+
+/* ---------- 6 ventajas ---------- */
+const VT=[['🧱','Desde cero','No necesitas saber nada antes: avanzamos paso a paso, del hardware hasta publicar tu proyecto.'],['🔍','Entiendes la máquina','Sabrás qué pasa dentro de la computadora cuando tu código se ejecuta.'],['🚀','Proyectos reales','Crearás páginas web, pequeñas apps y bases de datos que funcionan de verdad.'],['🤖','IA como asistente','Aprendes a usar la IA para crear más rápido, sin depender de ella a ciegas.'],['🧭','Base para tu carrera','Abre puertas a software, redes, datos, ciberseguridad y soporte técnico.'],['🧠','Pensamiento lógico','Programar entrena a dividir problemas grandes en pasos pequeños.']];
+$('#vtGrid').innerHTML=VT.map((v,i)=>`<button class="flip rv" style="--i:${i}"><div class="in"><div class="f"><span class="ico">${v[0]}</span><h3>${v[1]}</h3><small>Toca para ver</small></div><div class="b">${v[2]}</div></div></button>`).join('');
+$$('#vtGrid .flip').forEach((f,i)=>f.onclick=()=>{f.classList.toggle('on');tone(520+i*40,.08,'triangle',.08);tone(780+i*40,.1,'triangle',.06,.05)});
+
+/* ---------- 7 perfiles ---------- */
+const PF=[['🤖 Solo usa IA','Copia lo que la IA genera sin entenderlo. Rápido al inicio, pero no sabe arreglar errores ni explicar su trabajo.',[85,35,20,40]],
+ ['⌨️ Solo programa','Sabe programar pero hace todo a mano. Buen control, pero tarda mucho más en cada proyecto.',[40,75,85,65]],
+ ['🚀 Programa + IA','Entiende el código y usa la IA para acelerar. Revisa, corrige y entrega rápido y bien. Es el perfil que buscan las empresas.',[95,90,90,95]]];
+const PFM=['Velocidad','Calidad','Control','Empleabilidad'],PFC=['#4cc9f0','#3ee39f','#b197fc','#ffb547'];
+$('#pfChips').innerHTML=PF.map((p,i)=>`<button data-i="${i}">${p[0]}</button>`).join('');
+$('#pfM').innerHTML=PFM.map((m,i)=>`<div class="meter"><span>${m}</span><div class="tr"><i style="background:${PFC[i]}"></i></div><b>0</b></div>`).join('');
+const pfShow=i=>{const p=PF[i];$$('#pfChips button').forEach((b,k)=>b.classList.toggle('on',k==i));$('#pfT').textContent=p[0];$('#pfD').textContent=p[1];
+ $$('#pfM .meter').forEach((m,k)=>{m.querySelector('i').style.width=p[2][k]+'%';m.querySelector('b').textContent=p[2][k]});if(i==2)setTimeout(S.ok,300)};
+$$('#pfChips button').forEach(b=>b.onclick=()=>pfShow(b.dataset.i));
+enter['Programar + IA']=()=>{$$('#pfM i').forEach(i=>i.style.width=0);setTimeout(()=>pfShow(0),300)};
+
+/* ---------- 8 tendencias ---------- */
+const TD=[['🤖','Agentes de IA','Asistentes como GitHub Copilot, Claude Code o Cursor ya escriben, explican y corrigen código junto al programador. Saber dirigirlos es una habilidad nueva y muy buscada.'],
+ ['🐍','Python','El lenguaje más usado para inteligencia artificial, análisis de datos y automatización. Fácil de aprender y muy poderoso.'],
+ ['🌐','JavaScript y TypeScript','Dominan la web: casi todas las páginas y muchas apps y servidores funcionan con ellos.'],
+ ['☁️','La nube','Las apps viven en servidores en internet (Amazon, Microsoft, Google) y atienden a millones de personas a la vez.'],
+ ['🛡️','Ciberseguridad','Con más datos en línea, proteger contraseñas, servidores y usuarios es tan importante como programar.'],
+ ['📊','Datos','Las empresas buscan quien convierta datos en decisiones con bases de datos, gráficos e IA.']];
+$('#tdGrid').innerHTML=TD.map((t,i)=>`<button class="panel" data-i="${i}" style="cursor:pointer;color:var(--ink);font:inherit;text-align:left;display:flex;gap:12px;align-items:center;border-width:2px"><span style="font-size:34px">${t[0]}</span><b style="font-family:Sora">${t[1]}</b></button>`).join('');
+const tdShow=i=>{$$('#tdGrid button').forEach((b,k)=>b.style.borderColor=k==i?'var(--g)':'');$('#tdT').textContent=TD[i][0]+' '+TD[i][1];$('#tdD').textContent=TD[i][2]};
+$$('#tdGrid button').forEach(b=>b.onclick=()=>{tdShow(b.dataset.i);S.pop(+b.dataset.i)});tdShow(0);
+
+/* ---------- 9 mapa ---------- */
+const MODS=[['cpu.jpg','Hardware y Software','Cómo está hecha la computadora (CPU, RAM, discos, GPU) y cómo el sistema operativo y el kernel controlan todo. La base para entender lo que programas.'],
+ ['router.jpg','Principios de Redes','Direcciones IP, routers, Wi-Fi, DNS e internet: cómo viaja la información de una computadora a otra.'],
+ ['codigo.webp','Introducción a la Programación','Variables, condiciones, ciclos y funciones con Python. Escribirás tus primeros programas.'],
+ ['web.jpg','Principios de Programación Web','HTML, CSS y JavaScript para crear páginas web atractivas e interactivas.'],
+ ['programador.jpg','VibeCoding','Crear proyectos completos con asistentes de IA: buenos pedidos, revisión y publicación.'],
+ ['servidores.jpg','Bases de Datos y Servidor Web','Guardar y consultar datos con SQL y entender cómo un servidor entrega una app a sus usuarios.']];
+$('#route').innerHTML=MODS.map((m,i)=>`<button class="node" data-i="${i}"><img src="img/${m[0]}" alt=""><div><b>0${i+1}</b><span>${m[1]}</span></div></button>`).join('');
+const mpShow=i=>{$$('#route .node').forEach((n,k)=>{n.classList.toggle('sel',k==i);if(k==i)n.classList.add('lit')});$('#mpT').textContent=`Módulo ${+i+1}: ${MODS[i][1]}`;$('#mpD').textContent=MODS[i][2]};
+$$('#route .node').forEach(n=>n.onclick=()=>mpShow(n.dataset.i));
+let walking=false;
+$('#walk').onclick=async()=>{if(walking)return;walking=true;$$('#route .node').forEach(n=>n.classList.remove('lit','sel'));
+ for(let i=0;i<6;i++){mpShow(i);tone(392+i*70,.25,'triangle',.12);await wait(900)}S.party();walking=false};
+
+/* ---------- 11 hardware o software ---------- */
+const HS=[['Memoria RAM','H'],['Windows 11','S'],['Procesador (CPU)','H'],['Kernel de Linux','S'],['Visual Studio Code','S'],['Disco SSD NVMe','H'],['Python','S'],['Tarjeta de video','H'],['Driver de la impresora','S'],['Placa madre','H']];
+const HSW={S:'Es software: son instrucciones, no una pieza física.',H:'Es hardware: es una pieza física que puedes tocar.'};
+let hi=0,hs=0,hlock=false;
+const hsDraw=()=>{hlock=false;$('#hsN').textContent=`${hi+1} de ${HS.length}`;const q=$('#hsQ');q.className='sit';q.textContent=HS[hi][0];$('#hsF').textContent='';$$('#hsA button').forEach(b=>b.className='');$('#hsA').style.display='';$('#hsR').style.display='none'};
+$$('#hsA button').forEach(b=>b.onclick=()=>{if(hlock)return;hlock=true;const ok=b.dataset.v===HS[hi][1];b.classList.add(ok?'ok':'no');$('#hsQ').classList.add(ok?'ok':'no');
+ if(ok){hs++;S.ok()}else S.no();$('#hsS').textContent=hs;$('#hsF').textContent=(ok?'✔ ':'✘ ')+HSW[HS[hi][1]];
+ setTimeout(()=>{hi++;if(hi<HS.length)hsDraw();else{$('#hsQ').textContent=`¡${hs} de ${HS.length}!`;$('#hsA').style.display='none';$('#hsF').textContent=hs>=8?'¡Excelente! Ya distingues hardware y software.':'Repasa: si se toca, es hardware; si se instala, es software.';$('#hsR').style.display='';if(hs>=8)S.party()}},1500)});
+$('#hsR').onclick=()=>{hi=0;hs=0;$('#hsS').textContent=0;hsDraw()};hsDraw();
+
+/* ---------- 12 cpu ---------- */
+let cpuRun=0;
+const cpuGo=async c=>{const run=++cpuRun;$$('[data-c]').forEach(b=>b.className='btn '+(+b.dataset.c===c?'':'ghost'));
+ $('#cores').innerHTML=Array.from({length:c},(_,i)=>`<div class="core">N${i+1}</div>`).join('');const cs=$$('#cores .core');let steps=0;
+ for(let t=0;t<16;){steps++;for(let k=0;k<c&&t<16;k++,t++){cs[k].insertAdjacentHTML('beforeend','<i class="task"></i>')}tone(500+steps*40,.06,'square',.04);$('#cpT').textContent=`Tiempo: ${steps} paso${steps>1?'s':''}`;await wait(260);if(run!==cpuRun)return}
+ S.ok();$('#cpT').textContent=`Tiempo: ${steps} paso${steps>1?'s':''} ✔`;requestAnimationFrame(fit)};
+$$('[data-c]').forEach(b=>b.onclick=()=>cpuGo(+b.dataset.c));
+
+/* ---------- 13 ram ---------- */
+const APPS=[['🪟 Windows',3,'#64748b'],['🧑‍💻 VS Code',1.5,'#4cc9f0'],['🌐 Chrome (15 pestañas)',3.5,'#3ee39f'],['🤖 Asistente de IA',1,'#b197fc'],['📱 Emulador Android',4,'#ffb547'],['🗄️ Servidor local',2.5,'#ff8fab'],['🎵 Música',.5,'#f472b6']];
+let ramSz=8;const ramOn=new Set([0]);
+$('#ramSz').innerHTML=[8,16,32].map(s=>`<button data-s="${s}" class="${s===8?'on':''}">${s} GB de RAM</button>`).join('');
+$('#apps').innerHTML=APPS.map((a,i)=>`<button data-i="${i}" class="${i?'':'on'}"><span>${a[0]}</span><b>${a[1]} GB</b></button>`).join('');
+const ramDraw=()=>{let used=0;ramOn.forEach(i=>used+=APPS[i][1]);const b=$('#ramB');
+ b.innerHTML=[...ramOn].map(i=>`<i style="width:${Math.min(APPS[i][1]/ramSz*100,100)}%;background:${APPS[i][2]}"></i>`).join('');
+ $('#ramT').textContent=`${used} de ${ramSz} GB`;const full=used>ramSz;b.classList.toggle('full',full);
+ $('#ramM').textContent=full?'⚠ ¡Se llenó! Todo se pone lento':used/ramSz>.8?'Casi llena…':'✔ Fluye bien';$('#ramM').style.color=full?'var(--r)':used/ramSz>.8?'var(--a)':'var(--g)';return full};
+$$('#ramSz button').forEach(b=>b.onclick=()=>{ramSz=+b.dataset.s;$$('#ramSz button').forEach(x=>x.classList.toggle('on',x===b));if(!ramDraw())S.ok()});
+$$('#apps button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(ramOn.has(i))ramOn.delete(i);else ramOn.add(i);b.classList.toggle('on',ramOn.has(i));if(ramDraw()&&ramOn.has(i))S.no()});ramDraw();
+
+/* ---------- 14 carrera de discos ---------- */
+const RC=[['HDD','150 MB/s',150,'#ffb547'],['SSD SATA','550 MB/s',550,'#4cc9f0'],['NVMe Gen 4','7 000 MB/s',7000,'#3ee39f'],['NVMe Gen 5','14 000 MB/s',14000,'#b197fc']];
+$('#race').innerHTML=RC.map(r=>`<div class="race"><span><b style="font-family:Sora;text-align:left">${r[0]}</b><br><small style="color:var(--mute)">${r[1]}</small></span><div class="tr"><i style="background:${r[3]}"></i></div><b>—</b></div>`).join('');
+$('#raceB').onclick=()=>{S.power();const rows=$$('#race .race');rows.forEach(r=>{const i=r.querySelector('i');i.style.transition='none';i.style.width=0;r.querySelector('b:last-child').textContent='—'});
+ requestAnimationFrame(()=>rows.forEach((r,k)=>{const secs=5000/RC[k][2],ms=Math.max(250,secs*120);const i=r.querySelector('i');i.style.transition=`width ${ms}ms linear`;i.style.width='100%';
+  setTimeout(()=>{r.querySelector('b:last-child').textContent=(secs<1?secs.toFixed(1):Math.round(secs))+' s';tone(1200-k*150,.15,'triangle',.1);if(k===0)S.ok()},ms)}))};
+
+/* ---------- 16 capas ---------- */
+const LY=[['🧑 Usuario','Tú','Quien usa la computadora: toca, escribe y da órdenes.','#ffd28a'],['🧩 Aplicaciones','Los programas','Lo que usas y lo que tú programarás: navegadores, editores, juegos.','#9be7c4','VS Code · Chrome · Word'],
+ ['🪟 Sistema operativo','El administrador','Organiza todo y te da ventanas, archivos y configuración.','#8fd3f4','Windows · Linux · macOS · Android'],['⚙️ Kernel','El núcleo','Habla directo con el hardware y reparte CPU, memoria y dispositivos.','#c8b6ff','Linux · Windows NT · XNU'],
+ ['🔩 Hardware','Las piezas','CPU, RAM, discos, GPU: donde todo termina ejecutándose.','#b9c3d6','CPU · RAM · SSD · GPU']];
+$('#stack').innerHTML=LY.map((l,i)=>`<button class="lay" data-i="${i}" style="background:${l[3]}">${l[0]}<small>${l[1]}</small></button>`).join('');
+const lyShow=i=>{const l=LY[i];$$('#stack .lay').forEach((b,k)=>b.classList.toggle('on',k==i));$('#lyT').textContent=l[0];$('#lyD').textContent=l[2];$('#lyE').textContent=l[4]||'';tone(400+i*-50+300,.12,'triangle',.1)};
+$$('#stack .lay').forEach(b=>b.onclick=()=>lyShow(b.dataset.i));lyShow(3);
+
+/* ---------- 17 kernel ---------- */
+const KF=[['📝','Word','«Quiero guardar tarea.docx»'],['📞','Llamada al sistema','La app le pide permiso al kernel'],['⚙️','Kernel','Revisa permisos y busca espacio'],['🔌','Driver del disco','Traduce la orden para el SSD'],['💾','SSD NVMe','Escribe los datos'],['✅','Word','«Guardado» en milisegundos']];
+$('#kFlow').innerHTML=KF.map(k=>`<div class="st" style="display:flex;gap:12px;align-items:center;text-align:left;flex:none;padding:8px 12px"><span class="e" style="font-size:26px">${k[0]}</span><div><b>${k[1]}</b><small>${k[2]}</small></div></div>`).join('');
+let kRun=0;$('#kB').onclick=async()=>{const r=++kRun,st=$$('#kFlow .st');st.forEach(s=>s.className='st');S.whoosh();
+ for(let i=0;i<st.length;i++){if(r!==kRun)return;st.forEach((s,k)=>{s.classList.toggle('on',k===i);if(k<i)s.classList.add('done')});tone(440+i*90,.12,'square',.04);await wait(520)}S.ok()};
+
+/* ---------- 18 ejecución ---------- */
+const EX=[['⌨️','Escribes','tu código','Escribes el programa en un editor como VS Code. Por ahora es solo texto.'],['💾','Se guarda','en el disco','El archivo (por ejemplo saludo.py) queda guardado en el SSD.'],['🔁','Se traduce','compilador / intérprete','La CPU no entiende Python: un intérprete o compilador lo traduce a lenguaje máquina (unos y ceros).'],
+ ['🧠','Se carga','en la RAM','El sistema operativo copia el programa a la RAM, donde la CPU puede leerlo rápido.'],['⚡','Se ejecuta','en la CPU','La CPU ejecuta las instrucciones, una tras otra, miles de millones por segundo.'],['🖥️','Resultado','en la pantalla','Ves el resultado: «¡Hola, Ana!». Todo ocurrió en una fracción de segundo.']];
+$('#exFlow').innerHTML=EX.map(e=>`<div class="st"><span class="e">${e[0]}</span><b>${e[1]}</b><small>${e[2]}</small></div>`).join('');
+let exI=-1;const exShow=i=>{exI=i;$$('#exFlow .st').forEach((s,k)=>{s.classList.toggle('on',k===i);s.classList.toggle('done',k<i)});const e=EX[i];$('#exD').innerHTML=`<h3>${e[0]} ${e[1]} ${e[2]}</h3><p style="margin:0">${e[3]}</p>`;tone(440+i*110,.15,'triangle',.11);if(i===EX.length-1)setTimeout(S.ok,200)};
+$('#exB').onclick=()=>exShow((exI+1)%EX.length);
+$('#exAll').onclick=async()=>{for(let i=0;i<EX.length;i++){exShow(i);await wait(1100)}};
+enter['Cómo se ejecuta']=()=>{exI=-1;$$('#exFlow .st').forEach(s=>s.className='st')};
+
+/* ---------- 19 tu equipo ---------- */
+const EQ={cpu:[['2 núcleos',0],['4 núcleos',1],['6 núcleos',2],['8 o más',2]],ram:[['4 GB',0],['8 GB',1],['16 GB',2],['32 GB',2]],dsk:[['Disco HDD',0],['SSD SATA',1],['SSD NVMe',2]]};
+const EQS={};
+$$('[data-q]').forEach(c=>{const q=c.dataset.q;c.innerHTML=EQ[q].map((o,i)=>`<button data-i="${i}">${o[0]}</button>`).join('');
+ c.querySelectorAll('button').forEach(b=>b.onclick=()=>{c.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));EQS[q]=EQ[q][b.dataset.i][1];eqEval()})});
+const eqEval=()=>{if(Object.keys(EQS).length<3){$('#eqT').textContent='Te falta elegir '+(3-Object.keys(EQS).length)+' pieza(s)';return}
+ const t=EQS.cpu+EQS.ram+EQS.dsk,L=[];if(EQS.cpu===0)L.push('Con 2 núcleos funcionará, pero lento con varios programas.');if(EQS.ram===0)L.push('4 GB de RAM se quedan cortos: busca subir a 8 o 16 GB.');if(EQS.ram===1)L.push('8 GB alcanzan para empezar; 16 GB es lo ideal.');if(EQS.dsk===0)L.push('Cambiar el HDD por un SSD es la mejora más barata y notable.');if(!L.length)L.push('Tu equipo está listo para programar, usar IA y correr servidores locales.');
+ const [v,tt,f]=EQS.ram===0||EQS.dsk===0&&t<4?['⚠','Necesita mejoras',S.no]:t>=5?['🚀','¡Listo para programar!',S.party]:['✔','Sirve para empezar',S.ok];
+ $('#eqV').textContent=v;$('#eqT').textContent=tt;$('#eqL').innerHTML=L.map(x=>`<li>${x}</li>`).join('');f()};
+
+/* ---------- 20 reto ---------- */
+const QZ=[['¿Qué componente ejecuta las instrucciones de un programa?',['La memoria RAM','La CPU','El disco SSD'],1],
+ ['Se va la luz y no guardaste. ¿Dónde estaba lo que se perdió?',['En la RAM','En el disco SSD','En la tarjeta de video'],0],
+ ['¿Qué es el kernel?',['Un editor para escribir y probar código Python','Una pieza de la placa que guarda los datos','El núcleo del sistema que controla el hardware'],2],
+ ['¿Cuál de estos almacenamientos es el más rápido?',['Disco duro HDD','SSD SATA','SSD NVMe'],2],
+ ['Windows, Linux y macOS son ejemplos de…',['Sistemas operativos','Lenguajes de programación','Componentes de hardware'],0],
+ ['¿Cuánta RAM se recomienda hoy para programar con comodidad?',['4 GB','16 GB','256 GB'],1],
+ ['¿Qué traduce tu código a instrucciones que entiende la CPU?',['El router que conecta la red de casa','El compilador o intérprete','La fuente de poder'],1],
+ ['¿Por qué la GPU es clave para la inteligencia artificial?',['Guarda los archivos más rápido que un SSD','Hace miles de cálculos en paralelo','Reemplaza a la memoria RAM'],1]];
+let qi=0,qs=0,ql=false;
+const qzDraw=()=>{ql=false;$('#qzN').textContent=`Pregunta ${qi+1} de ${QZ.length}`;const q=QZ[qi];$('#qzQ').className='sit';$('#qzQ').textContent=q[0];$('#qzF').textContent='';$('#qzR').style.display='none';
+ $('#qzA').style.display='';$('#qzA').innerHTML=q[1].map((o,i)=>`<button data-i="${i}">${['A','B','C'][i]}. ${o}</button>`).join('');
+ $$('#qzA button').forEach(b=>b.onclick=()=>{if(ql)return;ql=true;const ok=+b.dataset.i===q[2];b.classList.add(ok?'ok':'no');$$('#qzA button')[q[2]].classList.add('ok');$('#qzQ').classList.add(ok?'ok':'no');
+  if(ok){qs++;S.ok()}else S.no();$('#qzS').textContent=qs;$('#qzF').textContent=ok?'✔ ¡Correcto!':'✘ La respuesta correcta está en verde.';
+  setTimeout(()=>{qi++;if(qi<QZ.length)qzDraw();else{$('#qzQ').textContent=`Resultado: ${qs} de ${QZ.length}`;$('#qzA').style.display='none';$('#qzF').textContent=qs>=6?'¡Excelente! Dominas tu máquina.':'¡Bien! En el módulo 1 lo dominarás.';$('#qzR').style.display='';if(qs>=6)S.party()}requestAnimationFrame(fit)},1700)})};
+$('#qzR').onclick=()=>{qi=0;qs=0;$('#qzS').textContent=0;qzDraw()};qzDraw();
+
+/* ---------- conceptos de los módulos 2 a 6 ---------- */
+const CC={net:[['Dirección IP','El "número de casa" de cada dispositivo en la red, por ejemplo 192.168.1.10.'],['Router','Conecta tu red con internet y dirige los datos por el mejor camino.'],['DNS','La "agenda" de internet: traduce nombres como ejemplo.com a direcciones IP.'],['HTTP/HTTPS','Las reglas para pedir y recibir páginas web. La S significa conexión segura.']],
+ prg:[['Variables','Cajas con nombre que guardan datos: nombre = "Ana", nota = 85.'],['Condiciones','Deciden qué hacer: si la nota es 70 o más, aprobado.'],['Ciclos','Repiten instrucciones sin copiarlas: for, while.'],['Funciones','Bloques de código con nombre que reutilizas cuando quieras.']],
+ web:[['HTML','La estructura: títulos, párrafos, imágenes, botones.'],['CSS','El diseño: colores, letras, tamaños, posiciones.'],['JavaScript','La interacción: lo que pasa cuando haces clic.'],['Navegador','Chrome, Edge o Safari leen el código y dibujan la página.']],
+ vib:[['Prompt','El pedido que le escribes a la IA. Mientras más claro, mejor el resultado.'],['Contexto','La información que le das: para quién es, colores, datos, ejemplos.'],['Revisión','Probar y leer el código: la IA puede equivocarse.'],['Publicar','Subir tu proyecto a internet para que otros lo usen.']],
+ bd:[['Tabla','Datos organizados en filas y columnas, como una hoja de Excel.'],['SQL','El lenguaje para consultar y modificar los datos.'],['Servidor web','Una computadora que recibe pedidos y responde con páginas y datos.'],['Cliente','Tu navegador o app, que hace los pedidos al servidor.']]};
+$$('[data-cc]').forEach(c=>{const k=c.dataset.cc,d=document.querySelector(`[data-cd="${k}"]`);c.innerHTML=CC[k].map((x,i)=>`<button data-i="${i}" class="${i?'':'on'}">${x[0]}</button>`).join('');
+ const sh=i=>{c.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('on',j==i));d.innerHTML=`<b style="color:var(--g)">${CC[k][i][0]}:</b> ${CC[k][i][1]}`};sh(0);c.querySelectorAll('button').forEach(b=>b.onclick=()=>sh(b.dataset.i))});
+
+/* ---------- 21 red ---------- */
+const NN=[['💻','Tu PC'],['📶','Router'],['🌎','Internet'],['📖','DNS'],['🗄️','Servidor']];
+$('#net').innerHTML=NN.map((n,i)=>(i?'<div class="ln"></div>':'')+`<div class="n"><span>${n[0]}</span>${n[1]}</div>`).join('');
+const NL=[[0,'> Escribes: www.ejemplo.com'],[1,'> Tu PC envía el pedido al router'],[2,'> El router lo manda a internet'],[3,'> DNS: www.ejemplo.com = 203.0.113.10'],[4,'> El servidor 203.0.113.10 recibe el pedido HTTPS'],[4,'< El servidor responde con la página'],[0,'✔ La página aparece en tu pantalla (0.2 s)']];
+let nRun=0;$('#netB').onclick=async()=>{const r=++nRun,ns=$$('#net .n'),lg=$('#netLog');lg.textContent='';
+ for(const [k,t] of NL){if(r!==nRun)return;ns.forEach((n,j)=>n.classList.toggle('on',j===k));lg.textContent+=t+'\n';tone(600+k*120,.1,'square',.045);await wait(650)}S.ok()};
+
+/* ---------- 22 nota ---------- */
+const ntDraw=()=>{const v=+$('#ntR').value;$('#ntV').textContent=v;const c=`nota = ${v}\nif nota >= 70:\n    print("Aprobado")\nelse:\n    print("Debe recuperar")`;$('#ntCode').innerHTML=hl(c);
+ $('#ntOut').textContent=v>=70?'Aprobado':'Debe recuperar';$('#ntOut').style.color=v>=70?'var(--g)':'var(--r)'};
+$('#ntR').oninput=ntDraw;ntDraw();
+
+/* ---------- 23 web ---------- */
+const WB={html:'<h1>Feria de Ciencias</h1>\n<p>15 de mayo · Liceo</p>\n<button>Inscribirme</button>',css:'h1 { color: #2563eb; }\nbutton { background: #16a34a;\n  color: white; border-radius: 10px; }',js:'boton.onclick = () => {\n  boton.textContent = "¡Inscrito! ✔";\n};'};
+let wbL='html';
+const wbDraw=()=>{const css=wbL!=='html',js=wbL==='js',p=$('#wbP');
+ p.innerHTML=css?`<div style="text-align:center;background:linear-gradient(135deg,#dbeafe,#dcfce7);border-radius:16px;padding:24px 30px;box-shadow:0 10px 30px #0002"><h1 style="font:800 34px Sora,Arial;color:#2563eb;margin:0 0 6px">Feria de Ciencias</h1><p style="margin:0 0 14px;color:#334155">15 de mayo · Liceo</p><button id="wbBtn" style="font:700 18px Inter;padding:12px 24px;border:0;border-radius:10px;background:#16a34a;color:#fff;cursor:pointer">Inscribirme</button></div>`
+  :`<div style="font-family:'Times New Roman',serif;color:#000;align-self:start;justify-self:start"><h1 style="margin:0 0 8px">Feria de Ciencias</h1><p style="margin:0 0 8px">15 de mayo · Liceo</p><button id="wbBtn">Inscribirme</button></div>`;
+ const b=$('#wbBtn');b.onclick=()=>{if(js){b.textContent='¡Inscrito! ✔';S.ok()}else{S.edge();$('#wbC').innerHTML=hl(WB[wbL])+'\n<span class="cm">// Sin JavaScript, el botón no hace nada</span>'}};
+ $('#wbC').innerHTML=hl(WB[wbL])};
+$$('#wbT button').forEach(b=>b.onclick=()=>{wbL=b.dataset.l;$$('#wbT button').forEach(x=>x.classList.toggle('on',x===b));S.whoosh();wbDraw()});wbDraw();
+
+/* ---------- 24 pedidos ---------- */
+const PR=[['Tú: hazme una página',el=>el.innerHTML='<div style="text-align:center;color:#64748b"><div style="font-size:44px">🤷</div><h2 style="font:700 24px Sora,Arial;margin:6px 0;color:#334155">Mi página</h2><p style="margin:0">Bienvenido a mi página web.</p></div>'],
+ ['Tú: crea una página para la feria científica del liceo con el título, la fecha 15 de mayo, tres proyectos en tarjetas y un botón Inscribirme, en azul y verde',el=>el.innerHTML='<div style="width:100%"><h2 style="font:800 26px Sora,Arial;color:#2563eb;margin:0;text-align:center">Feria Científica del Liceo</h2><p style="text-align:center;margin:2px 0 12px;color:#334155">15 de mayo</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'+['🌱 Huerto','🔋 Energía solar','🤖 Robot'].map(t=>`<div style="background:#dcfce7;border-radius:10px;padding:10px;text-align:center;font-weight:700;font-size:15px">${t}</div>`).join('')+'</div><div style="text-align:center;margin-top:12px"><button style="font:700 17px Inter;padding:10px 22px;border:0;border-radius:10px;background:#16a34a;color:#fff">Inscribirme</button></div></div>']];
+let prRun=0;const prShow=async i=>{const r=++prRun;$$('#prT button').forEach((b,k)=>b.classList.toggle('on',k==i));$('#prP').innerHTML='<span style="color:#5b6b8c">Generando…</span>';
+ await typeTo($('#prQ'),PR[i][0],12);if(r!==prRun)return;S.whoosh();PR[i][1]($('#prP'));if(i==1)S.ok();else S.no();requestAnimationFrame(fit)};
+$$('#prT button').forEach(b=>b.onclick=()=>prShow(+b.dataset.p));
+$('#prQ').textContent=PR[0][0];PR[0][1]($('#prP'));
+
+/* ---------- 25 SQL ---------- */
+const DB=[['Ana','3ro',92],['Luis','4to',78],['María','3ro',88],['Pedro','5to',95],['Carla','4to',69],['José','5to',81]];
+const SQ=[['Todos','SELECT * FROM estudiantes;',()=>({c:['nombre','curso','nota'],r:DB})],
+ ['Nota ≥ 90','SELECT nombre, nota FROM estudiantes\nWHERE nota >= 90;',()=>({c:['nombre','nota'],r:DB.filter(d=>d[2]>=90).map(d=>[d[0],d[2]])})],
+ ['Ordenar','SELECT * FROM estudiantes\nORDER BY nota DESC;',()=>({c:['nombre','curso','nota'],r:[...DB].sort((a,b)=>b[2]-a[2])})],
+ ['Contar 3ro',"SELECT COUNT(*) FROM estudiantes\nWHERE curso = '3ro';",()=>({c:['COUNT(*)'],r:[[DB.filter(d=>d[1]==='3ro').length]]})]];
+$('#sqT').innerHTML=SQ.map((q,i)=>`<button data-i="${i}" class="${i?'':'on'}">${q[0]}</button>`).join('');
+const sqShow=async(i,anim)=>{const q=SQ[i];$$('#sqT button').forEach((b,k)=>b.classList.toggle('on',k==i));if(anim){if(await typeTo($('#sqC'),q[1],10,hl(q[1]))===false)return}else $('#sqC').innerHTML=hl(q[1]);
+ const res=q[2]();$('#sqTb').innerHTML='<tr>'+res.c.map(c=>`<th>${c}</th>`).join('')+'</tr>'+res.r.map(r=>`<tr class="${anim?'hit':''}">${r.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('');if(anim){S.ok();setTimeout(()=>$$('#sqTb tr').forEach(t=>t.classList.remove('hit')),900)}requestAnimationFrame(fit)};
+$$('#sqT button').forEach(b=>b.onclick=()=>sqShow(+b.dataset.i,true));sqShow(0);
+
+/* ---------- 26 cierre ---------- */
+const BY='curso = "Fundamentos de Programación"\nprint("¡Bienvenidos a", curso + "!")';$('#byC').innerHTML=hl(BY);
+$('#party').onclick=async()=>{$('#byO').textContent='';S.beep(990);await wait(250);await typeTo($('#byO'),'¡Bienvenidos a Fundamentos de Programación!',22);S.party();
+ const cols=['#3ee39f','#4cc9f0','#b197fc','#ffb547','#ff6b6b','#ffffff'];for(let i=0;i<90;i++){const c=document.createElement('div');c.className='conf';c.style.left=Math.random()*100+'vw';c.style.background=cols[i%cols.length];c.style.animationDuration=(1.8+Math.random()*2)+'s';c.style.animationDelay=Math.random()*.6+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),4500)}};
+$('#crB').onclick=()=>{$('#crL').hidden=!$('#crL').hidden;requestAnimationFrame(fit)};
+
+/* ---------- inicio ---------- */
+const h0=parseInt((location.hash.match(/^#l(\d+)$/)||[])[1]);go(h0?h0-1:0,true);
+</script>
+</body>
+</html>
