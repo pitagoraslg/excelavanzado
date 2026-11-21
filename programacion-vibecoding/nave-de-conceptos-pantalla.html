@@ -86,15 +86,15 @@ dialog::backdrop{background:#000c}
   <h1>🚀 Nave de Conceptos</h1><span class="pill" id="st">Conectando…</span><span id="clk">0:00</span>
   <div class="ctr">
    <button class="btn" id="bIni">▶ Iniciar</button><button class="btn ghost" id="bPau" hidden>⏸ Pausar</button>
-   <button class="btn gold" id="bRank">🏆 Ranking final</button><button class="btn warn" id="bNew">↺ Nueva ronda</button>
+   <button class="btn ghost" id="bMeta">🎯 Meta: <span class="metaN">50</span></button><button class="btn gold" id="bRank">🏆 Ranking final</button><button class="btn" id="bRe" style="background:var(--c);border-color:var(--c);color:#04202b">🔁 Reiniciar</button><button class="btn warn" id="bNew">↺ Nueva ronda</button>
    <button class="btn ghost" id="bSnd" aria-label="Silenciar">♪</button><button class="btn ghost" id="bFs" aria-label="Pantalla completa">⛶</button>
   </div>
  </header>
  <main>
   <section class="panel" id="left"><h2><span id="lT">Sala de espera</span><small id="lS"></small></h2><div id="lB"></div></section>
   <aside class="panel">
-   <h2>🏁 Orden de llegada <small>meta: 20</small></h2>
-   <div class="arr" id="arr"><div class="empty" style="padding:20px 0;font-size:17px">Nadie ha llegado a 20 todavía.</div></div>
+   <h2>🏁 Orden de llegada <small>meta: <span class="metaN">50</span></small></h2>
+   <div class="arr" id="arr"><div class="empty" style="padding:20px 0;font-size:17px">Nadie ha llegado a la meta todavía.</div></div>
    <div class="qr"><div id="qr"></div><div><b>Entra con tu celular</b><p id="url"></p></div></div>
    <p class="credit" style="margin-top:12px">Juego creado por: Jarlin Figueroa M.A.</p>
   </aside>
@@ -103,6 +103,12 @@ dialog::backdrop{background:#000c}
 <div id="ann"></div>
 <dialog id="dRank"><h2 style="text-align:center;font-size:clamp(28px,3vw,46px)">🏆 Ranking final</h2><div class="podium" id="pod"></div><div class="arr" id="rList" style="max-height:34vh;overflow:auto"></div><div style="text-align:center;margin-top:16px"><button class="btn" id="rClose">Cerrar</button></div></dialog>
 <dialog id="dSpy"><div class="top"><span style="font-size:30px">👁</span><h2 id="spyN"></h2><span class="sc" id="spyP"></span><span class="er" id="spyE"></span><div class="sp"><button class="btn ghost" id="spyPrev" aria-label="Jugador anterior">◀</button><button class="btn ghost" id="spyNext" aria-label="Jugador siguiente">▶</button><button class="btn" id="spyClose">Cerrar</button></div></div><div style="position:relative"><canvas id="spyCv"></canvas><div id="spyMsg"></div></div></dialog>
+<dialog id="dMeta" style="max-width:560px"><h2>🎯 ¿Con cuántos puntos se gana?</h2><p style="color:var(--mute)">El primero en llegar a esa cantidad gana el 1.<sup>er</sup> lugar. La velocidad del juego se ajusta a la meta.</p>
+ <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0" id="mChips"></div>
+ <label style="font-weight:700">Otra cantidad: <input id="mIn" type="number" min="5" max="200" step="1" value="50" style="width:120px;font:700 22px 'JetBrains Mono';padding:8px 10px;border-radius:10px;border:2px solid var(--line);background:var(--p2);color:var(--ink);margin-left:8px"></label>
+ <div id="mW" style="color:var(--a);min-height:1.4em;margin-top:8px;font-weight:600"></div>
+ <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px"><button class="btn" id="mOk">Guardar meta</button></div></dialog>
+<dialog id="dRe" style="max-width:500px"><h2>🔁 ¿Reiniciar la partida?</h2><p style="color:var(--mute)">Todos vuelven a 0 y <b>empiezan de inmediato</b> con la cuenta 3, 2, 1, sin pasar por la sala de espera. Los resultados anteriores quedan guardados.</p><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn ghost" id="rNo">Cancelar</button><button class="btn" id="rSi">Sí, reiniciar</button></div></dialog>
 <dialog id="dNew" style="max-width:480px"><h2>¿Empezar una ronda nueva?</h2><p style="color:var(--mute)">Todos vuelven a la sala de espera con 0 puntos. Los resultados de esta ronda quedan guardados.</p><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn ghost" id="nNo">Cancelar</button><button class="btn warn" id="nSi">Sí, nueva ronda</button></div></dialog>
 
 <script>
@@ -122,13 +128,13 @@ dialog::backdrop{background:#000c}
 {
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const QS=new URLSearchParams(location.search),ROOT=QS.get('raiz')||'naveVibe',CLAVE='1022',META=20;
+const QS=new URLSearchParams(location.search),ROOT=QS.get('raiz')||'naveVibe',CLAVE='1022';let META=50;
 const URLJ=location.href.replace(/nave-de-conceptos-pantalla\.html.*$/,'nave-de-conceptos.html')+(QS.get('raiz')?'?raiz='+encodeURIComponent(ROOT):'');
 $('#url').textContent=URLJ.replace(/^https?:\/\//,'');
 try{const q=qrcode(0,'M');q.addData(URLJ);q.make();$('#qr').innerHTML=q.createSvgTag({cellSize:6,margin:2,scalable:true})}catch(e){$('#qr').hidden=true}
 
 /* clave */
-const abrir=()=>{$('#gate').remove()};
+const abrir=()=>{$('#gate').remove();setTimeout(()=>{if(!E.iniciado)abrirMeta()},600)};
 try{if(sessionStorage.getItem('naveP')==='1')abrir()}catch(e){}
 const entrar=()=>{if($('#clave').value.trim()===CLAVE){try{sessionStorage.setItem('naveP','1')}catch(e){}abrir();S.join()}else $('#gW').textContent='Clave incorrecta.'};
 if($('#gIn')){$('#gIn').onclick=entrar;$('#clave').addEventListener('keydown',e=>{if(e.key==='Enter')entrar()})}
@@ -163,32 +169,46 @@ function pintar(){const st=$('#st');st.className='pill'+(E.iniciado?(E.pausa?' p
  $('#bIni').hidden=!!(E.iniciado&&!E.pausa);$('#bIni').textContent=E.iniciado&&E.pausa?'▶ Continuar':'▶ Iniciar';$('#bPau').hidden=!(E.iniciado&&!E.pausa);
  const L=lista();$('#lS').textContent=L.length?`${L.length} jugador${L.length>1?'es':''}${E.iniciado?' · toca un nombre para ver su juego':''}`:'';
  if(!E.iniciado){$('#lT').textContent='Sala de espera';$('#lB').innerHTML=L.length?`<div class="wait">${L.sort((a,b)=>(a[1].c||0)-(b[1].c||0)).map(([,j])=>`<span>🚀 ${esc(j.n)}</span>`).join('')}</div>`:'<div class="empty">Escanea el código QR para entrar.<br>Los nombres aparecerán aquí.</div>'}
- else{$('#lT').textContent='Carrera a 20 puntos';const O=orden(),n=O.length,cols=n>16?2:1,rows=Math.ceil(n/cols),h=$('#left').clientHeight-80;
+ else{$('#lT').textContent=`Carrera a ${META} puntos`;const O=orden(),n=O.length,cols=n>16?2:1,rows=Math.ceil(n/cols),h=$('#left').clientHeight-80;
   const rowH=Math.max(30,Math.min(62,h/Math.max(rows,1)-8)),b=$('#lB');
   b.innerHTML=`<div class="lanes" style="--cols:${cols};--th:${Math.round(rowH*.62)}px;--fs:${Math.round(Math.min(24,rowH*.42))}px;--nw:${cols>1?'150px':'230px'};--gap:${Math.round(rowH*.18)}px">${O.map(([id,j],i)=>{const p=Math.min(META,j.p||0),pc=p/META*100;
    return `<div class="lane ${j.fin?'fin':''} ${id===SPY?'viewing':''}" data-id="${id}" title="Ver el juego de ${esc(j.n)}"><span class="nm">${j.fin?med[llegadas().findIndex(x=>x[0]===id)]||'🏁':(i+1)+'.'} ${esc(j.n)}</span><div class="tr"><i style="width:${pc}%"></i><b style="left:${Math.max(4,Math.min(96,pc))}%">🚀</b></div><span class="sc">${p}</span></div>`}).join('')}</div>`}
- const A=llegadas();$('#arr').innerHTML=A.length?A.map(([,j],i)=>`<div class="r"><span>${i<3?med[i]:(i+1)+'.'} ${esc(j.n)}</span><span>${E.inicio?clock(j.fin-E.inicio):''}</span></div>`).join(''):'<div class="empty" style="padding:20px 0;font-size:17px">Nadie ha llegado a 20 todavía.</div>'}
+ const A=llegadas();$('#arr').innerHTML=A.length?A.map(([,j],i)=>`<div class="r"><span>${i<3?med[i]:(i+1)+'.'} ${esc(j.n)}</span><span>${E.inicio?clock(j.fin-E.inicio):''}</span></div>`).join(''):'<div class="empty" style="padding:20px 0;font-size:17px">Nadie ha llegado a la meta todavía.</div>'}
 setInterval(()=>{$('#clk').textContent=E.iniciado&&E.inicio?clock(now()-E.inicio-4000):'0:00'},500);
 
 function escuchar(){if(jRef)jRef.off();J={};prev=null;if(!E.ronda)return;jRef=DBR.ref(`${ROOT}/jugadores/${E.ronda}`);
  jRef.on('value',s=>{J=s.val()||{};const P={};Object.entries(J).forEach(([id,j])=>{if(j&&j.n)P[id]={p:j.p||0,f:j.fin||0}});
   if(prev){const A=llegadas();Object.entries(P).forEach(([id,a])=>{const b=prev[id];if(!b){if(!E.iniciado)S.join();return}
-   if(a.f&&!b.f){const pos=A.findIndex(x=>x[0]===id)+1;anuncio(`${pos<=3?med[pos-1]:'🏁'} ${esc(J[id].n)}<small>¡llegó a 20 en el puesto ${pos}!</small>`);S.fin(Math.min(pos,3));if(pos===1)confetti(120);else if(pos<=3)confetti(50)}
+   if(a.f&&!b.f){const pos=A.findIndex(x=>x[0]===id)+1;anuncio(`${pos<=3?med[pos-1]:'🏁'} ${esc(J[id].n)}<small>¡llegó a ${META} en el puesto ${pos}!</small>`);S.fin(Math.min(pos,3));if(pos===1)confetti(120);else if(pos<=3)confetti(50)}
    else if(a.p>b.p)S.tick()})}
   prev=P;pintar()})}
 addEventListener('resize',pintar);
 
 addEventListener('fb-ready',()=>{DBR.ref('.info/serverTimeOffset').on('value',s=>{OFF=s.val()||0});
- DBR.ref(`${ROOT}/estado`).on('value',s=>{const e=s.val();if(!e||!e.ronda){DBR.ref(`${ROOT}/estado`).set({ronda:'r'+Date.now(),iniciado:false,pausa:false});return}
+ DBR.ref(`${ROOT}/estado`).on('value',s=>{const e=s.val();if(!e||!e.ronda){DBR.ref(`${ROOT}/estado`).set({ronda:'r'+Date.now(),iniciado:false,pausa:false,meta:META});return}
+  if(e.meta&&+e.meta!==META){META=+e.meta;setTimeout(metaTxt,0)}
   const r=E.ronda;E=e;if(r!==E.ronda)escuchar();pintar()})});
 
 $('#bIni').onclick=()=>{if(!window.DBR)return;ac();const u={iniciado:true,pausa:false};if(!E.inicio)u.inicio=sv();DBR.ref(`${ROOT}/estado`).update(u);if(!E.iniciado){S.start();confetti(70);anuncio('¡3, 2, 1… a jugar! 🚀<small>Disparen solo a los conceptos del tema</small>',3800)}};
 $('#bPau').onclick=()=>{if(window.DBR)DBR.ref(`${ROOT}/estado`).update({pausa:true})};
 $('#bNew').onclick=()=>$('#dNew').showModal();$('#nNo').onclick=()=>$('#dNew').close();
-$('#nSi').onclick=()=>{$('#dNew').close();if(window.DBR)DBR.ref(`${ROOT}/estado`).set({ronda:'r'+Date.now(),iniciado:false,pausa:false})};
+$('#nSi').onclick=()=>{$('#dNew').close();if(window.DBR)DBR.ref(`${ROOT}/estado`).set({ronda:'r'+Date.now(),iniciado:false,pausa:false,meta:META})};
+/* reiniciar: misma gente, todos a 0 y empiezan ya */
+$('#bRe').onclick=()=>$('#dRe').showModal();$('#rNo').onclick=()=>$('#dRe').close();
+$('#rSi').onclick=()=>{$('#dRe').close();if(!window.DBR)return;ac();DBR.ref(`${ROOT}/estado`).set({ronda:'r'+Date.now(),iniciado:true,pausa:false,inicio:sv(),meta:META});S.start();confetti(70);anuncio('¡Otra vez! 3, 2, 1… 🚀<small>Meta: '+META+' puntos</small>',3800)};
+/* meta */
+function metaTxt(){document.querySelectorAll('.metaN').forEach(x=>x.textContent=META);pintar()}
+const MOPC=[10,20,30,50,75,100];
+function abrirMeta(){$('#mIn').value=META;$('#mW').textContent=E.iniciado?'El juego está en marcha: la nueva meta se aplica de inmediato a todos.':'';
+ $('#mChips').innerHTML=MOPC.map(n=>`<button class="btn ${n===META?'':'ghost'}" data-n="${n}" style="min-width:70px">${n}</button>`).join('');
+ $$('#mChips button').forEach(b=>b.onclick=()=>{$('#mIn').value=b.dataset.n;$$('#mChips button').forEach(x=>x.className='btn '+(x===b?'':'ghost'))});
+ if(!$('#dMeta').open)$('#dMeta').showModal()}
+$('#bMeta').onclick=abrirMeta;
+$('#mOk').onclick=()=>{const n=Math.round(+$('#mIn').value);if(!(n>=5&&n<=200)){$('#mW').textContent='Escribe un número entre 5 y 200.';return}META=n;metaTxt();$('#dMeta').close();S.join();
+ if(window.DBR&&E.ronda)DBR.ref(`${ROOT}/estado`).update({meta:META})};
 $('#bRank').onclick=()=>{const O=orden();const top=[O[1],O[0],O[2]];const cls=['p2','p1','p3'],mm=['🥈','🥇','🥉'];
- $('#pod').innerHTML=top.map((x,i)=>x?`<div class="${cls[i]}"><span class="m">${mm[i]}</span>${esc(x[1].n)}<br><small style="font:600 16px Inter">${x[1].fin?'llegó a 20':(x[1].p||0)+' puntos'}</small></div>`:'<div style="background:transparent"></div>').join('');
- $('#rList').innerHTML=O.slice(3).map(([,j],i)=>`<div class="r"><span>${i+4}. ${esc(j.n)}</span><span>${j.fin?'🏁 20':(j.p||0)+' pts'}</span></div>`).join('');$('#dRank').showModal();S.party();confetti(140)};
+ $('#pod').innerHTML=top.map((x,i)=>x?`<div class="${cls[i]}"><span class="m">${mm[i]}</span>${esc(x[1].n)}<br><small style="font:600 16px Inter">${x[1].fin?'llegó a la meta':(x[1].p||0)+' puntos'}</small></div>`:'<div style="background:transparent"></div>').join('');
+ $('#rList').innerHTML=O.slice(3).map(([,j],i)=>`<div class="r"><span>${i+4}. ${esc(j.n)}</span><span>${j.fin?'🏁 '+META:(j.p||0)+' pts'}</span></div>`).join('');$('#dRank').showModal();S.party();confetti(140)};
 $('#rClose').onclick=()=>$('#dRank').close();
 
 /* ---------- ver en vivo el juego de un estudiante ---------- */
@@ -239,12 +259,12 @@ $('#spyPrev').onclick=()=>spyStep(-1);$('#spyNext').onclick=()=>spyStep(1);$('#s
 $('#lB').addEventListener('click',e=>{const l=e.target.closest('.lane');if(l&&E.iniciado)openSpy(l.dataset.id)});
 function spyLoop(){spyRaf=requestAnimationFrame(spyLoop);const j=J[SPY]||{},cw=spyCv.clientWidth,ch=spyCv.clientHeight,dpr=Math.min(2,devicePixelRatio||1);
  if(spyCv.width!==Math.round(cw*dpr)||spyCv.height!==Math.round(ch*dpr)){spyCv.width=Math.round(cw*dpr);spyCv.height=Math.round(ch*dpr)}
- $('#spyN').textContent=j.n||'';$('#spyP').textContent=(Math.min(20,j.p||0))+'/20';$('#spyE').textContent='⛔ '+(j.e||0);
+ $('#spyN').textContent=j.n||'';$('#spyP').textContent=(Math.min(META,j.p||0))+'/'+META;$('#spyE').textContent='⛔ '+(j.e||0);
  cx.setTransform(dpr,0,0,dpr,0,0);cx.fillStyle='#070b16';cx.fillRect(0,0,cw,ch);const m=$('#spyMsg');const t=performance.now()/1000;
  const old=performance.now()-SNAPT>3000;
- if(j.fin){m.textContent='🏁 ¡Ya llegó a 20!';return}
+ if(j.fin){m.textContent=`🏁 ¡Ya llegó a ${META}!`;return}
  if(!SNAP||old){m.innerHTML='Conectando con su juego…<br><small style="font:500 18px Inter">Si no aparece, puede que tenga la pantalla apagada o esté fuera del juego.</small>';return}
- if(SNAP.v){m.textContent=SNAP.v==='fin'?'🏁 ¡Ya llegó a 20!':'Está en la sala de espera…';return}
+ if(SNAP.v){m.textContent=SNAP.v==='fin'?`🏁 ¡Ya llegó a ${META}!`:'Está en la sala de espera…';return}
  m.textContent=SNAP.pa?'⏸ En pausa':'';
  const W=SNAP.W,H=SNAP.H,sc=Math.min(cw/W,ch/H),ox=(cw-W*sc)/2,oy=(ch-H*sc)/2,dt=Math.min(.4,(performance.now()-SNAPT)/1000);
  cx.save();cx.translate(ox,oy);cx.scale(sc,sc);cx.beginPath();cx.rect(0,0,W,H);cx.clip();cx.fillStyle='#0a1124';cx.fillRect(0,0,W,H);

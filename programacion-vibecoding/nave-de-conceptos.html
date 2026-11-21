@@ -68,8 +68,8 @@ input.t{width:100%;font:600 20px Inter;padding:14px;border-radius:12px;border:2p
    <li><b>🎯</b><span>Caen bloques con conceptos. <strong>Dispara solo a los que tienen que ver con lo que vimos</strong>: hardware, software, programación, web, redes y datos.</span></li>
    <li><b>⛔</b><span>Si destruyes un concepto que <strong>no</strong> es del tema, pierdes 1 punto. Si un bloque choca tu nave, también pierdes 1.</span></li>
    <li><b>💥</b><span>¡Cuidado! <strong>Cada segundo, un concepto del tema dispara</strong> hacia tu nave (antes se pone rojo). Si la bala te toca, pierdes 1. Esquívala o destrúyela con tus disparos.</span></li>
-   <li><b>🏆</b><span>El primero en llegar a <strong>20 puntos</strong> gana el primer lugar, el segundo gana el segundo… ¡todos juegan a la vez!</span></li>
-   <li><b>🕹️</b><span>Celular o tableta: mantén el dedo en la pantalla y muévelo en cualquier dirección: la nave lo sigue y dispara sola. Computadora: flechas (o W A S D) o el mouse para moverte hacia los lados, arriba y abajo; espacio o clic para disparar.</span></li>
+   <li><b>🏆</b><span>El primero en llegar a <strong><span class="metaN">20</span> puntos</strong> gana el primer lugar, el segundo gana el segundo… ¡todos juegan a la vez!</span></li>
+   <li><b>🕹️</b><span>Celular o tableta: <strong>arrastra el dedo</strong> por cualquier parte para mover la nave (no dispara) y <strong>toca la pantalla</strong> para disparar. Mientras mueves con un dedo, puedes tocar con otro para disparar. Computadora: flechas (o W A S D) o el mouse para moverte hacia los lados, arriba y abajo; espacio o clic para disparar.</span></li>
   </ul>
   <label for="nom" style="font-weight:700">Tu nombre y apellido</label>
   <input class="t" id="nom" maxlength="40" autocomplete="name" placeholder="Ej.: Ana Pérez" style="margin-top:6px">
@@ -89,9 +89,9 @@ input.t{width:100%;font:600 20px Inter;padding:14px;border-radius:12px;border:2p
 </div></section>
 
 <section class="view" id="vJuego">
- <div class="hud"><span class="pts"><span id="hP">0</span>/20</span><div class="bar"><i id="hB"></i></div><span class="pos" id="hPos"></span><span class="x" id="hVer" hidden style="color:var(--v);font-weight:700" title="El profesor está mostrando tu juego en el proyector">👁 En vivo</span><span class="x" id="hE">⛔ 0</span><button id="hMus" aria-label="Música">🎵</button><button id="hSnd" aria-label="Silenciar">♪</button></div>
+ <div class="hud"><span class="pts"><span id="hP">0</span>/<span class="metaN">20</span></span><div class="bar"><i id="hB"></i></div><span class="pos" id="hPos"></span><span class="x" id="hVer" hidden style="color:var(--v);font-weight:700" title="El profesor está mostrando tu juego en el proyector">👁 En vivo</span><span class="x" id="hE">⛔ 0</span><button id="hMus" aria-label="Música">🎵</button><button id="hSnd" aria-label="Silenciar">♪</button></div>
  <canvas id="cv" aria-label="Juego: dispara a los conceptos del tema"></canvas>
- <div class="hint" id="hint">Mueve el dedo en cualquier dirección: la nave lo sigue y dispara · Computadora: flechas y espacio</div>
+ <div class="hint" id="hint">Arrastra para mover · Toca para disparar · Computadora: flechas y espacio</div>
 </section>
 
 <section class="view" id="vFinal"><div class="wrap">
@@ -126,7 +126,7 @@ input.t{width:100%;font:600 20px Inter;padding:14px;border-radius:12px;border:2p
 {
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const QS=new URLSearchParams(location.search),PRUEBA=QS.get('prueba')==='1',ROOT=QS.get('raiz')||'naveVibe',META=20;
+const QS=new URLSearchParams(location.search),PRUEBA=QS.get('prueba')==='1',ROOT=QS.get('raiz')||'naveVibe';let META=+QS.get('meta')||20;
 const KEY='naveVibe_'+ROOT+(PRUEBA?'_prueba':'');
 const rnd=n=>Math.floor(Math.random()*n),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
@@ -168,9 +168,12 @@ $('#hMus').onclick=()=>{musOn=!musOn;try{localStorage.setItem('nave-music',musOn
 /* música chiptune */
 let musT=null,musStep=0;const BASS=[110,110,131,98],ARP=[440,523,659,523,392,494,587,494,440,523,659,784,349,440,523,440];
 function startMusic(){if(musT||!musOn||muted)return;musStep=0;musT=setInterval(()=>{if(!G||!G.run||G.pause)return;const s=musStep++;
- if(s%4===0)tone(BASS[(s>>4)%4],.28,'triangle',.06);tone(ARP[s%16]*(1+Math.min(G.pts,20)/40),.09,'square',.018)},150)}
+ if(s%4===0)tone(BASS[(s>>4)%4],.28,'triangle',.06);tone(ARP[s%16]*(1+Math.min(prog(),20)/40),.09,'square',.018)},150)}
 function stopMusic(){clearInterval(musT);musT=null}
 
+/* meta configurable por el profesor; la dificultad avanza según el % de la meta */
+const prog=()=>G?G.pts*20/META:0;
+function metaTxt(){document.querySelectorAll('.metaN').forEach(x=>x.textContent=META)}metaTxt();
 /* ---------- juego ---------- */
 const cv=$('#cv'),cx=cv.getContext('2d');let G=null,raf=0,DPR=1;
 const stars=Array.from({length:90},()=>({x:Math.random(),y:Math.random(),z:.3+Math.random()*1.2}));
@@ -184,7 +187,7 @@ function pick(){const si=Math.random()<.62,arr=si?SI:NO;let t;for(let k=0;k<6;k+
 function spawn(){const [txt,ok]=pick();cx.font=`700 ${fontPx()}px Inter`;const w=cx.measureText(txt).width+74,h=fontPx()*3;
  let x,libre=false;for(let k=0;k<12;k++){x=16+Math.random()*Math.max(10,G.W-w-32);if(!G.obs.some(o=>o.y<h*2.6&&Math.abs(o.x+o.w/2-(x+w/2))<(o.w+w)/2+56)){libre=true;break}}
  if(!libre){G.spawn=.25;return}/* sin espacio arriba: espera en vez de montarse */
- const sc=G.H/760;let vy=(58+Math.random()*8)*sc*(1+G.pts*.035);
+ const sc=G.H/760;let vy=(58+Math.random()*8)*sc*(1+prog()*.035);
  for(const o of G.obs){if(Math.abs(o.x+o.w/2-(x+w/2))<(o.w+w)/2+20)vy=Math.min(vy,o.vy)}/* nunca más rápida que la de abajo en su columna */
  G.obs.push({txt,ok,x,y:-h-4,w,h,vy,rot:(Math.random()-.5)*.06,hue:rnd(360)})}
 function burst(x,y,col,n=22){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=60+Math.random()*260;G.parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:.6+Math.random()*.4,col})}}
@@ -192,11 +195,12 @@ function float(x,y,t,col){G.fl.push({x,y,t,col,l:1.1})}
 function setPts(d){G.pts=Math.max(0,G.pts+d);P.pts=G.pts;save();hud();sync()}
 function hud(){$('#hP').textContent=P.pts;$('#hB').style.width=Math.min(100,P.pts/META*100)+'%';$('#hE').textContent='⛔ '+P.err;pintarPos()}
 function update(dt){const g=G;g.t+=dt;
- const sp=Math.max(.48,1.15-g.pts*.03)*clamp(560/g.W,.42,1);g.spawn-=dt;if(g.spawn<=0){spawn();g.spawn=sp*(.75+Math.random()*.5)}
+ const sp=Math.max(.48,1.15-prog()*.03)*clamp(560/g.W,.42,1);g.spawn-=dt;if(g.spawn<=0){spawn();g.spawn=sp*(.75+Math.random()*.5)}
  const s=g.ship,spd=Math.max(420,g.W*.9);if(g.keys.L)s.tx=s.x-spd*dt*3;if(g.keys.R)s.tx=s.x+spd*dt*3;s.tx=clamp(s.tx,22,g.W-22);
  if(g.keys.U)s.ty=s.y-spd*dt*3;if(g.keys.D)s.ty=s.y+spd*dt*3;s.ty=clamp(s.ty,yMin(),yMax());
  const dx=s.tx-s.x;s.x+=clamp(dx,-spd*dt,spd*dt);const dy=s.ty-s.y;s.y+=clamp(dy,-spd*dt,spd*dt);
  g.cool-=dt;if((g.fire||g.keys.F)&&g.cool<=0){g.bul.push({x:s.x,y:s.y-34});g.cool=.2;S.pew()}
+ if(g.tap&&g.cool<=0){g.tap=false;g.bul.push({x:s.x,y:s.y-34});g.cool=.12;S.pew()}/* toque = un disparo */
  g.bul.forEach(b=>b.y-=760*(g.H/760)*dt);g.bul=g.bul.filter(b=>b.y>-20);
  g.inv=Math.max(0,g.inv-dt);g.shake=Math.max(0,g.shake-dt);
  for(const o of g.obs){o.y+=o.vy*dt;
@@ -252,7 +256,7 @@ function drawEnemy(o,t,fp){const w=o.w,h=o.h,pw=w-40,ph=h*.56,py=-h*.08,ch=o.cha
  cx.fillStyle='#f3f6ff';cx.fillText(o.txt,0,py+1)}
 function draw(){const g=G,W=g.W,H=g.H;cx.save();if(g.shake>0)cx.translate((Math.random()-.5)*12*g.shake,(Math.random()-.5)*12*g.shake);
  cx.fillStyle='#070b16';cx.fillRect(-20,-20,W+40,H+40);
- for(const s of stars){s.y+=s.z*.0009*(1+g.pts*.04);if(s.y>1)s.y=0;cx.fillStyle=`rgba(200,220,255,${.25+s.z*.4})`;cx.fillRect(s.x*W,s.y*H,s.z*1.6,s.z*1.6)}
+ for(const s of stars){s.y+=s.z*.0009*(1+prog()*.04);if(s.y>1)s.y=0;cx.fillStyle=`rgba(200,220,255,${.25+s.z*.4})`;cx.fillRect(s.x*W,s.y*H,s.z*1.6,s.z*1.6)}
  const fp=fontPx();cx.font=`700 ${fp}px Inter`;cx.textAlign='center';cx.textBaseline='middle';
  for(const o of g.obs){cx.save();cx.translate(o.x+o.w/2,o.y+o.h/2);cx.rotate(o.rot*Math.sin(g.t*2+o.hue));drawEnemy(o,g.t,fp);cx.restore()}
  cx.shadowColor='#ff6b6b';cx.shadowBlur=14;for(const e of g.eb){cx.fillStyle='#ff6b6b';cx.beginPath();cx.arc(e.x,e.y,6,0,7);cx.fill();cx.fillStyle='#ffd0d0';cx.beginPath();cx.arc(e.x,e.y,2.5,0,7);cx.fill()}cx.shadowBlur=0;
@@ -267,9 +271,21 @@ function startGame(){if(G&&G.run)return;newGame();show('Juego');hud();cancelAnim
 function stopGame(){if(G)G.run=false;cancelAnimationFrame(raf);stopMusic();$('#ovCd').classList.remove('on')}
 function terminar(){if(!G.run)return;G.run=false;stopMusic();P.pts=META;if(!P.fin){P.fin=now();save();sync(true,true)}S.win();setTimeout(()=>{cancelAnimationFrame(raf);pintarFinal();show('Final')},900)}
 /* controles */
-cv.addEventListener('pointerdown',e=>{if(!G)return;G.fire=true;G.ship.tx=e.clientX;G.ship.ty=e.clientY-(e.pointerType==='mouse'?0:80);cv.setPointerCapture&&cv.setPointerCapture(e.pointerId)});
-cv.addEventListener('pointermove',e=>{if(!G)return;if(e.pointerType==='mouse'||G.fire){G.ship.tx=e.clientX;G.ship.ty=e.clientY-(e.pointerType==='mouse'?0:80)}});
-const up=()=>{if(G)G.fire=false};cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+/* Mouse: mover con el puntero y mantener clic para disparar.
+   Táctil: arrastrar mueve la nave (sin disparar, de forma relativa: el dedo no tapa la nave);
+   un toque rápido dispara una vez; con un dedo moviendo, tocar con otro dedo también dispara. */
+const TP={};let dragId=null;
+cv.addEventListener('pointerdown',e=>{if(!G)return;try{cv.setPointerCapture(e.pointerId)}catch(_){}
+ if(e.pointerType==='mouse'){G.fire=true;G.ship.tx=e.clientX;G.ship.ty=e.clientY;return}
+ if(dragId!==null&&dragId!==e.pointerId){G.tap=true;TP[e.pointerId]={extra:1};return}
+ TP[e.pointerId]={x:e.clientX,y:e.clientY,t:performance.now(),sx:G.ship.x,sy:G.ship.y,mov:false}});
+cv.addEventListener('pointermove',e=>{if(!G)return;if(e.pointerType==='mouse'){G.ship.tx=e.clientX;G.ship.ty=e.clientY;return}
+ const p=TP[e.pointerId];if(!p||p.extra)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;
+ if(!p.mov&&Math.hypot(dx,dy)>10){p.mov=true;dragId=e.pointerId}
+ if(p.mov){const k=1.25;G.ship.tx=p.sx+dx*k;G.ship.ty=p.sy+dy*k}});
+const up=e=>{if(!G)return;if(e.pointerType==='mouse'){G.fire=false;return}const p=TP[e.pointerId];delete TP[e.pointerId];
+ if(dragId===e.pointerId)dragId=null;if(p&&!p.extra&&!p.mov&&performance.now()-p.t<350&&e.type==='pointerup')G.tap=true};
+cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 addEventListener('keydown',e=>{if(!G||vista!=='Juego')return;const k=e.key;if(k==='ArrowLeft'||k==='a'||k==='A')G.keys.L=1;if(k==='ArrowRight'||k==='d'||k==='D')G.keys.R=1;if(k==='ArrowUp'||k==='w'||k==='W'){G.keys.U=1;e.preventDefault()}if(k==='ArrowDown'||k==='s'||k==='S'){G.keys.D=1;e.preventDefault()}if(k===' '){G.keys.F=1;e.preventDefault()}});
 addEventListener('keyup',e=>{if(!G)return;const k=e.key;if(k==='ArrowLeft'||k==='a'||k==='A')G.keys.L=0;if(k==='ArrowRight'||k==='d'||k==='D')G.keys.R=0;if(k==='ArrowUp'||k==='w'||k==='W')G.keys.U=0;if(k==='ArrowDown'||k==='s'||k==='S')G.keys.D=0;if(k===' ')G.keys.F=0});
 
@@ -285,7 +301,7 @@ function pintarPos(){if(PRUEBA){$('#hPos').textContent='';return}const L=orden()
 const med=['🥇','🥈','🥉'];
 function pintarFinal(){const L=orden().filter(([,j])=>j.fin);const i=L.findIndex(([id])=>id===P.id);
  const pos=PRUEBA?1:(i>=0?i+1:null);$('#fPlace').textContent=pos?(pos<=3?med[pos-1]+' ':'')+pos+'º':'🏁';
- $('#fTit').textContent=pos?`¡Llegaste en el puesto ${pos}!`:'¡Llegaste a 20!';$('#fSub').textContent=`Destruiste ${P.kills} conceptos del tema · ${P.err} errores o choques`;
+ $('#fTit').textContent=pos?`¡Llegaste en el puesto ${pos}!`:`¡Llegaste a ${META}!`;$('#fSub').textContent=`Destruiste ${P.kills} conceptos del tema · ${P.err} errores o choques`;
  $('#fList').innerHTML='<b>🏁 Orden de llegada</b>'+(PRUEBA?'<p style="color:var(--mute);margin:8px 0 0">Modo de prueba: no se envía nada al profesor.</p>':L.map(([id,j],k)=>`<div class="r ${id===P.id?'me':''}"><span>${k<3?med[k]:(k+1)+'.'} ${esc(j.n)}${id===P.id?' (tú)':''}</span><span style="color:var(--a)">${E.inicio?clock(j.fin-E.inicio):''}</span></div>`).join(''))}
 const clock=ms=>{ms=Math.max(0,ms);const s=Math.floor(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
 
@@ -313,7 +329,7 @@ function escucharSala(){if(jRef)jRef.off();if(!E||!E.ronda)return;jRef=DBR.ref(`
   if(vista==='Espera'&&L.length>antes&&antes)S.join();
   if(P.nombre&&P.ronda===E.ronda&&!v[P.id]&&P.reg===P.ronda&&vista!=='Intro'){P.reg=null;save();lastSent='';sync(true)}
   pintarPos();if(vista==='Final')pintarFinal()})}
-function onEstado(e){const prev=E&&E.ronda;E=e||{};
+function onEstado(e){const prev=E&&E.ronda;E=e||{};if(E.meta&&+E.meta!==META){META=+E.meta;metaTxt();if(G)hud()}
  if(E.ronda&&E.ronda!==P.ronda){const keep={id:P.id,nombre:P.nombre};P=Object.assign(P0(),keep,{ronda:E.ronda});save();stopGame();G=null;lastSent='';if(P.nombre)sync(true)}
  if(E.ronda!==prev)escucharSala();
  $('#ovPausa').classList.toggle('on',!!(E.iniciado&&E.pausa&&vista==='Juego'));if(G)G.pause=!!E.pausa;
