@@ -67,6 +67,7 @@ input.t{width:100%;font:600 20px Inter;padding:14px;border-radius:12px;border:2p
   <ul class="rules">
    <li><b>🎯</b><span>Caen bloques con conceptos. <strong>Dispara solo a los que tienen que ver con lo que vimos</strong>: hardware, software, programación, web, redes y datos.</span></li>
    <li><b>⛔</b><span>Si destruyes un concepto que <strong>no</strong> es del tema, pierdes 1 punto. Si un bloque choca tu nave, también pierdes 1.</span></li>
+   <li><b>💥</b><span>¡Cuidado! <strong>Cada segundo, un concepto del tema dispara</strong> hacia tu nave (antes se pone rojo). Si la bala te toca, pierdes 1. Esquívala o destrúyela con tus disparos.</span></li>
    <li><b>🏆</b><span>El primero en llegar a <strong>20 puntos</strong> gana el primer lugar, el segundo gana el segundo… ¡todos juegan a la vez!</span></li>
    <li><b>🕹️</b><span>Celular o tableta: mantén el dedo en la pantalla y muévelo en cualquier dirección: la nave lo sigue y dispara sola. Computadora: flechas (o W A S D) o el mouse para moverte hacia los lados, arriba y abajo; espacio o clic para disparar.</span></li>
   </ul>
@@ -178,11 +179,11 @@ const yMin=()=>Math.max(90,G.H*.42),yMax=()=>G.H-Math.max(50,G.H*.07);
 addEventListener('resize',resize);
 const fontPx=()=>clamp(Math.round(G.W/42),14,21);
 function newGame(){const W=innerWidth,H=innerHeight;
- G={W,H,run:true,pause:false,t:0,spawn:0,ship:{x:W/2,y:H-Math.max(50,H*.07),tx:W/2,ty:H-Math.max(50,H*.07)},bul:[],obs:[],parts:[],fl:[],cool:0,inv:0,fire:false,keys:{},pts:P.pts,shake:0,lastRecent:[]};resize()}
+ G={W,H,run:true,pause:false,t:0,spawn:0,ship:{x:W/2,y:H-Math.max(50,H*.07),tx:W/2,ty:H-Math.max(50,H*.07)},bul:[],obs:[],parts:[],fl:[],eb:[],shootT:1.5,cool:0,inv:0,fire:false,keys:{},pts:P.pts,shake:0,lastRecent:[]};resize()}
 function pick(){const si=Math.random()<.62,arr=si?SI:NO;let t;for(let k=0;k<6;k++){t=arr[rnd(arr.length)];if(!G.lastRecent.includes(t))break}G.lastRecent.push(t);if(G.lastRecent.length>8)G.lastRecent.shift();return [t,si]}
 function spawn(){const [txt,ok]=pick();cx.font=`700 ${fontPx()}px Inter`;const w=cx.measureText(txt).width+34,h=fontPx()*2.3;
  let x;for(let k=0;k<8;k++){x=16+Math.random()*Math.max(10,G.W-w-32);if(!G.obs.some(o=>o.y<h*2.6&&Math.abs(o.x+o.w/2-(x+w/2))<(o.w+w)/2+56))break}
- const sc=G.H/760,vy=(48+Math.random()*34)*sc*(1+G.pts*.035);G.obs.push({txt,ok,x,y:-h-4,w,h,vy,rot:(Math.random()-.5)*.06,hue:rnd(360)})}
+ const sc=G.H/760,vy=(58+Math.random()*8)*sc*(1+G.pts*.035);G.obs.push({txt,ok,x,y:-h-4,w,h,vy,rot:(Math.random()-.5)*.06,hue:rnd(360)})}
 function burst(x,y,col,n=22){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=60+Math.random()*260;G.parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:.6+Math.random()*.4,col})}}
 function float(x,y,t,col){G.fl.push({x,y,t,col,l:1.1})}
 function setPts(d){G.pts=Math.max(0,G.pts+d);P.pts=G.pts;save();hud();sync()}
@@ -201,6 +202,14 @@ function update(dt){const g=G;g.t+=dt;
    else{P.err++;setPts(-1);burst(cx2,cy2,'#ff6b6b',30);float(cx2,cy2,'−1 ¡No es del tema!','#ff6b6b');S.no();g.shake=.3;if(navigator.vibrate)navigator.vibrate(80)}
    break}}
   if(!o.dead&&g.inv<=0&&o.y+o.h-5>s.y-14&&o.y+5<s.y+16&&s.x+11>o.x+7&&s.x-11<o.x+o.w-7){o.dead=1;P.err++;setPts(-1);g.inv=1.3;g.shake=.45;burst(s.x,s.y,'#ffb547',34);float(s.x,s.y-40,'−1 ¡Choque!','#ffb547');S.hit();if(navigator.vibrate)navigator.vibrate(160)}}
+ /* conceptos del tema que disparan: cada segundo uno al azar se carga (borde rojo) y dispara a la nave */
+ g.shootT-=dt;if(g.shootT<=0){g.shootT=1;const C=g.obs.filter(o=>o.ok&&!o.dead&&!o.charge&&o.y>0&&o.y<g.H*.55);if(C.length){const o=C[rnd(C.length)];o.charge=.45;tone(300,.35,'sawtooth',.03,0,900)}}
+ const ebs=Math.max(210,g.H*.36);
+ for(const o of g.obs){if(o.charge>0&&!o.dead){o.charge-=dt;if(o.charge<=0){o.charge=-1;const ox=o.x+o.w/2,oy=o.y+o.h,a=Math.atan2(s.y-oy,s.x-ox)+(Math.random()-.5)*.25;g.eb.push({x:ox,y:oy,vx:Math.cos(a)*ebs,vy:Math.sin(a)*ebs});tone(500,.18,'sawtooth',.05,0,140)}}}
+ for(const e of g.eb){e.x+=e.vx*dt;e.y+=e.vy*dt;
+  for(const b of g.bul){if(!b.dead&&Math.abs(b.x-e.x)<9&&Math.abs(b.y-e.y)<14){b.dead=1;e.dead=1;burst(e.x,e.y,'#ffe27a',10);tone(1600,.08,'triangle',.06);break}}
+  if(!e.dead&&g.inv<=0&&Math.hypot(e.x-s.x,e.y-(s.y+2))<15){e.dead=1;P.err++;setPts(-1);g.inv=1.3;g.shake=.45;burst(s.x,s.y,'#ff6b6b',34);float(s.x,s.y-40,'−1 ¡Te dispararon!','#ff6b6b');S.hit();if(navigator.vibrate)navigator.vibrate(160)}}
+ g.eb=g.eb.filter(e=>!e.dead&&e.y<g.H+20&&e.y>-20&&e.x>-20&&e.x<g.W+20);
  g.obs=g.obs.filter(o=>!o.dead&&o.y<g.H+10);g.bul=g.bul.filter(b=>!b.dead);
  g.parts.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.96;p.vy*=.96;p.l-=dt});g.parts=g.parts.filter(p=>p.l>0);
  g.fl.forEach(f=>{f.y-=40*dt;f.l-=dt});g.fl=g.fl.filter(f=>f.l>0);
@@ -212,8 +221,9 @@ function draw(){const g=G,W=g.W,H=g.H;cx.save();if(g.shake>0)cx.translate((Math.
  const fp=fontPx();cx.font=`700 ${fp}px Inter`;cx.textAlign='center';cx.textBaseline='middle';
  for(const o of g.obs){cx.save();cx.translate(o.x+o.w/2,o.y+o.h/2);cx.rotate(o.rot*Math.sin(g.t*2+o.hue));
   const gr=cx.createLinearGradient(0,-o.h/2,0,o.h/2);gr.addColorStop(0,'#3a4560');gr.addColorStop(1,'#232c42');cx.fillStyle=gr;rr(-o.w/2,-o.h/2,o.w,o.h,o.h/2.4);cx.fill();
-  cx.lineWidth=2;cx.strokeStyle='#8fa3cc';cx.stroke();cx.fillStyle='#55617d';for(let k=0;k<3;k++){cx.beginPath();cx.arc(-o.w/2+10+k*((o.w-20)/2),(k%2?1:-1)*o.h*.28,2.5,0,7);cx.fill()}
+  cx.lineWidth=o.charge>0?4:2;cx.strokeStyle=o.charge>0?(Math.floor(g.t*16)%2?'#ff6b6b':'#ffb547'):'#8fa3cc';if(o.charge>0){cx.shadowColor='#ff6b6b';cx.shadowBlur=18}cx.stroke();cx.shadowBlur=0;cx.fillStyle='#55617d';for(let k=0;k<3;k++){cx.beginPath();cx.arc(-o.w/2+10+k*((o.w-20)/2),(k%2?1:-1)*o.h*.28,2.5,0,7);cx.fill()}
   cx.fillStyle='#f3f6ff';cx.fillText(o.txt,0,1);cx.restore()}
+ cx.shadowColor='#ff6b6b';cx.shadowBlur=14;for(const e of g.eb){cx.fillStyle='#ff6b6b';cx.beginPath();cx.arc(e.x,e.y,6,0,7);cx.fill();cx.fillStyle='#ffd0d0';cx.beginPath();cx.arc(e.x,e.y,2.5,0,7);cx.fill()}cx.shadowBlur=0;
  cx.fillStyle='#ffe27a';cx.shadowColor='#ffe27a';cx.shadowBlur=10;for(const b of g.bul){cx.fillRect(b.x-2,b.y-9,4,16)}cx.shadowBlur=0;
  const s=g.ship;if(!(g.inv>0&&Math.floor(g.t*12)%2)){cx.save();cx.translate(s.x,s.y);
   cx.fillStyle='#ff9f43';cx.beginPath();cx.moveTo(-8,18);cx.lineTo(0,30+Math.random()*10);cx.lineTo(8,18);cx.fill();
