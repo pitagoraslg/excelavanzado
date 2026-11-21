@@ -89,7 +89,7 @@ input.t{width:100%;font:600 20px Inter;padding:14px;border-radius:12px;border:2p
 </div></section>
 
 <section class="view" id="vJuego">
- <div class="hud"><span class="pts"><span id="hP">0</span>/20</span><div class="bar"><i id="hB"></i></div><span class="pos" id="hPos"></span><span class="x" id="hE">⛔ 0</span><button id="hMus" aria-label="Música">🎵</button><button id="hSnd" aria-label="Silenciar">♪</button></div>
+ <div class="hud"><span class="pts"><span id="hP">0</span>/20</span><div class="bar"><i id="hB"></i></div><span class="pos" id="hPos"></span><span class="x" id="hVer" hidden style="color:var(--v);font-weight:700" title="El profesor está mostrando tu juego en el proyector">👁 En vivo</span><span class="x" id="hE">⛔ 0</span><button id="hMus" aria-label="Música">🎵</button><button id="hSnd" aria-label="Silenciar">♪</button></div>
  <canvas id="cv" aria-label="Juego: dispara a los conceptos del tema"></canvas>
  <div class="hint" id="hint">Mueve el dedo en cualquier dirección: la nave lo sigue y dispara · Computadora: flechas y espacio</div>
 </section>
@@ -295,6 +295,16 @@ function sync(now2,fin){if(PRUEBA||!window.DBR||!P.ronda||!P.nombre)return;clear
  const go=()=>{const sv=firebase.database.ServerValue.TIMESTAMP;const u={n:P.nombre,p:P.pts,k:P.kills,e:P.err};if(!P.reg||P.reg!==P.ronda){u.c=sv;P.reg=P.ronda;save()}if(fin)u.fin=sv;
   const sig=JSON.stringify(u);if(sig===lastSent&&!fin)return;lastSent=sig;DBR.ref(`${ROOT}/jugadores/${P.ronda}/${P.id}`).update(u).catch(()=>toast('Sin conexión: tu puntaje se enviará al reconectar.'))};
  if(now2)go();else syncT=setTimeout(go,300)}
+/* ---------- transmisión en vivo al proyector: solo envía quien el profesor está mirando ---------- */
+let VER=null;const r1=v=>Math.round(v);
+const meVen=()=>!PRUEBA&&VER&&VER.id===P.id&&VER.r===P.ronda;
+setInterval(()=>{const on=meVen();$('#hVer').hidden=!on;if(!on||!window.DBR)return;
+ const base={id:P.id,t:now(),p:P.pts,er:P.err};
+ if(vista!=='Juego'||!G||!G.run){base.v=P.fin?'fin':'espera'}
+ else{const g=G;Object.assign(base,{W:g.W,H:g.H,s:[r1(g.ship.x),r1(g.ship.y),r1(g.ship.tx-g.ship.x)],inv:g.inv>0?1:0,pa:g.pause?1:0,
+  o:g.obs.map(o=>[o.txt,r1(o.x),r1(o.y),r1(o.w),r1(o.h),r1(o.vy),o.charge>0?1:0,o.hue]),
+  b:g.bul.map(b=>[r1(b.x),r1(b.y)]),e:g.eb.map(e=>[r1(e.x),r1(e.y),r1(e.vx),r1(e.vy)])})}
+ DBR.ref(`${ROOT}/vivo/${P.ronda}`).set(base).catch(()=>{})},125);
 let jRef=null;
 function escucharSala(){if(jRef)jRef.off();if(!E||!E.ronda)return;jRef=DBR.ref(`${ROOT}/jugadores/${E.ronda}`);
  jRef.on('value',s=>{const v=s.val()||{};const antes=Object.keys(JUG).length;JUG=v;const L=Object.entries(v).filter(([,j])=>j&&j.n);
@@ -330,6 +340,7 @@ else{
  addEventListener('fb-ready',()=>{conectado=true;clearTimeout(tFail);
   DBR.ref('.info/serverTimeOffset').on('value',s=>{OFF=s.val()||0});
   DBR.ref(`${ROOT}/estado`).on('value',s=>onEstado(s.val()));
+  DBR.ref(`${ROOT}/ver`).on('value',s=>{VER=s.val()});
   DBR.ref('.info/connected').on('value',s=>{if(s.val()===true&&P.nombre&&P.ronda){lastSent='';sync(true)}})});
 }
 }
