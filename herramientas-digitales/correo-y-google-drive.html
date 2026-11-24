@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Módulo 1. Correo electrónico y Google Drive.</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M18 50a12 12 0 0 1-1-24 16 16 0 0 1 31-3 11 11 0 0 1 0 27z' fill='%231E6FE0'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* VOICE: clase de secundaria, cercana y con energía; se proyecta con sonido
+   IDEA: cada lámina "llega" como un mensaje: un avión de papel cruza la pantalla
+   COLOUR and TYPE: cielo claro, azul marino del curso, acentos verde y amarillo; Fredoka + Nunito
+   LAYOUT: foto real grande + panel interactivo, láminas llenas a pantalla completa */
+:root{color-scheme:light;--bg:#F3F7FE;--p1:#FFFFFF;--p2:#EAF1FD;--line:#D3E0F5;--ink:#12246B;--mute:#4A5B85;
+ --b:#1E6FE0;--s:#4FB3F6;--g:#2BB34A;--y:#F5B700;--r:#E5484D;--v:#7B5CE0;--mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 Nunito,system-ui,sans-serif;overflow:hidden}
+h1,h2,h3{font-family:Fredoka,Arial,sans-serif;line-height:1.08;margin:0;text-wrap:balance;font-weight:700}
+h2{font-size:clamp(28px,3.4vw,46px)}h3{font-size:21px;margin-bottom:6px;font-weight:600}
+p{margin:0 0 12px}
+.deck{position:fixed;inset:0 0 68px 0;perspective:1400px}
+.slide{position:absolute;inset:0;overflow-y:auto;visibility:hidden;opacity:0;background:var(--bg)}
+.slide.on{visibility:visible;opacity:1;animation:inF .75s cubic-bezier(.2,.8,.2,1)}
+.slide.on.back{animation:inB .75s cubic-bezier(.2,.8,.2,1)}
+@keyframes inF{from{transform:translateX(9%) rotateY(-10deg) scale(.96);opacity:0}to{transform:none;opacity:1}}
+@keyframes inB{from{transform:translateX(-9%) rotateY(10deg) scale(.96);opacity:0}to{transform:none;opacity:1}}
+#plane{position:fixed;z-index:25;width:90px;height:90px;left:-120px;top:30%;pointer-events:none;opacity:0}
+#plane.go{animation:fly .95s cubic-bezier(.4,0,.3,1)}#plane.goB{animation:flyB .95s cubic-bezier(.4,0,.3,1)}
+@keyframes fly{0%{left:-120px;top:62%;opacity:1;transform:rotate(-18deg)}60%{top:22%;transform:rotate(-4deg)}100%{left:110%;top:8%;opacity:1;transform:rotate(-12deg)}}
+@keyframes flyB{0%{left:110%;top:62%;opacity:1;transform:scaleX(-1) rotate(-18deg)}60%{top:22%}100%{left:-140px;top:8%;opacity:1;transform:scaleX(-1) rotate(-12deg)}}
+.hd{padding:18px max(4vw,16px) 12px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;border-bottom:1px solid var(--line);background:linear-gradient(90deg,#1E6FE01a,transparent 70%)}
+.hd .tag{font:700 14px Nunito;color:#fff;background:var(--b);padding:3px 12px;border-radius:20px;align-self:center}
+.hd small{color:var(--mute);font-size:15px;font-weight:600}
+.body{padding:clamp(16px,2.4vw,32px) max(4vw,16px);max-width:1280px;margin:0 auto}
+.lead{font-size:clamp(18px,1.6vw,22px);color:var(--mute);margin:0 0 16px}
+.lead b{color:var(--ink)}
+.two{display:grid;gap:26px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+.two.w{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.panel{background:var(--p1);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:0 4px 16px #12246b0d}
+.btn{font:800 16px Nunito,sans-serif;min-height:46px;padding:0 18px;border-radius:12px;border:2px solid var(--b);background:var(--b);color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .15s}
+.btn:active{transform:scale(.96)}
+.btn.ghost{background:#fff;color:var(--b)}
+.btn.g{background:var(--g);border-color:var(--g)}.btn.r{background:var(--r);border-color:var(--r)}.btn.y{background:var(--y);border-color:var(--y);color:#3b2a00}
+.btn:disabled{opacity:.5;cursor:default}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.note{font-size:14px;color:var(--mute);margin-top:10px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.chips button{min-height:44px;padding:0 16px;border-radius:22px;border:2px solid var(--line);background:#fff;color:var(--ink);font:700 15px Nunito;cursor:pointer;transition:all .2s}
+.chips button.on{background:var(--b);border-color:var(--b);color:#fff;transform:translateY(-2px);box-shadow:0 6px 14px #1e6fe040}
+input[type=text],input:not([type]),select{font:700 18px Nunito;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:#fff;color:var(--ink)}
+.rv{opacity:0;transform:translateY(18px)}
+.slide.on .rv{animation:up .6s cubic-bezier(.2,.9,.3,1.2) forwards;animation-delay:calc(var(--i,0)*100ms + 280ms)}
+@keyframes up{to{opacity:1;transform:none}}
+/* fotos reales */
+.ph{position:relative;margin:0;border-radius:18px;overflow:hidden;border:3px solid #fff;background:#cfdcf3;aspect-ratio:4/3;box-shadow:0 10px 30px #12246b26}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.slide.on .ph img{animation:kb 16s ease-out forwards}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.09)}}
+.ph figcaption{position:absolute;left:0;right:0;bottom:0;padding:6px 10px;font-size:11px;color:#fff;background:linear-gradient(transparent,#000a);text-align:right}
+.ph .lbl{position:absolute;left:12px;top:12px;font:700 14px Nunito;background:#12246bdd;color:#fff;padding:4px 12px;border-radius:20px}
+.ph.wide{aspect-ratio:16/9}
+.ph.noimg{background:linear-gradient(160deg,#1E6FE0,#12246B)}.ph.noimg img,.ph.noimg figcaption{display:none}.ph.noimg::before{content:"@";position:absolute;inset:0;display:grid;place-items:center;font:700 clamp(120px,14vw,240px) Fredoka;color:#ffffffe6}.ph.tall{aspect-ratio:3/4}.ph.sq{aspect-ratio:1}
+/* portada */
+.cover{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:36px;align-items:center;padding:max(4vw,20px);overflow:hidden}
+.cover .bg{position:absolute;inset:0;background:url(img/portada.jpg) center/cover;transform:scale(1.05)}
+.cover .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,#12246Bf2 0%,#12246Bcc 45%,#1E6FE066 100%)}
+.slide.on .cover .bg{animation:kb 20s ease-out forwards}
+.cover>*{position:relative}
+.cover .k1{display:inline-block;font:800 clamp(15px,1.2vw,20px) Nunito;color:#12246B;background:var(--y);padding:4px 14px;border-radius:20px;margin-bottom:14px}
+.cover h1{font-size:clamp(42px,5.6vw,92px);color:#fff}
+.cover h1 em{font-style:normal;color:var(--s)}
+.cover p{font-size:clamp(18px,1.6vw,26px);color:#dbe6ff;max-width:34ch;margin:16px 0 22px}
+.cover .by{margin-top:22px;font-weight:700;color:#dbe6ff}
+.cover .credit,.mcover .credit{position:absolute;right:10px;bottom:6px;font-size:11px;color:#ffffffaa}
+.cloud{position:absolute;color:#ffffff22;font-size:140px;animation:drift 30s linear infinite;pointer-events:none}
+@keyframes drift{from{transform:translateX(-30vw)}to{transform:translateX(120vw)}}
+/* ventana de correo */
+.mail{background:#fff;border-radius:16px;box-shadow:0 18px 50px #0004;overflow:hidden;color:var(--ink)}
+.mail .top{display:flex;justify-content:space-between;align-items:center;background:#12246B;color:#fff;padding:10px 16px;font:600 16px Fredoka}
+.mail .f{display:flex;gap:10px;border-bottom:1px solid var(--line);padding:10px 16px;font-size:16px;align-items:center;min-height:44px}
+.mail .f>span:first-child{color:var(--mute);width:62px;flex:none;font-weight:700}
+.mail .bd{padding:14px 16px;min-height:120px;white-space:pre-wrap;font-size:16px}
+.mail .ft{display:flex;gap:10px;align-items:center;padding:10px 16px;border-top:1px solid var(--line)}
+.mail.sent{animation:sendAway 1s cubic-bezier(.5,0,.8,.3) forwards}
+@keyframes sendAway{30%{transform:scale(.9) rotate(-3deg)}100%{transform:translate(60vw,-80vh) scale(.2) rotate(-25deg);opacity:0}}
+.caret::after{content:"|";color:var(--b);animation:blink 1s steps(1) infinite;font-weight:800}
+@keyframes blink{50%{opacity:0}}
+.toast{position:fixed;left:50%;top:22px;transform:translate(-50%,-150%);background:var(--ink);color:#fff;font:700 18px Nunito;padding:12px 22px;border-radius:14px;z-index:40;transition:transform .35s cubic-bezier(.3,1.4,.5,1);box-shadow:0 10px 30px #0004}
+.toast{visibility:hidden}.toast.on{transform:translate(-50%,0);visibility:visible}
+[hidden]{display:none!important}
+/* tarjetas volteables */
+.flip{perspective:900px;min-height:170px;cursor:pointer;background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left}
+.flip .in{position:relative;min-height:170px;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.on .in{transform:rotateY(180deg)}
+.flip .fr,.flip .bk{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.flip .fr{background:#fff;border:2px solid var(--line);box-shadow:0 4px 14px #12246b10}
+.flip .fr .ico{font-size:38px;line-height:1}
+.flip .fr small{color:var(--mute);font-size:13px;font-weight:700}
+.flip .bk{background:linear-gradient(135deg,#1E6FE0,#12246B);color:#fff;transform:rotateY(180deg);font-size:17px}
+/* medidores */
+.meter{display:grid;grid-template-columns:130px minmax(0,1fr) 52px;gap:10px;align-items:center;margin:8px 0;font-size:16px;font-weight:700}
+.meter .tr{height:22px;border-radius:11px;background:var(--p2);overflow:hidden}
+.meter .tr i{display:block;height:100%;width:0;border-radius:11px;transition:width .8s cubic-bezier(.3,1.3,.5,1)}
+.meter b{text-align:right;font-variant-numeric:tabular-nums}
+/* juego */
+.sit{font:600 clamp(22px,2.4vw,34px) Fredoka,Arial,sans-serif;min-height:3.2em;display:grid;place-items:center;text-align:center;background:#fff;border:3px solid var(--line);border-radius:18px;padding:18px;transition:border-color .3s,background .3s}
+.sit.ok{border-color:var(--g);background:#ecfaef}.sit.no{border-color:var(--r);background:#fdeeee;animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.ans{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));margin-top:12px}
+.ans button{min-height:62px;font:600 19px Fredoka,Arial,sans-serif;border-radius:14px;border:3px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;padding:8px 12px;transition:transform .15s}
+.ans button:hover{transform:translateY(-2px)}
+.ans button.ok{border-color:var(--g);background:#dff6e4}.ans button.no{border-color:var(--r);background:#fde3e3}
+.fbk{min-height:2.4em;margin-top:10px;color:var(--mute);font-weight:700}
+.score{font:800 16px Nunito;color:#fff;background:var(--g);padding:4px 12px;border-radius:20px}
+.prog-q{display:flex;gap:4px;margin-bottom:10px}.prog-q i{flex:1;height:8px;border-radius:4px;background:var(--line)}.prog-q i.ok{background:var(--g)}.prog-q i.no{background:var(--r)}
+/* flujo */
+.flow{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch}
+.st{flex:1 1 120px;background:#fff;border:2px solid var(--line);border-radius:14px;padding:10px;text-align:center;transition:all .35s}
+.st .e{font-size:30px;display:block}.st b{display:block;font-size:15px}.st small{color:var(--mute);font-size:13px}
+.st.on{border-color:var(--b);background:#e3eeff;transform:translateY(-5px);box-shadow:0 8px 18px #1e6fe033}
+.st.done{border-color:#2bb34a88;background:#f0fbf2}
+.conf{position:fixed;top:-20px;width:10px;height:16px;z-index:30;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.big{font:700 clamp(40px,4.6vw,72px) Fredoka;color:var(--b);line-height:1}
+.warn{border-left:6px solid var(--y);background:#fff6dc;border-radius:12px;padding:12px 16px;color:#5a4300;font-weight:600}
+.good{border-left:6px solid var(--g);background:#eafaee;border-radius:12px;padding:12px 16px;color:#14532d;font-weight:600}
+/* 2: línea de tiempo */
+.tl{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;position:relative;margin:6px 0 14px}
+.tl::before{content:"";position:absolute;left:4%;right:4%;top:22px;height:4px;background:var(--line);border-radius:2px}
+.tl button{position:relative;background:none;border:0;cursor:pointer;font:800 15px Nunito;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:6px;padding:0}
+.tl button span{width:44px;height:44px;border-radius:50%;background:#fff;border:3px solid var(--line);display:grid;place-items:center;font-size:20px;transition:all .3s}
+.tl button.on{color:var(--b)}.tl button.on span{border-color:var(--b);background:var(--b);transform:scale(1.15);box-shadow:0 0 0 6px #1e6fe022}
+/* 3: dirección */
+.addr{display:flex;justify-content:center;flex-wrap:wrap;gap:4px;font:700 clamp(30px,3.6vw,56px) Fredoka;margin:6px 0 14px}
+.addr button{font:inherit;border:3px dashed transparent;background:none;border-radius:14px;padding:2px 10px;cursor:pointer;color:var(--ink);transition:all .25s}
+.addr button:nth-child(1){color:var(--b)}.addr button:nth-child(2){color:var(--y)}.addr button:nth-child(3){color:var(--g)}
+.addr button.on{border-color:currentColor;background:#fff;transform:translateY(-4px)}
+.vchk{display:grid;gap:8px}
+.vchk button{display:flex;justify-content:space-between;gap:10px;align-items:center;min-height:48px;padding:6px 14px;border-radius:12px;border:2px solid var(--line);background:#fff;font:700 16px var(--mono);color:var(--ink);cursor:pointer;text-align:left}
+.vchk button em{font:800 14px Nunito;font-style:normal;white-space:nowrap}
+.vchk button.ok{border-color:var(--g);background:#eafaee}.vchk button.no{border-color:var(--r);background:#fdeeee}.vchk button.meh{border-color:var(--y);background:#fff6dc}
+/* 4: partes */
+.mail .f.pick,.mail .bd.pick,.mail .ft .pick{cursor:pointer;transition:background .2s}
+.mail .pick:hover{background:#f2f7ff}
+.mail .pick.on{background:#e0ecff;box-shadow:inset 5px 0 0 var(--b)}
+.att{display:inline-flex;gap:6px;align-items:center;background:var(--p2);border-radius:10px;padding:4px 10px;font-weight:700;font-size:15px}
+/* 7: proveedores */
+.prov{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.prov button{display:flex;gap:10px;align-items:center;background:#fff;border:3px solid var(--line);border-radius:16px;padding:10px 12px;cursor:pointer;font:600 18px Fredoka;color:var(--ink);text-align:left;transition:all .25s}
+.prov button i{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:#fff;font:700 22px Fredoka;font-style:normal}
+.prov button.on{border-color:var(--b);transform:translateY(-4px);box-shadow:0 10px 22px #1e6fe033}
+.prov button.hit{animation:pulse .9s 2}
+@keyframes pulse{50%{box-shadow:0 0 0 10px #f5b70066;transform:scale(1.04)}}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0 0}.kv dt{font-weight:800;color:var(--mute)}.kv dd{margin:0;font-weight:600}
+/* 8: buen correo */
+.chk{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.chk li{display:flex;gap:10px;align-items:center;background:#fff;border:2px solid var(--line);border-radius:12px;padding:8px 12px;font-weight:700;transition:all .3s}
+.chk li b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--p2);flex:none;transition:all .3s}
+.chk li.on{border-color:var(--g);background:#f0fbf2}.chk li.on b{background:var(--g);color:#fff}
+.hl{background:#fff1b8;border-radius:4px;animation:hlA 1s}
+@keyframes hlA{from{background:#ffd84d}}
+/* 9: contraseña */
+.pw{font:700 24px var(--mono)!important;width:100%;letter-spacing:1px}
+.strength{height:26px;border-radius:13px;background:var(--p2);overflow:hidden;margin:12px 0 6px}
+.strength i{display:block;height:100%;width:0;transition:width .5s cubic-bezier(.3,1.3,.5,1),background .4s;border-radius:13px}
+/* 10-11: 2 pasos */
+.phone{width:min(100%,280px);margin:0 auto;background:#0f1b45;border-radius:36px;padding:14px;box-shadow:0 20px 50px #12246b55;position:relative}
+.phone .scr{background:linear-gradient(160deg,#1E6FE0,#12246B);border-radius:26px;min-height:400px;padding:34px 14px 14px;color:#fff;position:relative;overflow:hidden}
+.phone .scr .clock{text-align:center;font:600 48px Fredoka;margin:6px 0 2px}.phone .scr .date{text-align:center;opacity:.8;font-size:14px;margin-bottom:18px}
+.phone .notch{position:absolute;left:50%;top:22px;transform:translateX(-50%);width:80px;height:20px;background:#0f1b45;border-radius:12px;z-index:2}
+.notif{background:#fffffff0;color:var(--ink);border-radius:16px;padding:12px;font-size:15px;transform:translateY(-140%);opacity:0;transition:all .5s cubic-bezier(.3,1.4,.5,1)}
+.notif.on{transform:none;opacity:1}
+.notif b{display:block}.notif .code{font:700 30px var(--mono);letter-spacing:4px;color:var(--b);text-align:center;margin:6px 0}
+.phone.buzz{animation:buzz .12s 6}
+@keyframes buzz{50%{transform:translateX(4px) rotate(1deg)}}
+.login{max-width:440px}
+.login .gl{font:700 26px Fredoka;margin-bottom:4px}
+.login label{display:block;font-weight:800;margin:10px 0 4px;color:var(--mute)}
+.login input{width:100%}
+.res{margin-top:12px;border-radius:14px;padding:14px;font:600 20px Fredoka;display:none;text-align:center}
+.res.ok{display:block;background:#dff6e4;color:#14532d}.res.no{display:block;background:#fde3e3;color:#7f1d1d}
+/* 12: phishing */
+.phish .sus{cursor:pointer;border-radius:6px;transition:background .2s;border-bottom:3px dotted var(--r)}
+.phish .sus:hover{background:#fde3e3}
+.phish .sus.found{background:#fde3e3;border-bottom-style:solid;position:relative}
+.phish .sus.found::after{content:attr(data-n);position:absolute;top:-12px;right:-12px;width:24px;height:24px;border-radius:50%;background:var(--r);color:#fff;font:800 13px Nunito;display:grid;place-items:center}
+.flist{display:grid;gap:8px;counter-reset:f}
+.flist div{background:#fff;border:2px solid var(--line);border-radius:12px;padding:8px 12px;font-weight:600;font-size:16px;animation:up .4s}
+.flist div b{color:var(--r)}
+/* 13: nube */
+.scene{position:relative;height:340px;background:linear-gradient(#dbeaff,#f3f7fe);border-radius:18px;border:1px solid var(--line);overflow:hidden}
+.scene .cl{position:absolute;left:50%;top:22px;transform:translateX(-50%);font-size:110px;line-height:1;filter:drop-shadow(0 8px 14px #1e6fe033);transition:transform .3s}
+.scene .cl.pulse{animation:clp .6s}
+@keyframes clp{50%{transform:translateX(-50%) scale(1.15)}}
+.scene .dev{position:absolute;bottom:22px;width:110px;text-align:center;font-weight:800;font-size:14px;color:var(--mute)}
+.scene .dev span{display:grid;place-items:center;width:80px;height:80px;margin:0 auto 4px;border-radius:20px;background:#fff;border:3px solid var(--line);font-size:38px;transition:all .3s;position:relative}
+.scene .dev.got span{border-color:var(--g);box-shadow:0 0 0 6px #2bb34a22}
+.scene .dev.got span::after{content:"📄";position:absolute;right:-10px;top:-10px;font-size:24px;animation:pop .4s}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.pkt{position:absolute;font-size:30px;transition:left .8s ease-in-out,top .8s ease-in-out;z-index:2}
+/* 14: almacenamiento */
+.stor{height:46px;border-radius:14px;background:var(--p2);overflow:hidden;display:flex;border:3px solid var(--line);margin:12px 0 6px}
+.stor i{height:100%;transition:width .5s;display:block}
+.stor.full{border-color:var(--r);animation:shake .4s}
+.items{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:8px}
+.items button{display:flex;justify-content:space-between;gap:8px;align-items:center;min-height:50px;padding:6px 12px;border-radius:12px;border:2px solid var(--line);background:#fff;color:var(--ink);font:700 15px Nunito;cursor:pointer;text-align:left}
+.items button b{white-space:nowrap}
+/* 15-16: drive simulado */
+.drv{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px #12246b1a;display:grid;grid-template-columns:170px minmax(0,1fr);min-height:380px;position:relative}
+.drv .sd{background:#f6f9ff;padding:14px 10px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.drv .lg{font:700 20px Fredoka;display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.drv .nw{display:inline-flex;align-items:center;gap:8px;font:800 17px Nunito;background:#fff;border:0;border-radius:16px;padding:14px 18px;box-shadow:0 2px 8px #12246b33;cursor:pointer;color:var(--ink)}
+.drv .nw.hint,.drv .mi.hint,.dlg .hint{animation:pulse 1.1s infinite}
+.drv .sd .it{padding:8px 12px;border-radius:12px;font-weight:700;font-size:15px;color:var(--mute)}
+.drv .sd .it.on{background:#d9e7ff;color:var(--ink)}
+.drv .mn{padding:14px 16px}
+.drv .mn h3{font-size:20px}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px}
+.fold{display:flex;gap:8px;align-items:center;background:#f2f6fd;border-radius:12px;padding:12px;font-weight:700;font-size:15px;border:2px solid transparent;animation:pop .45s cubic-bezier(.3,1.5,.5,1)}
+.fold .fi{font-size:24px}
+.menu{position:absolute;left:14px;top:120px;background:#fff;border-radius:12px;box-shadow:0 10px 30px #12246b44;padding:6px 0;z-index:3;min-width:220px;animation:pop .25s;transform-origin:top left}
+.menu .mi{display:flex;gap:10px;align-items:center;width:100%;border:0;background:none;padding:10px 16px;font:700 16px Nunito;color:var(--ink);cursor:pointer;text-align:left}
+.menu .mi:hover{background:#eef4ff}.menu hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+.dlg{position:absolute;inset:0;background:#12246b55;display:grid;place-items:center;z-index:4}
+.dlg>div{background:#fff;border-radius:16px;padding:20px;width:min(92%,360px);animation:pop .3s}
+.dlg input{width:100%;margin:10px 0 14px}
+.steps{list-style:none;padding:0;margin:0;display:grid;gap:10px;counter-reset:s}
+.steps li{display:flex;gap:12px;align-items:center;background:#fff;border:2px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:700;transition:all .3s}
+.steps li::before{counter-increment:s;content:counter(s);width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--p2);font:700 18px Fredoka}
+.steps li.on{border-color:var(--b);background:#e3eeff;transform:translateX(6px)}.steps li.on::before{background:var(--b);color:#fff}
+.steps li.done{border-color:#2bb34a88}.steps li.done::before{content:"✓";background:var(--g);color:#fff}
+.files{display:flex;flex-wrap:wrap;gap:8px;min-height:60px}
+.files button{display:flex;gap:6px;align-items:center;min-height:46px;padding:6px 12px;border-radius:12px;border:2px solid var(--line);background:#fff;font:700 15px Nunito;color:var(--ink);cursor:pointer;transition:all .25s}
+.files button.sel{border-color:var(--b);background:#e3eeff;transform:translateY(-4px) scale(1.04);box-shadow:0 8px 16px #1e6fe033}
+.bins{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.bin{background:#fff;border:3px solid var(--line);border-radius:16px;padding:12px;cursor:pointer;text-align:left;font:inherit;color:var(--ink);min-height:110px;transition:all .25s}
+.bin .bt{display:flex;gap:8px;align-items:center;font:600 19px Fredoka}
+.bin .bt .fi{font-size:30px}
+.bin .cnt{margin-left:auto;font:800 14px Nunito;background:var(--p2);border-radius:20px;padding:2px 10px}
+.bin ul{margin:6px 0 0;padding-left:20px;font-size:14px;color:var(--mute);font-weight:600}
+.bin.ready{border-style:dashed;border-color:var(--b)}
+.bin.ok{border-color:var(--g);background:#f0fbf2}.bin.no{border-color:var(--r);animation:shake .4s}
+/* 17: apps */
+.apps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.apps button{display:flex;flex-direction:column;align-items:center;gap:6px;background:#fff;border:3px solid var(--line);border-radius:16px;padding:12px 8px;cursor:pointer;font:600 17px Fredoka;color:var(--ink);transition:all .25s}
+.apps button i{width:52px;height:60px;border-radius:8px 18px 8px 8px;display:grid;place-items:center;color:#fff;font-size:26px;font-style:normal;box-shadow:0 6px 12px #0002}
+.apps button.on{border-color:var(--b);transform:translateY(-5px) rotate(-1deg);box-shadow:0 10px 22px #1e6fe033}
+/* 18: enlaces */
+.lnk{display:flex;gap:8px;align-items:center;background:var(--p2);border-radius:12px;padding:8px 10px;font:500 15px var(--mono);overflow:hidden}
+.lnk span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.viewer{background:#fff;border:1px solid var(--line);border-radius:16px;min-height:270px;padding:16px;display:grid;place-items:center;text-align:center;box-shadow:0 10px 30px #12246b1a;transition:all .3s}
+.can{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px;width:100%}
+.can div{border-radius:12px;padding:10px 6px;font-weight:800;font-size:15px}
+.can .y{background:#dff6e4;color:#14532d}.can .n{background:#f1f3f8;color:#8a94ad;text-decoration:line-through}
+/* 19: colaboración */
+.doc{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;min-height:280px;box-shadow:0 10px 30px #12246b1a;font-size:17px;position:relative}
+.doc .who{display:flex;gap:6px;margin-bottom:10px}
+.doc .who span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 15px Fredoka;opacity:.25;transition:opacity .3s}
+.doc .who span.on{opacity:1;animation:pop .4s}
+.doc p{min-height:1.5em;margin:0 0 10px;padding-left:10px;border-left:4px solid transparent;transition:border-color .3s}
+.doc .tagn{font:800 11px Nunito;color:#fff;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:top}
+.saved{font-size:14px;font-weight:800;color:var(--g);min-height:1.4em}
+/* módulo / sección */
+.mcover{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:max(5vw,20px)}
+/* nav */
+nav{position:fixed;left:0;right:0;bottom:0;height:68px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 max(2vw,10px);background:#12246B;z-index:10}
+nav .mid{display:flex;align-items:center;gap:14px;min-width:0}
+nav .sec{font:700 15px Nunito;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav .num{font:800 15px Nunito;color:#b8c8ee;min-width:60px;text-align:center}
+nav .btn{min-width:46px;padding:0 12px;justify-content:center}
+nav .btn.ghost{background:transparent;color:#fff;border-color:#ffffff55}
+nav .right{display:flex;gap:8px;align-items:center}
+#sndHint{background:var(--y);border-color:var(--y);color:#3b2a00}
+.prog{position:fixed;left:0;bottom:68px;height:5px;background:linear-gradient(90deg,var(--b),var(--s),var(--g),var(--y));transition:width .4s;z-index:11}
+/* proyección */
+@media(min-width:1000px){
+ body{font-size:clamp(20px,1.4vw,26px)}
+ h2{font-size:clamp(40px,3.8vw,62px)}h3{font-size:clamp(23px,1.7vw,30px)}
+ .body{max-width:min(94vw,1800px)}
+ .hd small{font-size:clamp(17px,1.2vw,21px)}
+ .lead{font-size:clamp(22px,1.7vw,29px)}
+ .btn{font-size:clamp(18px,1.25vw,21px);min-height:54px}
+ .chips button{font-size:clamp(17px,1.2vw,20px);min-height:50px}
+ .note{font-size:clamp(15px,1vw,18px)}
+ .flip,.flip .in{min-height:200px}.flip .bk{font-size:clamp(17px,1.25vw,22px)}.flip .fr .ico{font-size:46px}
+ .meter{font-size:clamp(16px,1.1vw,19px);grid-template-columns:170px minmax(0,1fr) 60px}
+ .ans button{font-size:clamp(19px,1.4vw,24px);min-height:72px}
+ .mail .f,.mail .bd{font-size:clamp(16px,1.15vw,20px)}
+ .vchk button{font-size:clamp(15px,1.05vw,19px)}
+ .chk li,.steps li{font-size:clamp(16px,1.15vw,20px)}
+ .st b{font-size:clamp(16px,1.1vw,19px)}.st small{font-size:clamp(14px,.95vw,16px)}
+ .prov button,.apps button{font-size:clamp(17px,1.25vw,22px)}
+ .items button,.files button{font-size:clamp(15px,1.05vw,18px)}
+ .flist div{font-size:clamp(15px,1.05vw,18px)}
+ .doc{font-size:clamp(17px,1.2vw,21px)}
+}
+@media(max-width:900px){.two,.two.w,.cover{grid-template-columns:minmax(0,1fr)}.cover{position:relative;min-height:100%}.tl{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:14px}.tl::before{display:none}.prov,.apps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){body{font-size:16px}nav .sec{display:none}#fs{display:none}.drv{grid-template-columns:minmax(0,1fr)}.drv .sd{flex-direction:row;flex-wrap:wrap;border-right:0;border-bottom:1px solid var(--line)}.bins{grid-template-columns:minmax(0,1fr)}.meter{grid-template-columns:96px minmax(0,1fr) 44px}#sndHint .t{display:none}.can{grid-template-columns:minmax(0,1fr)}.scene .dev{width:84px}.scene .dev span{width:60px;height:60px;font-size:28px}}
+@media(prefers-reduced-motion:reduce){.slide.on,.slide.on.back,#plane,.slide.on .ph img,.cloud,.conf{animation:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- 1 PORTADA -->
+<section class="slide" data-t="Portada">
+ <div class="cover">
+  <div class="bg"></div>
+  <div class="cloud" style="top:8%;animation-duration:38s">☁</div><div class="cloud" style="top:58%;animation-duration:52s;animation-delay:-20s;font-size:90px">☁</div>
+  <div>
+   <div class="k1">Módulo 1 · Introducción a la Nube</div>
+   <h1>Correo electrónico y <em>Google Drive</em></h1>
+   <p>Comunícate como un profesional, protege tu cuenta y guarda todo en la nube.</p>
+   <button class="btn y" id="start">▶ Comenzar con sonido</button>
+   <div class="by">Curso de Gestión de Herramientas Digitales · Jarlin Figueroa M.A.</div>
+  </div>
+  <div class="mail" id="cvMail">
+   <div class="top"><span>✉ Mensaje nuevo</span><span>— ▢ ✕</span></div>
+   <div class="f"><span>Para</span><span id="cvTo">estudiantes@liceo.edu.do</span></div>
+   <div class="f"><span>Asunto</span><b id="cvSu">¡Bienvenidos al Módulo 1!</b></div>
+   <div class="bd" id="cvBd">Hoy aprenderemos a usar el correo, la verificación en dos pasos y Google Drive. ☁️</div>
+   <div class="ft"><button class="btn" id="cvSend" tabindex="-1">Enviar ➤</button><span>📎 🖼️ 🔒</span></div>
+  </div>
+  <div class="credit" data-cr="portada"></div>
+ </div>
+</section>
+
+<!-- 2 QUÉ ES EL CORREO -->
+<section class="slide" data-t="¿Qué es el correo?">
+ <header class="hd"><h2>¿Qué es el correo electrónico?</h2><small>Toca cada año de la historia</small></header>
+ <div class="body two w">
+  <div>
+   <p class="lead rv">Es un servicio para <b>enviar y recibir mensajes escritos, archivos y fotos por internet</b>, de una cuenta a otra, en cualquier parte del mundo y en segundos.</p>
+   <div class="tl rv" style="--i:1" id="tl"></div>
+   <div class="panel rv" style="--i:2" id="tlP"></div>
+   <div class="grid rv" style="--i:3;margin-top:12px;grid-template-columns:repeat(2,minmax(0,1fr))">
+    <div class="panel" style="text-align:center"><div class="big" id="cnt1">0</div><b>mil millones de correos se envían cada día</b></div>
+    <div class="panel" style="text-align:center"><div class="big">@</div><b>el símbolo que lo identifica, desde 1971</b></div>
+   </div>
+  </div>
+  <figure class="ph tall rv" style="--i:1;max-height:72vh;margin-inline:auto"><img data-k="tomlinson" src="img/tomlinson.jpg" onerror="this.closest('figure').classList.add('noimg')" alt="Ray Tomlinson, creador del correo electrónico"><span class="lbl">Ray Tomlinson, creador del correo</span></figure>
+ </div>
+</section>
+
+<!-- 3 DIRECCIÓN -->
+<section class="slide" data-t="La dirección de correo">
+ <header class="hd"><h2>Las partes de una dirección de correo</h2><small>Toca cada parte · crea la tuya · ¿cuál es válida?</small></header>
+ <div class="body two">
+  <div>
+   <div class="addr rv" id="addr"><button data-p="0">ana.perez</button><button data-p="1">@</button><button data-p="2">gmail.com</button></div>
+   <div class="panel rv" style="--i:1" id="addrP"></div>
+   <div class="panel rv" style="--i:2;margin-top:12px">
+    <h3>✍️ Crea una dirección profesional</h3>
+    <div class="row" style="margin-top:4px">
+     <input id="abN" value="Ana" maxlength="14" aria-label="Nombre" style="width:130px">
+     <input id="abA" value="Pérez" maxlength="14" aria-label="Apellido" style="width:140px">
+     <select id="abD" aria-label="Tipo de cuenta"><option value="gmail.com">Personal · gmail.com</option><option value="liceo.edu.do">Educativa · liceo.edu.do</option><option value="empresa.com.do">Trabajo · empresa.com.do</option></select>
+    </div>
+    <p style="margin:12px 0 0;font:700 clamp(20px,1.7vw,28px) var(--mono);color:var(--b);word-break:break-all" id="abO"></p>
+    <p class="note" id="abT" style="margin-top:4px"></p>
+   </div>
+  </div>
+  <div class="rv" style="--i:2">
+   <h3>🔎 ¿Es válida? Toca cada una</h3>
+   <div class="vchk" id="vchk"></div>
+  </div>
+ </div>
+</section>
+
+<!-- 4 PARTES DEL CORREO -->
+<section class="slide" data-t="Partes de un correo">
+ <header class="hd"><h2>Las partes de un correo</h2><small>Toca cada parte de la ventana y luego envíalo</small></header>
+ <div class="body two w">
+  <div class="rv">
+   <div class="panel" id="ptP" style="min-height:190px"><h3>👆 Toca una parte</h3><p style="margin:0;color:var(--mute)">Cada campo de la ventana tiene una función. Conocerlos evita errores como enviar a la persona equivocada.</p></div>
+   <div class="warn" style="margin-top:12px">Gmail permite adjuntos de hasta <b>25 MB</b>. Si el archivo es más grande, Gmail lo envía como un <b>enlace de Google Drive</b>.</div>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="mail" id="ptMail">
+    <div class="top"><span>✉ Mensaje nuevo</span><span>— ▢ ✕</span></div>
+    <div class="f pick" data-k="para"><span>Para</span><span>prof.martinez@liceo.edu.do</span></div>
+    <div class="f pick" data-k="cc"><span>CC</span><span>coordinacion@liceo.edu.do</span></div>
+    <div class="f pick" data-k="cco"><span>CCO</span><span>mama.ana@gmail.com</span></div>
+    <div class="f pick" data-k="asunto"><span>Asunto</span><b>Tarea 3 de Ciencias · Ana Pérez · 4.º B</b></div>
+    <div class="bd pick" data-k="cuerpo">Buenos días, profesor Martínez:
+
+Le envío adjunta la tarea 3 sobre la fotosíntesis.
+
+Saludos cordiales,</div>
+    <div class="f pick" data-k="firma"><span>Firma</span><span>Ana Pérez · 4.º B · Liceo Juan Pablo Duarte</span></div>
+    <div class="ft"><span class="att pick" data-k="adjunto">📎 Tarea3-Fotosintesis.pdf</span><button class="btn pick" data-k="enviar" style="margin-left:auto">Enviar ➤</button></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 5 CORREO VS WHATSAPP -->
+<section class="slide" data-t="Correo vs WhatsApp">
+ <header class="hd"><h2>¿Por qué el correo y no WhatsApp?</h2><small>Toca cada criterio y compara</small></header>
+ <div class="body two w">
+  <div>
+   <figure class="ph wide rv"><img data-k="mensajes" src="img/mensajes.jpg" alt="Persona escribiendo mensajes en un teléfono"><span class="lbl">mensajería instantánea</span></figure>
+   <div class="good rv" style="--i:2;margin-top:12px"><b>Regla práctica:</b> WhatsApp para lo rápido e informal; correo para lo <b>formal, importante y que debe quedar registrado</b>.</div>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="chips" id="cwC"></div>
+   <div class="panel">
+    <div class="meter"><span>✉️ Correo</span><div class="tr"><i id="cwM1" style="background:var(--b)"></i></div><b id="cwV1">0</b></div>
+    <div class="meter"><span>💬 WhatsApp</span><div class="tr"><i id="cwM2" style="background:var(--g)"></i></div><b id="cwV2">0</b></div>
+    <h3 id="cwT" style="margin-top:12px"></h3><p id="cwD" style="margin:0;color:var(--mute);font-weight:600"></p>
+   </div>
+   <p class="note">Comparación ilustrativa para el aula (de 0 a 10).</p>
+  </div>
+ </div>
+</section>
+
+<!-- 6 JUEGO -->
+<section class="slide" data-t="¿Correo o WhatsApp?">
+ <header class="hd"><h2>Reto: ¿correo o WhatsApp?</h2><small>Decide qué usarías en cada situación</small></header>
+ <div class="body">
+  <div class="rv">
+   <div class="row" style="justify-content:space-between;margin:0 0 10px"><b id="gwN">1 de 10</b><span class="score">Puntos: <span id="gwS">0</span></span></div>
+   <div class="prog-q" id="gwP"></div>
+   <div class="sit" id="gwQ"></div>
+   <div class="ans" id="gwA"><button data-v="C">✉️ Correo electrónico</button><button data-v="W">💬 WhatsApp</button></div>
+   <div class="fbk" id="gwF"></div>
+   <button class="btn ghost" id="gwR" style="display:none">↻ Jugar de nuevo</button>
+  </div>
+ </div>
+</section>
+
+<!-- 7 PROVEEDORES -->
+<section class="slide" data-t="Correos en el mercado">
+ <header class="hd"><h2>Tipos de correo en el mercado</h2><small>Toca cada servicio · ¿cuál te conviene?</small></header>
+ <div class="body two">
+  <div>
+   <div class="prov rv" id="prov"></div>
+   <div class="panel rv" style="--i:1;margin-top:12px" id="provP"></div>
+  </div>
+  <div class="rv" style="--i:2">
+   <figure class="ph wide"><img data-k="oficina" src="img/oficina.jpg" alt="Persona trabajando con laptop en una oficina"><span class="lbl">el correo en el trabajo</span></figure>
+   <h3 style="margin-top:14px">🤔 ¿Cuál me conviene si…?</h3>
+   <div class="chips" id="provQ"></div>
+   <p class="note" id="provQA" style="font-size:1em;font-weight:700;color:var(--ink)"></p>
+  </div>
+ </div>
+</section>
+
+<!-- 8 BUEN CORREO -->
+<section class="slide" data-t="Escribir un buen correo">
+ <header class="hd"><h2>Cómo escribir un buen correo</h2><small>Mejóralo paso a paso</small></header>
+ <div class="body two w">
+  <div class="rv">
+   <ul class="chk" id="bcL"></ul>
+   <div class="row"><button class="btn g" id="bcB">✨ Mejorar un paso</button><button class="btn ghost" id="bcR">↻ Empezar de nuevo</button></div>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="mail">
+    <div class="top"><span id="bcTop">😬 Así no</span><span>— ▢ ✕</span></div>
+    <div class="f"><span>Para</span><span>prof.martinez@liceo.edu.do</span></div>
+    <div class="f"><span>Asunto</span><b id="bcSu"></b></div>
+    <div class="bd" id="bcBd" style="min-height:240px"></div>
+    <div class="ft" id="bcFt"></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 9 CONTRASEÑAS -->
+<section class="slide" data-t="Contraseñas seguras">
+ <header class="hd"><h2>Una contraseña fuerte</h2><small>Prueba ejemplos inventados · nunca escribas tu contraseña real</small></header>
+ <div class="body two">
+  <div class="rv">
+   <label for="pwI" style="font-weight:800;color:var(--mute)">Escribe una contraseña de ejemplo:</label>
+   <input id="pwI" class="pw" value="maria2009" autocomplete="off" spellcheck="false">
+   <div class="chips" style="margin-top:10px" id="pwC"></div>
+   <div class="strength"><i id="pwBar"></i></div>
+   <div class="row" style="justify-content:space-between;margin:0"><b id="pwLv" style="font:700 clamp(22px,2vw,32px) Fredoka"></b><span id="pwTm" style="font-weight:800"></span></div>
+   <p class="note">Tiempo estimado para que una computadora la adivine probando combinaciones. Es una estimación ilustrativa.</p>
+  </div>
+  <div class="rv" style="--i:1">
+   <ul class="chk" id="pwL"></ul>
+   <div class="good" style="margin-top:12px">💡 Truco: usa una <b>frase</b> que solo tú recuerdes, con números y símbolos: <span style="font-family:var(--mono)">Mi-Perro-Come-3-Mangos!</span></div>
+  </div>
+ </div>
+</section>
+
+<!-- 10 DOS PASOS -->
+<section class="slide" data-t="Verificación en dos pasos">
+ <header class="hd"><h2>Verificación en dos pasos</h2><small>Una segunda llave para tu cuenta</small></header>
+ <div class="body two w">
+  <div>
+   <p class="lead rv">Además de la contraseña (<b>algo que sabes</b>), Google te pide una prueba con <b>algo que tienes</b>: tu teléfono o una llave de seguridad. Si alguien roba tu contraseña, igual no puede entrar.</p>
+   <div class="grid rv" style="--i:1;grid-template-columns:repeat(2,minmax(0,1fr))">
+    <figure class="ph sq"><img data-k="telefono" src="img/telefono.jpg" alt="Persona revisando mensajes en su teléfono"><span class="lbl">tu teléfono</span></figure>
+    <figure class="ph sq"><img data-k="yubikey" src="img/yubikey.jpg" alt="Llave de seguridad YubiKey 5C NFC"><span class="lbl">llave de seguridad</span></figure>
+   </div>
+  </div>
+  <div class="rv" style="--i:1">
+   <h3>Formas de verificar</h3>
+   <div class="chips" id="mfC"></div>
+   <div class="panel" id="mfP" style="min-height:110px"></div>
+   <h3 style="margin-top:14px">Cómo activarla en tu cuenta de Google</h3>
+   <div class="flow" id="mfF"></div>
+   <div class="row"><button class="btn" id="mfB">▶ Ver los pasos</button></div>
+  </div>
+ </div>
+</section>
+
+<!-- 11 SIMULADOR -->
+<section class="slide" data-t="Simulador de 2 pasos">
+ <header class="hd"><h2>Simulador: ¿quién entra a la cuenta?</h2><small>Prueba como dueña de la cuenta y como intruso</small></header>
+ <div class="body two">
+  <div class="rv">
+   <div class="chips" id="smC"><button data-m="yo" class="on">🙋‍♀️ Soy Ana</button><button data-m="intruso">🦹 Soy un intruso con la contraseña</button></div>
+   <div class="panel login">
+    <div class="gl"><span style="color:#4285F4">G</span>oogle</div>
+    <p style="margin:0;color:var(--mute);font-weight:700" id="smSub">Iniciar sesión</p>
+    <label for="smE">Correo</label><input id="smE" value="ana.perez@gmail.com" readonly>
+    <label for="smPw">Contraseña</label><input id="smPw" value="" readonly placeholder="••••••••">
+    <div id="smCodeW" hidden><label for="smCode">Código de 6 dígitos que llegó al teléfono</label><input id="smCode" inputmode="numeric" maxlength="6" placeholder="______" style="font-family:var(--mono);letter-spacing:4px"></div>
+    <div class="row"><button class="btn" id="smGo">Iniciar sesión</button><button class="btn ghost" id="smOk" hidden>Verificar</button></div>
+    <div class="res" id="smRes"></div>
+   </div>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="phone" id="smPh"><div class="notch"></div><div class="scr"><div class="clock" id="smClk">10:30</div><div class="date">Teléfono de Ana</div>
+    <div class="notif" id="smN"></div></div></div>
+  </div>
+ </div>
+</section>
+
+<!-- 12 PHISHING -->
+<section class="slide" data-t="Phishing">
+ <header class="hd"><h2>Detecta el engaño: phishing</h2><small>Encuentra las 6 señales de este correo falso</small></header>
+ <div class="body two w">
+  <div class="rv">
+   <div class="mail phish">
+    <div class="top"><span>📥 Bandeja de entrada</span><span id="phC">0 / 6</span></div>
+    <div class="f"><span>De</span><span><span class="sus" data-i="0">soporte@g00gle-seguridad.com</span></span></div>
+    <div class="f"><span>Asunto</span><b><span class="sus" data-i="1">¡¡URGENTE!! Su cuenta sera eliminada en 24 horas</span></b></div>
+    <div class="bd" style="white-space:normal;line-height:1.7"><span class="sus" data-i="2">Estimado usuario:</span><br>Detectamos actividad sospechosa. Para no perder su cuenta, <span class="sus" data-i="3">responda este correo con su contraseña</span> o haga clic aquí:<br><br>
+     <span class="sus btn r" data-i="4" style="display:inline-flex">Verificar mi cuenta</span><br><br><span class="sus" data-i="5">📎 Formulario_Seguridad.exe</span></div>
+   </div>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="flist" id="phL"><div style="color:var(--mute)">👆 Toca lo que te parezca sospechoso en el correo.</div></div>
+   <div class="warn" style="margin-top:12px">🛑 <b>Regla de oro:</b> Google, tu banco o tu escuela <b>nunca</b> te pedirán la contraseña por correo. Ante la duda, no hagas clic: entra tú mismo a la página oficial.</div>
+  </div>
+ </div>
+</section>
+
+<!-- 13 LA NUBE -->
+<section class="slide" data-t="La nube">
+ <header class="hd"><h2>¿Qué es la nube?</h2><small>Sube un archivo y mira dónde aparece</small></header>
+ <div class="body two w">
+  <div>
+   <p class="lead rv">La nube no está en el cielo: son <b>miles de servidores en grandes centros de datos</b> que guardan tus archivos y te los entregan por internet, en cualquier dispositivo.</p>
+   <figure class="ph wide rv" style="--i:1"><img data-k="datacenter" src="img/datacenter.jpg" alt="Centro de datos de Google en Council Bluffs, Iowa"><span class="lbl">centro de datos de Google · Iowa</span></figure>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="scene" id="scn"><div class="cl" id="scCl">☁️</div>
+    <div class="dev" style="left:4%"><span>💻</span>Laptop</div><div class="dev" style="left:50%;transform:translateX(-50%)"><span>📱</span>Celular</div><div class="dev" style="right:4%"><span>🖥️</span>PC del liceo</div></div>
+   <div class="row"><button class="btn" id="scB">⬆ Subir «Tarea.docx» desde la laptop</button></div>
+   <p class="note" id="scT" style="font-size:1em;font-weight:700;color:var(--ink)"></p>
+  </div>
+ </div>
+</section>
+
+<!-- 14 GOOGLE DRIVE -->
+<section class="slide" data-t="Google Drive">
+ <header class="hd"><h2>Google Drive: tu disco en la nube</h2><small>Llena tus 15 GB gratis</small></header>
+ <div class="body two w">
+  <div>
+   <p class="lead rv">Es el servicio de Google para <b>guardar, organizar y compartir archivos</b> en la nube. Llegó en 2012 y viene incluido con tu cuenta de Gmail.</p>
+   <figure class="ph wide rv" style="--i:1"><img data-k="eemshaven" src="img/eemshaven.jpg" alt="Centro de datos de Google junto a turbinas de viento en Eemshaven, Países Bajos"><span class="lbl">centro de datos de Google · Países Bajos</span></figure>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="panel">
+    <h3>☁️ 15 GB gratis, compartidos entre Gmail, Drive y Google Fotos</h3>
+    <div class="stor" id="stB"></div>
+    <div class="row" style="justify-content:space-between;margin:0 0 10px"><b id="stT">0 de 15 GB</b><b id="stM"></b></div>
+    <div class="items" id="stI"></div>
+    <div class="row"><button class="btn ghost" id="stR">🗑️ Vaciar</button></div>
+    <p class="note">Tamaños aproximados. ¿Necesitas más? Google One vende planes con más espacio.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 15 CREAR CARPETAS -->
+<section class="slide" data-t="Crear carpetas">
+ <header class="hd"><h2>Cómo crear una carpeta en Drive</h2><small>Hazlo tú en el simulador</small></header>
+ <div class="body two w">
+  <div class="rv">
+   <ol class="steps" id="cfS"><li>Toca el botón <b>+ Nuevo</b></li><li>Elige <b>Carpeta nueva</b></li><li>Escribe un nombre claro</li><li>Toca <b>Crear</b></li></ol>
+   <div class="good" style="margin-top:12px">📱 En la app del celular: toca el botón <b>+</b> y luego <b>Carpeta</b>.</div>
+   <p class="note" id="cfM" style="font-size:1em;font-weight:700"></p>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="drv" id="drv">
+    <div class="sd"><div class="lg">☁️ Drive</div><button class="nw hint" id="cfNew">＋ Nuevo</button><div class="it on">🏠 Mi unidad</div><div class="it">👥 Compartidos</div><div class="it">⭐ Destacados</div><div class="it">🗑️ Papelera</div></div>
+    <div class="mn"><h3>Mi unidad</h3><div class="fgrid" id="cfG"><div class="fold"><span class="fi">📄</span>Horario.pdf</div></div></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 16 ORGANIZAR -->
+<section class="slide" data-t="Organizar archivos">
+ <header class="hd"><h2>Reto: organiza tu Drive</h2><small>Toca un archivo y luego la carpeta donde va</small></header>
+ <div class="body two w">
+  <div class="rv">
+   <div class="row" style="justify-content:space-between;margin:0 0 8px"><b>📥 Archivos sueltos</b><span class="score">Bien: <span id="orS">0</span> / 8</span></div>
+   <div class="files" id="orF"></div>
+   <p class="fbk" id="orM">Toca un archivo para tomarlo.</p>
+   <div class="panel"><h3>📌 Consejos para organizar</h3><ul style="margin:0;padding-left:22px;font-weight:600"><li>Una carpeta por materia o proyecto.</li><li>Nombres claros: <i>Tarea3-Fotosintesis-AnaPerez</i>.</li><li>Usa subcarpetas, colores y ⭐ destacados.</li></ul></div>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="bins" id="orB"></div>
+   <div class="row"><button class="btn ghost" id="orR">↻ Desordenar de nuevo</button></div>
+  </div>
+ </div>
+</section>
+
+<!-- 17 HERRAMIENTAS -->
+<section class="slide" data-t="Herramientas de Drive">
+ <header class="hd"><h2>Herramientas de Google Drive</h2><small>Toca cada app y cada función</small></header>
+ <div class="body two">
+  <div>
+   <h3 class="rv">Crea desde Drive</h3>
+   <div class="apps rv" style="--i:1" id="apC"></div>
+   <div class="panel rv" style="--i:2;margin-top:12px" id="apP"></div>
+  </div>
+  <div class="rv" style="--i:2">
+   <h3>Funciones que te salvan</h3>
+   <div class="grid" id="fnG" style="grid-template-columns:repeat(2,minmax(0,1fr))"></div>
+  </div>
+ </div>
+</section>
+
+<!-- 18 ENLACES -->
+<section class="slide" data-t="Compartir con enlaces">
+ <header class="hd"><h2>Compartir con enlaces</h2><small>Cambia el acceso y mira lo que ve tu compañero</small></header>
+ <div class="body two">
+  <div class="rv">
+   <div class="panel">
+    <h3>Compartir «Proyecto de Ciencias.pptx»</h3>
+    <p style="margin:8px 0 4px;font-weight:800;color:var(--mute)">Acceso general</p>
+    <div class="chips" id="lkA"><button data-a="r" class="on">🔒 Restringido</button><button data-a="p">🌐 Cualquier persona con el enlace</button></div>
+    <p style="margin:0 0 4px;font-weight:800;color:var(--mute)">Rol</p>
+    <div class="chips" id="lkR"><button data-r="0" class="on">👁️ Lector</button><button data-r="1">💬 Comentador</button><button data-r="2">✏️ Editor</button></div>
+    <div class="lnk"><span id="lkU">https://drive.google.com/file/d/1aB7kQ9xZ/view?usp=sharing</span><button class="btn" id="lkCp" style="min-height:40px">🔗 Copiar</button></div>
+   </div>
+   <div class="good" style="margin-top:12px">Un enlace es mejor que un adjunto: <b>un solo archivo siempre actualizado</b>, sin límite de 25 MB y puedes quitar el acceso cuando quieras.</div>
+  </div>
+  <div class="rv" style="--i:1">
+   <p style="margin:0 0 8px;font-weight:800">👀 Tu compañero abre el enlace:</p>
+   <div class="viewer" id="lkV"></div>
+  </div>
+ </div>
+</section>
+
+<!-- 19 VENTAJAS -->
+<section class="slide" data-t="Ventajas de la nube">
+ <header class="hd"><h2>Ventajas de la nube de Google</h2><small>Mira la colaboración en vivo y toca cada tarjeta</small></header>
+ <div class="body two w">
+  <div class="rv">
+   <div class="doc" id="clD"><div class="row" style="justify-content:space-between;margin:0 0 6px"><b style="font-family:Fredoka;font-size:1.15em">📄 Informe del grupo 3</b><span class="saved" id="clS"></span></div>
+    <div class="who" id="clW"><span style="background:#1E6FE0">A</span><span style="background:#2BB34A">L</span><span style="background:#E5484D">M</span></div>
+    <p id="cl0"></p><p id="cl1"></p><p id="cl2"></p></div>
+   <div class="row"><button class="btn g" id="clB">▶ Ver colaboración en vivo</button></div>
+  </div>
+  <div class="grid rv" style="--i:1;grid-template-columns:repeat(2,minmax(0,1fr))" id="vnG"></div>
+ </div>
+</section>
+
+<!-- 20 RETO FINAL -->
+<section class="slide" data-t="Reto final">
+ <header class="hd"><h2>Reto final</h2><small>8 preguntas · demuestra lo que aprendiste</small></header>
+ <div class="body two w">
+  <div class="rv">
+   <div class="row" style="justify-content:space-between;margin:0 0 10px"><b id="qzN"></b><span class="score">Puntos: <span id="qzS">0</span></span></div>
+   <div class="prog-q" id="qzP"></div>
+   <div class="sit" id="qzQ"></div>
+   <div class="ans" id="qzA"></div>
+   <div class="fbk" id="qzF"></div>
+   <button class="btn ghost" id="qzR" style="display:none">↻ Intentar de nuevo</button>
+  </div>
+  <div class="rv" style="--i:1">
+   <figure class="ph wide"><img data-k="estudiantes" src="img/estudiantes.jpg" alt="Grupo de estudiantes usando una laptop"><span class="lbl">¡listos para la nube!</span></figure>
+   <p style="font:600 clamp(22px,2vw,34px) Fredoka;margin:14px 0 4px">«La tecnología es mejor cuando une a las personas.»</p>
+   <p style="color:var(--mute);font-weight:700">— Matt Mullenweg, creador de WordPress</p>
+   <div class="row"><button class="btn y" id="party">🎉 Celebrar</button><button class="btn ghost" id="crB">Créditos de fotos</button></div>
+   <div class="panel" id="crL" hidden style="margin-top:12px;font-size:13px;max-height:220px;overflow:auto"></div>
+  </div>
+ </div>
+</section>
+
+</div>
+<svg id="plane" viewBox="0 0 64 64" aria-hidden="true"><path d="M4 30 60 6 44 58 30 40z" fill="#fff" stroke="#1E6FE0" stroke-width="3" stroke-linejoin="round"/><path d="M60 6 30 40 26 54 34 43" fill="#cfe0ff" stroke="#1E6FE0" stroke-width="3" stroke-linejoin="round"/></svg>
+<div class="toast" id="toast"></div>
+<div class="prog" id="prog"></div>
+<nav aria-label="Navegación de láminas">
+ <button class="btn ghost" id="prev" aria-label="Anterior">‹</button>
+ <div class="mid"><span class="sec" id="sec"></span><span class="num" id="num"></span></div>
+ <div class="right">
+  <button class="btn" id="sndHint" aria-label="Activar sonido">🔊<span class="t"> Activar sonido</span></button>
+  <button class="btn ghost" id="snd" aria-label="Silenciar">♪</button>
+  <button class="btn ghost" id="fs" aria-label="Pantalla completa">⛶</button>
+  <button class="btn" id="next" aria-label="Siguiente">›</button>
+ </div>
+</nav>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ---------- créditos de fotos (Wikimedia Commons) ---------- */
+const CR={portada:['Lauren Mancke','CC0','Laptop_and_coffee_on_a_desk.jpg'],tomlinson:['Andreu Veà, WiWiW.org','CC BY-SA 3.0','Ray_Tomlinson.jpg'],
+ mensajes:['StockyPics','CC0','Messaging_on_smartphone_(22389367255).jpg'],oficina:['Shixart1985','CC BY 2.0','Business_professional_engages_in_note-taking_during_a_meeting_at_a_modern_office_desk.jpg'],
+ telefono:['kargaltsev','CC BY 3.0','Checking_messages.jpg'],yubikey:['Daniel Aleksandersen','CC BY 4.0','YubiKey_5C_NFC.jpg'],
+ datacenter:['Chad Davis','CC BY 2.0','Google_Data_Center,_Council_Bluffs_Iowa_(49062863796).jpg'],eemshaven:['Wvdp','CC0','Google_data_center_and_wind_turbines_in_Eemshaven.jpg'],
+ estudiantes:['Kwameghana (Bright Kwame Ayisi)','CC0','A_group_of_students_using_a_computer_laptop.jpg']};
+const crTxt=k=>`Foto: ${CR[k][0]} · ${CR[k][1]} · Wikimedia Commons`;
+$$('img[data-k]').forEach(i=>{const f=document.createElement('figcaption');f.textContent=crTxt(i.dataset.k);i.after(f)});
+$$('[data-cr]').forEach(d=>d.textContent=crTxt(d.dataset.cr));
+$('#crL').innerHTML='<b>Fotografías de Wikimedia Commons</b><ul style="margin:6px 0 0;padding-left:18px">'+Object.entries(CR).map(([k,c])=>`<li>${esc(c[2].replace(/_/g,' '))}: ${esc(c[0])}, ${c[1]} — <a style="color:var(--b)" target="_blank" rel="noopener" href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(c[2])}">ver</a></li>`).join('')+'</ul>';
+
+/* ---------- sonido (Web Audio, sin archivos) ---------- */
+let AC=null,muted=false;try{muted=localStorage.getItem('ghd-m1-mute')==='1'}catch(e){}
+const ac=()=>{if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume().catch(()=>{});return AC};
+let OUTN=null;const OUT=a=>{if(!OUTN){const m=a.createGain(),c=a.createDynamicsCompressor();m.gain.value=2.6;c.threshold.value=-10;c.ratio.value=4;m.connect(c).connect(a.destination);OUTN=m}return OUTN};
+try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+const unlockAudio=()=>{const a=ac();if(!a)return;if(!a.__u){try{const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0);a.__u=1}catch(e){}}if(a.state!=='running')a.resume().catch(()=>{});setTimeout(updAudio,150)};
+['pointerdown','touchend','click','keydown'].forEach(t=>document.addEventListener(t,unlockAudio,true));
+function updAudio(){$('#sndHint').hidden=!!(AC&&AC.state==='running')&&!muted}
+setInterval(updAudio,1000);
+const tone=(f,d=.15,type='sine',v=.18,t0=0,f2)=>{const a=ac();if(!a||muted)return;const t=a.currentTime+t0,o=a.createOscillator(),g=a.createGain();
+ o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.012);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(OUT(a));o.start(t);o.stop(t+d+.05)};
+const noise=(dur,f0,f1,v=.2,q=1.2,t0=0)=>{const a=ac();if(!a||muted)return;const n=Math.floor(a.sampleRate*dur),b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0);
+ for(let i=0;i<n;i++){d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n)}
+ const s=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain(),t=a.currentTime+t0;s.buffer=b;fl.type='bandpass';fl.Q.value=q;fl.frequency.setValueAtTime(f0,t);fl.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.value=v;s.connect(fl).connect(g).connect(OUT(a));s.start(t)};
+let lastH=0,lastK=0;
+const S={
+ nav:dir=>{noise(.6,dir>0?500:2600,dir>0?2600:500,.22,1.6);tone(dir>0?660:520,.1,'triangle',.07,.25);tone(dir>0?990:390,.16,'triangle',.08,.36)},
+ click:()=>{tone(1200,.04,'triangle',.06);tone(1800,.05,'sine',.04,.02)},
+ tap:()=>{tone(880,.05,'triangle',.07);tone(1320,.05,'sine',.04,.03)},
+ hover:()=>{const n=performance.now();if(n-lastH<90)return;lastH=n;tone(2000,.025,'sine',.022)},
+ key:()=>{const n=performance.now();if(n-lastK<30)return;lastK=n;noise(.025,2500+Math.random()*1500,2000,.12,3)},
+ ok:()=>[523,659,784,1047].forEach((f,i)=>tone(f,.22,'triangle',.13,i*.07)),
+ no:()=>{tone(260,.18,'sawtooth',.06,0,180);tone(170,.28,'square',.05,.12)},
+ pop:i=>tone(480+(i%8)*85,.12,'sine',.13),
+ whoosh:()=>noise(.5,300,3200,.25),
+ send:()=>{noise(.7,400,4000,.25,1.4);[784,1175].forEach((f,i)=>tone(f,.3,'sine',.12,.5+i*.12))},
+ ding:()=>{tone(1568,.5,'sine',.12);tone(2093,.6,'sine',.07,.08)},
+ buzz:()=>{for(let i=0;i<3;i++)tone(140,.12,'square',.05,i*.18)},
+ lock:()=>{tone(300,.08,'square',.08);tone(200,.25,'square',.07,.1);noise(.1,1500,800,.2,2,.05)},
+ alarm:()=>{for(let i=0;i<4;i++){tone(880,.12,'square',.06,i*.25);tone(660,.12,'square',.06,i*.25+.12)}},
+ drop:()=>{tone(900,.18,'sine',.12,0,300);tone(600,.1,'triangle',.08,.15)},
+ party:()=>{[392,523,659,784,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.13,i*.11));[262,330,392].forEach(f=>tone(f,1.2,'sine',.05,.8))},
+ edge:()=>{tone(180,.12,'triangle',.08);tone(150,.14,'triangle',.06,.06)},
+ screen:on=>[392,587,784].forEach((f,i,a)=>tone(on?f:a[a.length-1-i],.14,'triangle',.08,i*.06))};
+const updSnd=()=>{$('#snd').textContent=muted?'✕':'♪';$('#snd').setAttribute('aria-label',muted?'Activar sonido':'Silenciar')};
+$('#snd').onclick=()=>{muted=!muted;try{localStorage.setItem('ghd-m1-mute',muted?'1':'0')}catch(e){}updSnd();updAudio();if(!muted)S.click()};updSnd();
+$('#sndHint').onclick=()=>{if(muted){muted=false;try{localStorage.setItem('ghd-m1-mute','0')}catch(e){}updSnd()}unlockAudio();setTimeout(()=>S.ok(),150)};
+const OWN='#sndHint,#prev,#next,#snd,#fs,#start,.flip,.ans button,#party,.vchk button,.pick,#cwC button,#bcB,#mfB,#smGo,#smOk,#scB,.items button,#cfNew,.menu .mi,.dlg button,.files button,.bin,#lkCp,#clB,#provQ button,#tl button,.phish .sus';
+document.addEventListener('click',e=>{const b=e.target.closest('button,a');if(!b||b.closest(OWN))return;if(b.closest('.chips,.prov,.apps,.addr'))S.click();else S.tap()},true);
+document.addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const b=e.target.closest('button,a,.flip,.pick,.sus');if(b&&!b.contains(e.relatedTarget))S.hover()});
+document.addEventListener('input',e=>{if(e.target.matches('input[type=text],input:not([type])'))S.key()});
+document.addEventListener('fullscreenchange',()=>S.screen(!!document.fullscreenElement));
+let toastT;const toast=t=>{const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),2200)};
+const typeTo=async(el,txt,spd=18)=>{el.classList.add('caret');el.textContent='';const tok=el.__tok=Symbol();
+ for(let i=0;i<txt.length;i++){if(el.__tok!==tok)return false;el.textContent+=txt[i];if(txt[i]!==' ')S.key();await wait(txt[i]==='\n'?spd*4:spd)}el.classList.remove('caret');return true};
+const confetti=()=>{const cols=['#1E6FE0','#4FB3F6','#2BB34A','#F5B700','#E5484D','#7B5CE0'];for(let i=0;i<100;i++){const c=document.createElement('div');c.className='conf';c.style.left=Math.random()*100+'vw';c.style.background=cols[i%cols.length];c.style.animationDuration=(1.8+Math.random()*2)+'s';c.style.animationDelay=Math.random()*.6+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),4500)}};
+const pickOne=(sel,el)=>$$(sel).forEach(x=>x.classList.toggle('on',x===el));
+
+/* ---------- ajuste a pantalla ---------- */
+const fit=()=>{const s=document.querySelector('.slide.on');if(!s)return;const b=s.querySelector('.body');if(!b)return;
+ if(innerWidth<1000||!('zoom' in b.style)){b.style.zoom='';b.style.maxWidth='';return}
+ const hd=s.querySelector('.hd'),avail=s.clientHeight-(hd?hd.offsetHeight:0)-12;
+ const set=z=>{b.style.zoom=z.toFixed(3);b.style.maxWidth=(innerWidth*.94/z)+'px';return b.getBoundingClientRect().height<=avail};
+ let lo=1,hi=1.6;if(!set(lo)){set(1);return}if(set(hi))return;for(let k=0;k<9;k++){const m=(lo+hi)/2;if(set(m))lo=m;else hi=m}set(lo)};
+addEventListener('resize',()=>requestAnimationFrame(fit));
+$$('img').forEach(i=>i.addEventListener('load',()=>requestAnimationFrame(fit)));
+let fitT;document.addEventListener('click',()=>{clearTimeout(fitT);fitT=setTimeout(fit,500)});
+
+/* ---------- navegación ---------- */
+const slides=$$('.slide');let cur=0;const enter={};
+const go=(i,silent)=>{const n=Math.max(0,Math.min(slides.length-1,i));
+ if(!silent){if(n===cur&&i!==cur){S.edge();return}if(n!==cur){const d=n>cur?1:-1;S.nav(d);const p=$('#plane');p.classList.remove('go','goB');void p.getBoundingClientRect();p.classList.add(d>0?'go':'goB');slides[n].classList.toggle('back',d<0)}}
+ cur=n;slides.forEach((s,k)=>s.classList.toggle('on',k===cur));
+ $('#num').textContent=`${cur+1} / ${slides.length}`;$('#sec').textContent=slides[cur].dataset.t;
+ $('#prog').style.width=((cur+1)/slides.length*100)+'%';slides[cur].scrollTop=0;
+ try{history.replaceState(null,'','#l'+(cur+1))}catch(e){}
+ const f=enter[slides[cur].dataset.t];if(f)f();requestAnimationFrame(fit)};
+$('#prev').onclick=()=>go(cur-1);$('#next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+ if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(cur+1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(cur-1)}
+ if(e.key==='Home')go(0);if(e.key==='End')go(slides.length-1)});
+let tx=null;document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>70&&!e.target.closest('input,.drv,.files,.bins'))go(cur+(dx<0?1:-1));tx=null});
+$('#fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+
+/* ---------- 1 portada ---------- */
+let cvBusy=false;
+$('#start').onclick=async()=>{if(cvBusy)return;cvBusy=true;unlockAudio();$('#start').disabled=true;const m=$('#cvMail');m.classList.remove('sent');
+ await typeTo($('#cvTo'),'estudiantes@liceo.edu.do',30);await typeTo($('#cvSu'),'¡Bienvenidos al Módulo 1!',30);
+ await typeTo($('#cvBd'),'Hoy aprenderemos a usar el correo, la verificación en dos pasos y Google Drive. ☁️',18);
+ await wait(300);$('#cvSend').style.transform='scale(.9)';S.send();m.classList.add('sent');await wait(900);toast('✔ Mensaje enviado');S.ding();
+ await wait(1100);go(1);setTimeout(()=>{m.classList.remove('sent');$('#cvSend').style.transform='';$('#start').disabled=false;cvBusy=false},900)};
+
+/* ---------- 2 historia ---------- */
+const TL=[['1971','⌨️','El primer correo','Ray Tomlinson envió el primer correo entre dos computadoras de la red ARPANET y eligió la @ para separar el usuario de la computadora.'],
+ ['1996','📨','Hotmail','Nace Hotmail, uno de los primeros correos gratis en la web. Hoy se llama Outlook.'],
+ ['1997','💜','Yahoo Mail','Llega Yahoo Mail y el correo gratuito se vuelve popular en todo el mundo.'],
+ ['2004','✉️','Gmail','Google lanza Gmail con 1 GB de espacio, cuando otros daban apenas unos pocos MB.'],
+ ['2012','☁️','Google Drive','Google une el correo con la nube: tus archivos se guardan y comparten desde Drive.'],
+ ['Hoy','📱','En tu bolsillo','El correo está en el celular y es la llave para abrir cuentas: Classroom, bancos, redes y empleos.']];
+$('#tl').innerHTML=TL.map((t,i)=>`<button data-i="${i}"><span>${t[1]}</span>${t[0]}</button>`).join('');
+const tlShow=i=>{const t=TL[i];pickOne('#tl button',$$('#tl button')[i]);$('#tlP').innerHTML=`<h3>${t[0]} · ${t[2]}</h3><p style="margin:0">${t[3]}</p>`};
+$$('#tl button').forEach(b=>b.onclick=()=>{tlShow(+b.dataset.i);tone(440+b.dataset.i*90,.14,'triangle',.11)});tlShow(0);
+enter['¿Qué es el correo?']=async()=>{const el=$('#cnt1');for(let v=0;v<=300;v+=10){el.textContent=v;if(v%50===0)S.pop(v/50);await wait(22)}el.textContent='+300'};
+
+/* ---------- 3 dirección ---------- */
+const AP=[['👤 Usuario','El nombre de la cuenta. Lo eliges tú al crearla y no puede repetirse en el mismo servicio. Puede tener letras, números y puntos.','var(--b)'],
+ ['@ Arroba','Se lee «at» en inglés: significa «en». ana.perez @ gmail.com = «ana.perez en gmail.com». Toda dirección lleva una sola @.','#b38600'],
+ ['🌐 Dominio','El servicio o la organización: gmail.com (personal), liceo.edu.do (educativo), empresa.com.do (trabajo). El .do indica República Dominicana.','var(--g)']];
+const apShow=i=>{pickOne('#addr button',$$('#addr button')[i]);$('#addrP').innerHTML=`<h3 style="color:${AP[i][2]}">${AP[i][0]}</h3><p style="margin:0">${AP[i][1]}</p>`};
+$$('#addr button').forEach(b=>b.onclick=()=>apShow(+b.dataset.p));apShow(0);
+const DT={'gmail.com':'Cuenta personal: la creas tú, gratis.','liceo.edu.do':'Cuenta educativa: te la da tu escuela para Classroom y tareas.','empresa.com.do':'Cuenta de trabajo: te la da la empresa donde trabajas.'};
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const abDraw=()=>{const n=norm($('#abN').value)||'ana',a=norm($('#abA').value)||'perez',d=$('#abD').value;$('#abO').textContent=`${n}.${a}@${d}`;$('#abT').textContent=DT[d]+' Sin tildes, sin espacios y sin la ñ.'};
+['#abN','#abA'].forEach(s=>$(s).addEventListener('input',abDraw));$('#abD').onchange=()=>{abDraw();S.pop(3)};abDraw();
+const VC=[['ana perez@gmail.com','no','✘ Tiene un espacio'],['ana.perez@gmail.com','ok','✔ Válida y profesional'],['anaperez@gmail','no','✘ Le falta .com'],['@gmail.com','no','✘ No tiene usuario'],['ana@@gmail.com','no','✘ Tiene dos @'],['princesita_bb2009@gmail.com','meh','⚠ Válida, poco profesional']];
+$('#vchk').innerHTML=VC.map((v,i)=>`<button data-i="${i}"><span>${esc(v[0])}</span><em>Toca</em></button>`).join('');
+$$('#vchk button').forEach(b=>b.onclick=()=>{const v=VC[b.dataset.i];b.className=v[1];b.querySelector('em').textContent=v[2];if(v[1]==='ok')S.ok();else if(v[1]==='no')S.no();else S.edge();requestAnimationFrame(fit)});
+enter['La dirección de correo']=()=>$$('#vchk button').forEach(b=>{b.className='';b.querySelector('em').textContent='Toca'});
+
+/* ---------- 4 partes ---------- */
+const PT={para:['📮 Para','La dirección de la persona principal que recibe el correo. Puedes escribir varias, separadas por coma.'],
+ cc:['👥 CC · con copia','Envía una copia a otras personas para que estén enteradas. Todos ven quién recibió la copia.'],
+ cco:['🕵️ CCO · con copia oculta','Envía copia sin que los demás lo vean. Útil al escribir a muchas personas, para proteger sus direcciones.'],
+ asunto:['🏷️ Asunto','El título del correo. Debe decir de qué trata en pocas palabras: así se encuentra fácil después.'],
+ cuerpo:['📝 Cuerpo','El mensaje: saludo, contenido breve y claro, y despedida. Con buena ortografía.'],
+ firma:['✒️ Firma','Tu nombre y datos al final: curso, escuela o cargo. Puedes configurarla para que salga sola.'],
+ adjunto:['📎 Adjunto','Un archivo que viaja con el correo: PDF, foto, documento. Menciónalo en el mensaje.'],
+ enviar:['➤ Enviar','Antes de enviar, revisa: ¿la dirección es correcta?, ¿pusiste el adjunto?, ¿se entiende el asunto?']};
+$$('#ptMail .pick').forEach(p=>p.onclick=async()=>{const k=p.dataset.k;$$('#ptMail .pick').forEach(x=>x.classList.toggle('on',x===p));$('#ptP').innerHTML=`<h3>${PT[k][0]}</h3><p style="margin:0">${PT[k][1]}</p>`;
+ if(k==='enviar'){const m=$('#ptMail');S.send();m.classList.add('sent');await wait(1000);toast('✔ Correo enviado al profesor');S.ding();await wait(500);m.classList.remove('sent');m.style.animation='pop .4s';setTimeout(()=>m.style.animation='',450)}else S.pop(Object.keys(PT).indexOf(k))});
+
+/* ---------- 5 correo vs whatsapp ---------- */
+const CW=[['🎩 Formalidad',9,4,'El correo es el canal oficial de escuelas, universidades y empresas. WhatsApp es para lo informal y cotidiano.'],
+ ['🗂️ Organización',9,4,'El correo tiene carpetas, etiquetas, asuntos y un buscador potente. En WhatsApp los mensajes importantes se pierden entre stickers y audios.'],
+ ['📜 Registro',9,5,'Un correo queda como constancia con fecha y hora: sirve como prueba de que entregaste algo a tiempo.'],
+ ['🔐 Privacidad',8,5,'Con el correo no necesitas compartir tu número de teléfono. En WhatsApp tu número queda visible.'],
+ ['🧾 Cuentas y trámites',10,2,'Para crear cuentas (Classroom, bancos, empleos) te piden un correo, no un WhatsApp. Ahí llegan los códigos y avisos.'],
+ ['⚡ Rapidez',6,10,'WhatsApp gana en inmediatez: ideal para avisos rápidos, coordinar y conversar en tiempo real.']];
+$('#cwC').innerHTML=CW.map((c,i)=>`<button data-i="${i}">${c[0]}</button>`).join('');
+const cwShow=i=>{const c=CW[i];pickOne('#cwC button',$$('#cwC button')[i]);$('#cwM1').style.width=c[1]*10+'%';$('#cwM2').style.width=c[2]*10+'%';$('#cwV1').textContent=c[1];$('#cwV2').textContent=c[2];$('#cwT').textContent=c[0];$('#cwD').textContent=c[3];
+ tone(c[1]>c[2]?784:523,.16,'triangle',.11);tone(c[1]>c[2]?1047:392,.18,'triangle',.09,.1)};
+$$('#cwC button').forEach(b=>b.onclick=()=>cwShow(+b.dataset.i));
+enter['Correo vs WhatsApp']=()=>{$('#cwM1').style.width=0;$('#cwM2').style.width=0;setTimeout(()=>cwShow(0),400)};
+
+/* ---------- 6 juego ---------- */
+const GW=[['Enviar tu tarea en PDF al profesor','C','Es una entrega formal y queda registrada con fecha y hora.'],
+ ['Avisar a tu mamá que ya llegaste a casa','W','Es un aviso rápido e informal.'],
+ ['Solicitar una carta de recomendación a la dirección','C','Es una solicitud formal a una autoridad.'],
+ ['Coordinar con tu grupo la hora para estudiar','W','Es una conversación rápida para ponerse de acuerdo.'],
+ ['Enviar tu currículum para un empleo de verano','C','Las empresas reciben currículums por correo, con un asunto claro.'],
+ ['Recibir el código para crear tu cuenta de Classroom','C','Las plataformas envían códigos y avisos al correo.'],
+ ['Felicitar a un amigo con un sticker de cumpleaños','W','Es un mensaje personal e informal.'],
+ ['Justificar una ausencia con la constancia médica adjunta','C','Lleva un documento oficial que debe quedar guardado.'],
+ ['Preguntar a un compañero si mañana hay clases','W','Es una duda rápida entre amigos.'],
+ ['Pedir al coordinador una revisión de tu calificación','C','Es un reclamo formal: el correo deja constancia.']];
+let gi=0,gs=0,gl=false;
+const gwBar=()=>$('#gwP').innerHTML=GW.map((_,i)=>`<i class="${i<gi?(GW[i].r?'ok':'no'):''}"></i>`).join('');
+const gwDraw=()=>{gl=false;$('#gwN').textContent=`${gi+1} de ${GW.length}`;$('#gwQ').className='sit';$('#gwQ').textContent=GW[gi][0];$('#gwF').textContent='';$$('#gwA button').forEach(b=>b.className='');$('#gwA').style.display='';$('#gwR').style.display='none';gwBar()};
+$$('#gwA button').forEach(b=>b.onclick=()=>{if(gl)return;gl=true;const q=GW[gi],ok=b.dataset.v===q[1];q.r=ok;b.classList.add(ok?'ok':'no');$('#gwQ').classList.add(ok?'ok':'no');
+ if(ok){gs++;S.ok()}else S.no();$('#gwS').textContent=gs;$('#gwF').textContent=(ok?'✔ ':'✘ ')+(q[1]==='C'?'Correo: ':'WhatsApp: ')+q[2];
+ setTimeout(()=>{gi++;if(gi<GW.length)gwDraw();else{gwBar();$('#gwQ').className='sit ok';$('#gwQ').textContent=`¡${gs} de ${GW.length}!`;$('#gwA').style.display='none';$('#gwF').textContent=gs>=8?'¡Excelente! Sabes elegir el canal correcto.':'Recuerda: lo formal y lo importante va por correo.';$('#gwR').style.display='';if(gs>=8){S.party();confetti()}}requestAnimationFrame(fit)},1700)});
+$('#gwR').onclick=()=>{gi=0;gs=0;GW.forEach(q=>delete q.r);$('#gwS').textContent=0;gwDraw()};gwDraw();
+
+/* ---------- 7 proveedores ---------- */
+const PV=[['Gmail','G','#EA4335','Google','2004','15 GB gratis, compartidos con Drive y Google Fotos.','Estudiantes, Android, Google Classroom y Drive.'],
+ ['Outlook','O','#0F6CBD','Microsoft','1996 (antes Hotmail)','15 GB de correo gratis; se une a OneDrive, Word y Teams.','Trabajo con Office, Word, Excel y Teams.'],
+ ['Yahoo Mail','Y','#6001D2','Yahoo','1997','Uno de los correos gratuitos más antiguos.','Quien busca un correo personal sencillo.'],
+ ['iCloud Mail','i','#3693F3','Apple','2011','5 GB gratis de iCloud para correo, fotos y copias.','Quien usa iPhone, iPad o Mac.'],
+ ['Proton Mail','P','#6D4AFF','Proton (Suiza)','2014','Cifrado de extremo a extremo: ni la empresa puede leer tus correos.','Quien quiere la máxima privacidad.'],
+ ['Zoho Mail','Z','#E42527','Zoho (India)','2008','Plan gratis para equipos pequeños con correo de su propio dominio.','Pequeñas empresas y emprendedores.']];
+$('#prov').innerHTML=PV.map((p,i)=>`<button data-i="${i}"><i style="background:${p[2]}">${p[1]}</i>${p[0]}</button>`).join('');
+const pvShow=i=>{const p=PV[i];pickOne('#prov button',$$('#prov button')[i]);$('#provP').innerHTML=`<h3 style="color:${p[2]}">${p[0]}</h3><dl class="kv"><dt>Empresa</dt><dd>${p[3]}</dd><dt>Desde</dt><dd>${p[4]}</dd><dt>Destaca</dt><dd>${p[5]}</dd><dt>Ideal para</dt><dd>${p[6]}</dd></dl>`};
+$$('#prov button').forEach(b=>b.onclick=()=>pvShow(+b.dataset.i));pvShow(0);
+const PQ=[['📱 uso Android y Classroom',0],['💼 trabajo con Word y Teams',1],['🍎 tengo iPhone',3],['🛡️ quiero máxima privacidad',4]];
+$('#provQ').innerHTML=PQ.map((q,i)=>`<button data-i="${i}">${q[0]}</button>`).join('');
+$$('#provQ button').forEach(b=>b.onclick=()=>{const q=PQ[b.dataset.i],el=$$('#prov button')[q[1]];pickOne('#provQ button',b);pvShow(q[1]);el.classList.remove('hit');void el.offsetWidth;el.classList.add('hit');S.ok();$('#provQA').textContent=`👉 Te conviene ${PV[q[1]][0]}.`});
+
+/* ---------- 8 buen correo ---------- */
+const BC=[['Asunto claro','su',()=>'Tarea 3 de Ciencias · Ana Pérez · 4.º B'],['Saludo respetuoso','sal',()=>'Buenos días, profesor Martínez:'],['Mensaje breve y sin abreviaturas','msg',()=>'Le envío adjunta la tarea 3 sobre la fotosíntesis. Quedo atenta a sus comentarios.'],
+ ['Adjunto mencionado y con buen nombre','adj',()=>'📎 Tarea3-Fotosintesis-AnaPerez.pdf'],['Despedida y firma','fir',()=>'Saludos cordiales,\nAna Pérez · 4.º B'],['Revisar ortografía antes de enviar','ort',()=>'']];
+$('#bcL').innerHTML=BC.map(b=>`<li><b>✓</b>${b[0]}</li>`).join('');
+let bcN=0;
+const bcDraw=hl=>{const on=k=>BC.findIndex(b=>b[1]===k)<bcN,mk=(k,t)=>hl===k?`<span class="hl">${esc(t)}</span>`:esc(t);
+ $('#bcSu').innerHTML=on('su')?mk('su',BC[0][2]()):'<span style="color:var(--r)">(sin asunto)</span>';
+ const sal=on('sal')?mk('sal',BC[1][2]()):'hola profe',msg=on('msg')?mk('msg',BC[2][2]()):(on('ort')?'aqui le mando la tarea xq se me olvido ayer':'aki le mando la tarea xq se m olvido ayer 😅😅'),fir=on('fir')?mk('fir',BC[4][2]()):'bye';
+ let m=on('msg')&&on('ort')&&hl==='ort'?`<span class="hl">${esc(BC[2][2]())}</span>`:msg;
+ $('#bcBd').innerHTML=`${sal}\n\n${m}\n\n${fir}`;
+ $('#bcFt').innerHTML=on('adj')?mk('adj',BC[3][2]()).replace(/^/,'<span class="att">')+'</span>':'<span class="att" style="color:var(--r)">📎 IMG_20251104_0932.jpg</span>';
+ $$('#bcL li').forEach((l,i)=>l.classList.toggle('on',i<bcN));$('#bcTop').textContent=bcN>=BC.length?'✅ ¡Así sí!':bcN?'✍️ Mejorando…':'😬 Así no';
+ $('#bcB').disabled=bcN>=BC.length};
+$('#bcB').onclick=()=>{if(bcN>=BC.length)return;bcN++;bcDraw(BC[bcN-1][1]);if(bcN===BC.length){S.party();confetti()}else S.pop(bcN*2);requestAnimationFrame(fit)};
+$('#bcR').onclick=()=>{bcN=0;bcDraw();S.whoosh()};bcDraw();
+enter['Escribir un buen correo']=()=>{bcN=0;bcDraw()};
+
+/* ---------- 9 contraseñas ---------- */
+const PWR=[['Al menos 12 caracteres',p=>p.length>=12],['Letras mayúsculas (A-Z)',p=>/[A-ZÑ]/.test(p)],['Letras minúsculas (a-z)',p=>/[a-zñ]/.test(p)],['Números (0-9)',p=>/\d/.test(p)],['Símbolos (! - _ # $)',p=>/[^A-Za-z0-9ñÑ]/.test(p)],['No es una clave común ni tu nombre',p=>!/^(123|1234|12345|123456|password|qwerty|contraseña|maria|juan|ana)/i.test(p)&&!/(123456|qwerty|password)/i.test(p)&&p.length>0]];
+$('#pwL').innerHTML=PWR.map(r=>`<li><b>✓</b>${r[0]}</li>`).join('');
+const PWX=['123456','maria2009','Maria2009!','Mi-Perro-Come-3-Mangos!'];
+$('#pwC').innerHTML=PWX.map(p=>`<button>${esc(p)}</button>`).join('');
+const fmtT=s=>s<1?'¡Al instante!':s<60?Math.round(s)+' segundos':s<3600?Math.round(s/60)+' minutos':s<86400?Math.round(s/3600)+' horas':s<31536000?Math.round(s/86400)+' días':s<31536e5?Math.round(s/31536000)+' años':s<31536e8?'miles de años':'millones de años';
+let pwLast=-1;
+const pwEval=()=>{const p=$('#pwI').value;let cs=0;if(/[a-zñ]/.test(p))cs+=26;if(/[A-ZÑ]/.test(p))cs+=26;if(/\d/.test(p))cs+=10;if(/[^A-Za-z0-9ñÑ]/.test(p))cs+=32;
+ const ok=PWR.map(r=>r[1](p));$$('#pwL li').forEach((l,i)=>l.classList.toggle('on',ok[i]));
+ const common=!ok[5];const secs=common?0:Math.pow(cs||1,p.length)/1e10/2;const lg=Math.log10(secs+1e-9);
+ const lv=common||secs<3600?0:secs<31536000?1:secs<31536e5?2:3;const L=[['😱 Muy débil','var(--r)',12],['😟 Débil','#f08a24',40],['🙂 Buena','var(--y)',70],['💪 ¡Muy fuerte!','var(--g)',100]][lv];
+ $('#pwBar').style.width=Math.max(L[2],p.length?8:0)+'%';$('#pwBar').style.background=L[1];$('#pwLv').textContent=p?L[0]:'';$('#pwLv').style.color=L[1];$('#pwTm').textContent=p?'⏱️ '+fmtT(secs):'';
+ if(lv!==pwLast){if(lv===3)S.ok();else if(lv===0&&pwLast>0)S.no();pwLast=lv}};
+$('#pwI').addEventListener('input',pwEval);$$('#pwC button').forEach(b=>b.onclick=()=>{$('#pwI').value=b.textContent;pickOne('#pwC button',b);pwLast=-2;pwEval()});pwEval();
+
+/* ---------- 10 dos pasos ---------- */
+const MF=[['🔔 Aviso de Google','En tu celular aparece «¿Estás intentando iniciar sesión?». Tocas «Sí, soy yo» y listo. Es la opción más cómoda.'],
+ ['🔢 App autenticadora','Google Authenticator genera un código de 6 dígitos que cambia cada 30 segundos, incluso sin internet.'],
+ ['💬 Código por SMS','Te llega un mensaje de texto con un código. Funciona en cualquier teléfono, pero es la opción menos segura.'],
+ ['🔑 Llave de seguridad','Una llave física (como la YubiKey) que conectas o acercas al teléfono. La más segura contra el phishing.'],
+ ['📋 Códigos de respaldo','Códigos de un solo uso para entrar si pierdes el teléfono. Guárdalos en un lugar seguro, en papel.']];
+$('#mfC').innerHTML=MF.map((m,i)=>`<button data-i="${i}">${m[0]}</button>`).join('');
+const mfShow=i=>{pickOne('#mfC button',$$('#mfC button')[i]);$('#mfP').innerHTML=`<h3>${MF[i][0]}</h3><p style="margin:0">${MF[i][1]}</p>`};
+$$('#mfC button').forEach(b=>b.onclick=()=>mfShow(+b.dataset.i));mfShow(0);
+const MFF=[['👤','Cuenta de Google','toca tu foto'],['🛡️','Seguridad','menú lateral'],['🔐','Verificación en 2 pasos','Comenzar'],['📱','Agrega tu teléfono','recibe un código'],['✅','Activar','¡protegida!']];
+$('#mfF').innerHTML=MFF.map(s=>`<div class="st"><span class="e">${s[0]}</span><b>${s[1]}</b><small>${s[2]}</small></div>`).join('');
+let mfRun=0;$('#mfB').onclick=async()=>{const r=++mfRun,st=$$('#mfF .st');st.forEach(s=>s.className='st');
+ for(let i=0;i<st.length;i++){if(r!==mfRun)return;st.forEach((s,k)=>{s.classList.toggle('on',k===i);s.classList.toggle('done',k<i)});tone(440+i*110,.15,'triangle',.11);await wait(800)}st.forEach(s=>s.className='st done');S.lock();setTimeout(S.ok,250)};
+enter['Verificación en dos pasos']=()=>{mfRun++;$$('#mfF .st').forEach(s=>s.className='st')};
+
+/* ---------- 11 simulador ---------- */
+let smMode='yo',smCode='',smRun=0;
+const smReset=()=>{smRun++;$('#smPw').value='';$('#smCodeW').hidden=true;$('#smCode').value='';$('#smOk').hidden=true;$('#smGo').hidden=false;$('#smGo').disabled=false;$('#smRes').className='res';$('#smN').className='notif';$('#smN').innerHTML='';
+ $('#smSub').textContent=smMode==='yo'?'Iniciar sesión desde la laptop de Ana':'⚠ Iniciar sesión desde un equipo desconocido, en otro país'};
+$$('#smC button').forEach(b=>b.onclick=()=>{smMode=b.dataset.m;pickOne('#smC button',b);smReset()});
+const clk=()=>{const d=new Date();$('#smClk').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')};clk();setInterval(clk,20000);
+$('#smGo').onclick=async()=>{const r=++smRun;$('#smGo').disabled=true;const pw=$('#smPw');pw.value='';
+ for(const ch of 'Nube-Segura-2025'){if(r!==smRun)return;pw.value+='•';S.key();await wait(55)}
+ await wait(400);if(r!==smRun)return;$('#smGo').hidden=true;const ph=$('#smPh'),n=$('#smN');ph.classList.remove('buzz');void ph.offsetWidth;ph.classList.add('buzz');S.buzz();
+ if(smMode==='yo'){smCode=String(Math.floor(100000+Math.random()*900000));
+  n.innerHTML=`<b>Google</b>Tu código de verificación es:<div class="code">${smCode}</div><small>No lo compartas con nadie.</small>`;
+  $('#smCodeW').hidden=false;$('#smOk').hidden=false;$('#smSub').textContent='Paso 2: escribe el código que llegó al teléfono';setTimeout(()=>$('#smCode').focus(),300)}
+ else{n.innerHTML=`<b>🔔 Google · ¿Estás intentando iniciar sesión?</b><small>Equipo desconocido · otro país · ahora</small><div class="row" style="margin-top:8px"><button class="btn r" id="smNo" style="min-height:40px;font-size:15px">No, no soy yo</button><button class="btn ghost" id="smYes" style="min-height:40px;font-size:15px">Sí, soy yo</button></div>`;
+  $('#smSub').textContent='El intruso espera… pero el aviso llegó al teléfono de Ana';
+  $('#smNo').onclick=()=>{S.lock();setTimeout(S.alarm,200);n.innerHTML='<b>🛡️ Acceso bloqueado</b>Google protegió tu cuenta. Cambia tu contraseña.';$('#smRes').className='res ok';$('#smRes').innerHTML='🛡️ ¡Intruso bloqueado! Tenía la contraseña, pero no el teléfono de Ana.';requestAnimationFrame(fit)};
+  $('#smYes').onclick=()=>{S.no();$('#smRes').className='res no';$('#smRes').innerHTML='😱 ¡Cuidado! Aprobaste un acceso que no era tuyo. Nunca toques «Sí» si no eres tú.';requestAnimationFrame(fit)}}
+ n.classList.add('on');requestAnimationFrame(fit)};
+const smVerify=()=>{const v=$('#smCode').value.trim();if(v===smCode){S.ok();setTimeout(S.ding,300);$('#smRes').className='res ok';$('#smRes').innerHTML='✔ ¡Bienvenida, Ana! Entraste con contraseña + código.';$('#smOk').hidden=true;$('#smN').innerHTML='<b>Google</b>✔ Inicio de sesión aprobado.'}
+ else{S.no();$('#smRes').className='res no';$('#smRes').textContent='✘ Código incorrecto. Míralo en el teléfono.'}requestAnimationFrame(fit)};
+$('#smOk').onclick=smVerify;$('#smCode').addEventListener('keydown',e=>{if(e.key==='Enter')smVerify()});
+enter['Simulador de 2 pasos']=smReset;
+
+/* ---------- 12 phishing ---------- */
+const PH=[['Remitente falso','«g00gle» con ceros y un dominio raro. Google escribe desde @google.com.'],['Urgencia y amenaza','Te asustan con plazos para que actúes sin pensar. Además tiene errores: «sera» sin tilde.'],
+ ['Saludo genérico','No usa tu nombre. Los servicios reales suelen saludarte por tu nombre.'],['Pide tu contraseña','¡Nadie legítimo te pide la contraseña por correo! Es la señal más clara.'],
+ ['Botón con enlace engañoso','Lleva a una página falsa que copia a Google para robar tus datos. Antes de tocar, revisa la dirección.'],['Adjunto peligroso','Un archivo .exe es un programa: puede instalar un virus en tu equipo.']];
+let phF=new Set();
+$$('.phish .sus').forEach(s=>s.onclick=()=>{const i=+s.dataset.i;if(phF.has(i))return;phF.add(i);s.classList.add('found');s.dataset.n=phF.size;S.alarm&&tone(700,.08,'square',.06);tone(500,.12,'square',.05,.09);
+ if(phF.size===1)$('#phL').innerHTML='';$('#phL').insertAdjacentHTML('beforeend',`<div><b>${phF.size}. ${PH[i][0]}:</b> ${PH[i][1]}</div>`);$('#phC').textContent=`${phF.size} / 6`;
+ if(phF.size===6){setTimeout(()=>{S.party();confetti();toast('🕵️ ¡Detective de phishing!')},300)}requestAnimationFrame(fit)});
+enter['Phishing']=()=>{phF=new Set();$$('.phish .sus').forEach(s=>s.classList.remove('found'));$('#phC').textContent='0 / 6';$('#phL').innerHTML='<div style="color:var(--mute)">👆 Toca lo que te parezca sospechoso en el correo.</div>'};
+
+/* ---------- 13 la nube ---------- */
+let scBusy=false;
+$('#scB').onclick=async()=>{if(scBusy)return;scBusy=true;const sc=$('#scn'),dv=$$('#scn .dev');dv.forEach(d=>d.classList.remove('got'));$$('#scn .pkt').forEach(p=>p.remove());
+ const W=sc.clientWidth,H=sc.clientHeight,cx=W/2-15,cy=70;const pos=d=>{const r=d.getBoundingClientRect(),s=sc.getBoundingClientRect();return[r.left-s.left+r.width/2-15,r.top-s.top+10]};
+ const mk=([x,y])=>{const p=document.createElement('div');p.className='pkt';p.textContent='📄';p.style.left=x+'px';p.style.top=y+'px';sc.appendChild(p);return p};
+ $('#scT').textContent='⬆ Subiendo a la nube…';const p=mk(pos(dv[0]));S.whoosh();await wait(50);p.style.left=cx+'px';p.style.top=cy+'px';await wait(850);p.remove();
+ $('#scCl').classList.remove('pulse');void $('#scCl').offsetWidth;$('#scCl').classList.add('pulse');S.ding();dv[0].classList.add('got');$('#scT').textContent='☁️ Guardado en los servidores de Google. Ahora se sincroniza…';await wait(700);
+ for(const d of dv.slice(1)){const q=mk([cx,cy]);await wait(50);const [x,y]=pos(d);q.style.left=x+'px';q.style.top=y+'px';S.drop();await wait(850);q.remove();d.classList.add('got');S.pop(5)}
+ S.ok();$('#scT').textContent='✔ El mismo archivo en todos tus dispositivos. Si se daña la laptop, ¡tu tarea sigue a salvo!';scBusy=false};
+enter['La nube']=()=>{if(!scBusy){$$('#scn .dev').forEach(d=>d.classList.remove('got'));$('#scT').textContent=''}};
+
+/* ---------- 14 almacenamiento ---------- */
+const ST=[['📧 3 000 correos con adjuntos',1.5,'#EA4335'],['📷 1 000 fotos del celular',3,'#F5B700'],['🎬 Video de la excursión (30 min)',4,'#7B5CE0'],['📄 200 trabajos en PDF',.5,'#1E6FE0'],['🎵 300 canciones',1.2,'#2BB34A'],['💾 Copia del celular',5,'#4FB3F6']];
+let stU=[];
+$('#stI').innerHTML=ST.map((s,i)=>`<button data-i="${i}"><span>${s[0]}</span><b>+${String(s[1]).replace('.',',')} GB</b></button>`).join('');
+const stDraw=()=>{const tot=stU.reduce((a,i)=>a+ST[i][1],0),b=$('#stB');b.innerHTML=stU.map(i=>`<i style="width:${ST[i][1]/15*100}%;background:${ST[i][2]}"></i>`).join('');
+ $('#stT').textContent=`${tot.toFixed(1).replace('.',',')} de 15 GB`;const full=tot>15;b.classList.toggle('full',full);$('#stM').textContent=full?'⚠ ¡Lleno! Libera espacio':tot>12?'Casi lleno…':'✔ Hay espacio';$('#stM').style.color=full?'var(--r)':tot>12?'#b38600':'var(--g)';return full};
+$$('#stI button').forEach(b=>b.onclick=()=>{if(stU.reduce((a,i)=>a+ST[i][1],0)>15){S.edge();return}stU.push(+b.dataset.i);if(stDraw())S.no();else S.pop(stU.length)});
+$('#stR').onclick=()=>{stU=[];stDraw()};stDraw();
+
+/* ---------- 15 crear carpetas ---------- */
+let cfStep=0;
+const cfMark=s=>{cfStep=s;$$('#cfS li').forEach((l,i)=>{l.classList.toggle('on',i===s);l.classList.toggle('done',i<s)});$('#cfNew').classList.toggle('hint',s===0)};
+const cfClose=()=>{$$('#drv .menu,#drv .dlg').forEach(x=>x.remove())};
+$('#cfNew').onclick=()=>{cfClose();S.pop(2);cfMark(1);const m=document.createElement('div');m.className='menu';
+ m.innerHTML=`<button class="mi hint" data-a="f">📁 Carpeta nueva</button><hr><button class="mi" data-a="x">⬆️ Subir archivo</button><button class="mi" data-a="x">📂 Subir carpeta</button><hr><button class="mi" data-a="x"><span style="color:#1E6FE0">▤</span> Documentos de Google</button><button class="mi" data-a="x"><span style="color:#2BB34A">▦</span> Hojas de cálculo</button><button class="mi" data-a="x"><span style="color:#F5B700">▭</span> Presentaciones</button><button class="mi" data-a="x"><span style="color:#7B5CE0">☰</span> Formularios</button>`;
+ $('#drv').appendChild(m);m.querySelectorAll('.mi').forEach(b=>b.onclick=()=>{if(b.dataset.a!=='f'){S.edge();$('#cfM').textContent='Esa opción sirve para otra cosa. Busca «Carpeta nueva».';return}cfDialog()})};
+const cfDialog=()=>{cfClose();S.click();cfMark(2);const d=document.createElement('div');d.className='dlg';
+ d.innerHTML=`<div><h3>Carpeta nueva</h3><input id="cfIn" value="Carpeta sin nombre" maxlength="30" aria-label="Nombre de la carpeta"><div class="row" style="justify-content:flex-end;margin:0"><button class="btn ghost" id="cfX">Cancelar</button><button class="btn" id="cfOk">Crear</button></div></div>`;
+ $('#drv').appendChild(d);const i=$('#cfIn');i.focus();i.select();
+ i.addEventListener('input',()=>{if(cfStep===2)cfMark(3);$('#cfOk').classList.add('hint')});i.addEventListener('keydown',e=>{if(e.key==='Enter')$('#cfOk').click()});
+ $('#cfX').onclick=()=>{cfClose();cfMark(0);S.edge()};
+ $('#cfOk').onclick=()=>{const n=i.value.trim()||'Carpeta sin nombre';cfClose();$('#cfG').insertAdjacentHTML('afterbegin',`<div class="fold"><span class="fi">📁</span>${esc(n)}</div>`);S.ok();cfMark(4);
+  $('#cfM').textContent=n==='Carpeta sin nombre'?'⚠ Creada, pero ponle un nombre claro, por ejemplo «Ciencias 4.º B».':`✔ ¡Carpeta «${n}» creada! Crea otra para cada materia.`;$('#cfM').style.color=n==='Carpeta sin nombre'?'#b38600':'var(--g)';
+  setTimeout(()=>cfMark(0),2500);requestAnimationFrame(fit)}};
+enter['Crear carpetas']=()=>{cfClose();cfMark(0)};
+
+/* ---------- 16 organizar ---------- */
+const OF=[['📝','Fracciones-Tarea2.docx',0],['📄','Ecuaciones-Practica.pdf',0],['📝','Ensayo-El-Principito.docx',1],['📄','Poema-La-Patria.pdf',1],['📊','Fotosintesis.pptx',2],['🎬','Experimento-Volcan.mp4',2],['🖼️','Mapa-Region-Norte.jpg',3],['📝','Biografia-Duarte.docx',3]];
+const OB=[['📐','Matemáticas'],['📚','Lengua Española'],['🔬','Ciencias Naturales'],['🌎','Ciencias Sociales']];
+let orSel=null,orOk=0,orIn=[[],[],[],[]];
+const orDraw=()=>{const left=OF.map((f,i)=>i).filter(i=>!orIn.flat().includes(i));
+ $('#orF').innerHTML=left.length?left.map(i=>`<button data-i="${i}" class="${orSel===i?'sel':''}">${OF[i][0]} ${OF[i][1]}</button>`).join(''):'<b style="color:var(--g)">🎉 ¡Todo organizado!</b>';
+ $('#orB').innerHTML=OB.map((b,k)=>`<button class="bin ${orSel!==null?'ready':''}" data-k="${k}"><div class="bt"><span class="fi">📁</span>${b[0]} ${b[1]}<span class="cnt">${orIn[k].length}</span></div><ul>${orIn[k].map(i=>`<li>${OF[i][1]}</li>`).join('')}</ul></button>`).join('');
+ $('#orS').textContent=orOk;
+ $$('#orF button').forEach(b=>b.onclick=()=>{orSel=+b.dataset.i;S.click();$('#orM').textContent=`Tomaste «${OF[orSel][1]}». Ahora toca su carpeta.`;orDraw()});
+ $$('#orB .bin').forEach(b=>b.onclick=()=>{if(orSel===null){S.edge();$('#orM').textContent='Primero toca un archivo.';return}const k=+b.dataset.k;
+  if(OF[orSel][2]===k){orIn[k].push(orSel);orOk++;orSel=null;S.drop();setTimeout(S.ok,150);$('#orM').textContent='✔ ¡Bien guardado!';orDraw();const nb=$$('#orB .bin')[k];nb.classList.add('ok');setTimeout(()=>nb.classList.remove('ok'),700);
+   if(orOk===OF.length){S.party();confetti()}}
+  else{S.no();b.classList.add('no');$('#orM').textContent=`✘ «${OF[orSel][1]}» no va en ${OB[k][1]}. Intenta otra.`;setTimeout(()=>b.classList.remove('no'),450)}requestAnimationFrame(fit)})};
+$('#orR').onclick=()=>{orSel=null;orOk=0;orIn=[[],[],[],[]];$('#orM').textContent='Toca un archivo para tomarlo.';S.whoosh();orDraw()};orDraw();
+
+/* ---------- 17 herramientas ---------- */
+const AP2=[['Documentos','▤','#1E6FE0','Escribe trabajos, informes y ensayos, como en Word, y edítalos con tu grupo al mismo tiempo.','Ensayo de Lengua Española en equipo.'],
+ ['Hojas de cálculo','▦','#2BB34A','Tablas, fórmulas y gráficos, como en Excel.','Registro de notas o presupuesto de la excursión.'],
+ ['Presentaciones','▭','#F5B700','Diapositivas con imágenes y transiciones, como en PowerPoint.','Exposición de Ciencias Naturales.'],
+ ['Formularios','☰','#7B5CE0','Encuestas, inscripciones y cuestionarios con respuestas que se cuentan solas.','Encuesta: ¿qué deporte prefiere el curso?'],
+ ['Dibujos','✎','#E5484D','Diagramas, mapas conceptuales y esquemas sencillos.','Mapa conceptual del ciclo del agua.'],
+ ['Sites','⌂','#12246B','Crea una página web sin programar y publícala con un enlace.','Portafolio digital de tus proyectos.']];
+$('#apC').innerHTML=AP2.map((a,i)=>`<button data-i="${i}"><i style="background:${a[2]}">${a[1]}</i>${a[0]}</button>`).join('');
+const apShow2=i=>{const a=AP2[i];pickOne('#apC button',$$('#apC button')[i]);$('#apP').innerHTML=`<h3 style="color:${a[2]}">Google ${a[0]}</h3><p style="margin:0 0 6px">${a[3]}</p><p style="margin:0;color:var(--mute);font-weight:700">💡 En clase: ${a[4]}</p>`};
+$$('#apC button').forEach(b=>b.onclick=()=>apShow2(+b.dataset.i));apShow2(0);
+const FN=[['🔎','Buscador','Encuentra cualquier archivo escribiendo una palabra, incluso texto dentro de PDF e imágenes.'],['📷','Escanear','Con la app del celular tomas foto a un documento y Drive lo guarda como PDF.'],
+ ['🕓','Historial de versiones','Vuelve a una versión anterior si alguien borró algo por error.'],['📴','Sin conexión','Activa el modo sin conexión y trabaja sin internet; se sincroniza al volver.'],
+ ['⭐','Destacados','Marca con estrella lo importante para tenerlo a un clic.'],['🗑️','Papelera','Lo que borras queda 30 días en la papelera antes de eliminarse para siempre.']];
+$('#fnG').innerHTML=FN.map((f,i)=>`<button class="flip"><div class="in"><div class="fr"><span class="ico">${f[0]}</span><h3>${f[1]}</h3><small>Toca para ver</small></div><div class="bk">${f[2]}</div></div></button>`).join('');
+$$('#fnG .flip').forEach((f,i)=>f.onclick=()=>{f.classList.toggle('on');tone(520+i*50,.08,'triangle',.09);tone(780+i*50,.1,'triangle',.07,.05)});
+
+/* ---------- 18 enlaces ---------- */
+let lkA='r',lkR=0;
+const LR=['Lector','Comentador','Editor'];
+const lkDraw=()=>{const v=$('#lkV');
+ if(lkA==='r'){v.innerHTML=`<div><div style="font-size:64px">🔒</div><h3>Necesitas acceso</h3><p style="color:var(--mute);margin:0 0 12px">Solo las personas agregadas pueden abrir este archivo.</p><button class="btn ghost" onclick="S.tap();toast('📨 Solicitud enviada al dueño')">Solicitar acceso</button></div>`;return}
+ const can=[1,lkR>=1,lkR>=2];
+ v.innerHTML=`<div style="width:100%"><div style="font-size:54px">📊</div><h3>Proyecto de Ciencias.pptx</h3><p style="margin:0;color:var(--mute);font-weight:700">Lo abriste como <b style="color:var(--b)">${LR[lkR]}</b></p>
+  <div class="can"><div class="${can[0]?'y':'n'}">👁️ Ver</div><div class="${can[1]?'y':'n'}">💬 Comentar</div><div class="${can[2]?'y':'n'}">✏️ Editar</div></div>
+  ${lkR===2?'<p class="warn" style="margin:12px 0 0;text-align:left">⚠ Un editor puede cambiar y borrar contenido. Dale este rol solo a tu equipo.</p>':''}</div>`};
+$$('#lkA button').forEach(b=>b.onclick=()=>{lkA=b.dataset.a;pickOne('#lkA button',b);if(lkA==='p')S.ok();else S.lock();lkDraw();requestAnimationFrame(fit)});
+$$('#lkR button').forEach(b=>b.onclick=()=>{lkR=+b.dataset.r;pickOne('#lkR button',b);S.pop(lkR*2);lkDraw();requestAnimationFrame(fit)});
+$('#lkCp').onclick=()=>{const t=$('#lkU').textContent;try{navigator.clipboard.writeText(t).catch(()=>{})}catch(e){}S.ding();toast('🔗 Enlace copiado (de ejemplo)')};lkDraw();
+
+/* ---------- 19 ventajas ---------- */
+const VN=[['🌍','Desde cualquier lugar','Abre tus archivos desde el celular, la laptop o la PC del liceo.'],['👥','Trabajo en equipo','Varios editan el mismo documento al mismo tiempo.'],['💾','Guardado automático','No existe «se me olvidó guardar»: se guarda solo.'],['🛟','Respaldo','Si pierdes o se daña tu equipo, tus archivos siguen en la nube.'],
+ ['🆓','15 GB gratis','Incluidos con tu cuenta de Google.'],['🔗','Compartir sin adjuntos','Un enlace en lugar de archivos pesados.']];
+$('#vnG').innerHTML=VN.map((v,i)=>`<button class="flip"><div class="in"><div class="fr"><span class="ico">${v[0]}</span><h3>${v[1]}</h3><small>Toca para ver</small></div><div class="bk">${v[2]}</div></div></button>`).join('');
+$$('#vnG .flip').forEach((f,i)=>f.onclick=()=>{f.classList.toggle('on');tone(520+i*50,.08,'triangle',.09);tone(780+i*50,.1,'triangle',.07,.05)});
+const CL=[['Ana','#1E6FE0','Tema: el reciclaje en nuestra comunidad.'],['Luis','#2BB34A','Cada familia produce cerca de 1 kg de basura al día.'],['María','#E5484D','Propuesta: un punto de reciclaje en el liceo. ♻️']];
+let clRun=0;
+$('#clB').onclick=async()=>{const r=++clRun;$$('#clW span').forEach(s=>s.classList.remove('on'));CL.forEach((_,i)=>{$('#cl'+i).textContent='';$('#cl'+i).style.borderColor='transparent'});$('#clS').textContent='';
+ for(let i=0;i<3;i++){await wait(250);if(r!==clRun)return;$$('#clW span')[i].classList.add('on');S.pop(i*3)}
+ const pos=[0,0,0];let left=CL.reduce((a,c)=>a+c[2].length,0);
+ while(left>0){if(r!==clRun)return;for(let i=0;i<3;i++){if(pos[i]<CL[i][2].length&&Math.random()<.7){pos[i]++;left--;const p=$('#cl'+i);p.style.borderColor=CL[i][1];p.innerHTML=esc(CL[i][2].slice(0,pos[i]))+`<span class="tagn" style="background:${CL[i][1]}">${CL[i][0]}</span>`;S.key();$('#clS').textContent='Guardando…'}}await wait(45)}
+ CL.forEach((c,i)=>$('#cl'+i).textContent=c[2]);$('#clS').textContent='✔ Todos los cambios se guardaron en Drive';S.ok()};
+enter['Ventajas de la nube']=()=>{clRun++;$$('#clW span').forEach(s=>s.classList.remove('on'));CL.forEach((_,i)=>{$('#cl'+i).textContent='';$('#cl'+i).style.borderColor='transparent'});$('#clS').textContent=''};
+
+/* ---------- 20 reto final ---------- */
+const QZ=[['¿Qué símbolo separa el usuario del dominio en un correo?',['#','@','&'],1],
+ ['Para enviar tu currículum a una empresa, ¿qué usas?',['Un audio por WhatsApp','El correo electrónico','Un mensaje de texto'],1],
+ ['La verificación en dos pasos pide tu contraseña y…',['un código o aviso en tu teléfono','la fecha de tu nacimiento completa','la respuesta a una pregunta secreta'],0],
+ ['¿Cuánto espacio gratis da Google entre Gmail, Drive y Fotos?',['5 GB','15 GB','50 GB'],1],
+ ['El campo CCO sirve para…',['enviar copia oculta a otros','adjuntar archivos al mensaje','marcar el correo como urgente'],0],
+ ['«Tu cuenta será eliminada, envía tu contraseña». ¿Qué es?',['Un aviso oficial de Google','Un intento de phishing','Una actualización normal'],1],
+ ['Si compartes un archivo como «Lector», la otra persona puede…',['editar y borrar el archivo','solo ver el archivo','cambiar quién tiene acceso'],1],
+ ['¿Qué app de Google sirve para crear encuestas?',['Google Formularios','Google Presentaciones','Google Hojas de cálculo'],0]];
+let qi=0,qs=0,ql=false;
+const qzBar=()=>$('#qzP').innerHTML=QZ.map((q,i)=>`<i class="${i<qi?(q.r?'ok':'no'):''}"></i>`).join('');
+const qzDraw=()=>{ql=false;$('#qzN').textContent=`Pregunta ${qi+1} de ${QZ.length}`;const q=QZ[qi];$('#qzQ').className='sit';$('#qzQ').textContent=q[0];$('#qzF').textContent='';$('#qzR').style.display='none';qzBar();
+ $('#qzA').style.display='';$('#qzA').innerHTML=q[1].map((o,i)=>`<button data-i="${i}">${['A','B','C'][i]}. ${esc(o)}</button>`).join('');
+ $$('#qzA button').forEach(b=>b.onclick=()=>{if(ql)return;ql=true;const ok=+b.dataset.i===q[2];q.r=ok;b.classList.add(ok?'ok':'no');$$('#qzA button')[q[2]].classList.add('ok');$('#qzQ').classList.add(ok?'ok':'no');
+  if(ok){qs++;S.ok()}else S.no();$('#qzS').textContent=qs;$('#qzF').textContent=ok?'✔ ¡Correcto!':'✘ La respuesta correcta está en verde.';
+  setTimeout(()=>{qi++;if(qi<QZ.length)qzDraw();else{qzBar();$('#qzQ').className='sit ok';$('#qzQ').textContent=`Resultado: ${qs} de ${QZ.length}`;$('#qzA').style.display='none';$('#qzF').textContent=qs>=6?'¡Excelente! Dominas el correo y la nube.':'¡Bien! Repasa las láminas y vuelve a intentarlo.';$('#qzR').style.display='';if(qs>=6){S.party();confetti()}}requestAnimationFrame(fit)},1700)})};
+$('#qzR').onclick=()=>{qi=0;qs=0;QZ.forEach(q=>delete q.r);$('#qzS').textContent=0;qzDraw()};qzDraw();
+$('#party').onclick=()=>{S.party();confetti();toast('☁️ ¡Bienvenidos a la nube!')};
+$('#crB').onclick=()=>{$('#crL').hidden=!$('#crL').hidden;requestAnimationFrame(fit)};
+
+/* ---------- inicio ---------- */
+const h0=parseInt((location.hash.match(/^#l(\d+)$/)||[])[1]);go(h0?h0-1:0,true);
+</script>
+</body>
+</html>
