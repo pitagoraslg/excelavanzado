@@ -315,12 +315,18 @@ mail:`<svg viewBox="0 0 48 48"><rect x="6" y="11" width="36" height="26" rx="3" 
 const TOOLS=[['nube','Nube'],['word','Word'],['excel','Excel'],['pres','Presentaciones'],['dis','Diseño'],['form','Formularios'],['ia','IA']];
 
 /* ---------- sonido ---------- */
-let AC=null,muted=false;try{muted=localStorage.getItem('boveda-mute')==='1'}catch(e){}
+let AC=null,muted=false;try{muted=localStorage.getItem('bovedaInd-mute')==='1'}catch(e){}
 const ac=()=>{if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC};
+let OUTN=null;const OUT=a=>{if(!OUTN){const m=a.createGain(),c=a.createDynamicsCompressor();m.gain.value=2.8;c.threshold.value=-10;c.ratio.value=4;m.connect(c).connect(a.destination);OUTN=m}return OUTN};
+try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+/* audio HTML silencioso en bucle: en iPhone/iPad hace que Web Audio suene aunque el interruptor de silencio esté activado */
+let SIL=null;const silentAudio=()=>{if(SIL)return;try{const sr=8000,n=sr/2,b=new ArrayBuffer(44+n*2),v=new DataView(b),w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+ w(0,'RIFF');v.setUint32(4,36+n*2,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n*2,true);
+ SIL=new Audio(URL.createObjectURL(new Blob([b],{type:'audio/wav'})));SIL.loop=true;SIL.setAttribute('playsinline','');const p=SIL.play();if(p&&p.catch)p.catch(()=>{SIL=null})}catch(e){SIL=null}};
 const tone=(f,d=.15,type='sine',v=.16,t0=0,f2)=>{const a=ac();if(!a||muted)return;const t=a.currentTime+t0,o=a.createOscillator(),g=a.createGain();
-  o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d+.05)};
+  o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(OUT(a));o.start(t);o.stop(t+d+.05)};
 const noise=(d=.3,f=1200,v=.25,type='bandpass',t0=0)=>{const a=ac();if(!a||muted)return;const n=Math.floor(a.sampleRate*d),b=a.createBuffer(1,n,a.sampleRate),c=b.getChannelData(0);for(let i=0;i<n;i++)c[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);
-  const s=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain();s.buffer=b;fl.type=type;fl.frequency.value=f;g.gain.value=v;s.connect(fl).connect(g).connect(a.destination);s.start(a.currentTime+t0)};
+  const s=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain();s.buffer=b;fl.type=type;fl.frequency.value=f;g.gain.value=v;s.connect(fl).connect(g).connect(OUT(a));s.start(a.currentTime+t0)};
 const S={
   click:()=>tone(1200,.05,'triangle',.07),
   ok:()=>[523,659,784,1047].forEach((f,i)=>tone(f,.2,'triangle',.12,i*.07)),
@@ -341,15 +347,15 @@ const S={
   vault:()=>{noise(1.6,180,.35,'lowpass');tone(60,1.6,'sawtooth',.06,0,40);[392,494,587,784,988].forEach((f,i)=>tone(f,.5,'triangle',.1,1.8+i*.14))},
   note:f=>tone(f,.32,'triangle',.14)};
 const updSnd=()=>{$('#snd').textContent=muted?'✕':'♪';$('#snd').setAttribute('aria-label',muted?'Activar sonido':'Silenciar')};
-$('#snd').onclick=()=>{muted=!muted;try{localStorage.setItem('boveda-mute',muted?'1':'0')}catch(e){}updSnd();updAudio();if(!muted)S.click()};updSnd();
-$('#sndHint').onclick=()=>{if(muted){muted=false;try{localStorage.setItem('boveda-mute','0')}catch(e){}updSnd()}unlockAudio();setTimeout(()=>S.ok(),120)};
-const unlockAudio=()=>{const a=ac();if(!a)return;if(!a.__u){try{const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0);a.__u=1}catch(e){}}if(a.state!=='running')a.resume().catch(()=>{});setTimeout(updAudio,150)};
+$('#snd').onclick=()=>{muted=!muted;try{localStorage.setItem('bovedaInd-mute',muted?'1':'0')}catch(e){}updSnd();updAudio();if(!muted)S.click()};updSnd();
+$('#sndHint').onclick=()=>{if(muted){muted=false;try{localStorage.setItem('bovedaInd-mute','0')}catch(e){}updSnd()}unlockAudio();setTimeout(()=>S.ok(),120)};
+const unlockAudio=()=>{silentAudio();const a=ac();if(!a)return;if(!a.__u){try{const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0);a.__u=1}catch(e){}}if(a.state!=='running')a.resume().catch(()=>{});setTimeout(updAudio,150)};
 ['pointerdown','touchend','click','keydown'].forEach(t=>document.addEventListener(t,unlockAudio,true));
 setInterval(()=>updAudio(),1000);function updAudio(){const b=$('#sndHint');if(b)b.hidden=!!(AC&&AC.state==='running')||muted}
 
 
 /* ---------- música de fondo (chiptune sintetizado, una pista por candado) ---------- */
-let musOn=true;try{musOn=localStorage.getItem('ghd-music')!=='0'}catch(e){}
+let musOn=true;try{musOn=localStorage.getItem('bovedaInd-music')!=='0'}catch(e){}
 const mf=m=>440*Math.pow(2,(m-69)/12);
 const TR=[
  {bpm:124,lead:'square',lv:.028,ch:[[48,60,64,67],[45,57,60,64],[41,53,57,60],[43,55,59,62]],
@@ -374,7 +380,7 @@ function mSched(){const a=AC,T=MU.t;if(!a||!T)return;const sd=60/T.bpm/4,sf=T.so
       if(T.mel&&i%2===0){const m=T.mel[bar][i/2];if(m)mNote(mf(m),t,sd*1.8,T.lead,T.lv)}
       if(T.dr){if(i===0||i===8)mDrum(t,'k',.16*T.dr);if(i===4||i===12)mDrum(t,'s',.05*T.dr);if(i%2===1)mDrum(t,'h',.018*T.dr)}}
     MU.next+=sd;MU.step++}}
-function mStart(k){mStop(true);const a=ac();if(!a||k<0||!TR[k])return;MU.g=a.createGain();MU.g.gain.value=1;MU.g.connect(a.destination);MU.t=TR[k];MU.step=0;MU.next=a.currentTime+.08;mSched();MU.tm=setInterval(mSched,30)}
+function mStart(k){mStop(true);const a=ac();if(!a||k<0||!TR[k])return;MU.g=a.createGain();MU.g.gain.value=1;MU.g.connect(OUT(a));MU.t=TR[k];MU.step=0;MU.next=a.currentTime+.08;mSched();MU.tm=setInterval(mSched,30)}
 function mStop(now){clearInterval(MU.tm);MU.tm=null;MU.t=null;const g=MU.g;MU.g=null;if(g&&AC){try{if(now){g.disconnect()}else{g.gain.setValueAtTime(g.gain.value,AC.currentTime);g.gain.linearRampToValueAtTime(0,AC.currentTime+.4);setTimeout(()=>g.disconnect(),600)}}catch(e){}}}
 const updMus=()=>{const b=$('#jMus');if(b){b.textContent=musOn?'🎵 Música: sí':'🔇 Música: no';b.setAttribute('aria-pressed',musOn)}};
 
@@ -488,7 +494,7 @@ document.addEventListener('keydown',e=>{if(vista==='Juego'&&G&&G.key&&!/INPUT/.t
   if(!$('#jOv').hidden){if(e.key==='Enter'||e.key===' '){const b=$('#ovGo');if(b){e.preventDefault();b.click()}}return}
   G.key(e,true)}});
 document.addEventListener('keyup',e=>{if(vista==='Juego'&&G&&G.key&&gRun)G.key(e,false)});
-$('#jMus').onclick=()=>{musOn=!musOn;try{localStorage.setItem('ghd-music',musOn?'1':'0')}catch(e){}updMus();S.click()};updMus();
+$('#jMus').onclick=()=>{musOn=!musOn;try{localStorage.setItem('bovedaInd-music',musOn?'1':'0')}catch(e){}updMus();S.click()};updMus();
 $('#jBack').onclick=()=>{S.click();irBoveda()};
 
 /* ===== 1. Serpiente ===== */
