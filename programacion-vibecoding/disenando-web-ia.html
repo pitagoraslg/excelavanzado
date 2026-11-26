@@ -20,8 +20,8 @@
 *{box-sizing:border-box;min-width:0}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--back)}
 body{color:var(--ink);font:17px/1.5 Manrope,system-ui,sans-serif}
-#viewport{position:fixed;inset:0;display:grid;place-items:center}
-#stage{width:1280px;height:720px;position:relative;overflow:hidden;background:var(--bg);transform-origin:center center;box-shadow:0 20px 60px rgba(0,0,0,.25);flex:none}
+#viewport{position:fixed;inset:0;overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;overflow:hidden;background:var(--bg);transform-origin:center center;transform:translate(-50%,-50%);box-shadow:0 20px 60px rgba(0,0,0,.25)}
 #track{display:flex;height:664px;transition:transform .6s cubic-bezier(.7,0,.25,1)}
 .slide{width:1280px;height:664px;flex:none;padding:40px 64px 24px;position:relative;overflow:hidden;display:flex;flex-direction:column}
 .slide.alt{background:var(--panel)}
@@ -117,6 +117,61 @@ td.ok{color:var(--blue);font-weight:700}
 .toast{position:absolute;left:50%;top:18px;transform:translate(-50%,-20px);background:var(--ink);color:var(--bg);font-weight:700;padding:9px 18px;border-radius:999px;opacity:0;transition:all .3s;z-index:6;pointer-events:none;font-size:15px}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media(prefers-reduced-motion:reduce){#track{transition:none}.slide.on .blk{animation:none;opacity:1}}
+/* ===== MODO ADAPTABLE (celular, tablet vertical, ventanas pequeñas) ===== */
+html.fluid #stage{left:0;top:0;width:100%;height:100%;transform:none!important;box-shadow:none}
+html.fluid #track{height:calc(100% - 56px)}
+html.fluid .slide{width:100vw;height:100%;padding:26px 28px 32px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+html.fluid .slide>*{flex-shrink:0}
+html.fluid .body{flex:none}
+html.fluid h2{font-size:30px}
+html.fluid .lead{font-size:16px;margin-bottom:14px}
+html.fluid .cover{grid-template-columns:minmax(0,1fr);gap:18px;align-content:start;padding:28px}
+html.fluid .cover h1{font-size:38px}
+html.fluid .cover svg{max-width:440px;margin:0 auto}
+html.fluid .gen{grid-template-columns:minmax(0,1fr);height:auto}
+html.fluid .out{height:auto}
+html.fluid .out pre{flex:none;overflow:visible}
+html.fluid .tree{overflow-x:auto;font-size:13.5px}
+html.fluid .end{justify-content:flex-start;padding-top:60px}
+html.fluid .end h2{font-size:40px}
+html.fluid .agenda button{min-height:0}
+@media(max-width:1000px){html.fluid .g3{grid-template-columns:repeat(2,minmax(0,1fr))}html.fluid #credit{display:none}}
+@media(max-width:760px){
+ html.fluid .g2,html.fluid .g3,html.fluid .check{grid-template-columns:minmax(0,1fr)}
+ html.fluid .agenda{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ html.fluid .agenda button{padding:14px}
+ html.fluid .agenda .n{font-size:30px}
+ html.fluid #credit{display:none}
+ html.fluid #bar .t{display:none}
+ html.fluid #bar{gap:6px;padding:0 10px}
+ html.fluid #bar button{padding:0 11px}
+ html.fluid #num{min-width:0}
+ /* tablas como tarjetas */
+ html.fluid table,html.fluid tbody,html.fluid tr,html.fluid td{display:block;width:100%!important}
+ html.fluid thead{display:none}
+ html.fluid table{background:none}
+ html.fluid tr{background:var(--bg);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;padding:6px 0}
+ html.fluid td{border:0;padding:5px 14px;font-size:15px;text-align:left!important}
+ html.fluid td[data-l]::before{content:attr(data-l);display:block;font-size:11.5px;font-weight:800;color:var(--soft);text-transform:uppercase;letter-spacing:.04em;font-family:Manrope,sans-serif}
+ html.fluid td:empty{display:none}
+}
+@media(max-width:560px){
+ html.fluid .slide{padding:20px 16px 28px}
+ html.fluid h2{font-size:25px}
+ html.fluid h3{font-size:17.5px}
+ html.fluid .cover{padding:22px 16px}
+ html.fluid .cover h1{font-size:30px}
+ html.fluid .cover .sub{font-size:16px}
+ html.fluid .who b{font-size:21px}
+ html.fluid .form{grid-template-columns:minmax(0,1fr)}
+ html.fluid .card{padding:15px 16px}
+ html.fluid .tree{font-size:12px;padding:14px}
+ html.fluid #dots{display:none}
+ html.fluid #num{flex:1;text-align:center}
+ html.fluid .big{font-size:46px}
+ html.fluid .tokvis span{font-size:15px;padding:4px 8px}
+ html.fluid .end h2{font-size:34px}
+}
 </style>
 </head>
 <body>
@@ -335,13 +390,13 @@ td.ok{color:var(--blue);font-weight:700}
 
 </div>
 <div id="bar">
- <button class="ghost" id="prev" aria-label="Anterior">← Anterior</button>
+ <button class="ghost" id="prev" aria-label="Anterior">←<span class="t"> Anterior</span></button>
  <span id="credit">Jarlin Figueroa, MA · JAREDU</span>
  <div id="dots"></div>
  <span id="num"></span>
  <button class="ghost" id="snd" aria-label="Sonido">🔊</button>
  <button class="ghost" id="fs" aria-label="Pantalla completa">⛶</button>
- <button id="next" aria-label="Siguiente">Siguiente →</button>
+ <button id="next" aria-label="Siguiente"><span class="t">Siguiente </span>→</button>
 </div>
 </div></div>
 
@@ -429,13 +484,20 @@ $("pautasList").innerHTML=pautas.map((p,i)=>`<li><label><input type="checkbox" d
 $("calidad").innerHTML=calidad.map(c=>`<div class="card"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("");
 $("morePrompts").innerHTML=more.map((m,i)=>`<div class="prompt"><h3>${m[0]}</h3><button class="copy" data-copy="mp${i}">Copiar</button><pre id="mp${i}">${m[1]}</pre></div>`).join("");
 $("mejList").innerHTML=mejoras.map((m,i)=>`<div class="prompt" style="padding:14px 16px"><h3 style="font-size:18px">${m[0]}</h3><button class="copy" data-copy="mj${i}">Copiar</button><pre id="mj${i}" style="font-size:15px;margin-top:10px">${m[1]}</pre></div>`).join("");
-$("tipsBody").innerHTML=tips.map(t=>`<tr><td class="ok">${t[0]}</td><td>${t[1]}</td><td>${t[2]}</td></tr>`).join("");
-$("rubBody").innerHTML=rub.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td class="n">${r[2]}</td></tr>`).join("")+`<tr><td><b>Total</b></td><td></td><td class="n">${rub.reduce((a,r)=>a+r[2],0)}</td></tr>`;
+$("tipsBody").innerHTML=tips.map(t=>`<tr><td class="ok" data-l="Haz esto">${t[0]}</td><td data-l="En vez de esto">${t[1]}</td><td data-l="Por qué ahorra">${t[2]}</td></tr>`).join("");
+$("rubBody").innerHTML=rub.map(r=>`<tr><td><b>${r[0]}</b></td><td data-l="Qué se revisa">${r[1]}</td><td class="n" data-l="Puntos">${r[2]}</td></tr>`).join("")+`<tr><td><b>Total</b></td><td></td><td class="n" data-l="Puntos">${rub.reduce((a,r)=>a+r[2],0)}</td></tr>`;
 
-/* ===== ESCALA: todo cabe al 100% ===== */
-const stage=$("stage");
-function fit(){const s=Math.min(innerWidth/1280,innerHeight/720);stage.style.transform=`scale(${s})`}
-addEventListener("resize",fit);fit();
+/* ===== ESCALA: lienzo fijo en PC y tablet horizontal; modo adaptable en celular y tablet vertical ===== */
+const stage=$("stage"),root=document.documentElement;
+let fluid=null,ready=false;
+function fit(){
+ const s=Math.min(innerWidth/1280,innerHeight/720);
+ const a=document.activeElement,typing=a&&/^(input|textarea|select)$/i.test(a.tagName);
+ const want=s<.66||innerHeight>innerWidth*1.1;
+ if(fluid===null||(want!==fluid&&!typing)){fluid=want;root.classList.toggle("fluid",fluid)}
+ stage.style.transform=fluid?"":`translate(-50%,-50%) scale(${s})`;
+ if(ready){track.style.transition="none";go(cur,true);track.offsetWidth;track.style.transition=""}
+}
 
 /* ===== NAVEGACIÓN HORIZONTAL ===== */
 const slides=[...document.querySelectorAll(".slide")],track=$("track"),N=slides.length;
@@ -445,7 +507,8 @@ const dots=[...$("dots").children];
 function go(i,silent){
  if(i<0||i>=N){if(!silent)sfx.edge();return}
  if(!silent&&i!==cur)(i>cur?sfx.whooshR:sfx.whooshL)();
- cur=i;track.style.transform=`translateX(${-i*1280}px)`;
+ if(i!==cur&&fluid)slides[i].scrollTop=0;
+ cur=i;track.style.transform=`translateX(${-i*slides[0].offsetWidth}px)`;
  slides.forEach((s,j)=>s.classList.toggle("on",j===i));
  dots.forEach((d,j)=>d.classList.toggle("on",j===i));
  $("num").textContent=`${i+1} / ${N}`;
@@ -467,8 +530,10 @@ addEventListener("keydown",e=>{
  else if(e.key==="m"||e.key==="M")toggleMute();
 });
 /* deslizar con el dedo */
-let sx=null;stage.addEventListener("touchstart",e=>{sx=e.touches[0].clientX},{passive:true});
-stage.addEventListener("touchend",e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>60)go(cur+(dx<0?1:-1));sx=null});
+let sx=null,sy=0;stage.addEventListener("touchstart",e=>{if(e.target.closest(".tree,input,textarea,select,#bar")){sx=null;return}sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+stage.addEventListener("touchend",e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)go(cur+(dx<0?1:-1));sx=null});
+addEventListener("resize",fit);addEventListener("orientationchange",()=>setTimeout(fit,250));
+addEventListener("hashchange",()=>{const m=/^#s(\d+)$/.exec(location.hash);if(m){const t=Math.min(N,Math.max(1,+m[1]))-1;if(t!==cur)go(t)}});
 
 /* sonido y pantalla completa */
 function toggleMute(){muted=!muted;store.set("muted",muted);$("snd").textContent=muted?"🔇":"🔊";if(!muted)sfx.toggle()}
@@ -543,7 +608,8 @@ function count(){
 tk.addEventListener("input",()=>{count();sfx.tick()});count();
 
 /* inicio */
-track.style.transition="none";const h=/^#s(\d+)$/.exec(location.hash);go(h?Math.min(N,Math.max(1,+h[1]))-1:0,true);track.offsetWidth;track.style.transition="";
+fit();
+track.style.transition="none";const h=/^#s(\d+)$/.exec(location.hash);go(h?Math.min(N,Math.max(1,+h[1]))-1:0,true);track.offsetWidth;track.style.transition="";ready=true;
 }
 </script>
 </body>
