@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Sopa de Correo · Pantalla del profesor.</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='14' width='52' height='38' rx='6' fill='%231E6FE0'/%3E%3Cpath d='M8 18l24 18 24-18' fill='none' stroke='%23fff' stroke-width='5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--bg:#F3F7FE;--p2:#EAF1FD;--line:#D3E0F5;--ink:#12246B;--mute:#4A5B85;--b:#1E6FE0;--s:#4FB3F6;--g:#2BB34A;--y:#F5B700;--r:#E5484D}
+*{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%}
+body{background:radial-gradient(circle at 85% -10%,#cfe2ff 0,transparent 45%),var(--bg);color:var(--ink);font:700 clamp(15px,1.05vw,19px)/1.4 Nunito,system-ui,sans-serif;overflow:hidden}
+h1,h2,h3{font-family:Fredoka,Arial,sans-serif;line-height:1.08;margin:0;font-weight:700}
+button{font:inherit;cursor:pointer}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 18px;border:0;border-radius:14px;background:var(--b);color:#fff;font:700 clamp(16px,1.1vw,20px) Fredoka;box-shadow:0 4px 0 #1453ad}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #1453ad}
+.btn.y{background:var(--y);color:#3b2a00;box-shadow:0 4px 0 #b98a00}
+.btn.g{background:var(--g);box-shadow:0 4px 0 #1d8a37}
+.btn.ghost{background:transparent;color:#fff;border:2px solid #ffffff55;box-shadow:none}
+.btn.pulse{animation:pl 1.2s infinite}
+@keyframes pl{50%{transform:scale(1.07);box-shadow:0 0 0 10px #f5b70044}}
+.ib{width:46px;height:46px;border-radius:12px;border:2px solid #ffffff44;background:transparent;color:#fff;font-size:18px;display:grid;place-items:center}
+#sndHint{background:var(--y);color:#3b2a00;border-color:var(--y);width:auto;padding:0 12px;font:800 15px Nunito}
+header{height:72px;display:flex;align-items:center;gap:14px;padding:0 18px;background:#12246B;color:#fff}
+header h1{font-size:clamp(24px,2vw,34px);white-space:nowrap}header h1 em{font-style:normal;color:var(--s)}
+.pill{font:800 14px Nunito;border-radius:20px;padding:4px 12px;background:#ffffff22;white-space:nowrap}
+.pill.live{background:var(--g)}.pill.end{background:var(--r)}
+.clk{font:700 clamp(30px,2.6vw,46px) Fredoka;font-variant-numeric:tabular-nums;margin-left:auto;padding:0 14px;border-radius:12px}
+.clk.low{background:var(--r);animation:pl 1s infinite}
+header .sp{flex:1}
+.tbar{height:6px;background:#12246B22}.tbar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--g),var(--y));transition:width .5s linear}
+main{height:calc(100dvh - 78px);padding:16px}
+/* espera */
+.wait{height:100%;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:22px}
+.card{background:#fff;border:2px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 20px 50px #12246b14;overflow:auto}
+.qr{width:min(100%,46vh);margin:10px auto;background:#fff;border-radius:16px;padding:8px;border:2px solid var(--line)}
+.qr svg{display:block;width:100%;height:auto}
+.url{font:700 clamp(16px,1.3vw,22px) Nunito;color:var(--b);word-break:break-all;text-align:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chips span{background:var(--p2);border-radius:20px;padding:6px 14px;font-size:clamp(16px,1.2vw,22px);animation:pop .4s}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.big{font:700 clamp(70px,8vw,130px) Fredoka;color:var(--b);line-height:1}
+/* juego */
+.game{height:100%;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:16px;align-items:start}
+.board{--bs:min(calc(100dvh - 112px),46vw);position:relative;width:var(--bs);aspect-ratio:1;background:#fff;border:4px solid var(--ink);border-radius:18px;box-shadow:0 12px 0 #12246b22;container-type:inline-size;overflow:hidden}
+.board .ln{position:absolute;inset:0;width:100%;height:100%}
+.board .ln line{stroke-width:.74;stroke-linecap:round}
+.board .cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(15,1fr);grid-template-rows:repeat(15,1fr)}
+.board .cells span{display:grid;place-items:center;font:600 calc(100cqw / 15 * .56) Fredoka;color:var(--ink)}
+.panel{background:#fff;border:2px solid var(--line);border-radius:20px;padding:14px;max-height:calc(100dvh - 112px);overflow:auto}
+.panel h3{font-size:clamp(20px,1.6vw,28px);margin-bottom:10px;display:flex;justify-content:space-between;align-items:baseline}
+.panel h3 small{font:800 clamp(13px,.9vw,16px) Nunito;color:var(--mute)}
+.words{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;list-style:none;margin:0;padding:0}
+.words li{border-radius:10px;padding:4px 10px;background:var(--p2);font:700 clamp(15px,1.15vw,21px) Fredoka;letter-spacing:.04em;border-left:6px solid transparent;transition:all .3s}
+.words li small{display:block;font:800 clamp(11px,.75vw,14px) Nunito;letter-spacing:0;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.words li.taken{background:#f4f6fa;color:#9aa4b8;text-decoration:line-through}
+.words li.taken small{color:var(--ink);text-decoration:none}
+.words li.miss{background:#fdecec;color:var(--r)}
+.words li.flash{animation:fl 1s}
+@keyframes fl{0%{transform:scale(1.12);background:var(--y)}}
+.rk{display:grid;gap:6px}
+.rk div{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:10px;padding:6px 12px;border-radius:12px;background:var(--p2);font-size:clamp(16px,1.2vw,22px);transition:transform .3s}
+.rk div.up{animation:up .7s}
+@keyframes up{0%{background:var(--y);transform:scale(1.05)}}
+.rk .pos{font:700 clamp(18px,1.4vw,26px) Fredoka;text-align:center}
+.rk .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rk .n i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px}
+.rk .p{font:700 clamp(20px,1.6vw,30px) Fredoka;color:var(--b)}
+/* aviso */
+#ban{position:fixed;left:50%;top:86px;transform:translate(-50%,-30px);opacity:0;z-index:40;background:#12246B;color:#fff;border-radius:18px;padding:12px 26px;font:700 clamp(22px,2vw,34px) Fredoka;box-shadow:0 16px 40px #0005;transition:all .35s;pointer-events:none;white-space:nowrap}
+#ban.on{transform:translate(-50%,0);opacity:1}#ban b{color:var(--y)}
+/* cuenta y final */
+.ov{position:fixed;inset:0;z-index:60;display:none;place-items:center;background:#12246Be6;color:#fff;text-align:center;padding:20px}
+.ov.on{display:grid}
+#cdN{font:700 min(40vh,300px) Fredoka;animation:zm .9s ease-out}
+@keyframes zm{from{transform:scale(2.2);opacity:0}}
+#rf{background:radial-gradient(circle at 50% 0,#1E6FE0,#12246B 60%,#0b1648);overflow:auto;align-items:start}
+#rf h2{font-size:clamp(44px,5vw,80px);color:var(--y);margin-top:2vh}
+.pod{display:flex;justify-content:center;align-items:flex-end;gap:18px;margin:4vh auto 3vh;max-width:900px}
+.pc{flex:1;display:flex;flex-direction:column;align-items:center;min-width:0}
+.pc .pn{font:700 clamp(20px,2vw,34px) Fredoka;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc .pp{font-weight:800;color:#b8c8ee;margin:4px 0 8px;font-size:clamp(16px,1.3vw,22px)}
+.ped{width:100%;border-radius:16px 16px 0 0;display:flex;flex-direction:column;align-items:center;padding-top:10px;font-size:clamp(40px,4vw,64px);transform-origin:bottom;animation:grow 1s cubic-bezier(.2,1.3,.4,1) both}
+.ped b{font:700 clamp(34px,3.4vw,56px) Fredoka}
+.ped.p0{background:linear-gradient(#F5B700,#c48f00);animation-delay:1.2s}.ped.p1{background:linear-gradient(#b8c8ee,#7f93c4);animation-delay:.7s}.ped.p2{background:linear-gradient(#e59a5c,#b56a2e);animation-delay:.2s}
+@keyframes grow{from{transform:scaleY(0)}}
+.rest{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;text-align:left}
+.rest div{display:flex;justify-content:space-between;gap:10px;background:#ffffff14;border-radius:12px;padding:8px 14px;font-size:clamp(16px,1.2vw,21px)}
+/* clave */
+#gate{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:#12246B}
+#gate .card{width:min(92vw,420px);text-align:center}
+#gate input{width:100%;height:56px;border:2px solid var(--line);border-radius:14px;padding:0 16px;font:700 24px Nunito;text-align:center;letter-spacing:.3em;margin:14px 0 10px}
+dialog{border:0;border-radius:20px;padding:24px;max-width:460px;box-shadow:0 20px 60px #0006;color:var(--ink)}
+dialog::backdrop{background:#12246B99}
+@media(max-width:1000px){body{overflow:auto}main{height:auto}.game,.wait{grid-template-columns:minmax(0,1fr);justify-items:center}.board{--bs:min(94vw,600px)}.panel{max-height:none;width:100%}header{flex-wrap:wrap;height:auto;padding:10px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="gate"><div class="card">
+ <h2>Sopa de Correo</h2><p style="color:var(--mute);margin:8px 0 0">Pantalla del profesor</p>
+ <input id="clave" type="password" inputmode="numeric" autocomplete="off" aria-label="Clave" placeholder="••••">
+ <button class="btn" id="gIn" style="width:100%;justify-content:center">Entrar</button>
+ <p id="gW" style="color:var(--r);min-height:1.4em;margin:8px 0 0"></p>
+</div></div>
+
+<header>
+ <h1>Sopa de <em>Correo</em></h1>
+ <span class="pill" id="st">Conectando…</span>
+ <span class="pill" id="nJ">0 jugadores</span>
+ <div class="clk" id="clk">20:00</div>
+ <button class="btn g" id="bIni">▶ Iniciar</button>
+ <button class="btn y" id="bSig" hidden>Siguiente ▶</button>
+ <button class="btn ghost" id="bRes">↺ Reiniciar</button>
+ <button class="ib" id="sndHint">🔊 Activar sonido</button>
+ <button class="ib" id="mus" aria-label="Música">🎵</button>
+ <button class="ib" id="snd" aria-label="Silenciar">♪</button>
+ <button class="ib" id="fs" aria-label="Pantalla completa">⛶</button>
+</header>
+<div class="tbar"><i id="tBar"></i></div>
+<main id="main"></main>
+<div id="ban"></div>
+<div class="ov" id="ovCd"><div><p style="font:700 34px Fredoka;margin:0">¡Prepárense!</p><div id="cdN">3</div></div></div>
+<div class="ov" id="rf"><div style="width:100%"><div id="rfIn"></div></div></div>
+<dialog id="dlg"><h3 style="font-size:24px">¿Reiniciar el juego?</h3><p style="color:var(--mute)">Se abre una sala nueva con otra sopa de letras. Los estudiantes que ya entraron vuelven solos a la sala de espera con 0 puntos.</p>
+ <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" id="dNo" style="background:#fff;color:var(--ink);border:2px solid var(--line);box-shadow:none">Cancelar</button><button class="btn" id="dSi">Sí, reiniciar</button></div></dialog>
+
+<script src="sopa-de-correo-comun.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+'use strict';
+{
+const {WORDS,DUR,CUENTA,S,A,musica,esc,reloj}=SOPA;
+const $=s=>document.querySelector(s);
+const QS=new URLSearchParams(location.search);
+const ROOT=QS.get('raiz')||'sopaCorreo';
+const CLAVE='1022';
+const URLJ=new URL('sopa-de-correo.html'+(QS.get('raiz')?'?raiz='+encodeURIComponent(ROOT):''),location.href).href;
+let DBR=null,E={},J={},P={},OFF=0,G=null,TB=null,prevP=null,prevPts={},vista='',wasOver=false,cdShown=-1,lastSec=null;
+const now=()=>Date.now()+OFF;
+
+/* clave */
+const entrar=()=>{if($('#clave').value.trim()===CLAVE){try{sessionStorage.setItem('sopaP','1')}catch(e){}$('#gate').remove();SOPA.unlock();S.join()}else $('#gW').textContent='Clave incorrecta.'};
+$('#gIn').onclick=entrar;$('#clave').addEventListener('keydown',e=>{if(e.key==='Enter')entrar()});
+try{if(sessionStorage.getItem('sopaP')==='1')$('#gate').remove()}catch(e){}
+
+/* sonido */
+try{A.muted=localStorage.getItem('sopa-mute-p')==='1';A.music=localStorage.getItem('sopa-music-p')!=='0'}catch(e){}
+const updSnd=()=>{$('#snd').textContent=A.muted?'✕':'♪';$('#mus').style.opacity=A.music?1:.45};
+const updHint=()=>{$('#sndHint').hidden=SOPA.corriendo()&&!A.muted};A.onState=updHint;setInterval(updHint,1000);
+$('#snd').onclick=()=>{A.muted=!A.muted;try{localStorage.setItem('sopa-mute-p',A.muted?'1':'0')}catch(e){}updSnd();updHint()};
+$('#mus').onclick=()=>{A.music=!A.music;try{localStorage.setItem('sopa-music-p',A.music?'1':'0')}catch(e){}updSnd();S.tap()};
+$('#sndHint').onclick=()=>{A.muted=false;try{localStorage.setItem('sopa-mute-p','0')}catch(e){}SOPA.unlock();updSnd();setTimeout(S.join,150)};
+$('#fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}catch(e){}};
+updSnd();
+
+/* aviso en cola */
+const cola=[];let banOn=false;
+function aviso(html){cola.push(html);if(!banOn)sigBan()}
+function sigBan(){const h=cola.shift(),b=$('#ban');if(!h){banOn=false;return}banOn=true;b.innerHTML=h;b.classList.add('on');S.ding();
+  setTimeout(()=>{b.classList.remove('on');setTimeout(sigBan,300)},cola.length>2?1100:2200)}
+
+/* ---------- vistas ---------- */
+const terminado=()=>E.iniciado&&E.inicio&&(now()>=E.inicio+DUR||Object.keys(P).length>=WORDS.length);
+function vistaEspera(){if(vista!=='espera'){vista='espera';
+  $('#main').innerHTML=`<div class="wait"><div class="card" style="text-align:center"><h2 style="font-size:clamp(26px,2.2vw,38px)">Entra a jugar</h2>
+   <p style="color:var(--mute);margin:6px 0 0">Escanea el código o abre el enlace y escribe tu nombre.</p><div class="qr" id="qr"></div><div class="url" id="url"></div></div>
+   <div class="card"><div style="display:flex;align-items:baseline;gap:16px"><div class="big" id="wC">0</div><h2 style="font-size:clamp(24px,2vw,36px)">jugadores en la sala</h2></div>
+   <p style="color:var(--mute);margin:6px 0 0">Cuando estén todos, presiona <b>▶ Iniciar</b>. Tendrán <b>20 minutos</b> para encontrar las <b>20 palabras</b>.</p><div class="chips" id="wL"></div></div></div>`;
+  $('#url').textContent=URLJ;try{const q=qrcode(0,'M');q.addData(URLJ);q.make();$('#qr').innerHTML=q.createSvgTag({cellSize:6,margin:2,scalable:true})}catch(e){$('#qr').hidden=true}}
+  const L=Object.values(J).filter(j=>j&&j.n).sort((a,b)=>(a.c||0)-(b.c||0));$('#wC').textContent=L.length;
+  const w=$('#wL');const html=L.map(j=>`<span>${esc(j.n)}</span>`).join('')||'<p style="color:var(--mute)">Todavía no ha entrado nadie.</p>';if(w.innerHTML!==html)w.innerHTML=html}
+function vistaJuego(){if(vista!=='juego'||!G||G.__r!==E.ronda){vista='juego';G=SOPA.generar(E.ronda);G.__r=E.ronda;
+  $('#main').innerHTML=`<div class="game"><div class="panel"><h3>Palabras <small id="wLeft"></small></h3><ul class="words" id="wl">${WORDS.map((w,i)=>`<li id="w${i}">${w}<small>disponible</small></li>`).join('')}</ul></div>
+   <div class="board" id="board"></div><div class="panel"><h3>Ranking en vivo <small id="rkN"></small></h3><div class="rk" id="rk"></div></div></div>`;
+  TB=SOPA.tablero($('#board'));TB.pintarLetras(G)}
+  const over=terminado();
+  WORDS.forEach((w,i)=>{const li=$('#w'+i),x=P['w'+i];li.className=x?'taken':over?'miss':'';li.style.borderLeftColor=x?SOPA.color(x.id):'transparent';
+    li.querySelector('small').textContent=x?x.n:over?'nadie la encontró':'disponible'});
+  const left=WORDS.length-Object.keys(P).length;$('#wLeft').textContent=`${left} disponible${left===1?'':'s'}`;
+  let h='';WORDS.forEach((w,i)=>{const x=P['w'+i];if(x)h+=TB.linea(G.place[i].cells,SOPA.color(x.id),'opacity=".45"');else if(over)h+=TB.linea(G.place[i].cells,'#E5484D','opacity=".35" stroke-dasharray=".25 .2"')});TB.fd.innerHTML=h;
+  const R=SOPA.ranking(J,P);$('#rkN').textContent=`${R.length} jugadores`;
+  $('#rk').innerHTML=R.map((r,k)=>`<div class="${(prevPts[r.id]!==undefined&&r.p>prevPts[r.id])?'up':''}"><span class="pos">${r.p>0&&k<3?['🥇','🥈','🥉'][k]:k+1}</span><span class="n"><i style="background:${SOPA.color(r.id)}"></i>${esc(r.n)}</span><span class="p">${r.p}</span></div>`).join('')||'<p style="color:var(--mute)">Nadie conectado.</p>';
+  prevPts={};R.forEach(r=>prevPts[r.id]=r.p)}
+function pintarFinal(){const R=SOPA.ranking(J,P),h=[200,270,150],ord=[1,0,2],med=['🥇','🥈','🥉'];
+  $('#rfIn').innerHTML=`<h2>🏆 Ranking final</h2><p style="color:#dbe6ff;font-size:clamp(18px,1.5vw,26px);margin:8px 0 0">Sopa de Correo · ${Object.keys(P).length} de ${WORDS.length} palabras encontradas</p>
+   <div class="pod">${ord.map(k=>R[k]?`<div class="pc"><div class="pn">${esc(R[k].n)}</div><div class="pp">${R[k].p} palabra${R[k].p===1?'':'s'}</div><div class="ped p${k}" style="height:${h[k]}px">${med[k]}<b>${k+1}</b></div></div>`:'<div class="pc"></div>').join('')}</div>
+   ${R.length>3?`<div class="rest">${R.slice(3).map((r,k)=>`<div><span>${k+4}. ${esc(r.n)}</span><span>${r.p} pt${r.p===1?'':'s'}</span></div>`).join('')}</div>`:''}
+   ${!R.length?'<p style="font-size:24px">No hubo jugadores.</p>':''}
+   <p style="color:#b8c8ee;margin-top:3vh">Juego creado por: Jarlin Figueroa M.A.</p>`}
+
+function render(){
+  const st=$('#st');$('#nJ').textContent=`${Object.values(J).filter(j=>j&&j.n).length} jugadores`;
+  if(!E.ronda){st.textContent='Preparando…';return}
+  $('#bIni').hidden=!!E.iniciado;$('#bSig').hidden=!E.iniciado||!!E.final;
+  if(E.final){st.className='pill end';st.textContent='Ranking final';$('#rf').classList.add('on');pintarFinal();return}
+  $('#rf').classList.remove('on');
+  if(!E.iniciado){st.className='pill';st.textContent='Sala de espera';$('#clk').textContent=reloj(DUR);$('#tBar').style.width='100%';vistaEspera();return}
+  const over=terminado();st.className='pill '+(over?'end':'live');st.textContent=over?'Juego terminado':'En juego';$('#bSig').classList.toggle('pulse',over);
+  vistaJuego()}
+
+function tic(){if(!E.iniciado||E.final||!E.inicio)return;const t=now();
+  if(t<E.inicio){const n=Math.ceil((E.inicio-t)/1000);$('#ovCd').classList.add('on');if(n!==cdShown){cdShown=n;const el=$('#cdN');el.textContent=Math.min(n,3);el.style.animation='none';void el.offsetWidth;el.style.animation='';if(n<=3)S.count()}return}
+  if($('#ovCd').classList.contains('on')){$('#ovCd').classList.remove('on');if(t-E.inicio<3000)S.go()}
+  const rest=E.inicio+DUR-Math.min(t,SOPA.tFin(P)||t),over=terminado();$('#clk').textContent=reloj(rest);
+  $('#tBar').style.width=Math.max(0,rest/DUR*100)+'%';$('#clk').classList.toggle('low',rest<=60000&&!over);
+  if(!over){if(!musica.on)musica.start();musica.rapida(rest<=60000);const sec=Math.ceil(rest/1000);if(sec<=10&&sec!==lastSec)S.tick();lastSec=sec}
+  if(over&&!wasOver){wasOver=true;musica.stop();if(t-Math.min(E.inicio+DUR,t)<8000||Object.keys(P).length>=WORDS.length)S.end();
+    aviso(Object.keys(P).length>=WORDS.length?'🎉 ¡Encontraron las <b>20 palabras</b>!':'⏰ ¡Se acabó el <b>tiempo</b>!');render()}
+  if(!over&&wasOver)wasOver=false}
+setInterval(tic,250);
+
+/* ---------- datos ---------- */
+let jRef=null,pRef=null;
+function escuchar(){if(jRef)jRef.off();if(pRef)pRef.off();J={};P={};prevP=null;prevPts={};vista='';wasOver=false;cdShown=-1;G=null;musica.stop();if(!E.ronda)return;
+  jRef=DBR.ref(`${ROOT}/jugadores/${E.ronda}`);let pj=null;
+  jRef.on('value',s=>{J=s.val()||{};const n=Object.keys(J).length;if(pj!==null&&n>pj&&!E.iniciado)S.join();pj=n;render()});
+  pRef=DBR.ref(`${ROOT}/palabras/${E.ronda}`);
+  pRef.on('value',s=>{P=s.val()||{};if(prevP)Object.entries(P).forEach(([k,x])=>{if(!prevP[k]&&x){aviso(`🔔 ${esc(x.n)} encontró <b>${WORDS[+k.slice(1)]}</b>`);setTimeout(()=>{const li=$('#'+k);if(li){li.classList.remove('flash');void li.offsetWidth;li.classList.add('flash')}},50)}});prevP=P;render()})}
+SOPA.firebaseListo().then(db=>{DBR=db;
+  DBR.ref('.info/serverTimeOffset').on('value',s=>{OFF=s.val()||0});
+  DBR.ref(`${ROOT}/estado`).on('value',s=>{const e=s.val();if(!e||!e.ronda){DBR.ref(`${ROOT}/estado`).set({ronda:'r'+Date.now(),iniciado:false,final:false});return}
+    const r=E.ronda,f=E.final;E=e;if(r!==E.ronda)escuchar();
+    if(E.final&&!f&&r===E.ronda){musica.stop();S.fan();SOPA.confeti(260);setTimeout(()=>SOPA.confeti(200),1400)}
+    render()})})
+ .catch(()=>{$('#st').textContent='Sin conexión: recarga la página'});
+
+$('#bIni').onclick=()=>{if(!DBR||E.iniciado)return;SOPA.unlock();DBR.ref(`${ROOT}/estado`).update({iniciado:true,final:false,inicio:now()+CUENTA})};
+$('#bSig').onclick=()=>{if(!DBR)return;if(!terminado()&&!confirm('El tiempo todavía no termina. ¿Terminar el juego y mostrar el ranking final?'))return;DBR.ref(`${ROOT}/estado`).update({final:true})};
+$('#bRes').onclick=()=>$('#dlg').showModal();$('#dNo').onclick=()=>$('#dlg').close();
+$('#dSi').onclick=()=>{$('#dlg').close();$('#rf').classList.remove('on');if(DBR)DBR.ref(`${ROOT}/estado`).set({ronda:'r'+Date.now(),iniciado:false,final:false})};
+render();
+}
+</script>
+</body>
+</html>
