@@ -56,12 +56,13 @@ button{font:inherit;cursor:pointer}
 #sndHint{background:var(--y);color:#3b2a00;border-color:var(--y);width:auto;padding:0 10px;font:800 14px Nunito}
 .tbar{height:5px;background:#ffffff22}.tbar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--g),var(--y));transition:width .5s linear}
 .game{display:grid;gap:14px;padding:12px;max-width:1500px;margin:0 auto;grid-template-columns:minmax(0,1fr)}
+@media(min-width:620px) and (orientation:portrait){.words{grid-template-columns:repeat(3,minmax(0,1fr))}.side{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);align-items:start}}
 .bwrap{display:flex;justify-content:center}
-.board{--bs:min(calc(100vw - 24px),600px);position:relative;width:var(--bs);aspect-ratio:1;background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:0 10px 0 #12246b22,0 20px 40px #12246b22;touch-action:none;user-select:none;-webkit-user-select:none;container-type:inline-size;overflow:hidden}
+.board{--bs:min(calc(100vw - 24px),calc(100vh - 150px),760px);position:relative;width:var(--bs);aspect-ratio:1;background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:0 10px 0 #12246b22,0 20px 40px #12246b22;touch-action:none;user-select:none;-webkit-user-select:none;container-type:inline-size;overflow:hidden}
 .board .ln{position:absolute;inset:0;width:100%;height:100%}
 .board .ln line{stroke-width:.74;stroke-linecap:round}
 .board .cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(15,1fr);grid-template-rows:repeat(15,1fr)}
-.board .cells span{display:grid;place-items:center;font:600 calc(100cqw / 15 * .56) Fredoka;color:var(--ink)}
+.board .cells span{display:grid;place-items:center;font:600 calc(var(--bs) / 15 * .56) Fredoka;color:var(--ink)}
 .board.off{opacity:.92}
 .board.shake{animation:shk .35s}
 @keyframes shk{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
@@ -87,12 +88,20 @@ button{font:inherit;cursor:pointer}
 .rk .p{font:700 18px Fredoka}
 .rk .gap{background:none;padding:0;justify-content:center;display:block;text-align:center;color:var(--mute)}
 .help{font-size:14px;color:var(--mute);text-align:center;margin:8px 0 0}
-@media(min-width:820px){
+@media(min-width:820px) and (orientation:landscape){
  .game{grid-template-columns:auto minmax(280px,1fr);align-items:start;padding:16px}
- .board{--bs:min(calc(100dvh - 120px),62vw)}
+ .board{--bs:min(calc(100vh - 120px),62vw)}
+ @supports(height:100dvh){.board{--bs:min(calc(100dvh - 120px),62vw)}}
  .side{max-height:calc(100dvh - 110px);overflow:auto}
 }
-@media(min-width:820px) and (max-height:520px){.board{--bs:min(calc(100dvh - 100px),58vw)}}
+/* celular acostado: barra compacta y tablero lo más alto posible */
+@media(min-width:620px) and (max-height:540px) and (orientation:landscape){
+ .top{padding:4px 10px;gap:6px}.stat{padding:2px 8px}.stat b{font-size:18px}.stat small{font-size:9px}.top .nm{font-size:15px}
+ .game{grid-template-columns:auto minmax(240px,1fr);padding:6px;gap:10px;align-items:start}
+ .board{--bs:min(calc(100vh - 76px),56vw);border-width:2px}
+ .side{max-height:calc(100vh - 60px);overflow:auto}.help{display:none}
+ .words li{padding:3px 8px;font-size:14px}.panel{padding:10px}
+}
 /* toasts */
 #toasts{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:60;display:grid;gap:6px;width:min(94vw,460px);pointer-events:none}
 .toast{background:#12246Bee;color:#fff;border-radius:14px;padding:10px 16px;font-weight:800;text-align:center;animation:tin .3s;box-shadow:0 10px 30px #0004}
@@ -119,6 +128,8 @@ button{font:inherit;cursor:pointer}
 .rest{max-width:620px;margin:0 auto;display:grid;gap:6px;text-align:left}
 .rest div{display:flex;justify-content:space-between;gap:10px;background:#ffffff14;border-radius:12px;padding:8px 14px;font-weight:800}
 .rest div.me{background:var(--y);color:#3b2a00}
+@media(max-width:619px) and (orientation:portrait){.board .cells span{font-size:calc(var(--bs) / 15 * .62)}}
+@media(max-width:420px){.top .nm{display:none}.top{justify-content:space-between}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
@@ -132,7 +143,7 @@ button{font:inherit;cursor:pointer}
   <div class="card">
    <div class="logo"><div class="env"></div><div class="lt"><span>S</span><span>O</span><span>P</span><span>A</span></div></div>
    <h1>Sopa de <em>Correo</em></h1>
-   <p class="sub">Encuentra las 20 palabras antes que los demás. ¡Cada palabra vale 1 punto!</p>
+   <p class="sub">Encuentra las 25 palabras antes que los demás. ¡Cada palabra vale 1 punto!</p>
    <label for="nom">Tu nombre y apellido</label>
    <input id="nom" maxlength="30" autocomplete="off" placeholder="Ej.: Ana Pérez">
    <button class="btn" id="bJoin">Entrar al juego ➤</button>
@@ -179,7 +190,7 @@ button{font:inherit;cursor:pointer}
    <p class="help">Arrastra de la primera a la última letra. Las palabras pueden ir al derecho, al revés, en vertical o en diagonal.</p>
   </div>
   <div class="side">
-   <div class="panel"><h3>Palabras <small id="wLeft">20 disponibles</small></h3><ul class="words" id="wl"></ul></div>
+   <div class="panel"><h3>Palabras <small id="wLeft">25 disponibles</small></h3><ul class="words" id="wl"></ul></div>
    <div class="panel"><h3>Ranking <small id="rkN"></small></h3><div class="rk" id="rk"></div></div>
   </div>
  </div>
@@ -324,7 +335,7 @@ function tic(){if(!E.iniciado||E.final||!E.inicio||!me||me.ronda!==E.ronda)retur
   if(over&&!wasOver){wasOver=true;musica.stop();sel=null;anchor=null;dibujarSel();
     if(t-Math.min(E.inicio+DUR,t)<8000||Object.keys(P).length>=WORDS.length)S.end();
     const {R,i,yo}=pintarRanking();
-    $('#eT').textContent=Object.keys(P).length>=WORDS.length?'🎉 ¡Encontraron las 20 palabras!':'⏰ ¡Se acabó el tiempo!';
+    $('#eT').textContent=Object.keys(P).length>=WORDS.length?`🎉 ¡Encontraron las ${WORDS.length} palabras!`:'⏰ ¡Se acabó el tiempo!';
     $('#eP').textContent=yo?yo.p:0;$('#eS').textContent=yo?`palabra${yo.p===1?'':'s'} · puesto ${i+1} de ${R.length}`:'';
     if(!endClosed)$('#ovEnd').classList.add('on');pintarLista();dibujarEncontradas();bEl.classList.add('off')}
   if(!over&&wasOver){wasOver=false;bEl.classList.remove('off')}}

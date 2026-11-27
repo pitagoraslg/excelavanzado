@@ -2,8 +2,7 @@
    Juego creado por: Jarlin Figueroa M.A. */
 'use strict';
 const SOPA = (() => {
-  const WORDS = ['ADJUNTO','ARCHIVO','ARROBA','ASUNTO','CARPETA','CODIGO','COMPARTIR','CONTRASEÑA','CORREO','DOMINIO',
-    'DRIVE','ENLACE','FIRMA','GMAIL','NUBE','OUTLOOK','PAPELERA','PHISHING','USUARIO','VERIFICACION'];
+  const WORDS = ['ADJUNTO', 'ARCHIVO', 'ARROBA', 'ASUNTO', 'BANDEJA', 'CARPETA', 'CODIGO', 'COMPARTIR', 'CONTRASEÑA', 'COPIA', 'CORREO', 'DOMINIO', 'DRIVE', 'ENLACE', 'FIRMA', 'GMAIL', 'NUBE', 'OUTLOOK', 'PAPELERA', 'PHISHING', 'SERVIDOR', 'SINCRONIZAR', 'USUARIO', 'VERIFICACION', 'YAHOO'];
   const N = 15, DUR = 20 * 60 * 1000, CUENTA = 4000;
   const DIRS = [[0,1],[0,-1],[1,0],[-1,0],[1,1],[-1,-1],[1,-1],[-1,1]];
 
@@ -21,7 +20,7 @@ const SOPA = (() => {
       if (rr < 0 || rr >= N || cc < 0 || cc >= N) return false; const x = G[rr][cc]; if (soloVacias ? x : (x && x !== w[k])) return false; } return true; };
     const poner = (w, r, c, d) => { const cells = []; for (let k = 0; k < w.length; k++) { const rr = r + d[0] * k, cc = c + d[1] * k; G[rr][cc] = w[k]; cells.push([rr, cc]); } return cells; };
     // direcciones repartidas: cada una de las 8 aparece 2 o 3 veces (muchas diagonales y al revés)
-    const dl = mezclar([...Array(24)].map((_, i) => i % 8));
+    const dl = mezclar([...Array(Math.ceil(WORDS.length / 8) * 8)].map((_, i) => i % 8));
     const orden = WORDS.map((_, i) => i).sort((a, b) => WORDS[b].length - WORDS[a].length);
     const place = [];
     for (let o = 0; o < orden.length; o++) {

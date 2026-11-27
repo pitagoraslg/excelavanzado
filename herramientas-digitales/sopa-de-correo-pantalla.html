@@ -46,16 +46,17 @@ main{height:calc(100dvh - 78px);padding:16px}
 .big{font:700 clamp(70px,8vw,130px) Fredoka;color:var(--b);line-height:1}
 /* juego */
 .game{height:100%;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:16px;align-items:start}
-.board{--bs:min(calc(100dvh - 112px),46vw);position:relative;width:var(--bs);aspect-ratio:1;background:#fff;border:4px solid var(--ink);border-radius:18px;box-shadow:0 12px 0 #12246b22;container-type:inline-size;overflow:hidden}
+.board{--bs:min(calc(100vh - 112px),46vw);position:relative;width:var(--bs);aspect-ratio:1;background:#fff;border:4px solid var(--ink);border-radius:18px;box-shadow:0 12px 0 #12246b22;container-type:inline-size;overflow:hidden}
 .board .ln{position:absolute;inset:0;width:100%;height:100%}
 .board .ln line{stroke-width:.74;stroke-linecap:round}
 .board .cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(15,1fr);grid-template-rows:repeat(15,1fr)}
-.board .cells span{display:grid;place-items:center;font:600 calc(100cqw / 15 * .56) Fredoka;color:var(--ink)}
+.board .cells span{display:grid;place-items:center;font:600 calc(var(--bs) / 15 * .56) Fredoka;color:var(--ink)}
+@supports(height:100dvh){.board{--bs:min(calc(100dvh - 112px),46vw)}}
 .panel{background:#fff;border:2px solid var(--line);border-radius:20px;padding:14px;max-height:calc(100dvh - 112px);overflow:auto}
 .panel h3{font-size:clamp(20px,1.6vw,28px);margin-bottom:10px;display:flex;justify-content:space-between;align-items:baseline}
 .panel h3 small{font:800 clamp(13px,.9vw,16px) Nunito;color:var(--mute)}
 .words{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;list-style:none;margin:0;padding:0}
-.words li{border-radius:10px;padding:4px 10px;background:var(--p2);font:700 clamp(15px,1.15vw,21px) Fredoka;letter-spacing:.04em;border-left:6px solid transparent;transition:all .3s}
+.words li{border-radius:10px;padding:3px 10px;background:var(--p2);font:700 clamp(15px,1.15vw,21px) Fredoka;letter-spacing:.04em;border-left:6px solid transparent;transition:all .3s}
 .words li small{display:block;font:800 clamp(11px,.75vw,14px) Nunito;letter-spacing:0;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .words li.taken{background:#f4f6fa;color:#9aa4b8;text-decoration:line-through}
 .words li.taken small{color:var(--ink);text-decoration:none}
@@ -95,6 +96,7 @@ main{height:calc(100dvh - 78px);padding:16px}
 #gate input{width:100%;height:56px;border:2px solid var(--line);border-radius:14px;padding:0 16px;font:700 24px Nunito;text-align:center;letter-spacing:.3em;margin:14px 0 10px}
 dialog{border:0;border-radius:20px;padding:24px;max-width:460px;box-shadow:0 20px 60px #0006;color:var(--ink)}
 dialog::backdrop{background:#12246B99}
+@media(max-height:820px) and (min-width:1001px){.words li{font-size:clamp(14px,1vw,18px)}.words li small{font-size:11px}.panel{padding:10px}.panel h3{margin-bottom:6px}}
 @media(max-width:1000px){body{overflow:auto}main{height:auto}.game,.wait{grid-template-columns:minmax(0,1fr);justify-items:center}.board{--bs:min(94vw,600px)}.panel{max-height:none;width:100%}header{flex-wrap:wrap;height:auto;padding:10px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
@@ -169,7 +171,7 @@ function vistaEspera(){if(vista!=='espera'){vista='espera';
   $('#main').innerHTML=`<div class="wait"><div class="card" style="text-align:center"><h2 style="font-size:clamp(26px,2.2vw,38px)">Entra a jugar</h2>
    <p style="color:var(--mute);margin:6px 0 0">Escanea el código o abre el enlace y escribe tu nombre.</p><div class="qr" id="qr"></div><div class="url" id="url"></div></div>
    <div class="card"><div style="display:flex;align-items:baseline;gap:16px"><div class="big" id="wC">0</div><h2 style="font-size:clamp(24px,2vw,36px)">jugadores en la sala</h2></div>
-   <p style="color:var(--mute);margin:6px 0 0">Cuando estén todos, presiona <b>▶ Iniciar</b>. Tendrán <b>20 minutos</b> para encontrar las <b>20 palabras</b>.</p><div class="chips" id="wL"></div></div></div>`;
+   <p style="color:var(--mute);margin:6px 0 0">Cuando estén todos, presiona <b>▶ Iniciar</b>. Tendrán <b>20 minutos</b> para encontrar las <b>${WORDS.length} palabras</b>.</p><div class="chips" id="wL"></div></div></div>`;
   $('#url').textContent=URLJ;try{const q=qrcode(0,'M');q.addData(URLJ);q.make();$('#qr').innerHTML=q.createSvgTag({cellSize:6,margin:2,scalable:true})}catch(e){$('#qr').hidden=true}}
   const L=Object.values(J).filter(j=>j&&j.n).sort((a,b)=>(a.c||0)-(b.c||0));$('#wC').textContent=L.length;
   const w=$('#wL');const html=L.map(j=>`<span>${esc(j.n)}</span>`).join('')||'<p style="color:var(--mute)">Todavía no ha entrado nadie.</p>';if(w.innerHTML!==html)w.innerHTML=html}
@@ -209,7 +211,7 @@ function tic(){if(!E.iniciado||E.final||!E.inicio)return;const t=now();
   $('#tBar').style.width=Math.max(0,rest/DUR*100)+'%';$('#clk').classList.toggle('low',rest<=60000&&!over);
   if(!over){if(!musica.on)musica.start();musica.rapida(rest<=60000);const sec=Math.ceil(rest/1000);if(sec<=10&&sec!==lastSec)S.tick();lastSec=sec}
   if(over&&!wasOver){wasOver=true;musica.stop();if(t-Math.min(E.inicio+DUR,t)<8000||Object.keys(P).length>=WORDS.length)S.end();
-    aviso(Object.keys(P).length>=WORDS.length?'🎉 ¡Encontraron las <b>20 palabras</b>!':'⏰ ¡Se acabó el <b>tiempo</b>!');render()}
+    aviso(Object.keys(P).length>=WORDS.length?`🎉 ¡Encontraron las <b>${WORDS.length} palabras</b>!`:'⏰ ¡Se acabó el <b>tiempo</b>!');render()}
   if(!over&&wasOver)wasOver=false}
 setInterval(tic,250);
 
