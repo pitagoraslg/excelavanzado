@@ -717,7 +717,7 @@ Saludos cordiales,</div>
  <header class="hd"><h2>Reto final</h2><small>8 preguntas · demuestra lo que aprendiste</small></header>
  <div class="body two w">
   <div class="rv">
-   <div class="row" style="justify-content:space-between;margin:0 0 10px"><b id="qzN"></b><span class="score">Puntos: <span id="qzS">0</span></span></div>
+   <div class="row" style="justify-content:space-between;margin:0 0 10px"><b id="qzN"></b><span class="row" style="margin:0;gap:10px"><span class="score">Puntos: <span id="qzS">0</span></span><button class="btn ghost" id="qzRs" title="Reiniciar el reto" style="padding:6px 12px">↻ Reiniciar</button></span></div>
    <div class="prog-q" id="qzP"></div>
    <div class="sit" id="qzQ"></div>
    <div class="ans" id="qzA"></div>
@@ -1140,14 +1140,15 @@ const QZ=[['¿Qué símbolo separa el usuario del dominio en un correo?',['#','@
  ['«Tu cuenta será eliminada, envía tu contraseña». ¿Qué es?',['Un aviso oficial de Google','Un intento de phishing','Una actualización normal'],1],
  ['Si compartes un archivo como «Lector», la otra persona puede…',['editar y borrar el archivo','solo ver el archivo','cambiar quién tiene acceso'],1],
  ['¿Qué app de Google sirve para crear encuestas?',['Google Formularios','Google Presentaciones','Google Hojas de cálculo'],0]];
-let qi=0,qs=0,ql=false;
+let qi=0,qs=0,ql=false,qzT=0;
 const qzBar=()=>$('#qzP').innerHTML=QZ.map((q,i)=>`<i class="${i<qi?(q.r?'ok':'no'):''}"></i>`).join('');
 const qzDraw=()=>{ql=false;$('#qzN').textContent=`Pregunta ${qi+1} de ${QZ.length}`;const q=QZ[qi];$('#qzQ').className='sit';$('#qzQ').textContent=q[0];$('#qzF').textContent='';$('#qzR').style.display='none';qzBar();
  $('#qzA').style.display='';$('#qzA').innerHTML=q[1].map((o,i)=>`<button data-i="${i}">${['A','B','C'][i]}. ${esc(o)}</button>`).join('');
  $$('#qzA button').forEach(b=>b.onclick=()=>{if(ql)return;ql=true;const ok=+b.dataset.i===q[2];q.r=ok;b.classList.add(ok?'ok':'no');$$('#qzA button')[q[2]].classList.add('ok');$('#qzQ').classList.add(ok?'ok':'no');
-  if(ok){qs++;S.ok()}else S.no();$('#qzS').textContent=qs;$('#qzF').textContent=ok?'✔ ¡Correcto!':'✘ La respuesta correcta está en verde.';
-  setTimeout(()=>{qi++;if(qi<QZ.length)qzDraw();else{qzBar();$('#qzQ').className='sit ok';$('#qzQ').textContent=`Resultado: ${qs} de ${QZ.length}`;$('#qzA').style.display='none';$('#qzF').textContent=qs>=6?'¡Excelente! Dominas el correo y la nube.':'¡Bien! Repasa las láminas y vuelve a intentarlo.';$('#qzR').style.display='';if(qs>=6){S.party();confetti()}}requestAnimationFrame(fit)},1700)})};
-$('#qzR').onclick=()=>{qi=0;qs=0;QZ.forEach(q=>delete q.r);$('#qzS').textContent=0;qzDraw()};qzDraw();
+  if(ok)qs++;try{ok?S.ok():S.no()}catch(e){}$('#qzS').textContent=qs;$('#qzF').textContent=ok?'✔ ¡Correcto!':'✘ La respuesta correcta está en verde.';
+  const tk=qzT;setTimeout(()=>{if(tk!==qzT)return;qi++;if(qi<QZ.length)qzDraw();else{qzBar();$('#qzQ').className='sit ok';$('#qzQ').textContent=`Resultado: ${qs} de ${QZ.length}`;$('#qzA').style.display='none';$('#qzF').textContent=qs>=6?'¡Excelente! Dominas el correo y la nube.':'¡Bien! Repasa las láminas y vuelve a intentarlo.';$('#qzR').style.display='';if(qs>=6){try{S.party();confetti()}catch(e){}}}requestAnimationFrame(fit)},1700)})};
+const qzReset=()=>{qzT++;qi=0;qs=0;QZ.forEach(q=>delete q.r);$('#qzS').textContent=0;qzDraw();requestAnimationFrame(fit)};
+$('#qzR').onclick=qzReset;$('#qzRs').onclick=()=>{qzReset();toast('↻ Reto reiniciado')};qzDraw();
 let finT=[];enter['Cierre']=()=>{finT.forEach(clearTimeout);finT=[[()=>S.whoosh(),500],[()=>S.drop(),1450],[()=>S.lock(),2150],[()=>{S.party();confetti()},2600]].map(([f,t])=>setTimeout(()=>{if(slides[cur]&&slides[cur].dataset.t==='Cierre')f()},t))};
 $('#party').onclick=()=>{S.party();confetti();toast('☁️ ¡Bienvenidos a la nube!')};
 $('#crB').onclick=()=>{$('#crL').hidden=!$('#crL').hidden;requestAnimationFrame(fit)};
