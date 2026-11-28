@@ -518,7 +518,7 @@ nav .right{display:flex;gap:8px;align-items:center}
 <section class="slide" data-t="Software">
  <div class="mcover"><div class="bg" style="background-image:url(img/codigo.webp)"></div>
   <div class="n">02</div><h2>Software: las instrucciones que no se tocan</h2>
-  <p>Si el hardware es el cuerpo, el software es lo que le dice qué hacer. Veremos sus tipos, quién manda en la computadora y <b>cómo una orden escrita llega hasta la pantalla</b>.</p>
+  <p>Si el hardware es el cuerpo, el software es lo que le dice qué hacer. Veremos sus tipos, quién manda en la computadora, <b>cómo una orden escrita llega hasta la pantalla</b> y los lenguajes que usaremos: <b>HTML, CSS y JavaScript</b>.</p>
   <div class="credit" data-cr="codigo"></div></div>
 </section>
 
@@ -592,7 +592,7 @@ nav .right{display:flex;gap:8px;align-items:center}
  <header class="hd"><h2>De tu orden a la pantalla</h2><small>Cómo trabaja un lenguaje de programación con el sistema operativo</small></header>
  <div class="body">
   <div class="row rv" style="margin:0 0 12px;justify-content:space-between">
-   <div class="chips" id="lgTabs" style="margin:0"><button data-l="py" class="on">🎙️ Python · traduce en vivo</button><button data-l="c">📕 C · traduce todo antes</button><button data-l="js">🌐 JavaScript · en el navegador</button></div>
+   <div class="chips" id="lgTabs" style="margin:0"><button data-l="js" class="on">🌐 JavaScript · el que más usaremos</button><button data-l="py">🐍 Python · lo básico</button><button data-l="c">📕 C · para comparar</button></div>
    <div class="row" style="margin:0"><button class="btn" id="lgB">Siguiente paso ▶</button><button class="btn ghost" id="lgAll">Recorrer todo</button></div>
   </div>
   <div class="lang rv" style="--i:1" id="lang">
@@ -624,12 +624,33 @@ nav .right{display:flex;gap:8px;align-items:center}
     <div class="row"><button class="btn" id="lraceB">▶ ¡Arrancar!</button></div>
     <p class="note" style="margin-bottom:0">Tiempos aproximados en una laptop común.</p>
    </div>
-   <p class="why" style="margin-top:12px"><b>¿Entonces Python es malo?</b> ¡No! Es más lento, pero mucho más fácil de aprender. Por eso es el favorito para empezar y para la inteligencia artificial.</p>
+   <p class="why" style="margin-top:12px"><b>¿Y en este curso?</b> Usaremos sobre todo <b>JavaScript</b>: funciona en cualquier navegador, sin instalar nada, y va rápido. De <b>Python</b>, más lento pero muy fácil, veremos lo básico.</p>
   </div>
  </div>
 </section>
 
-<!-- 19 CARPETAS Y RUTAS -->
+<!-- 19 LENGUAJES DEL CURSO -->
+<section class="slide" data-t="Los lenguajes del curso">
+ <header class="hd"><h2>Los lenguajes que usaremos</h2><small>Arma una página web capa por capa</small></header>
+ <div class="body two w">
+  <div class="rv">
+   <div class="kit">
+    <div style="border-left:5px solid #ff8a5b"><span>🧱</span><p style="margin:0"><b>HTML · el esqueleto</b><small>Pone las piezas: títulos, textos, fotos y botones.</small></p></div>
+    <div style="border-left:5px solid var(--c)"><span>🎨</span><p style="margin:0"><b>CSS · la ropa</b><small>Le da estilo: colores, letras, tamaños y posiciones.</small></p></div>
+    <div style="border-left:5px solid var(--a)"><span>⚡</span><p style="margin:0"><b>JavaScript · el movimiento</b><small>Hace que las cosas respondan cuando tocas. Es nuestro <b>lenguaje de programación principal</b>.</small></p></div>
+    <div style="border-left:5px solid var(--v)"><span>🐍</span><p style="margin:0"><b>Python · lo básico</b><small>Para aprender cómo piensa un programa: decidir y repetir.</small></p></div>
+   </div>
+   <p class="why" style="margin-top:12px">Con <b>HTML, CSS y JavaScript</b> se hace casi cualquier página web. Con la ayuda de la IA (<b>VibeCoding</b>) crearemos las nuestras.</p>
+  </div>
+  <div class="rv" style="--i:1">
+   <div class="chips" id="wbT"><button data-l="html" class="on">🧱 Solo HTML</button><button data-l="css">🎨 + CSS</button><button data-l="js">⚡ + JavaScript</button></div>
+   <div id="wbP" style="background:#f4f7fb;color:#13203a;border-radius:14px;min-height:300px;padding:22px;display:grid;place-items:center;border:1px solid var(--line)"></div>
+   <div class="panel" id="wbD" style="margin-top:12px;min-height:80px"></div>
+  </div>
+ </div>
+</section>
+
+<!-- 20 CARPETAS Y RUTAS -->
 <section class="slide" data-t="Carpetas y rutas">
  <header class="hd"><h2>Carpetas y rutas: la dirección de cada archivo</h2><small>Párate en una carpeta y elige un archivo</small></header>
  <div class="body two">
@@ -678,10 +699,11 @@ nav .right{display:flex;gap:8px;align-items:center}
   <div class="rv" style="--i:1">
    <b style="display:block;margin-bottom:8px">Lo que usaremos en el curso</b>
    <div class="kit">
-    <div><span>🧑‍💻</span><p style="margin:0"><b>Visual Studio Code</b><small>El «cuaderno» donde se escriben los programas</small></p></div>
-    <div><span>🐍</span><p style="margin:0"><b>Python</b><small>El traductor de nuestro primer lenguaje</small></p></div>
-    <div><span>🌐</span><p style="margin:0"><b>Navegador (Chrome o Edge)</b><small>Para ver las páginas web que crearemos</small></p></div>
-    <div><span>🤖</span><p style="margin:0"><b>Asistente de IA</b><small>Nuestro ayudante: vive en la nube y necesita internet</small></p></div>
+    <div><span>🧱</span><p style="margin:0"><b>HTML, CSS y JavaScript <span style="color:var(--g)">· lo principal</span></b><small>Los lenguajes de las páginas web. Con ellos crearemos nuestros proyectos.</small></p></div>
+    <div><span>🐍</span><p style="margin:0"><b>Python <span style="color:var(--mute)">· lo básico</span></b><small>Para entender cómo piensa un programa.</small></p></div>
+    <div><span>🧑‍💻</span><p style="margin:0"><b>Visual Studio Code</b><small>El «cuaderno» donde se escribe el código</small></p></div>
+    <div><span>🌐</span><p style="margin:0"><b>Navegador (Chrome o Edge)</b><small>Donde se ven y se prueban nuestras páginas web</small></p></div>
+    <div><span>🤖</span><p style="margin:0"><b>Asistente de IA</b><small>Nuestro ayudante para crear (VibeCoding): vive en la nube y necesita internet</small></p></div>
    </div>
    <p class="note">Recomendado: 6 núcleos o más, 16 GB de RAM y disco SSD. Con 8 GB y SSD también se puede empezar.</p>
   </div>
@@ -708,7 +730,7 @@ nav .right{display:flex;gap:8px;align-items:center}
    <div class="kit rv">
     <div><span>🔩</span><p style="margin:0"><b>El hardware hace el trabajo</b><small>Procesador, memoria, disco y tarjeta de video.</small></p></div>
     <div><span>💾</span><p style="margin:0"><b>El software da las órdenes</b><small>El sistema operativo manda y las apps piden permiso.</small></p></div>
-    <div><span>🗣️</span><p style="margin:0"><b>Un lenguaje traduce tus ideas</b><small>De palabras a unos y ceros que la máquina entiende.</small></p></div>
+    <div><span>🗣️</span><p style="margin:0"><b>Un lenguaje traduce tus ideas</b><small>Usaremos HTML, CSS y JavaScript, y lo básico de Python.</small></p></div>
     <div><span>🚀</span><p style="margin:0"><b>Tú serás quien escriba las órdenes</b><small>Y ahora sabes qué pasa por dentro.</small></p></div>
    </div>
    <div class="row rv" style="--i:1"><button class="btn" id="party">🎉 ¡Celebrar!</button><button class="btn ghost" id="crB">Créditos de fotos</button></div>
@@ -1030,7 +1052,7 @@ const LG={py:{steps:[
  [3,'⚡','El procesador trabaja','El procesador ejecuta los unos y ceros.','⚡ ⚡ ⚡'],
  [2,'🙋','Pide dibujar','El navegador le pide al sistema operativo y a la tarjeta de video que dibujen el resultado.','Chrome: ¿puedo dibujar?\nSistema: ✔ adelante'],
  [3,'🖥️','¡Aparece «Hola»!','Aparece dentro del navegador.','Hola']]}};
-let lgL='py',lgI=-1,lgRun=0;
+let lgL='js',lgI=-1,lgRun=0;
 const lgDraw=()=>{const L=LG[lgL];$$('#lang .nd').forEach(n=>n.remove());
  L.steps.forEach((s,i)=>$$('#lang .zone')[s[0]].insertAdjacentHTML('beforeend',`<div class="nd" data-i="${i}"><i>${i+1}</i><span><b>${s[1]} ${s[2]}</b></span></div>`));
  $('#lgC').textContent=L.steps[0][4];$('#pk').style.opacity=0;lgI=-1;
@@ -1062,7 +1084,20 @@ $('#lraceB').onclick=()=>{S.power();const rows=$$('#lrace .race');rows.forEach(r
  requestAnimationFrame(()=>requestAnimationFrame(()=>rows.forEach((r,k)=>{const ms=Math.max(300,LR[k][2]*600);const i=r.querySelector('i');i.style.transition=`width ${ms}ms linear`;i.style.width='100%';
   setTimeout(()=>{r.querySelector('b:last-child').textContent='≈ '+String(LR[k][2]).replace('.',',')+' s';tone(1200-k*200,.15,'triangle',.1);if(k===0)S.ok();if(k===2)S.edge()},ms)})))};
 
-/* ---------- 19 carpetas y rutas ---------- */
+/* ---------- 19 lenguajes del curso ---------- */
+let wbL='html',wbLikes=0;
+const WBD={html:'🧱 <b>Solo HTML:</b> ya están todas las piezas (nombre, texto y botón), pero se ve simple y el botón <b>no hace nada</b>.',
+ css:'🎨 <b>HTML + CSS:</b> ¡ahora tiene estilo! Colores, letras y forma de tarjeta. Pero el botón sigue sin hacer nada.',
+ js:'⚡ <b>HTML + CSS + JavaScript:</b> ¡la página cobra vida! Toca el botón ❤️ y mira cómo responde.'};
+const wbDraw=()=>{const p=$('#wbP'),css=wbL!=='html',js=wbL==='js';
+ p.innerHTML=css?`<div style="text-align:center;background:linear-gradient(135deg,#dbeafe,#fce7f3);border-radius:18px;padding:26px 34px;box-shadow:0 10px 30px #0002;font-family:Inter,Arial"><div style="font-size:54px;line-height:1">🎧</div><h2 style="font:800 32px Sora,Arial;color:#7c3aed;margin:8px 0 4px">Ana Pérez</h2><p style="margin:0 0 14px;color:#334155">3ro B · Me gusta dibujar y la música</p><button id="wbBtn" style="font:700 19px Inter;padding:12px 26px;border:0;border-radius:999px;background:#ec4899;color:#fff;cursor:pointer">❤️ Me gusta (${wbLikes})</button></div>`
+  :`<div style="font-family:'Times New Roman',serif;color:#000;align-self:start;justify-self:start"><p style="margin:0">🎧</p><h1 style="margin:0 0 8px;font:700 2em 'Times New Roman',serif">Ana Pérez</h1><p style="margin:0 0 8px">3ro B · Me gusta dibujar y la música</p><button id="wbBtn">Me gusta (${wbLikes})</button></div>`;
+ $('#wbD').innerHTML=WBD[wbL];
+ $('#wbBtn').onclick=()=>{if(js){wbLikes++;$('#wbBtn').textContent=`❤️ Me gusta (${wbLikes})`;S.pop(wbLikes)}else{S.edge();$('#wbD').innerHTML=WBD[wbL]+'<br>👉 Sin <b>JavaScript</b>, tocar el botón no hace nada.'}}};
+$$('#wbT button').forEach(b=>b.onclick=()=>{wbL=b.dataset.l;$$('#wbT button').forEach(x=>x.classList.toggle('on',x===b));S.whoosh();wbDraw();if(wbL==='js')S.ok();requestAnimationFrame(fit)});
+enter['Los lenguajes del curso']=()=>{wbL='html';wbLikes=0;$$('#wbT button').forEach((x,i)=>x.classList.toggle('on',i===0));wbDraw()};wbDraw();
+
+/* ---------- 20 carpetas y rutas ---------- */
 const FT=[['C:',null,0],['Users',null,1],['Ana',null,2],['Documentos',null,3],['tarea.docx','Documento de Word: lo abre Word.',4],['curso',null,3],['juego.py','Un programa en Python.',4],['notas.txt','Texto simple: casi cualquier programa puede leerlo.',4],['web',null,4],['index.html','Una página web: la abre el navegador.',5],['foto.png','Una imagen.',5]];
 const fPath=i=>{const p=[];let lv=FT[i][2];p.unshift(FT[i][0]);for(let k=i-1;k>=0&&lv>0;k--){if(FT[k][2]<lv&&FT[k][1]===null){p.unshift(FT[k][0]);lv=FT[k][2]}}return p};
 let fsCwd=5,fsSel=7;
@@ -1126,7 +1161,7 @@ const QZ=[['¿Qué pieza es el «cerebro» que hace las cuentas?',['La memoria R
  ['Windows, Android e iOS son…',['Sistemas operativos','Lenguajes de programación','Piezas de hardware'],0],
  ['Un juego se congela. ¿Quién puede cerrarlo a la fuerza?',['El monitor','El sistema operativo','La bocina'],1],
  ['Una app quiere usar la cámara. ¿A quién le pide permiso?',['Al kernel del sistema','A la memoria RAM','A otra app'],0],
- ['¿Qué hace un lenguaje de programación como Python?',['Traduce tus órdenes para la máquina','Enfría el procesador','Conecta la computadora a la luz'],0],
+ ['¿Qué lenguaje hace que una página web responda cuando tocas un botón?',['CSS','JavaScript','HTML'],1],
  ['Un programa dice «No encuentro el archivo», pero existe. ¿Qué revisas?',['La velocidad del procesador','La carpeta y la ruta','El volumen de la bocina'],1],
  ['Un bit puede valer…',['0 o 1','De 0 a 9','De 0 a 100'],0]];
 let qi=0,qs=0,ql=false;
