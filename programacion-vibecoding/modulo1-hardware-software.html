@@ -319,7 +319,7 @@ nav .right{display:flex;gap:8px;align-items:center}
   <div>
    <div class="k1">&gt; modulo_1.iniciar()</div>
    <h1>Hardware y Software <em>pensando como programador</em></h1>
-   <p>Antes de escribir la primera línea de código, abrimos la computadora y entendemos qué hace con cada instrucción que le damos.</p>
+   <p>Antes de darle órdenes a una computadora, abrámosla y entendamos cómo trabaja por dentro.</p>
    <button class="btn" id="start">▶ Encender con sonido</button>
    <div class="by">Módulo 1 · Fundamentos de Programación con VibeCoding<br>Prof. Jarlin Figueroa M.A.</div>
   </div>
@@ -332,32 +332,17 @@ nav .right{display:flex;gap:8px;align-items:center}
 <section class="slide" data-t="¿Por qué empezar aquí?">
  <header class="hd"><h2>¿Por qué empezar por el hardware y el software?</h2><small>Toca cada situación</small></header>
  <div class="body">
-  <p class="lead rv">Programar es <b>darle órdenes a una máquina</b>. Si conoces la máquina, sabes qué le puedes pedir, cuánto le cuesta y qué hacer cuando algo falla. Un piloto no solo mueve el timón: entiende el motor.</p>
+  <p class="lead rv">Programar es <b>darle órdenes a una máquina</b>. Si sabes cómo funciona, sabes qué le puedes pedir y qué hacer cuando algo falla. Igual que un buen chofer: no solo maneja, también entiende su carro.</p>
   <div class="g3" id="whyGrid"></div>
  </div>
 </section>
 
-<!-- 3 ERRORES -->
-<section class="slide" data-t="Los errores te hablan">
- <header class="hd"><h2>Los errores te hablan del hardware</h2><small>Elige un error real y descubre qué pieza está detrás</small></header>
- <div class="body two n">
-  <div class="rv">
-   <div class="chips mono" id="erChips"></div>
-   <div class="term"><div class="bar"><i></i><i></i><i></i><span>terminal</span></div><pre id="erCmd"></pre><pre class="out err" id="erOut"></pre></div>
-  </div>
-  <div class="rv" style="--i:1">
-   <div class="panel" style="min-height:250px"><div style="font-size:54px;line-height:1" id="erIco">🤔</div><h3 id="erT" style="margin-top:10px">¿Qué pieza falló?</h3><p id="erD" style="margin:0">Toca un error para ver qué parte de la computadora o del sistema lo provocó.</p></div>
-   <p class="why" style="margin-top:12px"><b>Moraleja:</b> quien entiende la máquina lee un error y sabe dónde buscar. Quien no, solo copia y pega.</p>
-  </div>
- </div>
-</section>
-
-<!-- 4 VON NEUMANN -->
+<!-- 3 VON NEUMANN -->
 <section class="slide" data-t="La computadora en un diagrama">
- <header class="hd"><h2>Toda computadora funciona igual</h2><small>Modelo de von Neumann · sigue el viaje de un cálculo</small></header>
+ <header class="hd"><h2>Toda computadora funciona igual</h2><small>Sigue el viaje de una suma por dentro</small></header>
  <div class="body two p">
   <div class="vn rv">
-   <svg viewBox="0 0 900 430" role="img" aria-label="Diagrama: entrada, CPU con unidad de control, ALU y registros, memoria RAM, almacenamiento y salida conectados por buses">
+   <svg viewBox="0 0 900 430" role="img" aria-label="Diagrama: entrada, procesador con control, calculadora y registros, memoria RAM, almacenamiento y salida conectados">
     <path class="bus" id="b1" d="M170 215 H300"/>
     <path class="bus" id="b2" d="M450 200 V250"/>
     <path class="bus" id="b3" d="M450 320 V345"/>
@@ -365,22 +350,22 @@ nav .right{display:flex;gap:8px;align-items:center}
     <rect class="bx" id="vIn" x="20" y="160" width="150" height="110" rx="16"/>
     <text x="95" y="208">⌨️ Entrada</text><text class="sm" x="95" y="236">teclado, mouse</text>
     <rect class="cpu" x="300" y="20" width="300" height="180" rx="18"/>
-    <text class="cp" x="450" y="48">CPU</text>
+    <text class="cp" x="450" y="48">PROCESADOR (CPU)</text>
     <rect class="bx" id="vCu" x="315" y="62" width="130" height="56" rx="10"/>
-    <text x="380" y="88" style="font-size:18px">Control</text><text class="sm" x="380" y="108" style="font-size:13.5px">dirige el orden</text>
+    <text x="380" y="88" style="font-size:18px">Control</text><text class="sm" x="380" y="108" style="font-size:13.5px">organiza el trabajo</text>
     <rect class="bx" id="vAlu" x="455" y="62" width="130" height="56" rx="10"/>
-    <text x="520" y="88" style="font-size:18px">ALU</text><text class="sm" x="520" y="108" style="font-size:13.5px">suma y compara</text>
+    <text x="520" y="88" style="font-size:18px">Calculadora</text><text class="sm" x="520" y="108" style="font-size:13.5px">suma y compara</text>
     <rect class="bx" id="vReg" x="315" y="128" width="270" height="56" rx="10"/>
-    <text x="450" y="152" style="font-size:18px">Registros</text><text class="sm" x="450" y="172" style="font-size:13.5px">mini memoria ultrarrápida</text>
+    <text x="450" y="152" style="font-size:18px">Registros</text><text class="sm" x="450" y="172" style="font-size:13.5px">su libretita de apuntes</text>
     <rect class="bx" id="vRam" x="300" y="250" width="300" height="70" rx="14"/>
-    <text x="450" y="280">🧠 Memoria RAM</text><text class="sm" x="450" y="304">programas y datos en uso</text>
+    <text x="450" y="280">🧠 Memoria RAM</text><text class="sm" x="450" y="304">lo que estás usando ahora</text>
     <rect class="bx" id="vDsk" x="300" y="345" width="300" height="70" rx="14"/>
-    <text x="450" y="375">💾 Almacenamiento</text><text class="sm" x="450" y="399">SSD: archivos permanentes</text>
+    <text x="450" y="375">💾 Almacenamiento</text><text class="sm" x="450" y="399">lo que guardas para siempre</text>
     <rect class="bx" id="vOut" x="730" y="160" width="150" height="110" rx="16"/>
     <text x="805" y="208">🖥️ Salida</text><text class="sm" x="805" y="236">pantalla, sonido</text>
     <g id="vnDot" style="transform:translate(95px,140px);opacity:0"><circle r="18" fill="#ffb547"/><text class="dv" y="6" id="vnDv" style="fill:#2a1a00">2</text></g>
    </svg>
-   <p class="why" style="margin-top:12px">Tu celular, tu laptop y un servidor de Google tienen <b>estas mismas cinco partes</b>. Cuando programas, siempre mueves datos entre ellas.</p>
+   <p class="why" style="margin-top:12px">Tu celular, tu laptop y los servidores de Google tienen <b>estas mismas cinco partes</b>. Todo programa mueve datos entre ellas.</p>
   </div>
   <div class="rv" style="--i:1">
    <div class="row" style="margin:0 0 10px"><button class="btn" id="vnB">▶ Calcular 2 + 3</button><button class="btn ghost" id="vnS">Paso a paso</button></div>
@@ -389,121 +374,86 @@ nav .right{display:flex;gap:8px;align-items:center}
  </div>
 </section>
 
-<!-- 5 SECCIÓN HARDWARE -->
+<!-- 4 SECCIÓN HARDWARE -->
 <section class="slide" data-t="Hardware">
  <div class="mcover"><div class="bg" style="background-image:url(img/cpu.jpg)"></div>
-  <div class="n">01</div><h2>Hardware: las piezas que ejecutan tu código</h2>
-  <p>Silicio, bits, procesador, memoria, discos y tarjeta de video. Por cada pieza, una pregunta: <b>¿qué cambia para mí cuando programo?</b></p>
+  <div class="n">01</div><h2>Hardware: las piezas que puedes tocar</h2>
+  <p>Chips, procesador, memoria, discos y tarjeta de video. En cada pieza nos preguntamos: <b>¿qué tiene que ver esto con programar?</b></p>
   <div class="credit" data-cr="cpu"></div></div>
 </section>
 
-<!-- 6 BITS -->
+<!-- 5 BITS -->
 <section class="slide" data-t="Del silicio al bit">
- <header class="hd"><h2>Del silicio al bit</h2><small>Enciende y apaga los transistores</small></header>
+ <header class="hd"><h2>Del silicio al bit</h2><small>Enciende y apaga los interruptores</small></header>
  <div class="body two w">
   <div>
    <figure class="ph tall rv"><img data-k="wafer" src="img/wafer.jpg" alt="Oblea de silicio de 30 centímetros con decenas de chips grabados"><span class="lbl">oblea de silicio · 30 cm</span></figure>
   </div>
   <div>
-   <p class="lead rv">En esta oblea se graban decenas de chips. Cada chip tiene <b>miles de millones de transistores</b>: interruptores diminutos que solo saben estar <b>apagados (0)</b> o <b>encendidos (1)</b>.</p>
+   <p class="lead rv">En este disco de silicio se fabrican decenas de chips. Cada chip tiene <b>miles de millones de transistores</b>: interruptores diminutos que solo pueden estar <b>apagados (0)</b> o <b>encendidos (1)</b>.</p>
    <div class="rv" style="--i:1">
     <div class="bits" id="bits"></div>
-    <div class="bitOut"><div><b id="bDec">0</b><small>número decimal</small></div><div><b id="bChr">·</b><small>letra (ASCII)</small></div><div><b id="bPy" style="font-size:clamp(18px,1.6vw,26px);font-family:var(--mono)">chr(0)</b><small>en Python</small></div></div>
+    <div class="bitOut"><div><b id="bDec">0</b><small>como número</small></div><div><b id="bChr">·</b><small>como letra</small></div><div><b id="bPy" style="font-size:clamp(18px,1.6vw,26px);font-family:var(--mono)">00000000</b><small>así lo guarda</small></div></div>
     <div class="chips" style="margin:12px 0 0"><button data-b="65">Letra A</button><button data-b="97">Letra a</button><button data-b="55">El 7</button><button data-b="255">Todo encendido</button><button data-b="0">Apagar</button></div>
    </div>
-   <p class="why rv" style="--i:2;margin-top:12px">8 bits forman <b>1 byte</b>. Todo lo que programes (textos, números, fotos, videos) termina convertido en <b>unos y ceros</b>.</p>
+   <p class="why rv" style="--i:2;margin-top:12px">8 bits forman <b>1 byte</b>. Tus mensajes, fotos, canciones y juegos, por dentro, son solo <b>unos y ceros</b>.</p>
   </div>
  </div>
 </section>
 
-<!-- 7 CPU POR DENTRO -->
-<section class="slide" data-t="La CPU por dentro">
- <header class="hd"><h2>La CPU por dentro</h2><small>Foto real del chip de un Pentium II · toca los puntos</small></header>
+<!-- 6 PROCESADOR -->
+<section class="slide" data-t="El procesador">
+ <header class="hd"><h2>El procesador: el cerebro</h2><small>Foto real del interior de un chip · toca los números</small></header>
  <div class="body two p">
-  <div class="rv"><figure class="ph free" id="dieF"><img data-k="die" src="img/die.jpg" alt="Fotografía microscópica del chip de un procesador Pentium II"></figure></div>
+  <div class="rv"><figure class="ph free" id="dieF"><img data-k="die" src="img/die.jpg" alt="Fotografía microscópica del interior del chip de un procesador Pentium II"></figure>
+   <p class="note">Este chip de 1999 tiene <b>27 millones</b> de transistores. Uno de hoy pasa de <b>20 000 millones</b>.</p></div>
   <div class="rv" style="--i:1">
-   <div class="panel hsInfo"><div class="prog2" id="dieN">0 de 4 partes vistas</div><h3 id="dieT" style="margin-top:6px">Un chip visto al microscopio</h3><p id="dieD" style="margin:0">Este procesador de 1999 tiene <b>27 millones de transistores</b>. Uno actual supera los <b>20 000 millones</b>. Toca los números para recorrerlo.</p></div>
-   <p class="why" style="margin-top:12px"><b>Para programar:</b> la CPU solo entiende instrucciones muy simples (sumar, comparar, mover datos). Tu código en Python se traduce a miles de ellas.</p>
-  </div>
- </div>
-</section>
-
-<!-- 8 CICLO DE INSTRUCCIÓN -->
-<section class="slide" data-t="Ciclo de instrucción">
- <header class="hd"><h2>Así ejecuta la CPU tu código</h2><small>Buscar, decodificar, ejecutar, guardar</small></header>
- <div class="body two w">
-  <div class="rv">
-   <div class="term"><div class="bar"><i></i><i></i><i></i><span>suma.py</span></div><pre id="cyPy"></pre></div>
-   <p class="note" style="margin:10px 0 6px">Se traduce a instrucciones de máquina (simplificadas):</p>
-   <ol class="asm" id="asm"></ol>
-  </div>
-  <div class="rv" style="--i:1">
-   <div class="phases" id="phases"><div>1. Buscar<small>trae la instrucción</small></div><div>2. Decodificar<small>¿qué me piden?</small></div><div>3. Ejecutar<small>la ALU trabaja</small></div><div>4. Guardar<small>anota el resultado</small></div></div>
-   <div class="regs" id="regs"></div>
-   <div class="panel" id="cyD" style="margin-top:12px;min-height:96px">Toca <b>«Siguiente fase»</b> y mira a la CPU trabajar.</div>
-   <div class="row"><button class="btn" id="cyB">Siguiente fase ▶</button><button class="btn ghost" id="cyAll">Ejecutar todo</button><button class="btn ghost" id="cyR">↻</button></div>
-   <p class="note">Una CPU de 4 GHz repite este ciclo unas <b>4 000 millones de veces por segundo</b>, en cada núcleo.</p>
-  </div>
- </div>
-</section>
-
-<!-- 9 NÚCLEOS -->
-<section class="slide" data-t="Núcleos e hilos">
- <header class="hd"><h2>Núcleos: trabajar en paralelo</h2><small>Reparte 16 tareas entre los núcleos</small></header>
- <div class="body two w">
-  <div><figure class="ph rv"><img data-k="cpu" src="img/cpu.jpg" alt="Procesador AMD Ryzen 9 9950X de 16 núcleos"><span class="lbl">AMD Ryzen 9 9950X · 16 núcleos</span></figure>
-   <div class="g3 rv" style="--i:1;margin-top:12px">
-    <div class="panel"><b style="color:var(--c)">Núcleo</b><br><small>Un procesador completo dentro del chip.</small></div>
-    <div class="panel"><b style="color:var(--c)">Hilo</b><br><small>Una tarea que un núcleo atiende.</small></div>
-    <div class="panel"><b style="color:var(--c)">GHz</b><br><small>Miles de millones de ciclos por segundo.</small></div>
-   </div>
-  </div>
-  <div class="rv" style="--i:1">
-   <div class="panel">
-    <div class="row" style="margin:0"><button class="btn ghost" data-c="1">1 núcleo</button><button class="btn ghost" data-c="4">4 núcleos</button><button class="btn" data-c="8">8 núcleos</button><span class="score" id="cpT"></span></div>
+   <div class="panel hsInfo" style="min-height:170px"><div class="prog2" id="dieN">0 de 3 partes vistas</div><h3 id="dieT" style="margin-top:6px">Sigue órdenes muy simples… pero rapidísimo</h3><p id="dieD" style="margin:0">Sumar, restar, comparar, mover un dato. Nada más. El truco es que lo hace <b>miles de millones de veces por segundo</b> (eso significan los <b>GHz</b>).</p></div>
+   <div class="panel" style="margin-top:12px">
+    <b>Núcleos: varios cerebros en un mismo chip</b>
+    <div class="row" style="margin-top:8px"><button class="btn ghost" data-c="1">1 núcleo</button><button class="btn ghost" data-c="4">4 núcleos</button><button class="btn" data-c="8">8 núcleos</button><span class="score" id="cpT"></span></div>
     <div class="cores" id="cores"></div>
    </div>
-   <p class="why" style="margin-top:12px"><b>Dato clave:</b> un programa sencillo en Python usa <b>un solo núcleo</b>. Para aprovechar los demás hay que programarlo (hilos, procesos). Tener 16 núcleos no acelera un código mal escrito.</p>
   </div>
  </div>
 </section>
 
-<!-- 10 JERARQUÍA DE MEMORIA -->
+<!-- 7 JERARQUÍA DE MEMORIA -->
 <section class="slide" data-t="Jerarquía de memoria">
- <header class="hd"><h2>¿Qué tan lejos está tu dato?</h2><small>Jerarquía de memoria · toca cada nivel</small></header>
+ <header class="hd"><h2>¿Qué tan lejos está el dato?</h2><small>Las memorias de la computadora · toca cada nivel</small></header>
  <div class="body two">
   <div class="rv"><div class="pyr" id="pyr"></div><p class="note" style="text-align:center">Arriba: más rápido y más pequeño · Abajo: más lento y más grande</p></div>
   <div class="rv" style="--i:1">
    <div class="panel" style="min-height:270px">
     <h3 id="pyT"></h3>
     <p id="pyD" style="margin:0 0 10px"></p>
-    <div class="g2"><div><small style="color:var(--mute)">Tiempo real</small><div class="big" id="pyR" style="font-size:clamp(28px,2.6vw,44px)"></div></div><div><small style="color:var(--mute)">Si 1 ciclo de CPU durara 1 segundo…</small><div class="big" id="pyH" style="font-size:clamp(28px,2.6vw,44px)"></div></div></div>
+    <div class="g2"><div><small style="color:var(--mute)">Tiempo real</small><div class="big" id="pyR" style="font-size:clamp(28px,2.6vw,44px)"></div></div><div><small style="color:var(--mute)">Si el procesador tardara 1 segundo en pensar…</small><div class="big" id="pyH" style="font-size:clamp(28px,2.6vw,44px)"></div></div></div>
     <div class="trip"><i id="pyBar"></i></div>
    </div>
-   <p class="why" style="margin-top:12px"><b>Para programar:</b> leer un archivo dentro de un ciclo es como viajar 4 días en cada vuelta. Cárgalo <b>una vez</b> a la RAM y trabaja desde ahí.</p>
+   <p class="why" style="margin-top:12px"><b>Como tu mochila:</b> es más rápido sacar el lápiz del bulto que ir a buscarlo a tu casa. Por eso los programas buenos <b>traen los datos a la RAM</b> antes de usarlos.</p>
   </div>
  </div>
 </section>
 
-<!-- 11 RAM Y VARIABLES -->
-<section class="slide" data-t="RAM y variables">
- <header class="hd"><h2>RAM: donde viven tus variables</h2><small>Ejecuta el programa línea por línea</small></header>
+<!-- 8 RAM -->
+<section class="slide" data-t="Memoria RAM">
+ <header class="hd"><h2>RAM: la memoria de lo que haces ahora</h2><small>Juega una partida y mira cómo se llena</small></header>
  <div class="body two w">
   <div>
    <figure class="ph wide rv"><img data-k="ram" src="img/ram.jpg" alt="Módulo de memoria RAM DDR4"><span class="lbl">módulo de RAM DDR4</span></figure>
-   <div class="term rv" style="--i:1;margin-top:12px"><div class="bar"><i></i><i></i><i></i><span>variables.py</span></div><ol class="codeL" id="vaCode"></ol><pre class="out" id="vaOut"></pre></div>
+   <div class="panel rv" style="--i:1;margin-top:12px"><ol class="codeL" id="vaCode" style="font-family:Inter,sans-serif;padding:0"></ol></div>
   </div>
   <div class="rv" style="--i:1">
    <div class="cells" id="cells"></div>
-   <div class="row"><button class="btn" id="vaB">Ejecutar línea ▶</button><button class="btn ghost" id="vaOff">⚡ Apagar la PC</button><button class="btn ghost" id="vaR">↻</button></div>
-   <div class="panel" id="vaD" style="margin-top:12px;min-height:90px">Cada variable ocupa un lugar en la RAM con una <b>dirección</b>, como una casilla numerada.</div>
+   <div class="row"><button class="btn" id="vaB">Siguiente jugada ▶</button><button class="btn ghost" id="vaOff">⚡ Se fue la luz</button><button class="btn ghost" id="vaR">↻</button></div>
+   <div class="panel" id="vaD" style="margin-top:12px;min-height:90px">Cada dato ocupa una <b>casilla</b> de la RAM con su propio número, como los casilleros de un colegio.</div>
   </div>
  </div>
 </section>
 
-<!-- 12 ALMACENAMIENTO -->
+<!-- 9 ALMACENAMIENTO -->
 <section class="slide" data-t="Almacenamiento">
- <header class="hd"><h2>Almacenamiento: donde vive tu código</h2><small>Lo que guardas se queda aunque apagues</small></header>
+ <header class="hd"><h2>Almacenamiento: lo que se queda</h2><small>Aunque apagues, aquí sigue todo</small></header>
  <div class="body">
   <div class="trio rv">
    <figure class="ph"><img data-k="hdd" src="img/hdd.jpg" alt="Disco duro HDD abierto con su plato y brazo lector"><span class="lbl">HDD · platos que giran</span></figure>
@@ -512,74 +462,74 @@ nav .right{display:flex;gap:8px;align-items:center}
   </div>
   <div class="two rv" style="--i:1;margin-top:16px">
    <div class="panel">
-    <b>Carrera: abrir un proyecto de 5 GB (código + librerías)</b>
+    <b>Carrera: copiar un juego de 5 GB</b>
     <div id="race"></div>
     <div class="row"><button class="btn" id="raceB">▶ ¡Arrancar!</button></div>
    </div>
    <div>
-    <div class="panel"><p>Tus archivos <code>.py</code>, <code>.html</code> y <code>.js</code>, las librerías que instalas y el propio Python viven aquí. Al ejecutar, el sistema los <b>copia a la RAM</b>.</p><p style="margin:0">Un proyecto real puede tener <b>miles de archivos pequeños</b>: ahí es donde un SSD se nota más.</p></div>
-    <p class="why" style="margin-top:12px"><b>Para programar:</b> la RAM se borra al apagar; el disco no. Por eso tu programa debe <b>guardar en archivos o bases de datos</b> lo que no quieras perder.</p>
+    <div class="panel"><p style="margin:0">Aquí viven tus fotos, tus trabajos, tus juegos y también <b>los programas que vas a crear</b>. Cuando abres algo, la computadora lo <b>copia del disco a la RAM</b> para usarlo rápido.</p></div>
+    <p class="why" style="margin-top:12px"><b>La lección:</b> la RAM se borra al apagar; el disco no. Por eso las apps <b>guardan</b> tus avances: si no, al cerrar el juego perderías todo.</p>
    </div>
   </div>
  </div>
 </section>
 
-<!-- 13 GPU -->
-<section class="slide" data-t="GPU">
- <header class="hd"><h2>GPU: miles de núcleos a la vez</h2><small>Pinta la imagen con la CPU y con la GPU</small></header>
+<!-- 10 GPU -->
+<section class="slide" data-t="Tarjeta de video">
+ <header class="hd"><h2>Tarjeta de video: miles de ayudantes</h2><small>Pinta el dibujo con el procesador y con la tarjeta de video</small></header>
  <div class="body two w">
   <div><figure class="ph wide rv"><img data-k="gpu" src="img/gpu.jpg" alt="Tarjeta de video Nvidia GeForce RTX 5060 Ti"><span class="lbl">GPU · RTX 5060 Ti · 4 608 núcleos</span></figure>
-   <p class="why rv" style="--i:1;margin-top:12px"><b>Para programar:</b> la IA hace millones de multiplicaciones iguales. La GPU las hace <b>en paralelo</b>; por eso se programa con herramientas como CUDA y por eso la IA pide «memoria de video» (VRAM).</p></div>
+   <p class="why rv" style="--i:1;margin-top:12px"><b>¿Y la IA?</b> La inteligencia artificial hace millones de cuentas iguales. La tarjeta de video las hace <b>todas a la vez</b>; por eso la IA y los videojuegos necesitan tarjetas potentes.</p></div>
   <div class="rv" style="--i:1">
    <div class="px" id="px"></div>
-   <div class="row"><button class="btn ghost" id="pxC">🐢 Pintar con CPU (8 núcleos)</button><button class="btn" id="pxG">⚡ Pintar con GPU</button><span class="score" id="pxT"></span></div>
-   <p class="note">128 píxeles. Una pantalla Full HD tiene más de 2 millones, y se redibuja 60 veces por segundo.</p>
+   <div class="row"><button class="btn ghost" id="pxC">🐢 Pintar con el procesador</button><button class="btn" id="pxG">⚡ Pintar con la tarjeta de video</button><span class="score" id="pxT"></span></div>
+   <p class="note">Aquí hay 192 cuadritos (píxeles). Una pantalla Full HD tiene más de 2 millones y se vuelve a pintar 60 veces por segundo.</p>
   </div>
  </div>
 </section>
 
-<!-- 14 PLACA Y ARRANQUE -->
+<!-- 11 PLACA Y ARRANQUE -->
 <section class="slide" data-t="Placa y arranque">
- <header class="hd"><h2>La placa madre y el arranque</h2><small>¿Qué pasa al presionar el botón de encendido?</small></header>
+ <header class="hd"><h2>La placa madre y el encendido</h2><small>¿Qué pasa al presionar el botón?</small></header>
  <div class="body two w">
   <div><figure class="ph wide rv"><img data-k="placa" src="img/placa.jpg" alt="Placa madre de una computadora con sus ranuras y conectores"><span class="lbl">placa madre</span></figure>
-   <div class="panel rv" style="--i:1;margin-top:12px"><p style="margin:0">Conecta CPU, RAM, discos y GPU por caminos de cobre llamados <b>buses</b>. Trae grabado un pequeño programa, la <b>UEFI/BIOS</b>: el primer software que se ejecuta.</p></div></div>
+   <div class="panel rv" style="--i:1;margin-top:12px"><p style="margin:0">Es como la <b>ciudad</b> donde viven todas las piezas, unidas por calles de cobre. Trae grabado un pequeño programa, la <b>BIOS</b>, que es lo primero que se ejecuta al encender.</p></div></div>
   <div class="rv" style="--i:1">
    <div class="flow" id="btFlow" style="flex-direction:column"></div>
    <div class="row"><button class="btn" id="btB">⏻ Encender</button></div>
-   <p class="note">Por eso, si el disco o el sistema operativo fallan, <b>ningún programa tuyo puede ejecutarse</b>.</p>
+   <p class="note">Si una de estas etapas falla, la computadora no arranca y <b>ningún programa puede abrirse</b>.</p>
   </div>
  </div>
 </section>
 
-<!-- 15 RASPBERRY PI -->
+<!-- 12 RASPBERRY PI -->
 <section class="slide" data-t="Una computadora completa">
  <header class="hd"><h2>Una computadora completa en tu mano</h2><small>Raspberry Pi 5 · toca cada pieza</small></header>
  <div class="body two p">
   <div class="rv"><figure class="ph free white" id="rpF"><img data-k="raspberry" src="img/raspberry.jpg" alt="Placa Raspberry Pi 5 vista desde arriba"></figure></div>
   <div class="rv" style="--i:1">
-   <div class="panel hsInfo"><div class="prog2" id="rpN">0 de 8 piezas vistas</div><h3 id="rpT" style="margin-top:6px">Todo lo que vimos, en 8,5 cm</h3><p id="rpD" style="margin:0">Procesador, memoria, almacenamiento, entradas y salidas. Cuesta menos que un celular y corre Linux.</p></div>
-   <p class="why" style="margin-top:12px"><b>Para programar:</b> con Python y sus pines <b>GPIO</b> controlas luces, sensores y motores. Así nacen robots, estaciones de clima y proyectos de feria científica.</p>
+   <div class="panel hsInfo"><div class="prog2" id="rpN">0 de 8 piezas vistas</div><h3 id="rpT" style="margin-top:6px">Todo lo que vimos, en 8,5 cm</h3><p id="rpD" style="margin:0">Procesador, memoria, entradas y salidas. Cuesta menos que un celular y funciona como una computadora.</p></div>
+   <p class="why" style="margin-top:12px"><b>¿Para qué sirve?</b> Con un programa puedes encender luces, leer sensores o mover motores. Así se hacen robots y proyectos de feria científica.</p>
   </div>
  </div>
 </section>
 
-<!-- 16 SECCIÓN SOFTWARE -->
+<!-- 13 SECCIÓN SOFTWARE -->
 <section class="slide" data-t="Software">
  <div class="mcover"><div class="bg" style="background-image:url(img/codigo.webp)"></div>
-  <div class="n">02</div><h2>Software: las instrucciones que mueven todo</h2>
-  <p>Tipos de software, sistema operativo, kernel y, sobre todo, <b>cómo un lenguaje de programación conversa con el sistema operativo</b> para que tu código haga algo.</p>
+  <div class="n">02</div><h2>Software: las instrucciones que no se tocan</h2>
+  <p>Si el hardware es el cuerpo, el software es lo que le dice qué hacer. Veremos sus tipos, quién manda en la computadora y <b>cómo una orden escrita llega hasta la pantalla</b>.</p>
   <div class="credit" data-cr="codigo"></div></div>
 </section>
 
-<!-- 17 TIPOS DE SOFTWARE -->
+<!-- 14 TIPOS DE SOFTWARE -->
 <section class="slide" data-t="Tipos de software">
  <header class="hd"><h2>Tres tipos de software</h2><small>Reto: clasifica cada programa</small></header>
  <div class="body two">
   <div class="rv">
-   <div class="panel" style="margin-bottom:10px;border-left:5px solid var(--v)"><h3 style="color:var(--v)">🪟 De sistema</h3><p style="margin:0">Controla la máquina: sistemas operativos y drivers.</p></div>
-   <div class="panel" style="margin-bottom:10px;border-left:5px solid var(--c)"><h3 style="color:var(--c)">🧩 De aplicación</h3><p style="margin:0">Lo que usa la gente: navegador, Word, WhatsApp, juegos.</p></div>
-   <div class="panel" style="border-left:5px solid var(--g)"><h3 style="color:var(--g)">🛠️ De programación</h3><p style="margin:0">Lo que usamos para <b>crear</b> software: editores, lenguajes, Git.</p></div>
+   <div class="panel" style="margin-bottom:10px;border-left:5px solid var(--v)"><h3 style="color:var(--v)">🪟 De sistema</h3><p style="margin:0">El que hace funcionar el aparato: Windows, Android, iOS.</p></div>
+   <div class="panel" style="margin-bottom:10px;border-left:5px solid var(--c)"><h3 style="color:var(--c)">🧩 De aplicación</h3><p style="margin:0">Las apps que usas cada día: WhatsApp, TikTok, Word, tus juegos.</p></div>
+   <div class="panel" style="border-left:5px solid var(--g)"><h3 style="color:var(--g)">🛠️ De programación</h3><p style="margin:0">Las herramientas para <b>crear</b> apps y juegos. Las que usarás en este curso.</p></div>
   </div>
   <div class="rv" style="--i:1">
    <div class="row" style="justify-content:space-between;margin:0 0 10px"><b id="tsN"></b><span class="score">Puntos: <span id="tsS">0</span></span></div>
@@ -591,19 +541,19 @@ nav .right{display:flex;gap:8px;align-items:center}
  </div>
 </section>
 
-<!-- 18 SISTEMA OPERATIVO -->
+<!-- 15 SISTEMA OPERATIVO -->
 <section class="slide" data-t="Sistema operativo">
- <header class="hd"><h2>El sistema operativo: el administrador</h2><small>Tu programa es un proceso más · prueba un bucle infinito</small></header>
+ <header class="hd"><h2>El sistema operativo: el que manda</h2><small>¿Qué pasa cuando un programa se congela?</small></header>
  <div class="body two w">
   <div class="rv">
+   <p class="lead" style="margin-bottom:12px">Windows, Android o iOS son como el <b>director del colegio</b>: deciden quién usa cada cosa y cuándo.</p>
    <div class="g2">
-    <div class="panel"><b style="color:var(--g)">⚙️ Procesos</b><br><small>Reparte la CPU entre los programas.</small></div>
-    <div class="panel"><b style="color:var(--g)">🧠 Memoria</b><br><small>Da a cada programa su parte de la RAM.</small></div>
-    <div class="panel"><b style="color:var(--g)">📁 Archivos</b><br><small>Organiza carpetas y permisos del disco.</small></div>
-    <div class="panel"><b style="color:var(--g)">🔌 Dispositivos</b><br><small>Habla con el hardware por medio de drivers.</small></div>
+    <div class="panel"><b style="color:var(--g)">⏱️ Turnos</b><br><small>Reparte el procesador entre todas las apps abiertas.</small></div>
+    <div class="panel"><b style="color:var(--g)">🧠 Espacio</b><br><small>Le da a cada app su pedacito de RAM.</small></div>
+    <div class="panel"><b style="color:var(--g)">📁 Archivos</b><br><small>Ordena tus carpetas y decide quién puede abrirlas.</small></div>
+    <div class="panel"><b style="color:var(--g)">🔌 Aparatos</b><br><small>Hace funcionar pantalla, audífonos, impresora…</small></div>
    </div>
-   <div class="term" style="margin-top:12px"><div class="bar"><i></i><i></i><i></i><span>bucle.py</span></div><pre id="tmCode"></pre></div>
-   <div class="row"><button class="btn" id="tmRun">▶ Ejecutar bucle.py</button></div>
+   <div class="row"><button class="btn" id="tmRun">😵 Abrir un juego que se congela</button></div>
   </div>
   <div class="rv" style="--i:1">
    <div class="panel" style="padding:12px">
@@ -611,112 +561,111 @@ nav .right{display:flex;gap:8px;align-items:center}
     <div style="overflow-x:auto"><table class="tm" id="tm"></table></div>
     <div class="cpuc" id="cpuc"></div>
    </div>
-   <p class="note" id="tmMsg">Un programa en ejecución se llama <b>proceso</b> y el sistema le da un número: el PID.</p>
+   <p class="note" id="tmMsg">Cada programa abierto aparece aquí. El sistema le pone un número para reconocerlo.</p>
   </div>
  </div>
 </section>
 
-<!-- 19 KERNEL Y LLAMADAS -->
-<section class="slide" data-t="Kernel y llamadas">
- <header class="hd"><h2>El kernel y las llamadas al sistema</h2><small>Tu programa nunca toca el hardware: se lo pide al kernel</small></header>
+<!-- 16 KERNEL -->
+<section class="slide" data-t="Kernel">
+ <header class="hd"><h2>El kernel: el portero del sistema</h2><small>Ninguna app toca los aparatos sola: primero pide permiso</small></header>
  <div class="body two n">
   <div class="rv">
    <div class="bands">
-    <div class="band u"><h4>MODO USUARIO · aquí vive tu código</h4><div class="bn" id="kbP"><b>🐍 Tu programa</b><small id="kbPs">hola.py</small></div><div class="bn" id="kbL"><b>📚 Biblioteca</b><small>funciones de Python</small></div></div>
-    <div class="gate" id="kbG"><span>⇅ llamada al sistema (system call)</span></div>
-    <div class="band k"><h4>MODO KERNEL · núcleo del sistema operativo</h4><div class="bn" id="kbK"><b>⚙️ Kernel</b><small>revisa permisos y decide</small></div><div class="bn" id="kbD"><b>🔌 Driver</b><small>traduce para el aparato</small></div></div>
+    <div class="band u"><h4>LAS APPS · donde viven los programas</h4><div class="bn" id="kbP"><b>📱 La app</b><small id="kbPs">quiere hacer algo</small></div><div class="bn" id="kbL"><b>✉️ El pedido</b><small>prepara la solicitud</small></div></div>
+    <div class="gate" id="kbG"><span>🙋 pide permiso (llamada al sistema)</span></div>
+    <div class="band k"><h4>EL KERNEL · el corazón del sistema operativo</h4><div class="bn" id="kbK"><b>⚙️ Kernel</b><small>¿tiene permiso?</small></div><div class="bn" id="kbD"><b>🔌 Driver</b><small>traductor de cada aparato</small></div></div>
     <div style="height:10px"></div>
-    <div class="band h"><h4>HARDWARE</h4><div class="bn" data-hw="scr"><b>🖥️</b><small>Pantalla</small></div><div class="bn" data-hw="dsk"><b>💾</b><small>Disco</small></div><div class="bn" data-hw="kbd"><b>⌨️</b><small>Teclado</small></div><div class="bn" data-hw="clk"><b>⏱️</b><small>Reloj</small></div><div class="bn" data-hw="net"><b>🌐</b><small>Red</small></div></div>
+    <div class="band h"><h4>LOS APARATOS</h4><div class="bn" data-hw="scr"><b>🖥️</b><small>Pantalla</small></div><div class="bn" data-hw="dsk"><b>💾</b><small>Disco</small></div><div class="bn" data-hw="cam"><b>📷</b><small>Cámara</small></div><div class="bn" data-hw="spk"><b>🔊</b><small>Bocina</small></div><div class="bn" data-hw="net"><b>🌐</b><small>Internet</small></div></div>
    </div>
   </div>
   <div class="rv" style="--i:1">
-   <div class="chips mono" id="scChips"></div>
-   <div class="term"><div class="bar"><i></i><i></i><i></i><span>rastreo de llamadas</span></div><pre id="scLog" style="min-height:190px;color:var(--g)"></pre></div>
-   <p class="why" style="margin-top:12px"><b>¿Por qué así?</b> Si cada programa tocara el disco directamente, uno con errores podría borrar todo. El kernel <b>protege</b> y <b>comparte</b> el hardware.</p>
+   <div class="chips" id="scChips"></div>
+   <div class="term"><div class="bar"><i></i><i></i><i></i><span>lo que pasa por dentro</span></div><pre id="scLog" style="min-height:190px;color:var(--g);font-family:Inter,sans-serif"></pre></div>
+   <p class="why" style="margin-top:12px"><b>¿Por qué así?</b> Por eso tu celular te pregunta «¿Permitir que la app use la cámara?». El kernel <b>protege</b> tus cosas y <b>comparte</b> los aparatos entre todas las apps.</p>
   </div>
  </div>
 </section>
 
-<!-- 20 LENGUAJE + SO -->
+<!-- 17 LENGUAJE + SO -->
 <section class="slide" data-t="Lenguaje y sistema operativo">
- <header class="hd"><h2>Cómo funciona un lenguaje con el sistema operativo</h2><small>Elige un lenguaje y sigue a tu código hasta la pantalla</small></header>
+ <header class="hd"><h2>De tu orden a la pantalla</h2><small>Cómo trabaja un lenguaje de programación con el sistema operativo</small></header>
  <div class="body">
   <div class="row rv" style="margin:0 0 12px;justify-content:space-between">
-   <div class="chips" id="lgTabs" style="margin:0"><button data-l="py" class="on">🐍 Python · interpretado</button><button data-l="c">⚙️ C · compilado</button><button data-l="js">🌐 JavaScript · JIT</button></div>
+   <div class="chips" id="lgTabs" style="margin:0"><button data-l="py" class="on">🎙️ Python · traduce en vivo</button><button data-l="c">📕 C · traduce todo antes</button><button data-l="js">🌐 JavaScript · en el navegador</button></div>
    <div class="row" style="margin:0"><button class="btn" id="lgB">Siguiente paso ▶</button><button class="btn ghost" id="lgAll">Recorrer todo</button></div>
   </div>
   <div class="lang rv" style="--i:1" id="lang">
-   <div class="zone z0"><h4>1 · TU CÓDIGO<small>texto en un archivo</small></h4></div>
-   <div class="zone z1"><h4>2 · EL LENGUAJE<small>traductor: compilador o intérprete</small></h4></div>
-   <div class="zone z2"><h4>3 · SISTEMA OPERATIVO<small>kernel y drivers</small></h4></div>
-   <div class="zone z3"><h4>4 · HARDWARE<small>CPU, RAM, pantalla</small></h4></div>
+   <div class="zone z0"><h4>1 · TU ORDEN<small>lo que escribes</small></h4></div>
+   <div class="zone z1"><h4>2 · EL TRADUCTOR<small>el lenguaje de programación</small></h4></div>
+   <div class="zone z2"><h4>3 · EL SISTEMA OPERATIVO<small>el que da permisos</small></h4></div>
+   <div class="zone z3"><h4>4 · LAS PIEZAS<small>procesador, memoria, pantalla</small></h4></div>
    <div id="pk"></div>
   </div>
   <div class="ldet rv" style="--i:2">
-   <div class="panel" id="lgD" style="min-height:120px"><b>Toca «Siguiente paso»</b> para ver cómo viaja <code>print("Hola")</code> desde tu archivo hasta la pantalla.</div>
-   <div class="term"><div class="bar"><i></i><i></i><i></i><span id="lgF">hola.py</span></div><pre id="lgC"></pre></div>
+   <div class="panel" id="lgD" style="min-height:120px"></div>
+   <div class="term"><div class="bar"><i></i><i></i><i></i><span id="lgF">lo que pasa por dentro</span></div><pre id="lgC" style="font-size:1.1em"></pre></div>
   </div>
  </div>
 </section>
 
-<!-- 21 COMPILADO VS INTERPRETADO -->
-<section class="slide" data-t="Compilado o interpretado">
- <header class="hd"><h2>Compilado, interpretado y JIT</h2><small>Tres formas de traducir tu código</small></header>
+<!-- 18 FORMAS DE TRADUCIR -->
+<section class="slide" data-t="Formas de traducir">
+ <header class="hd"><h2>Tres formas de traducir</h2><small>La computadora solo entiende unos y ceros: alguien tiene que traducir</small></header>
  <div class="body two">
   <div class="rv">
    <div class="g3" id="trGrid"></div>
-   <p class="note">Toca cada tarjeta para ver la comparación.</p>
+   <p class="note">Toca cada tarjeta.</p>
   </div>
   <div class="rv" style="--i:1">
    <div class="panel">
-    <b>Carrera: sumar del 1 al 100 millones</b>
+    <b>Carrera: contar del 1 al 100 millones</b>
     <div id="lrace"></div>
     <div class="row"><button class="btn" id="lraceB">▶ ¡Arrancar!</button></div>
-    <p class="note" style="margin-bottom:0">Tiempos aproximados en una laptop común; varían según el equipo.</p>
+    <p class="note" style="margin-bottom:0">Tiempos aproximados en una laptop común.</p>
    </div>
-   <p class="why" style="margin-top:12px"><b>Entonces, ¿Python es malo?</b> No: es más fácil de escribir y sus librerías de IA están hechas en C por dentro. Cada lenguaje tiene su lugar.</p>
+   <p class="why" style="margin-top:12px"><b>¿Entonces Python es malo?</b> ¡No! Es más lento, pero mucho más fácil de aprender. Por eso es el favorito para empezar y para la inteligencia artificial.</p>
   </div>
  </div>
 </section>
 
-<!-- 22 ARCHIVOS Y RUTAS -->
-<section class="slide" data-t="Archivos y rutas">
- <header class="hd"><h2>Sistema de archivos: rutas y carpetas</h2><small>Elige la carpeta actual y un archivo</small></header>
+<!-- 19 CARPETAS Y RUTAS -->
+<section class="slide" data-t="Carpetas y rutas">
+ <header class="hd"><h2>Carpetas y rutas: la dirección de cada archivo</h2><small>Párate en una carpeta y elige un archivo</small></header>
  <div class="body two">
   <div class="rv">
    <div class="tree" id="tree"></div>
-   <p class="note">Toca una <b style="color:var(--c)">carpeta</b> para «pararte» en ella; toca un <b>archivo</b> para ver su ruta.</p>
+   <p class="note">Toca una <b style="color:var(--c)">carpeta</b> para «pararte» en ella; toca un <b>archivo</b> para ver su dirección.</p>
   </div>
   <div class="rv" style="--i:1">
    <div class="panel">
-    <small style="color:var(--mute)">Estás en (carpeta actual):</small><div class="pth" id="fsCwd"></div>
-    <small style="color:var(--mute)">Ruta absoluta en Windows:</small><div class="pth" id="fsWin">—</div>
-    <small style="color:var(--mute)">La misma idea en Linux / macOS:</small><div class="pth" id="fsLin">—</div>
-    <small style="color:var(--mute)">Ruta relativa desde donde estás:</small><div class="pth" id="fsRel">—</div>
+    <small style="color:var(--mute)">📍 Estás en:</small><div class="pth" id="fsCwd"></div>
+    <small style="color:var(--mute)">🏠 Dirección completa del archivo (ruta):</small><div class="pth" id="fsWin">—</div>
+    <small style="color:var(--mute)">👣 Cómo llegar desde donde estás:</small><div class="pth" id="fsRel">—</div>
     <div id="fsExt" style="font-size:.95em"></div>
    </div>
-   <div class="term" style="margin-top:12px"><div class="bar"><i></i><i></i><i></i><span>python</span></div><pre id="fsCode"></pre><pre class="out" id="fsOut"></pre></div>
-   <div class="row"><button class="btn" id="fsRun">▶ Ejecutar open("notas.txt")</button></div>
+   <div class="row"><button class="btn" id="fsRun">📢 Programa: «abre notas.txt»</button></div>
+   <div class="panel" id="fsOut" style="margin-top:12px;min-height:80px">Un programa busca los archivos <b>en la carpeta donde está parado</b>. Pruébalo desde distintas carpetas.</div>
   </div>
  </div>
 </section>
 
-<!-- 23 TERMINAL -->
+<!-- 20 TERMINAL -->
 <section class="slide" data-t="La terminal">
- <header class="hd"><h2>La terminal: hablarle directo al sistema</h2><small>Escribe comandos o toca los sugeridos</small></header>
+ <header class="hd"><h2>La terminal: hablarle a la computadora escribiendo</h2><small>Toca los comandos sugeridos o escribe tú</small></header>
  <div class="body two n">
   <div class="rv">
    <div class="term cli"><div class="bar"><i></i><i></i><i></i><span>Símbolo del sistema</span></div><pre id="cliOut"></pre><form id="cliF" autocomplete="off"><span id="cliP"></span><input id="cliI" aria-label="Escribe un comando" spellcheck="false" autocapitalize="off"></form></div>
   </div>
   <div class="rv" style="--i:1">
    <div class="chips mono" id="cliChips"></div>
-   <div class="panel" id="cliD" style="min-height:120px">La terminal es la herramienta diaria del programador: ejecutar programas, instalar librerías, usar Git y servidores.</div>
-   <p class="note">Windows usa <code>dir</code> y <code>cls</code>; Linux y macOS usan <code>ls</code> y <code>clear</code>. Aquí funcionan ambos.</p>
+   <div class="panel" id="cliD" style="min-height:120px">En vez de hacer clic en carpetas e íconos, <b>escribes lo que quieres</b>. Los programadores la usan todos los días.</div>
+   <p class="note">Es lo mismo que hace el Explorador de archivos, pero con palabras.</p>
   </div>
  </div>
 </section>
 
-<!-- 24 TU EQUIPO -->
+<!-- 21 TU EQUIPO -->
 <section class="slide" data-t="Tu equipo">
  <header class="hd"><h2>¿Tu computadora está lista para programar?</h2><small>Elige lo que tienes</small></header>
  <div class="body two">
@@ -727,22 +676,21 @@ nav .right{display:flex;gap:8px;align-items:center}
    <div class="panel" style="min-height:190px;margin-top:6px"><div class="big" id="eqV">?</div><h3 id="eqT">Elige tus piezas</h3><ul id="eqL" style="margin:8px 0 0;padding-left:20px"></ul></div>
   </div>
   <div class="rv" style="--i:1">
-   <b style="display:block;margin-bottom:8px">Tu kit de software para el curso</b>
+   <b style="display:block;margin-bottom:8px">Lo que usaremos en el curso</b>
    <div class="kit">
-    <div><span>🧑‍💻</span><p style="margin:0"><b>Visual Studio Code</b><small>Editor de código · usa RAM y CPU</small></p></div>
-    <div><span>🐍</span><p style="margin:0"><b>Python</b><small>Intérprete del lenguaje · usa CPU</small></p></div>
-    <div><span>🌐</span><p style="margin:0"><b>Navegador (Chrome o Edge)</b><small>Prueba tus páginas web · mucha RAM</small></p></div>
-    <div><span>🌿</span><p style="margin:0"><b>Git</b><small>Guarda versiones de tu proyecto · usa el disco</small></p></div>
-    <div><span>🤖</span><p style="margin:0"><b>Asistente de IA</b><small>En la nube: necesita buena conexión a internet</small></p></div>
+    <div><span>🧑‍💻</span><p style="margin:0"><b>Visual Studio Code</b><small>El «cuaderno» donde se escriben los programas</small></p></div>
+    <div><span>🐍</span><p style="margin:0"><b>Python</b><small>El traductor de nuestro primer lenguaje</small></p></div>
+    <div><span>🌐</span><p style="margin:0"><b>Navegador (Chrome o Edge)</b><small>Para ver las páginas web que crearemos</small></p></div>
+    <div><span>🤖</span><p style="margin:0"><b>Asistente de IA</b><small>Nuestro ayudante: vive en la nube y necesita internet</small></p></div>
    </div>
-   <p class="note">Recomendado: 6 núcleos o más, 16 GB de RAM y SSD. Con 8 GB y SSD también se puede empezar.</p>
+   <p class="note">Recomendado: 6 núcleos o más, 16 GB de RAM y disco SSD. Con 8 GB y SSD también se puede empezar.</p>
   </div>
  </div>
 </section>
 
-<!-- 25 RETO -->
+<!-- 22 RETO -->
 <section class="slide" data-t="Reto final">
- <header class="hd"><h2>Reto final: piensa como programador</h2><small>10 preguntas</small></header>
+ <header class="hd"><h2>Reto final: ¿cuánto aprendiste?</h2><small>10 preguntas</small></header>
  <div class="body">
   <div class="row" style="justify-content:space-between;margin:0 0 10px"><b id="qzN"></b><span class="score">Puntos: <span id="qzS">0</span></span></div>
   <div class="sit" id="qzQ"></div>
@@ -752,19 +700,24 @@ nav .right{display:flex;gap:8px;align-items:center}
  </div>
 </section>
 
-<!-- 26 CIERRE -->
+<!-- 23 CIERRE -->
 <section class="slide" data-t="Cierre">
  <header class="hd"><h2>Ahora ya sabes por qué</h2><small>Lo que te llevas del Módulo 1</small></header>
  <div class="body two">
   <div>
-   <div class="term rv"><div class="bar"><i></i><i></i><i></i><span>resumen.py</span></div><pre id="byC"></pre><pre class="out" id="byO"></pre></div>
-   <div class="row rv" style="--i:1"><button class="btn" id="party">🎉 Ejecutar y celebrar</button><button class="btn ghost" id="crB">Créditos de fotos</button></div>
+   <div class="kit rv">
+    <div><span>🔩</span><p style="margin:0"><b>El hardware hace el trabajo</b><small>Procesador, memoria, disco y tarjeta de video.</small></p></div>
+    <div><span>💾</span><p style="margin:0"><b>El software da las órdenes</b><small>El sistema operativo manda y las apps piden permiso.</small></p></div>
+    <div><span>🗣️</span><p style="margin:0"><b>Un lenguaje traduce tus ideas</b><small>De palabras a unos y ceros que la máquina entiende.</small></p></div>
+    <div><span>🚀</span><p style="margin:0"><b>Tú serás quien escriba las órdenes</b><small>Y ahora sabes qué pasa por dentro.</small></p></div>
+   </div>
+   <div class="row rv" style="--i:1"><button class="btn" id="party">🎉 ¡Celebrar!</button><button class="btn ghost" id="crB">Créditos de fotos</button></div>
    <div class="panel" id="crL" hidden style="margin-top:12px;font-size:13px;max-height:260px;overflow:auto"></div>
   </div>
   <div class="rv" style="--i:1">
    <p class="lead" style="font-size:clamp(24px,2.2vw,38px);color:var(--ink);font-family:Sora">«El software es la parte de la computadora que no se puede patear.»</p>
    <p style="color:var(--mute)">— Frase popular entre informáticos</p>
-   <p style="margin-top:20px">Próximo módulo: <b style="color:var(--g)">Principios de Redes</b>, o cómo viajan tus datos de una computadora a otra.</p>
+   <p style="margin-top:20px">Próximo módulo: <b style="color:var(--g)">Principios de Redes</b>, o cómo viajan tus mensajes de una computadora a otra.</p>
    <p style="margin-top:20px;font-weight:600">Realizado por Jarlin Figueroa M.A.</p>
   </div>
  </div>
@@ -888,35 +841,20 @@ $('#start').onclick=async()=>{unlockAudio();$('#start').disabled=true;await runB
 $('#bootTxt').textContent=BOOT.join('\n');
 
 /* ---------- 2 por qué ---------- */
-const WHY=[['🐢','«Mi programa está lentísimo»','Saber de <b>CPU, núcleos y memoria</b> te dice si el problema es tu código o tu máquina.'],
- ['💥','«Se cerró y perdí todo»','Lo que está en la <b>RAM</b> se borra. Tu programa debe <b>guardar en el disco</b> lo importante.'],
- ['📂','«No encuentra mi archivo»','El <b>sistema de archivos</b> y las <b>rutas</b> deciden dónde busca tu código.'],
- ['🤖','«La IA no corre en mi laptop»','Los modelos de IA necesitan <b>GPU y memoria de video</b>. Sabrás qué pedir o usar la nube.'],
- ['🪟','«En mi PC funciona, en la tuya no»','Cada <b>sistema operativo</b> tiene sus reglas: Windows, Linux, macOS, Android.'],
- ['🔒','«Acceso denegado»','El <b>kernel</b> protege archivos y hardware. Entenderlo evita errores y huecos de seguridad.']];
+const WHY=[['🐢','«Mi programa está lentísimo»','Saber cómo trabajan el <b>procesador</b> y la <b>memoria</b> te dice si el problema es tu programa o tu máquina.'],
+ ['💥','«Se cerró y perdí todo»','Lo que está en la <b>RAM</b> se borra. Un buen programa <b>guarda</b> lo importante en el disco.'],
+ ['📂','«No encuentra mi archivo»','Las <b>carpetas y rutas</b> deciden dónde busca un programa sus archivos.'],
+ ['🤖','«La IA no corre en mi laptop»','La inteligencia artificial necesita una <b>tarjeta de video</b> potente o usar la nube.'],
+ ['🪟','«En mi PC funciona, en la tuya no»','Cada <b>sistema operativo</b> (Windows, Android, iOS) tiene sus propias reglas.'],
+ ['🔒','«Acceso denegado»','El sistema <b>protege</b> tus archivos y aparatos. Entenderlo evita errores y peligros.']];
 $('#whyGrid').innerHTML=WHY.map((w,i)=>`<button class="flip rv" style="--i:${i+1}"><div class="in"><div class="f"><span class="ico">${w[0]}</span><h3>${w[1]}</h3><small>Toca para ver qué necesitas saber</small></div><div class="b"><span>${w[2]}</span></div></div></button>`).join('');
 $$('#whyGrid .flip').forEach((f,i)=>f.onclick=()=>{f.classList.toggle('on');tone(520+i*40,.08,'triangle',.08);tone(780+i*40,.1,'triangle',.06,.05)});
 
-/* ---------- 3 errores ---------- */
-const ER=[['MemoryError','python analizar.py','Traceback (most recent call last):\n  File "analizar.py", line 3\n    datos = archivo.read()\nMemoryError','🧠','Memoria RAM','Tu programa intentó cargar más datos de los que caben en la RAM. Pasa con archivos enormes o listas gigantes. Solución: leer por partes.'],
- ['FileNotFoundError','python notas.py',"FileNotFoundError: [Errno 2] No such file or\ndirectory: 'notas.txt'",'📂','Sistema de archivos','El archivo no está en la carpeta donde se ejecuta el programa. Hay que entender las rutas (lo veremos más adelante).'],
- ['PermissionError','python limpiar.py',"PermissionError: [Errno 13] Permission denied:\n'C:\\\\Windows\\\\System32\\\\config'",'🔒','Sistema operativo · permisos','El sistema operativo protege sus archivos. Tu programa no tiene permiso para tocarlos, y es bueno que así sea.'],
- ['CUDA out of memory','python entrenar_ia.py','torch.OutOfMemoryError: CUDA out of memory.\nTried to allocate 2.00 GiB','🎮','GPU · memoria de video','El modelo de IA no cabe en la memoria de la tarjeta de video (VRAM). Solución: un modelo más pequeño o usar la nube.'],
- ["'python' no se reconoce",'python --version',"'python' no se reconoce como un comando interno o\nexterno, programa o archivo por lotes ejecutable.",'🪟','Sistema operativo · PATH','Python no está instalado o el sistema no sabe dónde está (variable PATH). Es el primer error de casi todo principiante.'],
- ['Segmentation fault','./juego','Segmentation fault (core dumped)','⚙️','Kernel · protección de memoria','Un programa en C intentó leer memoria que no era suya y el kernel lo detuvo para proteger a los demás.']];
-$('#erChips').innerHTML=ER.map((e,i)=>`<button data-i="${i}">${esc(e[0])}</button>`).join('');
-let erRun=0;
-$$('#erChips button').forEach(b=>b.onclick=async()=>{const r=++erRun,e=ER[b.dataset.i];$$('#erChips button').forEach(x=>x.classList.toggle('on',x===b));
- $('#erOut').textContent='';$('#erIco').textContent='🤔';$('#erT').textContent='¿Qué pieza falló?';$('#erD').textContent='Ejecutando…';
- if(await typeTo($('#erCmd'),'C:\\Users\\Ana> '+e[1],14)===false||r!==erRun)return;await wait(300);if(r!==erRun)return;
- S.err();$('#erOut').textContent=e[2];await wait(500);if(r!==erRun)return;
- $('#erIco').textContent=e[3];$('#erT').textContent=e[4];$('#erD').textContent=e[5];S.whoosh();requestAnimationFrame(fit)});
-
-/* ---------- 4 von Neumann ---------- */
+/* ---------- 3 von Neumann ---------- */
 const VP={in:[95,140],cu:[380,90],alu:[520,90],reg:[450,156],ram:[450,285],dsk:[450,380],out:[805,140]};
-const VS=[['in','vIn','b1','2','> Escribes 2 + 3 con el teclado (entrada)'],['ram','vRam','b2','2','> Los datos 2 y 3 se guardan en la RAM'],['cu','vCu',null,'2','> La unidad de control lee la instrucción: SUMAR'],
- ['reg','vReg','b2','2','> Los números pasan de la RAM a los registros'],['alu','vAlu',null,'5','> La ALU suma: 2 + 3 = 5'],['reg','vReg',null,'5','> El resultado 5 queda en un registro'],
- ['out','vOut','b4','5','> El 5 viaja a la pantalla (salida) ✔'],['dsk','vDsk','b3','5','> Si lo guardas, se escribe en el disco 💾']];
+const VS=[['in','vIn','b1','2','> Escribes 2 + 3 con el teclado'],['ram','vRam','b2','2','> Los números se guardan en la RAM'],['cu','vCu',null,'2','> El control entiende la orden: SUMAR'],
+ ['reg','vReg','b2','2','> Los números pasan a la libretita (registros)'],['alu','vAlu',null,'5','> La calculadora suma: 2 + 3 = 5'],['reg','vReg',null,'5','> Anota el resultado: 5'],
+ ['out','vOut','b4','5','> El 5 aparece en la pantalla ✔'],['dsk','vDsk','b3','5','> Si lo guardas, queda en el disco 💾']];
 let vnI=-1,vnRun=0;
 const vnStep=i=>{const s=VS[i],[x,y]=VP[s[0]],d=$('#vnDot');d.style.opacity=1;d.style.transform=`translate(${x}px,${y}px)`;$('#vnDv').textContent=s[3];
  $$('.vn .bx').forEach(b=>b.classList.toggle('on',b.id===s[1]));$$('.vn .bus').forEach(b=>b.classList.toggle('on',b.id===s[2]));
@@ -926,11 +864,11 @@ $('#vnS').onclick=()=>{vnRun++;vnI=(vnI+1)%VS.length;if(vnI===0)$('#vnLog').text
 $('#vnB').onclick=async()=>{const r=++vnRun;S.whoosh();for(let i=0;i<VS.length;i++){if(r!==vnRun)return;vnI=i;vnStep(i);await wait(1000)}};
 enter['La computadora en un diagrama']=vnReset;vnReset();
 
-/* ---------- 6 bits ---------- */
+/* ---------- 5 bits ---------- */
 let bv=0;
-$('#bits').innerHTML=[128,64,32,16,8,4,2,1].map((p,i)=>`<div class="bit"><button data-p="${p}" aria-label="bit de valor ${p}">0</button><small>${p}</small></div>`).join('');
+$('#bits').innerHTML=[128,64,32,16,8,4,2,1].map((p,i)=>`<div class="bit"><button data-p="${p}" aria-label="interruptor de valor ${p}">0</button><small>${p}</small></div>`).join('');
 const bDraw=()=>{$$('#bits button').forEach(b=>{const on=(bv&+b.dataset.p)>0;b.classList.toggle('on',on);b.textContent=on?'1':'0'});
- $('#bDec').textContent=bv;const ch=bv>=33&&bv<=126?String.fromCharCode(bv):bv===32?'espacio':'·';$('#bChr').textContent=ch;$('#bPy').textContent=`chr(${bv})`};
+ $('#bDec').textContent=bv;const ch=bv>=33&&bv<=126?String.fromCharCode(bv):bv===32?'espacio':'·';$('#bChr').textContent=ch;$('#bPy').textContent=bv.toString(2).padStart(8,'0')};
 $$('#bits button').forEach(b=>b.onclick=()=>{bv^=+b.dataset.p;bDraw();const on=(bv&+b.dataset.p)>0;tone(on?660+Math.log2(+b.dataset.p)*60:330,.08,on?'square':'triangle',.06);if(bv===65||bv===97)S.ok()});
 $$('[data-b]').forEach(b=>b.onclick=async()=>{const t=+b.dataset.b;for(let k=7;k>=0;k--){const p=1<<k;if(((bv^t)&p)){bv^=p;bDraw();tone(500+k*60,.06,'square',.05);await wait(90)}}if(t)S.ok()});bDraw();
 
@@ -939,54 +877,33 @@ const hotspots=(fig,pts,nEl,tEl,dEl,lbl)=>{const seen=new Set();
  fig.insertAdjacentHTML('beforeend',pts.map((p,i)=>`<button class="hsp" style="left:${p[0]}%;top:${p[1]}%" data-i="${i}" aria-label="${esc(p[2])}">${i+1}</button>`).join(''));
  fig.querySelectorAll('.hsp').forEach(b=>b.onclick=()=>{const i=+b.dataset.i,p=pts[i];seen.add(i);fig.querySelectorAll('.hsp').forEach(x=>{x.classList.toggle('on',x===b);if(seen.has(+x.dataset.i))x.classList.add('seen')});
   $(tEl).textContent=p[2];$(dEl).innerHTML=p[3];$(nEl).textContent=`${seen.size} de ${pts.length} ${lbl} vistas`;tone(520+i*70,.12,'triangle',.11);if(seen.size===pts.length)setTimeout(S.ok,200);requestAnimationFrame(fit)})};
-hotspots($('#dieF'),[[17,50,'Memoria caché L2','Toda la mitad izquierda, con cuadros iguales y ordenados, es <b>memoria caché</b>: guarda junto a la CPU los datos que acaba de usar para no esperar a la RAM.'],
- [55,38,'Unidades de ejecución','Aquí están la <b>ALU</b> (suma, resta, compara) y las unidades que ejecutan tus instrucciones. Es la zona más «desordenada»: lógica hecha a medida.'],
- [67,82,'Memorias rápidas internas','Los bloques violetas son memorias muy pequeñas y rapidísimas: la <b>caché L1</b> y tablas internas. Están pegadas a las unidades que las usan.'],
- [50,6,'Conexiones con el exterior','El borde está lleno de <b>contactos</b> que comunican el chip con la placa madre: por ahí entran instrucciones y datos y salen resultados.']],'#dieN','#dieT','#dieD','partes');
-hotspots($('#rpF'),[[38,51,'Procesador (SoC)','Un <b>sistema en un chip</b>: CPU de 4 núcleos a 2,4 GHz y GPU en una sola pieza. Igual que en los celulares.'],
- [38,30,'Memoria RAM','RAM LPDDR4X de 2 a 16 GB, soldada junto al procesador para que los datos viajen poco.'],
- [62,33,'Chip RP1 · entradas y salidas','Controla los USB, la red y los pines. Lo diseñó la propia Raspberry Pi.'],
- [38,13,'Pines GPIO','40 pines para conectar luces, botones, sensores y motores, y <b>controlarlos con Python</b>.'],
- [83,30,'Puertos USB','Teclado, mouse, memorias y cámaras. Los azules son USB 3, más rápidos.'],
- [81,67,'Red Ethernet','Conexión por cable a la red. También trae Wi-Fi y Bluetooth.'],
- [38,77,'Dos salidas micro HDMI','Hasta dos monitores 4K a la vez.'],
- [10,37,'Conector PCIe','Permite conectar un <b>SSD NVMe</b>: el mismo tipo de disco rápido de las PC modernas.']],'#rpN','#rpT','#rpD','piezas');
+hotspots($('#dieF'),[[17,50,'Memoria rápida (caché)','Toda la mitad izquierda, con cuadros ordenados, es una <b>memoria muy rápida</b> donde el procesador guarda lo último que usó. Como tener los útiles sobre el pupitre en vez de en la mochila.'],
+ [55,38,'La zona que calcula','Aquí se <b>suma, resta y compara</b>. Todo lo que hace un programa, por complicado que parezca, se reduce a operaciones así de sencillas.'],
+ [50,6,'Las conexiones','El borde está lleno de <b>contactos</b> que unen el chip con la placa madre: por ahí entran las órdenes y salen los resultados.']],'#dieN','#dieT','#dieD','partes');
+hotspots($('#rpF'),[[38,51,'Procesador','Un chip que trae juntos el <b>procesador</b> de 4 núcleos y la <b>tarjeta de video</b>. Igual que en los celulares.'],
+ [38,30,'Memoria RAM','De 2 a 16 GB, pegada al procesador para que los datos viajen poco.'],
+ [62,33,'Chip de entradas y salidas','Controla los puertos USB, la red y los pines.'],
+ [38,13,'Pines para inventos','40 pines para conectar luces, botones, sensores y motores, y <b>controlarlos con un programa</b>.'],
+ [83,30,'Puertos USB','Teclado, mouse, memorias y cámaras.'],
+ [81,67,'Red por cable','Para conectarse a internet con cable. También trae Wi-Fi y Bluetooth.'],
+ [38,77,'Salidas de video','Para conectar hasta dos monitores a la vez.'],
+ [10,37,'Conector para disco','Permite agregarle un disco SSD rápido, como el de las computadoras modernas.']],'#rpN','#rpT','#rpD','piezas');
 
-/* ---------- 8 ciclo de instrucción ---------- */
-$('#cyPy').innerHTML=hl('x = 2 + 3');
-const ASM=[['LOAD','R1, 2','Carga el número 2 en el registro R1.',{R1:2}],['LOAD','R2, 3','Carga el número 3 en el registro R2.',{R2:3}],['ADD','R3, R1, R2','La ALU suma R1 + R2 y deja el resultado en R3.',{R3:5}],['STORE','R3 → x','Copia R3 a la RAM, en la casilla de la variable x.',{x:5}]];
-$('#asm').innerHTML=ASM.map((a,i)=>`<li><span>${i}</span><b style="color:var(--v)">${a[0]}</b> ${a[1]}</li>`).join('');
-$('#regs').innerHTML=['PC','R1','R2','R3','x'].map(r=>`<div class="reg${r==='x'?' ram':''}" data-r="${r}"><small>${r==='PC'?'PC (contador)':r==='x'?'RAM: x':r}</small><b>–</b></div>`).join('');
-let cyI=0,cyP=-1,cyRun=0;const RG={};
-const cyDraw=()=>{$$('#asm li').forEach((l,i)=>{l.classList.toggle('cur',i===cyI&&cyP>=0);l.classList.toggle('done',i<cyI)});$$('#phases div').forEach((d,k)=>d.classList.toggle('on',k===cyP));
- $$('#regs .reg').forEach(r=>{const k=r.dataset.r;r.querySelector('b').textContent=k==='PC'?(cyP<0&&cyI===0?'–':cyI):(RG[k]??'–')})};
-const cyStep=()=>{if(cyI>=ASM.length){cyReset();return}cyP++;const a=ASM[cyI];$$('#regs .reg').forEach(r=>r.classList.remove('on'));
- const T=[`<b>Buscar:</b> el contador de programa (PC = ${cyI}) indica qué instrucción traer de la memoria: <code>${a[0]} ${a[1]}</code>.`,`<b>Decodificar:</b> la unidad de control entiende la orden «${a[0]}».`,`<b>Ejecutar:</b> ${a[2]}`,`<b>Guardar:</b> el resultado queda anotado y el PC avanza a ${cyI+1}.`];
- if(cyP===0)$('[data-r="PC"]').classList.add('on');
- if(cyP===2){Object.assign(RG,a[3]);Object.keys(a[3]).forEach(k=>$(`[data-r="${k}"]`).classList.add('on'))}
- $('#cyD').innerHTML=T[cyP];tone([520,620,740,880][cyP],.12,'square',.05);
- if(cyP===3){cyP=-1;cyI++;if(cyI>=ASM.length){$('#cyD').innerHTML=T[3]+'<br>✔ <b>x vale 5</b>. Una línea de Python, cuatro instrucciones de máquina y 16 fases.';S.ok()}}
- cyDraw();if(cyP===-1&&cyI<ASM.length)$$('#phases div')[3].classList.add('on')};
-const cyReset=()=>{cyRun++;cyI=0;cyP=-1;for(const k in RG)delete RG[k];$$('#regs .reg').forEach(r=>r.classList.remove('on'));$('#cyD').innerHTML='Toca <b>«Siguiente fase»</b> y mira a la CPU trabajar.';cyDraw()};
-$('#cyB').onclick=()=>{cyRun++;cyStep()};$('#cyR').onclick=cyReset;
-$('#cyAll').onclick=async()=>{cyReset();const r=cyRun;for(let k=0;k<16;k++){if(r!==cyRun)return;cyStep();await wait(650)}};
-enter['Ciclo de instrucción']=cyReset;cyReset();
-
-/* ---------- 9 núcleos ---------- */
+/* ---------- 6 núcleos ---------- */
 let cpuRun=0;
 const cpuGo=async c=>{const run=++cpuRun;$$('[data-c]').forEach(b=>b.className='btn '+(+b.dataset.c===c?'':'ghost'));
  $('#cores').innerHTML=Array.from({length:c},(_,i)=>`<div class="core">N${i+1}</div>`).join('');const cs=$$('#cores .core');let steps=0;
- for(let t=0;t<16;){steps++;for(let k=0;k<c&&t<16;k++,t++){cs[k].insertAdjacentHTML('beforeend','<i class="task"></i>')}tone(500+steps*40,.06,'square',.04);$('#cpT').textContent=`Tiempo: ${steps} paso${steps>1?'s':''}`;await wait(260);if(run!==cpuRun)return}
- S.ok();$('#cpT').textContent=`Tiempo: ${steps} paso${steps>1?'s':''} ✔`;requestAnimationFrame(fit)};
+ for(let t=0;t<16;){steps++;for(let k=0;k<c&&t<16;k++,t++){cs[k].insertAdjacentHTML('beforeend','<i class="task"></i>')}tone(500+steps*40,.06,'square',.04);$('#cpT').textContent=`16 tareas en ${steps} paso${steps>1?'s':''}`;await wait(260);if(run!==cpuRun)return}
+ S.ok();$('#cpT').textContent=`16 tareas en ${steps} paso${steps>1?'s':''} ✔`;requestAnimationFrame(fit)};
 $$('[data-c]').forEach(b=>b.onclick=()=>cpuGo(+b.dataset.c));
 
-/* ---------- 10 jerarquía ---------- */
-const PY=[['Registros','≈ 0,3 ns','1 segundo','Dentro de la CPU. Unos pocos bytes: los datos que la CPU usa en este mismo instante.','#9be7c4',1],
- ['Caché L1 · L2 · L3','1 a 12 ns','3 a 40 segundos','Dentro del chip. Unos megabytes con lo que la CPU usó hace poco.','#8fd3f4',2],
- ['Memoria RAM','≈ 100 ns','6 minutos','En la placa. Gigabytes con tus programas y variables mientras se ejecutan.','#c8b6ff',3],
- ['SSD NVMe','≈ 100 µs','4 días','Cientos de GB o varios TB. Tus archivos, aunque apagues.','#ffd28a',5],
- ['Disco duro HDD','≈ 10 ms','1 año','Mucho espacio y barato, pero el brazo mecánico tarda muchísimo.','#ffb59a',7],
- ['Internet','≈ 100 ms','10 años','Datos de otro servidor, como una API o una página web. Lo más lejano.','#ff9bb0',8]];
+/* ---------- 7 jerarquía ---------- */
+const PY=[['Registros','≈ 0,3 ns','1 segundo','Dentro del procesador. Lo que está usando en este mismo instante.','#9be7c4',1],
+ ['Caché','1 a 12 ns','3 a 40 segundos','Dentro del chip. Lo que el procesador usó hace un momento.','#8fd3f4',2],
+ ['Memoria RAM','≈ 100 ns','6 minutos','En la placa. Las apps y los datos que tienes abiertos.','#c8b6ff',3],
+ ['Disco SSD','≈ 100 µs','4 días','Tus archivos guardados, aunque apagues.','#ffd28a',5],
+ ['Disco duro HDD','≈ 10 ms','1 año','Mucho espacio y barato, pero tiene piezas que giran y es muy lento.','#ffb59a',7],
+ ['Internet','≈ 100 ms','10 años','Datos que están en otra computadora del mundo. Lo más lejano.','#ff9bb0',8]];
 $('#pyr').innerHTML=PY.map((p,i)=>`<button data-i="${i}" style="width:${40+i*12}%;background:${p[4]}">${p[0]}<small>${p[1]}</small></button>`).join('');
 let pyRun=0;
 const pyShow=async i=>{const r=++pyRun,p=PY[i];$$('#pyr button').forEach((b,k)=>b.classList.toggle('on',k==i));$('#pyT').textContent=p[0];$('#pyD').textContent=p[3];$('#pyR').textContent=p[1];$('#pyH').textContent=p[2];
@@ -995,226 +912,223 @@ const pyShow=async i=>{const r=++pyRun,p=PY[i];$$('#pyr button').forEach((b,k)=>
 $$('#pyr button').forEach(b=>b.onclick=()=>pyShow(+b.dataset.i));
 enter['Jerarquía de memoria']=()=>setTimeout(()=>pyShow(0),400);
 
-/* ---------- 11 RAM y variables ---------- */
-const VA=[['nombre = "Ana"',{nombre:'"Ana"'},'Se reserva una casilla para <b>nombre</b> y se guarda el texto "Ana".'],
- ['edad = 17',{edad:'17'},'Otra casilla para <b>edad</b> con el número 17.'],
- ['notas = [90, 85, 77]',{'notas[0]':'90','notas[1]':'85','notas[2]':'77'},'Una <b>lista</b> ocupa varias casillas seguidas en la RAM.'],
- ['edad = edad + 1',{edad:'18'},'La CPU lee 17, suma 1 y <b>sobrescribe</b> la misma casilla: ahora vale 18.'],
- ['print(nombre, edad)',null,'Se leen dos casillas de la RAM y se envían a la pantalla.']];
-$('#vaCode').innerHTML=VA.map(v=>`<li>${hl(v[0])}</li>`).join('');
-const ADDR=['0x7F10','0x7F18','0x7F20','0x7F28','0x7F30','0x7F38','0x7F40','0x7F48'];
+/* ---------- 8 RAM ---------- */
+const VA=[['🎮 Abres el juego y escribes tu nombre: Ana',{'Jugador':'Ana'},'El juego le pide un espacio a la RAM y guarda tu <b>nombre</b> en una casilla.'],
+ ['❤️ Empiezas con 3 vidas',{'Vidas':'3'},'Otra casilla para las <b>vidas</b>.'],
+ ['⭐ Ganas 50 puntos',{'Puntos':'50'},'Otra casilla para los <b>puntos</b>.'],
+ ['💔 Te golpean: pierdes una vida',{'Vidas':'2'},'No se crea una casilla nueva: se <b>cambia</b> lo que había. Ahora quedan 2 vidas.'],
+ ['🏆 Ganas 100 puntos más',{'Puntos':'150'},'El procesador lee 50, suma 100 y <b>escribe</b> 150 en la misma casilla.']];
+$('#vaCode').innerHTML=VA.map(v=>`<li>${v[0]}</li>`).join('');
+const ADDR=['#1','#2','#3','#4','#5','#6','#7','#8'];
 let vaI=0,vaMem={},vaOrd=[];
-const vaDraw=(chg={})=>{$('#cells').innerHTML=ADDR.map((a,i)=>{const k=vaOrd[i];return `<div class="cell${k&&chg[k]?(chg[k]==='n'?' new':' upd'):''}"><small>${a}</small>${k?`<b>${esc(k)}</b><span>${esc(vaMem[k])}</span>`:'<b style="color:#3a4a6e">libre</b><span></span>'}</div>`}).join('');
+const vaDraw=(chg={})=>{$('#cells').innerHTML=ADDR.map((a,i)=>{const k=vaOrd[i];return `<div class="cell${k&&chg[k]?(chg[k]==='n'?' new':' upd'):''}"><small>casilla ${a}</small>${k?`<b>${esc(k)}</b><span>${esc(vaMem[k])}</span>`:'<b style="color:#3a4a6e">libre</b><span></span>'}</div>`}).join('');
  $$('#vaCode li').forEach((l,i)=>{l.classList.toggle('cur',i===vaI);l.classList.toggle('done',i<vaI)})};
-const vaReset=()=>{vaI=0;vaMem={};vaOrd=[];$('#vaOut').textContent='';$('#cells').classList.remove('off');$('#vaD').innerHTML='Cada variable ocupa un lugar en la RAM con una <b>dirección</b>, como una casilla numerada.';$('#vaB').disabled=false;vaDraw()};
+const vaReset=()=>{vaI=0;vaMem={};vaOrd=[];$('#cells').classList.remove('off');$('#vaD').innerHTML='Cada dato ocupa una <b>casilla</b> de la RAM con su propio número, como los casilleros de un colegio.';$('#vaB').disabled=false;vaDraw()};
 $('#vaB').onclick=()=>{if(vaI>=VA.length)return;const v=VA[vaI],chg={};
- if(v[1])for(const [k,val] of Object.entries(v[1])){chg[k]=k in vaMem?'u':'n';if(!(k in vaMem))vaOrd.push(k);vaMem[k]=val}
- else{$('#vaOut').textContent=`Ana ${vaMem.edad}`;S.ok()}
- $('#vaD').innerHTML=v[2];vaI++;vaDraw(chg);if(v[1])S.pop(vaI*2);if(vaI>=VA.length){$('#vaB').disabled=true}};
-$('#vaOff').onclick=async()=>{if(!vaOrd.length){$('#vaD').innerHTML='Primero ejecuta algunas líneas para llenar la RAM.';S.edge();return}S.off();$('#cells').classList.add('off');await wait(650);
- vaMem={};vaOrd=[];vaI=VA.length;$('#vaB').disabled=true;$('#vaOut').textContent='';vaDraw();$('#cells').classList.remove('off');
- $('#vaD').innerHTML='⚡ <b>Todo se borró.</b> La RAM es <b>volátil</b>: sin energía no guarda nada. Por eso los programas guardan en <b>archivos</b> o <b>bases de datos</b>.'};
+ for(const [k,val] of Object.entries(v[1])){chg[k]=k in vaMem?'u':'n';if(!(k in vaMem))vaOrd.push(k);vaMem[k]=val}
+ $('#vaD').innerHTML=v[2];vaI++;vaDraw(chg);S.pop(vaI*2);if(vaI>=VA.length){$('#vaB').disabled=true;$('#vaD').innerHTML+=' Ahora prueba <b>«Se fue la luz»</b>.'}};
+$('#vaOff').onclick=async()=>{if(!vaOrd.length){$('#vaD').innerHTML='Primero juega un poco para llenar la RAM.';S.edge();return}S.off();$('#cells').classList.add('off');await wait(650);
+ vaMem={};vaOrd=[];vaI=VA.length;$('#vaB').disabled=true;vaDraw();$('#cells').classList.remove('off');
+ $('#vaD').innerHTML='⚡ <b>¡Todo se borró!</b> Sin electricidad la RAM no recuerda nada. Por eso los juegos tienen el botón <b>«Guardar partida»</b>: copia los datos al disco.'};
 $('#vaR').onclick=vaReset;vaReset();
 
-/* ---------- 12 carrera de discos ---------- */
+/* ---------- 9 carrera de discos ---------- */
 const RC=[['HDD','150 MB/s',150,'#ffb547'],['SSD SATA','550 MB/s',550,'#4cc9f0'],['NVMe Gen 4','7 000 MB/s',7000,'#3ee39f'],['NVMe Gen 5','14 000 MB/s',14000,'#b197fc']];
 $('#race').innerHTML=RC.map(r=>`<div class="race"><span><b style="font-family:Sora;text-align:left">${r[0]}</b><br><small style="color:var(--mute)">${r[1]}</small></span><div class="tr"><i style="background:${r[3]}"></i></div><b>—</b></div>`).join('');
 $('#raceB').onclick=()=>{S.power();const rows=$$('#race .race');rows.forEach(r=>{const i=r.querySelector('i');i.style.transition='none';i.style.width=0;r.querySelector('b:last-child').textContent='—'});
  requestAnimationFrame(()=>requestAnimationFrame(()=>rows.forEach((r,k)=>{const secs=5000/RC[k][2],ms=Math.max(250,secs*120);const i=r.querySelector('i');i.style.transition=`width ${ms}ms linear`;i.style.width='100%';
   setTimeout(()=>{r.querySelector('b:last-child').textContent=(secs<1?secs.toFixed(1).replace('.',','):Math.round(secs))+' s';tone(1200-k*150,.15,'triangle',.1);if(k===0)S.ok()},ms)})))};
 
-/* ---------- 13 GPU ---------- */
+/* ---------- 10 GPU ---------- */
 const PXA=['0000000000000000','0001100000011000','0011110000111100','0111111001111110','0111111111111110','0111111111111110','0011111111111100','0001111111111000','0000111111110000','0000011111100000','0000001111000000','0000000110000000'];
 const PXC=['#ff6b6b','#ff8fab','#ffb547'];
 $('#px').innerHTML=PXA.join('').split('').map(()=>'<i></i>').join('');
 let pxRun=0;
 const pxGo=async gpu=>{const r=++pxRun,cells=$$('#px i'),bits=PXA.join('');cells.forEach(c=>c.style.background='');await wait(120);
  const lit=(i)=>{const y=Math.floor(i/16);cells[i].style.background=bits[i]==='1'?PXC[y%3]:'#1d2b4a'};
- if(gpu){cells.forEach((c,i)=>lit(i));S.whoosh();S.ok();$('#pxT').textContent='GPU: 1 paso ⚡';return}
- let step=0;for(let i=0;i<cells.length;i+=8){if(r!==pxRun)return;for(let k=i;k<i+8&&k<cells.length;k++)lit(k);step++;$('#pxT').textContent=`CPU: ${step} pasos…`;tone(300+step*12,.03,'square',.03);await wait(70)}
- $('#pxT').textContent=`CPU: ${step} pasos 🐢`;S.edge()};
+ if(gpu){cells.forEach((c,i)=>lit(i));S.whoosh();S.ok();$('#pxT').textContent='Tarjeta de video: 1 paso ⚡';return}
+ let step=0;for(let i=0;i<cells.length;i+=8){if(r!==pxRun)return;for(let k=i;k<i+8&&k<cells.length;k++)lit(k);step++;$('#pxT').textContent=`Procesador: ${step} pasos…`;tone(300+step*12,.03,'square',.03);await wait(70)}
+ $('#pxT').textContent=`Procesador: ${step} pasos 🐢`;S.edge()};
 $('#pxC').onclick=()=>pxGo(false);$('#pxG').onclick=()=>pxGo(true);
 
-/* ---------- 14 arranque ---------- */
-const BT=[['🔌','Encender','La fuente de poder da energía a la placa madre.'],['🧪','UEFI / BIOS','Revisa CPU, RAM y discos (prueba POST).'],['🧭','Gestor de arranque','Busca el sistema operativo en el SSD.'],['⚙️','Kernel','Se carga en la RAM y toma el control del hardware.'],['🪟','Sistema operativo','Arranca drivers, red, escritorio e inicio de sesión.'],['🧑‍💻','Tus programas','Ya puedes abrir VS Code y ejecutar tu código.']];
+/* ---------- 11 arranque ---------- */
+const BT=[['🔌','Llega la energía','La fuente de poder le da electricidad a la placa madre.'],['🧪','La BIOS revisa','Comprueba que el procesador, la RAM y el disco estén bien.'],['🧭','Busca el sistema','Encuentra Windows (o Linux) guardado en el disco.'],['⚙️','Despierta el kernel','El corazón del sistema se copia a la RAM y toma el control.'],['🪟','Arranca Windows','Carga el escritorio, la red, el sonido y tu usuario.'],['🧑‍💻','¡Listo!','Ya puedes abrir tus apps… y tus programas.']];
 $('#btFlow').innerHTML=BT.map(k=>`<div class="st" style="display:flex;gap:12px;align-items:center;text-align:left;flex:none;padding:8px 12px"><span class="e" style="font-size:26px">${k[0]}</span><div><b>${k[1]}</b><small>${k[2]}</small></div></div>`).join('');
 let btRun=0;$('#btB').onclick=async()=>{const r=++btRun,st=$$('#btFlow .st');st.forEach(s=>s.className='st');S.power();
  for(let i=0;i<st.length;i++){if(r!==btRun)return;st.forEach((s,k)=>{s.classList.toggle('on',k===i);if(k<i)s.classList.add('done')});tone(392+i*90,.14,'triangle',.08);await wait(700)}S.boot()};
 enter['Placa y arranque']=()=>{btRun++;$$('#btFlow .st').forEach(s=>s.className='st')};
 
-/* ---------- 17 tipos de software ---------- */
-const TS=[['Windows 11','S'],['Google Chrome','A'],['Visual Studio Code','P'],['Driver de la tarjeta de video','S'],['WhatsApp','A'],['Python','P'],['Android','S'],['Microsoft Word','A'],['Git','P'],['Linux','S']];
-const TSW={S:'De sistema: controla la máquina o un dispositivo.',A:'De aplicación: lo usa la gente para una tarea.',P:'De programación: sirve para crear software.'};
+/* ---------- 14 tipos de software ---------- */
+const TS=[['Windows 11','S'],['TikTok','A'],['Visual Studio Code','P'],['Android','S'],['WhatsApp','A'],['Python','P'],['iOS (iPhone)','S'],['Microsoft Word','A'],['Scratch','P'],['Minecraft','A']];
+const TSW={S:'De sistema: hace funcionar el aparato.',A:'De aplicación: la usas para una tarea o para divertirte.',P:'De programación: sirve para crear apps y juegos.'};
 let ti=0,ts=0,tl=false;
 const tsDraw=()=>{tl=false;$('#tsN').textContent=`${ti+1} de ${TS.length}`;const q=$('#tsQ');q.className='sit';q.textContent=TS[ti][0];$('#tsF').textContent='';$$('#tsA button').forEach(b=>b.className='');$('#tsA').style.display='';$('#tsR').style.display='none'};
 $$('#tsA button').forEach(b=>b.onclick=()=>{if(tl)return;tl=true;const ok=b.dataset.v===TS[ti][1];b.classList.add(ok?'ok':'no');if(!ok)$(`#tsA [data-v="${TS[ti][1]}"]`).classList.add('ok');$('#tsQ').classList.add(ok?'ok':'no');
  if(ok){ts++;S.ok()}else S.no();$('#tsS').textContent=ts;$('#tsF').textContent=(ok?'✔ ':'✘ ')+TSW[TS[ti][1]];
- setTimeout(()=>{ti++;if(ti<TS.length)tsDraw();else{$('#tsQ').textContent=`¡${ts} de ${TS.length}!`;$('#tsA').style.display='none';$('#tsF').textContent=ts>=8?'¡Excelente! Ya distingues los tipos de software.':'Pregunta clave: ¿controla la máquina, la usa la gente o sirve para crear?';$('#tsR').style.display='';if(ts>=8)S.party()}requestAnimationFrame(fit)},1500)});
+ setTimeout(()=>{ti++;if(ti<TS.length)tsDraw();else{$('#tsQ').textContent=`¡${ts} de ${TS.length}!`;$('#tsA').style.display='none';$('#tsF').textContent=ts>=8?'¡Excelente! Ya distingues los tipos de software.':'Pregunta clave: ¿hace funcionar el aparato, la usas tú o sirve para crear?';$('#tsR').style.display='';if(ts>=8)S.party()}requestAnimationFrame(fit)},1500)});
 $('#tsR').onclick=()=>{ti=0;ts=0;$('#tsS').textContent=0;tsDraw()};tsDraw();
 
-/* ---------- 18 administrador de tareas ---------- */
-$('#tmCode').innerHTML=hl('contador = 0\nwhile True:          # nunca termina\n    contador = contador + 1');
-const TM0=()=>[{n:'⚙️ Sistema (kernel)',pid:4,c:1,m:0.2},{n:'🗂️ Explorador de Windows',pid:5120,c:1,m:0.15},{n:'🌐 Chrome',pid:8840,c:3,m:1.8},{n:'🧑‍💻 VS Code',pid:9312,c:1,m:0.9}];
+/* ---------- 15 administrador de tareas ---------- */
+const TM0=()=>[{n:'⚙️ Sistema',pid:4,c:1,m:0.2},{n:'🗂️ Explorador de archivos',pid:5120,c:1,m:0.15},{n:'🌐 Chrome',pid:8840,c:3,m:1.8},{n:'🎵 Spotify',pid:9312,c:1,m:0.4}];
 let TM=TM0(),tmT=null,tmHold=false;
 $('#tm').addEventListener('pointerdown',()=>tmHold=true);addEventListener('pointerup',()=>setTimeout(()=>tmHold=false,60));
 const tmKill=pid=>{const k=TM.findIndex(p=>p.pid===pid);if(k<0)return;const p=TM[k];TM.splice(k,1);tmHold=false;
- if(p.loop){$('#tmMsg').innerHTML='✔ El sistema operativo <b>detuvo el proceso</b> y liberó el núcleo. Así se rescata una PC de un programa colgado.';S.ok();$('#tmRun').disabled=false}
- else{$('#tmMsg').innerHTML=`Cerraste <b>${p.n}</b>. Ojo: si finalizas un programa, pierdes lo que no estaba guardado.`;S.off()}tmDraw()};
+ if(p.loop){$('#tmMsg').innerHTML='✔ El sistema operativo <b>cerró el juego a la fuerza</b> y liberó el procesador. Por eso existe el botón «Finalizar tarea».';S.ok();$('#tmRun').disabled=false}
+ else{$('#tmMsg').innerHTML=`Cerraste <b>${p.n}</b>. Ojo: si cierras un programa así, pierdes lo que no habías guardado.`;S.off()}tmDraw()};
 $('#tm').addEventListener('click',e=>{const b=e.target.closest('button[data-pid]');if(b)tmKill(+b.dataset.pid)});
 const tmDraw=()=>{if(tmHold)return;const hot=TM.find(p=>p.loop);
- TM.forEach(p=>{if(p.loop){p.c=Math.min(25,p.c+6);p.m=0.02}else p.c=Math.max(0,+(p.c+(Math.random()-.5)*1.4).toFixed(0))});
+ TM.forEach(p=>{if(p.loop){p.c=Math.min(25,p.c+6);p.m=0.6}else p.c=Math.max(0,+(p.c+(Math.random()-.5)*1.4).toFixed(0))});
  const tot=Math.min(100,TM.reduce((a,p)=>a+p.c,0));
- $('#tm').innerHTML='<tr><th>Proceso</th><th>PID</th><th style="text-align:right">CPU</th><th style="text-align:right">RAM</th><th></th></tr>'+TM.map((p,i)=>`<tr class="${p.loop?'hot':''}"><td>${p.n}</td><td class="n" style="text-align:left">${p.pid}</td><td class="n">${p.c} %</td><td class="n">${p.m.toFixed(1)} GB</td><td>${p.pid>4?`<button data-pid="${p.pid}">Finalizar</button>`:''}</td></tr>`).join('');
+ $('#tm').innerHTML='<tr><th>Programa</th><th>Número</th><th style="text-align:right">CPU</th><th style="text-align:right">RAM</th><th></th></tr>'+TM.map(p=>`<tr class="${p.loop?'hot':''}"><td>${p.n}${p.loop?' <small style="color:var(--r)">(No responde)</small>':''}</td><td class="n" style="text-align:left">${p.pid}</td><td class="n">${p.c} %</td><td class="n">${p.m.toFixed(1)} GB</td><td>${p.pid>4?`<button data-pid="${p.pid}">Finalizar</button>`:''}</td></tr>`).join('');
  $('#tmTot').textContent=`CPU ${tot} %`;
  const bars=[hot?Math.min(100,hot.c*4):0,0,0,0].map((v,k)=>Math.max(v,k===0&&!hot?8:0,Math.round(Math.random()*12+3)));
  $('#cpuc').innerHTML=bars.map((v,k)=>`<div>Núcleo ${k+1}<div class="tr"><i class="${v>90?'hot':''}" style="height:${v}%"></i></div>${v} %</div>`).join('')};
-$('#tmRun').onclick=()=>{if(TM.some(p=>p.loop))return;TM.push({n:'🐍 python bucle.py',pid:11204,c:2,m:0.02,loop:1});$('#tmRun').disabled=true;S.glitch();
- $('#tmMsg').innerHTML='⚠ El bucle nunca termina: ocupa <b>un núcleo al 100 %</b>. En una CPU de 4 núcleos el total marca 25 %. Toca <b>Finalizar</b> para que el sistema lo detenga.';tmDraw()};
-enter['Sistema operativo']=()=>{TM=TM0();$('#tmRun').disabled=false;$('#tmMsg').innerHTML='Un programa en ejecución se llama <b>proceso</b> y el sistema le da un número: el PID.';tmDraw();clearInterval(tmT);tmT=setInterval(tmDraw,900)};
+$('#tmRun').onclick=()=>{if(TM.some(p=>p.loop))return;TM.push({n:'🎮 Juego',pid:11204,c:2,m:0.6,loop:1});$('#tmRun').disabled=true;S.glitch();
+ $('#tmMsg').innerHTML='⚠ El juego se quedó «pensando» para siempre y <b>uno de los núcleos está al 100 %</b>. Toca <b>Finalizar</b>: el sistema operativo es el único que puede cerrarlo.';tmDraw()};
+enter['Sistema operativo']=()=>{TM=TM0();$('#tmRun').disabled=false;$('#tmMsg').innerHTML='Cada programa abierto aparece aquí. El sistema le pone un número para reconocerlo.';tmDraw();clearInterval(tmT);tmT=setInterval(tmDraw,900)};
 leave['Sistema operativo']=()=>clearInterval(tmT);
 tmDraw();
 
-/* ---------- 19 llamadas al sistema ---------- */
-const SC=[['print("Hola")','write()','scr','escribir en la salida','El kernel manda el texto al driver de video y aparece «Hola».'],
- ['open("notas.txt")','openat() + read()','dsk','abrir y leer un archivo','El kernel revisa permisos, busca el archivo en el disco y devuelve los datos.'],
- ['input("Nombre: ")','read()','kbd','leer del teclado','El proceso espera dormido hasta que el kernel recibe teclas del teclado.'],
- ['time.sleep(2)','nanosleep()','clk','pausar el proceso','El kernel saca al proceso de la CPU 2 segundos y la presta a otros programas.'],
- ['requests.get(url)','socket() + connect()','net','conectarse a internet','El kernel abre una conexión por la tarjeta de red hacia otro servidor.']];
-$('#scChips').innerHTML=SC.map((s,i)=>`<button data-i="${i}">${esc(s[0])}</button>`).join('');
+/* ---------- 16 kernel ---------- */
+const SC=[['📸 Tomar una foto','La cámara','cam','Instagram quiere usar la cámara','Se abre la cámara y la foto se ve en pantalla.'],
+ ['💾 Guardar un trabajo','El disco','dsk','Word quiere guardar tarea.docx','Tu trabajo quedó guardado en el disco.'],
+ ['🎵 Escuchar música','La bocina','spk','Spotify quiere sonar','La canción suena por la bocina.'],
+ ['🌐 Abrir una página','Internet','net','Chrome quiere conectarse a internet','La página llega y se dibuja en la pantalla.'],
+ ['💬 Mostrar un mensaje','La pantalla','scr','WhatsApp quiere mostrar un mensaje nuevo','El mensaje aparece en la pantalla.']];
+$('#scChips').innerHTML=SC.map((s,i)=>`<button data-i="${i}">${s[0]}</button>`).join('');
 let scRun=0;
 const scClr=()=>{$$('.bands .bn').forEach(b=>b.classList.remove('on'));$('#kbG').classList.remove('on')};
-$$('#scChips button').forEach(b=>b.onclick=async()=>{const r=++scRun,s=SC[b.dataset.i];$$('#scChips button').forEach(x=>x.classList.toggle('on',x===b));$('#kbPs').textContent=s[0];
+$$('#scChips button').forEach(b=>b.onclick=async()=>{const r=++scRun,s=SC[b.dataset.i];$$('#scChips button').forEach(x=>x.classList.toggle('on',x===b));$('#kbPs').textContent=s[3];
  const lg=$('#scLog');lg.textContent='';const L=t=>{lg.textContent+=t+'\n'};
- const seq=[['#kbP',`> Tu código: ${s[0]}`],['#kbL',`> Python prepara la orden: ${s[3]}`],['#kbG',`⇣ LLAMADA AL SISTEMA: ${s[1]}`],['#kbK','> Kernel: ¿tiene permiso? ✔'],['#kbD','> Driver: traduce para el aparato'],[`[data-hw="${s[2]}"]`,'> Hardware trabajando…'],['#kbK','⇡ El kernel devuelve el resultado'],['#kbP','✔ '+s[4]]];
- for(const [sel,t] of seq){if(r!==scRun)return;scClr();$(sel).classList.add('on');L(t);tone(sel==='#kbG'?990:500+seq.findIndex(q=>q[0]===sel)*70,.12,'square',.05);await wait(620)}
+ const seq=[['#kbP',`📱 ${s[3]}.`],['#kbL','✉️ Prepara el pedido.'],['#kbG','🙋 Le pide permiso al sistema.'],['#kbK','⚙️ Kernel: «¿Esta app tiene permiso?» ✔ Sí.'],['#kbD','🔌 El driver traduce la orden para el aparato.'],[`[data-hw="${s[2]}"]`,`🔧 ${s[1]} hace el trabajo.`],['#kbK','⚙️ El kernel le avisa a la app.'],['#kbP','✅ '+s[4]]];
+ for(const [sel,t] of seq){if(r!==scRun)return;scClr();$(sel).classList.add('on');L(t);tone(sel==='#kbG'?990:500+seq.findIndex(q=>q[0]===sel)*70,.12,'square',.05);await wait(700)}
  S.ok();requestAnimationFrame(fit)});
-enter['Kernel y llamadas']=()=>{scRun++;scClr();$('#scLog').textContent='Elige una línea de Python para ver qué le pide al kernel.';$$('#scChips button').forEach(x=>x.classList.remove('on'))};
+enter['Kernel']=()=>{scRun++;scClr();$('#kbPs').textContent='quiere hacer algo';$('#scLog').textContent='Elige lo que quiere hacer una app y mira cómo pide permiso.';$$('#scChips button').forEach(x=>x.classList.remove('on'))};
 
-/* ---------- 20 lenguaje + sistema operativo ---------- */
-const LG={py:{f:'hola.py',code:'print("Hola")',steps:[
- [0,'✍️','Escribes hola.py','En VS Code escribes <code>print("Hola")</code> y lo guardas. Para la computadora, por ahora, es solo <b>texto</b> en el disco.','print("Hola")'],
- [2,'🚀','python hola.py','En la terminal pides ejecutarlo. El <b>sistema operativo crea un proceso</b> y carga en la RAM al intérprete de Python.','C:\\curso> python hola.py'],
- [1,'🔤','Análisis léxico','El intérprete corta el texto en piezas llamadas <b>tokens</b>.','print  (  "Hola"  )\nNOMBRE  ABRE  TEXTO  CIERRA'],
- [1,'🌳','Análisis sintáctico','Revisa la gramática y arma un árbol. Si falta un paréntesis, aquí nace el <b>SyntaxError</b>.','Llamada\n ├─ función: print\n └─ argumento: "Hola"'],
- [1,'📦','Bytecode','Traduce el árbol a <b>bytecode</b>: instrucciones sencillas para la máquina virtual de Python.','LOAD_NAME   print\nLOAD_CONST  "Hola"\nCALL        1'],
- [3,'⚡','La CPU ejecuta','La <b>máquina virtual de Python</b> (un programa en C) lee cada instrucción y la CPU la ejecuta, una por una.','CPU: 10110000 01100001 …'],
- [2,'📞','Llamada al sistema','Para mostrar texto, Python le pide al kernel: <code>write(pantalla, "Hola")</code>. Tu programa no puede tocar la pantalla solo.','write(1, "Hola\\n", 5)'],
- [3,'🖥️','¡Hola!','El kernel usa el driver de video y la pantalla muestra el resultado. Todo en milésimas de segundo.','Hola']]},
- c:{f:'hola.c',code:'#include <stdio.h>\nint main() {\n  printf("Hola\\n");\n}',steps:[
- [0,'✍️','Escribes hola.c','Escribes el programa en lenguaje C y lo guardas en el disco.','printf("Hola\\n");'],
- [1,'🛠️','Compilas','El <b>compilador</b> (gcc) traduce TODO el programa a código máquina, <b>antes</b> de ejecutarlo. Si hay errores, no se crea nada.','C:\\curso> gcc hola.c -o hola.exe'],
- [1,'📄','Archivo ejecutable','Resultado: <b>hola.exe</b>, un archivo con instrucciones que la CPU entiende directamente. Ya no necesita al compilador.','hola.exe  ·  01001101 01011010 …'],
- [2,'🚀','El SO lo carga','Al ejecutarlo, el sistema operativo crea un proceso y copia hola.exe del disco a la RAM.','C:\\curso> hola.exe'],
- [3,'⚡','La CPU ejecuta','La CPU ejecuta el código máquina <b>sin traductor en medio</b>: por eso C es muy rápido.','CPU: MOV · CALL printf …'],
- [2,'📞','Llamada al sistema','<code>printf</code> termina pidiéndole al kernel: <code>write(pantalla, "Hola")</code>.','write(1, "Hola\\n", 5)'],
- [3,'🖥️','¡Hola!','El driver de video dibuja el texto en la pantalla.','Hola']]},
- js:{f:'hola.js',code:'console.log("Hola");',steps:[
- [0,'✍️','Escribes hola.js','Escribes JavaScript dentro de tu página web.','console.log("Hola");'],
- [2,'🌐','El navegador lo abre','Chrome es un proceso del sistema operativo. Descarga tu página y entrega el código a su motor V8.','Chrome · pestaña: index.html'],
- [1,'🌳','Analiza el código','El motor V8 lo corta en tokens y arma el árbol, igual que Python.','Llamada\n ├─ console.log\n └─ "Hola"'],
- [1,'📦','Bytecode','Empieza interpretando bytecode para arrancar rápido.','LdaConstant "Hola"\nCallProperty log'],
- [1,'🔥','JIT: compila al vuelo','Si una parte se repite mucho, el <b>compilador JIT</b> la convierte en código máquina mientras el programa corre. Lo mejor de los dos mundos.','código caliente → código máquina'],
- [3,'⚡','La CPU ejecuta','La CPU ejecuta el código máquina generado.','CPU: 01001000 10001011 …'],
- [2,'📞','Pide dibujar','El navegador le pide al sistema operativo y al driver de la GPU que pinten la consola.','GPU ← dibujar texto'],
- [3,'🖥️','¡Hola!','Aparece en la consola del navegador (tecla F12).','Hola']]}};
+/* ---------- 17 lenguaje + sistema operativo ---------- */
+const LG={py:{steps:[
+ [0,'✍️','Escribes tu orden','Escribes en Python la orden «muestra Hola en la pantalla». Por ahora es solo <b>texto</b> guardado en un archivo.','📄 hola.py\nprint("Hola")'],
+ [2,'🚀','Le pides abrirlo','Le dices a la computadora que lo ejecute. El <b>sistema operativo</b> abre el programa y le da un espacio en la RAM.','Sistema: abriendo hola.py… ✔'],
+ [1,'🎙️','El traductor lee','Python funciona como un <b>intérprete en vivo</b>: lee tu orden línea por línea y entiende «mostrar» + «el texto Hola».','print  →  mostrar\n"Hola" →  el texto'],
+ [1,'0️⃣','Lo pasa a unos y ceros','Traduce tu orden al único idioma que entiende el procesador: <b>unos y ceros</b>.','01001000 01101111\n01101100 01100001'],
+ [3,'⚡','El procesador trabaja','El procesador hace las operaciones, miles de millones por segundo.','⚡ ⚡ ⚡'],
+ [2,'🙋','Pide permiso para la pantalla','Tu programa no puede tocar la pantalla solo: le pide al <b>sistema operativo</b> «¿puedo escribir aquí?».','Programa: ¿puedo usar la pantalla?\nSistema: ✔ adelante'],
+ [3,'🖥️','¡Aparece «Hola»!','El sistema le pasa el texto a la pantalla. Todo pasó en menos de un parpadeo.','Hola']]},
+ c:{steps:[
+ [0,'✍️','Escribes tu orden','Escribes en lenguaje C la orden «muestra Hola». Es solo texto guardado en un archivo.','📄 hola.c\nprintf("Hola");'],
+ [1,'📕','Se traduce todo antes','Un <b>compilador</b> traduce TODO el programa de una vez, como quien traduce un libro completo antes de venderlo.','Traduciendo hola.c… ✔'],
+ [1,'📦','Nace un programa listo','El resultado es un archivo <b>.exe</b> ya traducido a unos y ceros. Ya no necesita traductor.','📦 hola.exe\n01001101 01011010 …'],
+ [2,'🚀','Lo abres','Haces doble clic y el <b>sistema operativo</b> lo copia a la RAM.','Sistema: abriendo hola.exe… ✔'],
+ [3,'⚡','El procesador lo hace directo','Como ya está traducido, el procesador lo ejecuta sin esperar: por eso C es <b>muy rápido</b>.','⚡⚡⚡⚡⚡⚡'],
+ [2,'🙋','Pide permiso para la pantalla','Igual que antes: le pide al sistema operativo usar la pantalla.','Programa: ¿puedo usar la pantalla?\nSistema: ✔ adelante'],
+ [3,'🖥️','¡Aparece «Hola»!','El texto sale en la pantalla.','Hola']]},
+ js:{steps:[
+ [0,'✍️','Escribes tu orden','Escribes en JavaScript, el lenguaje de las <b>páginas web</b>, la orden «muestra Hola».','📄 hola.js\nconsole.log("Hola");'],
+ [2,'🌐','Abres el navegador','Chrome es una app del sistema operativo. Descarga tu página con su código.','Sistema: abriendo Chrome… ✔'],
+ [1,'🎙️','El navegador traduce','Chrome trae su propio <b>traductor</b> que lee tu código para que arranque rápido.','console.log → mostrar\n"Hola"      → el texto'],
+ [1,'🔥','Aprende lo que se repite','Si una parte se usa muchas veces, la traduce completa para que vaya más rápido. ¡Un traductor que aprende!','parte repetida → ya traducida'],
+ [3,'⚡','El procesador trabaja','El procesador ejecuta los unos y ceros.','⚡ ⚡ ⚡'],
+ [2,'🙋','Pide dibujar','El navegador le pide al sistema operativo y a la tarjeta de video que dibujen el resultado.','Chrome: ¿puedo dibujar?\nSistema: ✔ adelante'],
+ [3,'🖥️','¡Aparece «Hola»!','Aparece dentro del navegador.','Hola']]}};
 let lgL='py',lgI=-1,lgRun=0;
 const lgDraw=()=>{const L=LG[lgL];$$('#lang .nd').forEach(n=>n.remove());
  L.steps.forEach((s,i)=>$$('#lang .zone')[s[0]].insertAdjacentHTML('beforeend',`<div class="nd" data-i="${i}"><i>${i+1}</i><span><b>${s[1]} ${s[2]}</b></span></div>`));
- $('#lgF').textContent=L.f;$('#lgC').innerHTML=hl(L.code,lgL!=='py');$('#pk').style.opacity=0;lgI=-1;
- $('#lgD').innerHTML=`<b>Toca «Siguiente paso»</b> para ver cómo viaja <code>${esc(L.code.includes('printf')?'printf("Hola")':L.code.replace(';',''))}</code> desde tu archivo hasta la pantalla.`;
+ $('#lgC').textContent=L.steps[0][4];$('#pk').style.opacity=0;lgI=-1;
+ $('#lgD').innerHTML='<b>Toca «Siguiente paso»</b> y sigue a la orden «muestra Hola» desde que la escribes hasta que aparece en la pantalla.';
  $$('#lang .nd').forEach(n=>n.onclick=()=>{lgRun++;lgShow(+n.dataset.i)});requestAnimationFrame(fit)};
 const lgPk=()=>{if(lgI<0)return;const n=$(`#lang .nd[data-i="${lgI}"]`),box=$('#lang');if(!n)return;const z=parseFloat(getComputedStyle(box.closest('.body')).zoom)||1;
  const a=n.getBoundingClientRect(),b=box.getBoundingClientRect(),k=('zoom' in document.body.style&&z!==1&&Math.abs(b.width-box.offsetWidth)>2)?z:1;
  const pk=$('#pk');pk.style.opacity=1;pk.style.left=((a.left-b.left)/k+14)+'px';pk.style.top=((a.top-b.top)/k+a.height/k/2)+'px'};
 slides.find(s=>s.dataset.t==='Lenguaje y sistema operativo').__fitCb=()=>requestAnimationFrame(lgPk);
-const lgShow=i=>{lgI=i;const s=LG[lgL].steps[i];$$('#lang .nd').forEach((n,k)=>{n.classList.toggle('on',k===i);n.classList.toggle('done',k<i)});
- $('#lgD').innerHTML=`<h3>${s[1]} ${i+1}. ${s[2]}</h3><p style="margin:0">${s[3]}</p>`;$('#lgC').innerHTML=s[0]===3&&i===LG[lgL].steps.length-1?'<span style="color:var(--g)">Hola</span>':hl(s[4],true);
- tone([523,659,784,988][s[0]],.15,'triangle',.11);lgPk();if(i===LG[lgL].steps.length-1)setTimeout(S.ok,250)};
+const lgShow=i=>{lgI=i;const st=LG[lgL].steps,s=st[i];$$('#lang .nd').forEach((n,k)=>{n.classList.toggle('on',k===i);n.classList.toggle('done',k<i)});
+ $('#lgD').innerHTML=`<h3>${s[1]} ${i+1}. ${s[2]}</h3><p style="margin:0">${s[3]}</p>`;
+ if(i===st.length-1)$('#lgC').innerHTML='<span style="color:var(--g);font-size:2em;font-weight:700">Hola</span>';else $('#lgC').textContent=s[4];
+ tone([523,659,784,988][s[0]],.15,'triangle',.11);lgPk();if(i===st.length-1)setTimeout(S.ok,250)};
 $$('#lgTabs button').forEach(b=>b.onclick=()=>{lgRun++;lgL=b.dataset.l;$$('#lgTabs button').forEach(x=>x.classList.toggle('on',x===b));S.whoosh();lgDraw()});
 $('#lgB').onclick=()=>{lgRun++;lgShow((lgI+1)%LG[lgL].steps.length)};
-$('#lgAll').onclick=async()=>{const r=++lgRun;for(let i=0;i<LG[lgL].steps.length;i++){if(r!==lgRun)return;lgShow(i);await wait(1500)}};
+$('#lgAll').onclick=async()=>{const r=++lgRun;for(let i=0;i<LG[lgL].steps.length;i++){if(r!==lgRun)return;lgShow(i);await wait(1700)}};
 addEventListener('resize',()=>requestAnimationFrame(lgPk));
 enter['Lenguaje y sistema operativo']=()=>{lgRun++;lgDraw()};lgDraw();
 
-/* ---------- 21 compilado vs interpretado ---------- */
-const TR=[['📕','Compilado','Como traducir un <b>libro completo</b> antes de venderlo: tarda al inicio, pero luego se lee rapidísimo.<br><b>C, C++, Rust, Go</b>'],
- ['🎙️','Interpretado','Como un <b>intérprete en vivo</b> que traduce frase por frase: empiezas al instante, pero va más lento.<br><b>Python, PHP</b>'],
- ['🔥','JIT','Un intérprete que <b>aprende</b>: lo que se repite lo traduce a código máquina mientras corre.<br><b>JavaScript, Java, C#</b>']];
+/* ---------- 18 formas de traducir ---------- */
+const TR=[['📕','Todo antes','Como traducir un <b>libro completo</b> antes de venderlo: tarda al principio, pero después se lee rapidísimo.<br><b>Ejemplo: C</b>'],
+ ['🎙️','En vivo','Como un <b>intérprete</b> en una entrevista: traduce frase por frase. Empieza al instante, pero va más lento.<br><b>Ejemplo: Python</b>'],
+ ['🔥','En vivo que aprende','Traduce en vivo, pero lo que se repite mucho lo deja ya traducido para ir más rápido.<br><b>Ejemplo: JavaScript</b>']];
 $('#trGrid').innerHTML=TR.map((t,i)=>`<button class="flip" style="min-height:260px"><div class="in" style="min-height:260px"><div class="f"><span class="ico">${t[0]}</span><h3>${t[1]}</h3><small>Toca para ver</small></div><div class="b" style="font-size:.85em"><span>${t[2]}</span></div></div></button>`).join('');
 $$('#trGrid .flip').forEach((f,i)=>f.onclick=()=>{f.classList.toggle('on');tone(520+i*60,.08,'triangle',.08);tone(780+i*60,.1,'triangle',.06,.05)});
-const LR=[['C','compilado',0.1,'#3ee39f'],['JavaScript','JIT',0.15,'#4cc9f0'],['Python','interpretado',6,'#ffb547']];
+const LR=[['C','todo antes',0.1,'#3ee39f'],['JavaScript','en vivo que aprende',0.15,'#4cc9f0'],['Python','en vivo',6,'#ffb547']];
 $('#lrace').innerHTML=LR.map(r=>`<div class="race"><span><b style="font-family:Sora;text-align:left">${r[0]}</b><br><small style="color:var(--mute)">${r[1]}</small></span><div class="tr"><i style="background:${r[3]}"></i></div><b>—</b></div>`).join('');
 $('#lraceB').onclick=()=>{S.power();const rows=$$('#lrace .race');rows.forEach(r=>{const i=r.querySelector('i');i.style.transition='none';i.style.width=0;r.querySelector('b:last-child').textContent='—'});
  requestAnimationFrame(()=>requestAnimationFrame(()=>rows.forEach((r,k)=>{const ms=Math.max(300,LR[k][2]*600);const i=r.querySelector('i');i.style.transition=`width ${ms}ms linear`;i.style.width='100%';
   setTimeout(()=>{r.querySelector('b:last-child').textContent='≈ '+String(LR[k][2]).replace('.',',')+' s';tone(1200-k*200,.15,'triangle',.1);if(k===0)S.ok();if(k===2)S.edge()},ms)})))};
 
-/* ---------- 22 archivos y rutas ---------- */
-const FT=[['C:',null,0],['Users',null,1],['Ana',null,2],['Documentos',null,3],['tarea.docx','Documento de Word: lo abre Word, no Python.',4],['curso',null,3],['hola.py','Código Python: lo ejecuta el intérprete de Python.',4],['notas.txt','Texto plano: cualquier programa puede leerlo.',4],['web',null,4],['index.html','Página web: la abre el navegador.',5],['estilos.css','Hoja de estilos: le da diseño a la página.',5]];
+/* ---------- 19 carpetas y rutas ---------- */
+const FT=[['C:',null,0],['Users',null,1],['Ana',null,2],['Documentos',null,3],['tarea.docx','Documento de Word: lo abre Word.',4],['curso',null,3],['juego.py','Un programa en Python.',4],['notas.txt','Texto simple: casi cualquier programa puede leerlo.',4],['web',null,4],['index.html','Una página web: la abre el navegador.',5],['foto.png','Una imagen.',5]];
 const fPath=i=>{const p=[];let lv=FT[i][2];p.unshift(FT[i][0]);for(let k=i-1;k>=0&&lv>0;k--){if(FT[k][2]<lv&&FT[k][1]===null){p.unshift(FT[k][0]);lv=FT[k][2]}}return p};
 let fsCwd=5,fsSel=7;
-$('#tree').innerHTML=FT.map((f,i)=>`<button data-i="${i}" class="${f[1]===null?'dir':''}" style="padding-left:${8+f[2]*22}px">${f[1]===null?'📁':f[0].endsWith('.py')?'🐍':f[0].endsWith('.html')?'🌐':f[0].endsWith('.css')?'🎨':'📄'} ${f[0]}</button>`).join('');
+$('#tree').innerHTML=FT.map((f,i)=>`<button data-i="${i}" class="${f[1]===null?'dir':''}" style="padding-left:${8+f[2]*22}px">${f[1]===null?'📁':f[0].endsWith('.py')?'🐍':f[0].endsWith('.html')?'🌐':f[0].endsWith('.png')?'🖼️':'📄'} ${f[0]}</button>`).join('');
 const fsDraw=()=>{$$('#tree button').forEach((b,i)=>{b.classList.toggle('cwd',i===fsCwd);b.classList.toggle('on',i===fsSel)});
  const c=fPath(fsCwd),f=fPath(fsSel);$('#fsCwd').textContent=c.join('\\')+'\\';
- $('#fsWin').textContent=f.join('\\');$('#fsLin').textContent='/home/'+f.slice(2).join('/').replace(/^Ana/,'ana');
- let k=0;while(k<c.length&&k<f.length-1&&c[k]===f[k])k++;const rel=[...Array(c.length-k).fill('..'),...f.slice(k)].join('\\');$('#fsRel').textContent=rel;
- $('#fsExt').innerHTML=`<b>.${f[f.length-1].split('.').pop()}</b> → ${FT[fsSel][1]}`;
- $('#fsCode').innerHTML=hl(`# carpeta actual: ${c[c.length-1]}\narchivo = open("notas.txt")\nprint(archivo.read())`);$('#fsOut').textContent='';$('#fsOut').className='out'};
+ $('#fsWin').textContent=f.join('\\');
+ let k=0;while(k<c.length&&k<f.length-1&&c[k]===f[k])k++;const up=c.length-k;const rel=[...Array(up).fill('..'),...f.slice(k)].join('\\');
+ $('#fsRel').textContent=rel+(up?`   (.. = subir ${up===1?'una carpeta':up+' carpetas'})`:'');
+ $('#fsExt').innerHTML=`La terminación <b>.${f[f.length-1].split('.').pop()}</b> dice qué es: ${FT[fsSel][1]}`};
 $$('#tree button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(FT[i][1]===null)fsCwd=i;else fsSel=i;fsDraw()});
 $('#fsRun').onclick=()=>{const ok=FT[fsCwd][0]==='curso';const o=$('#fsOut');
- if(ok){o.className='out';o.textContent='Ana 92\nLuis 78\nMaría 88';S.ok()}else{o.className='out err';o.textContent=`FileNotFoundError: [Errno 2] No such file or directory: 'notas.txt'\n→ Python buscó en ${fPath(fsCwd).join('\\')}\\ y el archivo está en C:\\Users\\Ana\\curso\\`;S.err()}requestAnimationFrame(fit)};
+ if(ok){o.innerHTML='✅ <b>¡Lo encontré!</b> notas.txt está aquí mismo, en la carpeta <b>curso</b>.';S.ok()}else{o.innerHTML=`❌ <b>«No encuentro el archivo»</b>. El programa buscó en <b>${esc(FT[fsCwd][0])}</b>, pero notas.txt está en la carpeta <b>curso</b>. Es uno de los errores más comunes al programar.`;S.err()}requestAnimationFrame(fit)};
 fsDraw();
 
-/* ---------- 23 terminal ---------- */
-const FS={'C:\\Users\\Ana':['Documentos','curso'],'C:\\Users\\Ana\\Documentos':['tarea.docx'],'C:\\Users\\Ana\\curso':['hola.py','notas.txt','web'],'C:\\Users\\Ana\\curso\\web':['index.html','estilos.css']};
-const FC={'hola.py':'print("¡Hola desde Python!")','notas.txt':'Ana 92\nLuis 78\nMaría 88','index.html':'<h1>Mi página</h1>','estilos.css':'h1 { color: green; }'};
+/* ---------- 20 terminal ---------- */
+const FS={'C:\\Users\\Ana':['Documentos','curso'],'C:\\Users\\Ana\\Documentos':['tarea.docx'],'C:\\Users\\Ana\\curso':['juego.py','notas.txt','web'],'C:\\Users\\Ana\\curso\\web':['index.html','foto.png']};
+const FC={'notas.txt':'Ana 92\nLuis 78\nMaría 88','index.html':'<h1>Mi página</h1>'};
 let cwd='C:\\Users\\Ana';
-const CD={help:'Lista los comandos disponibles.',dir:'Muestra el contenido de la carpeta actual (en Linux: ls).',cd:'Cambia de carpeta. cd .. sube un nivel.',mkdir:'Crea una carpeta nueva.',python:'Ejecuta el intérprete: python --version o python archivo.py',type:'Muestra el contenido de un archivo (en Linux: cat).',echo:'Repite un texto: muy usado en scripts.',whoami:'Dice con qué usuario del sistema estás trabajando.',cls:'Limpia la pantalla (en Linux: clear).'};
+const CD={help:'Muestra la lista de comandos.',dir:'«Muéstrame lo que hay en esta carpeta». En Mac y Linux se escribe ls.',cd:'«Entra a esta carpeta». Con cd .. vuelves a la carpeta de arriba.',mkdir:'«Crea una carpeta nueva».',type:'«Muéstrame lo que dice este archivo». En Mac y Linux: cat.',python:'Abre el traductor de Python. Con --version te dice qué versión tienes.',echo:'Repite lo que escribas.',whoami:'«¿Quién soy?»: te dice con qué usuario entraste.',cls:'Limpia la pantalla. En Mac y Linux: clear.'};
 const cliP=()=>{$('#cliP').textContent=cwd+'>'};
 const cliW=t=>{const o=$('#cliOut');o.textContent+=t+'\n';o.scrollTop=o.scrollHeight};
 const cliRun=raw=>{const line=raw.trim();cliW(cwd+'> '+line);if(!line)return;const [c0,...a]=line.split(/\s+/),c=c0.toLowerCase(),arg=a.join(' ');let ok=true;
  const ls=FS[cwd]||[];
  if(c==='help'||c==='ayuda')cliW(Object.keys(CD).join('  ·  '));
- else if(c==='dir'||c==='ls')cliW(ls.length?ls.map(n=>(FS[cwd+'\\'+n]?'<DIR>   ':'        ')+n).join('\n'):'(carpeta vacía)');
+ else if(c==='dir'||c==='ls')cliW(ls.length?ls.map(n=>(FS[cwd+'\\'+n]?'<CARPETA> ':'          ')+n).join('\n'):'(carpeta vacía)');
  else if(c==='cd'){if(!arg)cliW(cwd);else if(arg==='..'){if(cwd!=='C:\\Users\\Ana')cwd=cwd.slice(0,cwd.lastIndexOf('\\'));else{cliW('Para esta práctica no salimos de C:\\Users\\Ana');ok=false}}else{const t=ls.find(n=>n.toLowerCase()===arg.toLowerCase().replace(/[\\/]$/,''));if(t&&FS[cwd+'\\'+t])cwd+='\\'+t;else{cliW('El sistema no puede encontrar la ruta especificada.');ok=false}}}
  else if(c==='mkdir'||c==='md'){if(!arg){cliW('Falta el nombre de la carpeta.');ok=false}else if(ls.includes(arg)){cliW('Ya existe una carpeta con ese nombre.');ok=false}else{ls.push(arg);FS[cwd]=ls;FS[cwd+'\\'+arg]=[];cliW('(carpeta creada ✔)')}}
- else if(c==='python'||c==='py'){if(/^(--version|-v)$/i.test(arg))cliW('Python 3.13.1');else if(!arg)cliW('Python 3.13.1 · en esta práctica usa python --version o python hola.py');else if(ls.includes(arg)&&arg==='hola.py')cliW('¡Hola desde Python!');else if(ls.includes(arg))cliW(`  File "${arg}", line 1\nSyntaxError: eso no es código Python`);else{cliW(`python: can't open file '${cwd}\\${arg}': [Errno 2] No such file or directory`);ok=false}}
+ else if(c==='python'||c==='py'){if(/^(--version|-v)$/i.test(arg))cliW('Python 3.13.1');else{cliW('Python 3.13.1 · (lo usaremos en el Módulo 3)')}}
  else if(c==='type'||c==='cat'){if(ls.includes(arg)&&FC[arg])cliW(FC[arg]);else{cliW('El sistema no puede encontrar el archivo especificado.');ok=false}}
  else if(c==='echo')cliW(arg);
  else if(c==='whoami')cliW('pc-aula\\ana');
  else if(c==='cls'||c==='clear'){$('#cliOut').textContent=''}
  else{cliW(`'${c0}' no se reconoce como un comando interno o externo,\nprograma o archivo por lotes ejecutable.`);ok=false}
  const k=c==='ls'?'dir':c==='cat'?'type':c==='clear'?'cls':c==='md'?'mkdir':c==='py'?'python':c==='ayuda'?'help':c;
- $('#cliD').innerHTML=CD[k]?`<b class="mono" style="color:var(--g)">${esc(c0)}</b>: ${CD[k]}`:'Ese comando no existe. Escribe <b class="mono">help</b> para ver la lista.';
+ $('#cliD').innerHTML=CD[k]?`<b class="mono" style="color:var(--g)">${esc(c0)}</b>: ${CD[k]}`:'La computadora no conoce esa palabra. Escribe <b class="mono">help</b> para ver la lista.';
  if(ok)S.beep(990);else S.err();cliP()};
 $('#cliF').onsubmit=e=>{e.preventDefault();cliRun($('#cliI').value);$('#cliI').value=''};
-const CLS=['dir','cd curso','dir','type notas.txt','python --version','python hola.py','mkdir proyecto','cd ..','whoami','help'];
+const CLS=['dir','cd curso','dir','type notas.txt','mkdir proyecto','cd ..','whoami','python --version'];
 $('#cliChips').innerHTML=CLS.map(c=>`<button>${c}</button>`).join('');
 let cliBusy=false;
 $$('#cliChips button').forEach(b=>b.onclick=async()=>{if(cliBusy)return;cliBusy=true;const inp=$('#cliI');inp.value='';for(const ch of b.textContent){inp.value+=ch;S.key();await wait(45)}await wait(150);cliRun(inp.value);inp.value='';cliBusy=false});
-$('#cliOut').textContent='Microsoft Windows [Versión 10.0]\nEscribe help para ver los comandos.\n\n';cliP();
+$('#cliOut').textContent='Microsoft Windows\nEscribe help para ver los comandos.\n\n';cliP();
 $('.cli').addEventListener('click',e=>{if(!e.target.closest('button')&&innerWidth>=1000)$('#cliI').focus()});
 
-/* ---------- 24 tu equipo ---------- */
+/* ---------- 21 tu equipo ---------- */
 const EQ={cpu:[['2 núcleos',0],['4 núcleos',1],['6 núcleos',2],['8 o más',2]],ram:[['4 GB',0],['8 GB',1],['16 GB',2],['32 GB',2]],dsk:[['Disco HDD',0],['SSD SATA',1],['SSD NVMe',2]]};
 const EQS={};
 $$('[data-q]').forEach(c=>{const q=c.dataset.q;c.innerHTML=EQ[q].map((o,i)=>`<button data-i="${i}">${o[0]}</button>`).join('');
  c.querySelectorAll('button').forEach(b=>b.onclick=()=>{c.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));EQS[q]=EQ[q][b.dataset.i][1];eqEval()})});
 const eqEval=()=>{if(Object.keys(EQS).length<3){$('#eqT').textContent='Te falta elegir '+(3-Object.keys(EQS).length)+' pieza(s)';return}
- const t=EQS.cpu+EQS.ram+EQS.dsk,L=[];if(EQS.cpu===0)L.push('Con 2 núcleos funcionará, pero lento con el navegador y el editor abiertos.');if(EQS.ram===0)L.push('4 GB de RAM se quedan cortos: busca subir a 8 o 16 GB.');if(EQS.ram===1)L.push('8 GB alcanzan para empezar; 16 GB es lo ideal.');if(EQS.dsk===0)L.push('Cambiar el HDD por un SSD es la mejora más barata y notable.');if(!L.length)L.push('Tu equipo está listo para programar, usar IA y correr servidores locales.');
+ const t=EQS.cpu+EQS.ram+EQS.dsk,L=[];if(EQS.cpu===0)L.push('Con 2 núcleos funcionará, pero lento con varias cosas abiertas.');if(EQS.ram===0)L.push('4 GB de RAM se quedan cortos: lo ideal es 8 o 16 GB.');if(EQS.ram===1)L.push('8 GB alcanzan para empezar; 16 GB es lo ideal.');if(EQS.dsk===0)L.push('Cambiar el disco HDD por un SSD es la mejora más barata y la que más se nota.');if(!L.length)L.push('Tu equipo está listo para programar y usar herramientas de IA.');
  const [v,tt,f]=EQS.ram===0||EQS.dsk===0&&t<4?['⚠','Necesita mejoras',S.no]:t>=5?['🚀','¡Listo para programar!',S.party]:['✔','Sirve para empezar',S.ok];
  $('#eqV').textContent=v;$('#eqT').textContent=tt;$('#eqL').innerHTML=L.map(x=>`<li>${x}</li>`).join('');f();requestAnimationFrame(fit)};
 
-/* ---------- 25 reto ---------- */
-const QZ=[['Tu programa muestra «MemoryError». ¿Qué se quedó corto?',['El disco SSD','La memoria RAM','La tarjeta de red'],1],
- ['¿Qué hace la CPU en el ciclo de instrucción?',['Guarda los archivos en el disco','Busca, decodifica y ejecuta','Envía los datos por la red'],1],
- ['¿Dónde es MÁS rápido leer un dato?',['En la caché','En la RAM','En el SSD NVMe'],0],
- ['Python dice que no encuentra «notas.txt», pero existe. ¿Qué revisas?',['La velocidad del procesador','La carpeta actual y la ruta','La memoria de video'],1],
- ['¿Qué es una llamada al sistema?',['Un pedido del programa al kernel','Un mensaje de error de Python','Un cable entre la placa y el disco'],0],
- ['¿Qué lenguaje se traduce COMPLETO antes de ejecutarse?',['Python','C','HTML'],1],
- ['¿Por qué la GPU acelera la inteligencia artificial?',['Hace miles de cálculos a la vez','Tiene más espacio que un disco','Reemplaza al sistema operativo'],0],
- ['Al encender la PC, ¿qué busca y carga el sistema operativo?',['El navegador','El gestor de arranque','El intérprete de Python'],1],
- ['Un bucle infinito deja un núcleo al 100 %. ¿Quién lo detiene?',['El monitor','El sistema operativo','La memoria USB'],1],
- ['Un bit puede valer…',['0 o 1','De 0 a 9','De 0 a 255'],0]];
+/* ---------- 22 reto ---------- */
+const QZ=[['¿Qué pieza es el «cerebro» que hace las cuentas?',['La memoria RAM','El procesador','El disco duro'],1],
+ ['Se fue la luz y perdiste lo que no guardaste. ¿Dónde estaba?',['En la memoria RAM','En el disco SSD','En la tarjeta de video'],0],
+ ['¿Qué son los núcleos de un procesador?',['Varios cerebros en un mismo chip','Cables que van a la pantalla','Memorias para guardar fotos'],0],
+ ['¿Por qué la IA necesita una buena tarjeta de video?',['Porque hace miles de cuentas a la vez','Porque guarda más archivos','Porque reemplaza al teclado'],0],
+ ['Windows, Android e iOS son…',['Sistemas operativos','Lenguajes de programación','Piezas de hardware'],0],
+ ['Un juego se congela. ¿Quién puede cerrarlo a la fuerza?',['El monitor','El sistema operativo','La bocina'],1],
+ ['Una app quiere usar la cámara. ¿A quién le pide permiso?',['Al kernel del sistema','A la memoria RAM','A otra app'],0],
+ ['¿Qué hace un lenguaje de programación como Python?',['Traduce tus órdenes para la máquina','Enfría el procesador','Conecta la computadora a la luz'],0],
+ ['Un programa dice «No encuentro el archivo», pero existe. ¿Qué revisas?',['La velocidad del procesador','La carpeta y la ruta','El volumen de la bocina'],1],
+ ['Un bit puede valer…',['0 o 1','De 0 a 9','De 0 a 100'],0]];
 let qi=0,qs=0,ql=false;
 const qzDraw=()=>{ql=false;$('#qzN').textContent=`Pregunta ${qi+1} de ${QZ.length}`;const q=QZ[qi];$('#qzQ').className='sit';$('#qzQ').textContent=q[0];$('#qzF').textContent='';$('#qzR').style.display='none';
  $('#qzA').style.display='';$('#qzA').innerHTML=q[1].map((o,i)=>`<button data-i="${i}">${['A','B','C'][i]}. ${o}</button>`).join('');
@@ -1223,9 +1137,8 @@ const qzDraw=()=>{ql=false;$('#qzN').textContent=`Pregunta ${qi+1} de ${QZ.lengt
   setTimeout(()=>{qi++;if(qi<QZ.length)qzDraw();else{$('#qzQ').textContent=`Resultado: ${qs} de ${QZ.length}`;$('#qzA').style.display='none';$('#qzF').textContent=qs>=8?'¡Excelente! Ya piensas como programador.':'¡Bien! Repasa las láminas y vuelve a intentarlo.';$('#qzR').style.display='';if(qs>=8)S.party()}requestAnimationFrame(fit)},1700)})};
 $('#qzR').onclick=()=>{qi=0;qs=0;$('#qzS').textContent=0;qzDraw()};qzDraw();
 
-/* ---------- 26 cierre ---------- */
-const BY='hardware = "lo que ejecuta"\nsoftware = "lo que ordena"\nprogramador = "quien entiende ambos"\nprint("Ahora eres", programador)';$('#byC').innerHTML=hl(BY);
-$('#party').onclick=async()=>{$('#byO').textContent='';S.beep(990);await wait(250);await typeTo($('#byO'),'Ahora eres quien entiende ambos 🚀',22);S.party();
+/* ---------- 23 cierre ---------- */
+$('#party').onclick=()=>{S.party();
  const cols=['#3ee39f','#4cc9f0','#b197fc','#ffb547','#ff6b6b','#ffffff'];for(let i=0;i<90;i++){const c=document.createElement('div');c.className='conf';c.style.left=Math.random()*100+'vw';c.style.background=cols[i%cols.length];c.style.animationDuration=(1.8+Math.random()*2)+'s';c.style.animationDelay=Math.random()*.6+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),4500)}};
 $('#crB').onclick=()=>{$('#crL').hidden=!$('#crL').hidden;requestAnimationFrame(fit)};
 
