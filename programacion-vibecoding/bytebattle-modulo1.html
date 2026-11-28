@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<link rel="icon" type="image/png" href="../img/icadep-escudo.png">
-<title>ByteBattle · Módulo 1</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%230a0f1c%27/%3E%3Ctext x=%2732%27 y=%2742%27 font-size=%2724%27 text-anchor=%27middle%27 fill=%27%233ee39f%27 font-family=%27monospace%27 font-weight=%27bold%27%3E%3C/%3E%3C/text%3E%3C/svg%3E">
+<title>ByteBattle · JAREDU</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -198,7 +198,56 @@ input:checked+.toggle-slider:before{transform:translateX(22px);background:#06231
 .pfx .t{font:800 clamp(2.2rem,5.5vw,4rem) Sora,sans-serif;color:var(--c);letter-spacing:2px}
 .pfx .s{font-size:clamp(1.1rem,2.2vw,1.5rem);color:#fff;margin-top:6px}
 @keyframes pfxRise{0%{transform:translateY(80px) scale(.6);opacity:0}12%{transform:translateY(0) scale(1.08);opacity:1}20%{transform:translateY(0) scale(1)}62%{transform:translateY(-20px);opacity:1}100%{transform:translateY(-300px) scale(.9);opacity:0}}
-@media(max-width:700px){.team-name{font-size:.9rem}#q{font-size:1.2rem}.option{font-size:1rem;padding:11px 52px}#game-content{margin-top:80px}.credit{display:none}}
+/* todas las pantallas se pueden desplazar si no caben */
+.screen{height:100vh;height:100dvh;overflow-y:auto}
+.active{justify-content:center;justify-content:safe center}
+#home{padding-bottom:56px}
+/* celular vertical u horizontal y ventanas bajas */
+@media (max-width:700px),(max-height:560px){
+ .credit{display:none}
+ #ui-top{padding:4px 8px}
+ .team-hud{padding:2px 6px;width:46%}
+ .team-name{font-size:.8rem;letter-spacing:0}
+ .win-counter{font-size:13px}
+ .energy-bar-bg{height:9px}
+ #center-hud-label{display:none}
+ #game.active{justify-content:flex-start}
+ #game-content{height:auto;margin-top:66px;padding-bottom:120px;justify-content:flex-start;gap:4px;width:100%}
+ #turnText{font-size:.72rem!important}
+ #playerText{font-size:1.3rem!important;margin:0!important}
+ #timer{font-size:2rem!important;line-height:1.1}
+ #q{font-size:1.08rem;padding:10px 14px;margin:6px 0;min-height:0}
+ .option{font-size:.97rem;padding:9px 10px 9px 50px;margin:5px auto;width:100%}
+ .option .letra{width:30px;height:30px;font-size:.9rem;left:10px}
+ .option .ptr{display:none}
+ .option .okb{margin-left:6px}
+ #result{height:auto!important;min-height:26px;font-size:1rem!important}
+ #revealMsg{font-size:1rem}#revealMsg .n{font-size:1.25rem}
+ #habs{position:fixed;left:0;right:0;bottom:0;margin:0!important;padding:6px 6px calc(6px + env(safe-area-inset-bottom));gap:6px!important;background:rgba(7,11,22,.97);border-top:1px solid var(--line);z-index:150;flex-wrap:nowrap!important}
+ #habs button{margin:0;padding:9px 4px;font-size:11px!important;flex:1;white-space:nowrap;min-width:0}
+ .pause-btn{bottom:58px;right:8px;padding:6px 10px}
+ #muteFloatBtn{bottom:58px;left:8px;padding:4px 9px;font-size:15px}
+ #end.active{justify-content:flex-start;padding-top:18px;padding-bottom:70px}
+ #winner{font-size:2.2rem}
+ .rank-scroll{max-height:none;width:96%}
+ #mvp-card{padding:10px 16px}
+ .pfx{padding:14px 22px}.pfx .i{font-size:3rem}
+ #vsTitle{font-size:2rem!important}
+ .mode-selector{margin:8px}
+ .logo{font-size:2.6rem}
+ .story-card{padding:12px 16px}
+ #config.active{padding-bottom:30px}
+}
+/* celular horizontal: pausa y sonido dentro de la barra de poderes */
+@media (max-height:560px) and (min-width:560px){
+ #habs{padding-left:64px;padding-right:110px;justify-content:center}
+ #habs button{flex:0 1 190px}
+ .pause-btn{bottom:9px;right:10px}
+ #muteFloatBtn{bottom:9px;left:10px}
+ #game-content{padding-bottom:70px;margin-top:60px}
+ #turnText{display:none}
+ #timer{font-size:1.7rem!important}
+}
 @media(prefers-reduced-motion:reduce){.btn-main,.ticker-move{animation:none}}
 </style>
 </head>
@@ -258,7 +307,7 @@ input:checked+.toggle-slider:before{transform:translateX(22px);background:#06231
     <button class="secondary" onclick="nav('settings')">⚙ CONFIGURACIÓN</button>
   </div>
   <div class="credit">Foto: Martijn Boer · Dominio público · Wikimedia Commons</div>
-  <div class="footer-bar"><div style="text-align:center;width:100%">Creado por: Jarlin Figueroa | ByteBattle · Fundamentos de Programación con VibeCoding | Info: 809-958-9611 | 2026</div></div>
+  <div class="footer-bar"><div style="text-align:center;width:100%">JAREDU · ByteBattle | Creado por: Jarlin Figueroa | Info: 809-958-9611 | 2026</div></div>
 </div>
 
 <!-- ═════════ HISTORIA ═════════ -->
@@ -384,7 +433,7 @@ input:checked+.toggle-slider:before{transform:translateX(22px);background:#06231
     <div id="options"></div>
     <div id="inter-turn-msg">⏳ PREPARANDO LA SIGUIENTE PREGUNTA...</div>
     <div id="result" style="height:30px;font-size:1.5rem;font-weight:900;"></div>
-    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap">
+    <div id="habs" style="display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap">
       <button id="btn-freeze" onclick="useAbility('freeze')">⏱️ MÁS TIEMPO (<span id="count-freeze">0</span>)</button>
       <button id="btn-shield" onclick="useAbility('shield')">🛡️ ESCUDO (<span id="count-shield">0</span>)</button>
       <button id="btn-skip" onclick="useAbility('skip')">⏩ SALTAR (<span id="count-skip">0</span>)</button>
@@ -403,7 +452,7 @@ input:checked+.toggle-slider:before{transform:translateX(22px);background:#06231
     <div class="rank-scroll"><table class="rank-table" style="width:100%;margin:0;"><thead><tr><th>POS.</th><th>JUGADOR</th><th>ACIERTOS</th></tr></thead><tbody id="rankTable"></tbody></table></div>
     <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-top:8px;"><button onclick="location.reload()">🔄 NUEVA PARTIDA</button></div>
   </div>
-  <div class="footer-bar"><div class="ticker-move">Creado por: Jarlin Figueroa | ByteBattle · Fundamentos de Programación con VibeCoding | Info: 809-958-9611 | ¡Gracias por jugar!</div></div>
+  <div class="footer-bar"><div class="ticker-move">JAREDU · ByteBattle | Creado por: Jarlin Figueroa | Info: 809-958-9611 | ¡Gracias por jugar!</div></div>
 </div>
 
 <script>
