@@ -7,209 +7,203 @@
 <link rel="icon" type="image/png" href="../img/icadep-escudo.png">
 <title>ByteBattle · Módulo 1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* ByteBattle: copia de QueryBattle (Jarlin Figueroa) con aspecto juvenil para Fundamentos de Programación con VibeCoding.
-   Mismas reglas y mismos sonidos; cambia solo lo visual y el banco de preguntas (Módulo 1: Hardware y Software). */
-:root{--neon:#a3ff3b;--bg:#170b3b;--card:rgba(255,255,255,.07);--error:#ff4f7b;--warning:#ffd23f;--shield:#35e0ff;--skip:#b26bff;--oxford:#120830;
- --pink:#ff4fa3;--cyan:#35e0ff;--violet:#7b5cff;--line:rgba(255,255,255,.16);--soft:#cfc6ff;
- --t1:#35e0ff;--t2:#ff4fa3;--eq:var(--t1)}
+/* ByteBattle: copia de QueryBattle (Jarlin Figueroa) para Fundamentos de Programación con VibeCoding.
+   Mismas reglas y mismos sonidos. Aspecto alineado con la presentación del Módulo 1:
+   noche azul, verde terminal, cian y violeta; Sora + Inter + JetBrains Mono; foto real del chip en la portada. */
+:root{--neon:#3ee39f;--bg:#0a0f1c;--card:#111a2e;--p2:#17223b;--line:#283657;--ink:#eef3ff;--mute:#b3c0dc;
+ --error:#ff6b6b;--warning:#ffb547;--shield:#4cc9f0;--skip:#b197fc;--oxford:#070b16;--cyan:#4cc9f0;--violet:#b197fc;
+ --mono:"JetBrains Mono",ui-monospace,monospace;--t1:#4cc9f0;--t2:#b197fc;--eq:var(--t1)}
 html[data-turno="2"]{--eq:var(--t2)}
 *{box-sizing:border-box}
-body{margin:0;font-family:Nunito,'Segoe UI',sans-serif;color:#fff;overflow:hidden;user-select:none;
- background:radial-gradient(1200px 700px at 10% -10%,#4a1fb8 0%,transparent 60%),radial-gradient(1000px 700px at 110% 110%,#c2187a 0%,transparent 55%),radial-gradient(800px 600px at 90% 0%,#0f6fa8 0%,transparent 60%),var(--bg);background-attachment:fixed}
-h1,h2,h3,h4{font-family:Fredoka,Nunito,sans-serif;font-weight:700}
+body{margin:0;font-family:Inter,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);overflow:hidden;user-select:none}
+h1,h2,h3,h4{font-family:Sora,Inter,sans-serif;font-weight:700}
 .screen{display:none;padding:15px;text-align:center;height:100vh;width:100vw;overflow:hidden;position:relative}
 .active{display:flex;flex-direction:column;align-items:center;justify-content:center}
 
-/* burbujas decorativas */
-.blobs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.blobs i{position:absolute;font-style:normal;font-size:34px;opacity:.55;animation:floaty 9s ease-in-out infinite}
-.blobs i:nth-child(1){left:6%;top:18%}.blobs i:nth-child(2){left:88%;top:14%;animation-delay:-2s}.blobs i:nth-child(3){left:12%;top:72%;animation-delay:-4s}
-.blobs i:nth-child(4){left:82%;top:70%;animation-delay:-6s}.blobs i:nth-child(5){left:30%;top:5%;animation-delay:-3s;font-size:26px}.blobs i:nth-child(6){left:70%;top:88%;animation-delay:-5s;font-size:26px}
-@keyframes floaty{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-22px) rotate(8deg)}}
+/* portada con foto real del chip */
+.hero-bg{position:absolute;inset:0;background:url(img/die.jpg) center/cover;filter:brightness(.22) saturate(.85);z-index:0}
+#home>*:not(.hero-bg):not(canvas):not(.footer-bar):not(.credit){position:relative;z-index:2}
+#home .footer-bar{z-index:3}
+.kick{font:600 clamp(14px,1.1vw,18px) var(--mono);color:var(--neon);margin-bottom:8px}
+.logo{font-family:Sora,sans-serif;font-weight:800;font-size:clamp(3rem,7vw,5.2rem);margin:0;line-height:1;letter-spacing:1px;color:var(--ink)}
+.logo em{font-style:normal;background:linear-gradient(90deg,var(--neon),var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+.tagline span{font:600 12.5px var(--mono);padding:5px 11px;border-radius:8px;background:rgba(17,26,46,.85);border:1px solid var(--line);color:var(--mute)}
+.story-card{background:rgba(17,26,46,.88);border:1px solid var(--line);border-left:5px solid var(--neon);border-radius:14px;padding:16px 22px;max-width:720px;margin:4px 0 16px;text-align:left}
+.credit{position:absolute;z-index:3;right:10px;bottom:46px;font-size:11px;color:#c7d2e8aa}
 
 /* HUD superior */
-#ui-top{position:fixed;top:10px;left:12px;right:12px;background:rgba(23,11,59,.78);backdrop-filter:blur(10px);padding:6px 16px;z-index:10;border:2px solid var(--eq);border-radius:22px;display:flex;justify-content:space-between;align-items:center;transition:border-color .3s;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-.team-hud{width:44%;display:flex;flex-direction:column;align-items:flex-start;padding:4px 12px;border-radius:16px;border:2px solid transparent;transition:.25s}
+#ui-top{position:fixed;top:0;left:0;right:0;background:rgba(7,11,22,.95);padding:6px 18px;z-index:10;border-bottom:3px solid var(--eq);display:flex;justify-content:space-between;align-items:center;transition:border-color .3s}
+.team-hud{width:44%;display:flex;flex-direction:column;align-items:flex-start;padding:4px 12px;border-radius:10px;border:2px solid transparent;transition:.25s}
 .team-hud.right{align-items:flex-end}
-.team-name{font-family:Fredoka,sans-serif;font-size:1.25rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.team-name{font-family:Sora,sans-serif;font-size:1.15rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 #t1-hud{color:var(--t1)}#t2-hud{color:var(--t2)}
-.energy-bar-bg{width:100%;height:14px;background:rgba(255,255,255,.1);border-radius:20px;margin-top:4px;position:relative;overflow:hidden}
-.energy-bar-fill{height:100%;width:0%;border-radius:20px;transition:width .5s cubic-bezier(.3,1.4,.5,1)}
-#t1-bar{background:linear-gradient(90deg,#2b7cff,var(--t1))}
-#t2-bar{background:linear-gradient(90deg,#ff7a45,var(--t2))}
-.win-counter{font-size:18px;font-weight:900;color:var(--warning);margin-top:3px;letter-spacing:1px;line-height:1.2}
-html[data-turno="1"] .team-hud:not(.right){border-color:var(--t1);background:rgba(53,224,255,.12)}
-html[data-turno="2"] .team-hud.right{border-color:var(--t2);background:rgba(255,79,163,.12)}
-#center-hud-label{font:700 13px Fredoka,sans-serif!important;color:var(--soft)!important;background:rgba(255,255,255,.08);padding:6px 12px;border-radius:20px;letter-spacing:1px}
+.energy-bar-bg{width:100%;height:12px;background:var(--p2);border-radius:8px;margin-top:4px;position:relative;overflow:hidden;border:1px solid var(--line)}
+.energy-bar-fill{height:100%;width:0%;border-radius:8px;transition:width .5s ease-out}
+#t1-bar{background:linear-gradient(90deg,#1f6f8f,var(--t1))}
+#t2-bar{background:linear-gradient(90deg,#5b4a99,var(--t2))}
+.win-counter{font:700 17px var(--mono);color:var(--warning);margin-top:3px;letter-spacing:1px;line-height:1.2}
+html[data-turno="1"] .team-hud:not(.right){border-color:var(--t1);background:rgba(76,201,240,.08)}
+html[data-turno="2"] .team-hud.right{border-color:var(--t2);background:rgba(177,151,252,.08)}
+#center-hud-label{font:600 12px var(--mono)!important;color:var(--mute)!important;letter-spacing:1px}
 
 /* lluvia de código lateral */
-canvas.matrix{position:absolute;top:0;width:150px;height:100%;opacity:.18;z-index:0}
+canvas.matrix{position:absolute;top:0;width:150px;height:100%;opacity:.16;z-index:1}
 #matrixL{left:0}#matrixR{right:0}
 
-.footer-bar{position:fixed;bottom:0;left:0;width:100%;background:rgba(18,8,48,.85);color:var(--soft);padding:9px 0;z-index:100;font:700 13px Nunito,sans-serif;letter-spacing:.5px;border-top:2px solid rgba(255,255,255,.1)}
+.footer-bar{position:fixed;bottom:0;left:0;width:100%;background:var(--oxford);color:var(--neon);padding:9px 0;border-top:1px solid var(--line);z-index:100;font:600 12.5px var(--mono);letter-spacing:.5px}
 .ticker-move{display:inline-block;white-space:nowrap;padding-left:100%;animation:tickerMove 30s linear infinite}
 @keyframes tickerMove{0%{transform:translate(0,0)}100%{transform:translate(-100%,0)}}
 
-/* botones tipo app: redondos con sombra de relieve */
-button{padding:13px 30px;margin:10px;border:none;border-radius:999px;background:var(--neon);color:#1a0b3d;font:800 16px Nunito,sans-serif;cursor:pointer;transition:transform .15s,box-shadow .15s,filter .15s;z-index:10;box-shadow:0 5px 0 rgba(0,0,0,.35);letter-spacing:.3px}
-button:hover{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 7px 0 rgba(0,0,0,.35)}
-button:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.35)}
-button.secondary{background:rgba(255,255,255,.12);color:#fff;border:2px solid rgba(255,255,255,.22)}
-button.btn-back{background:rgba(255,255,255,.08);color:var(--soft);border:2px solid rgba(255,255,255,.18);font-size:13px;padding:8px 18px;margin-bottom:10px;box-shadow:none}
+/* botones como en la presentación */
+button{padding:12px 26px;margin:10px;border:2px solid var(--neon);border-radius:10px;background:var(--neon);color:#06231a;font:700 16px Inter,sans-serif;cursor:pointer;transition:transform .15s,box-shadow .2s,background .2s;z-index:10}
+button:hover{transform:translateY(-1px);box-shadow:0 0 18px rgba(62,227,159,.35)}
+button.secondary{background:transparent;color:var(--neon)}
+button.btn-back{background:transparent;color:var(--mute);border:1px solid var(--line);font-size:13px;padding:8px 18px;margin-bottom:10px}
 button.btn-back:hover{color:#fff;border-color:#fff;box-shadow:none}
-button:disabled{opacity:.3!important;cursor:not-allowed!important;transform:none!important;filter:none!important}
-.btn-main{background:linear-gradient(90deg,var(--neon),#3bffb0);font-size:20px;padding:16px 38px;animation:bouncy 2s ease-in-out infinite}
-@keyframes bouncy{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.04)}}
+button:disabled{opacity:.3!important;cursor:not-allowed!important;transform:none!important;box-shadow:none!important}
+button:focus-visible,input:focus-visible{outline:3px solid var(--warning);outline-offset:2px}
+.btn-main{font-size:18px;padding:14px 34px;animation:pulseNeon 2.4s infinite}
+@keyframes pulseNeon{0%,100%{box-shadow:0 0 4px rgba(62,227,159,.4)}50%{box-shadow:0 0 22px rgba(62,227,159,.6)}}
 @keyframes pulseWarn{0%{opacity:.5}50%{opacity:1}100%{opacity:.5}}
 
-/* portada */
-.logo{font-family:Fredoka,sans-serif;font-size:clamp(3rem,8vw,5.4rem);margin:0;line-height:1;letter-spacing:2px;
- background:linear-gradient(90deg,var(--cyan),var(--neon) 40%,var(--warning) 60%,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 0 rgba(0,0,0,.35))}
-.tagline{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0}
-.tagline span{font:700 13px Nunito;padding:5px 12px;border-radius:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);letter-spacing:.5px}
-.story-card{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.14);border-radius:24px;padding:16px 22px;max-width:700px;margin:6px 0 14px;backdrop-filter:blur(6px)}
-
 /* Combate */
-#game-content{width:95%;max-width:900px;display:flex;flex-direction:column;justify-content:space-between;height:82vh;margin-top:56px}
-#turnText{font:700 1rem Fredoka,sans-serif!important;color:var(--eq)!important;letter-spacing:1px}
-#playerText{color:#fff!important;font:700 2rem Fredoka,sans-serif!important;margin:4px auto!important;display:inline-block;padding:4px 22px;border-radius:999px;background:var(--eq);color:#1a0b3d!important;box-shadow:0 5px 0 rgba(0,0,0,.3)}
-#playerText:empty{display:none}
-#timer{font:700 3.4rem Fredoka,sans-serif!important}
-#q{font-family:Fredoka,sans-serif;font-size:1.7rem;font-weight:600;margin:10px 0;min-height:60px;line-height:1.25;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);border-radius:22px;padding:16px 22px}
-.option{position:relative;margin:6px auto;padding:13px 62px;border:2px solid rgba(255,255,255,.16);font-size:1.22rem;font-weight:700;border-radius:18px;width:92%;background:rgba(255,255,255,.07);cursor:pointer;transition:transform .15s,border-color .15s,background .15s}
-.option:hover{border-color:var(--eq);background:rgba(255,255,255,.13);transform:scale(1.015)}
-.option .letra{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:12px;background:var(--eq);color:#1a0b3d;font:700 1.15rem Fredoka,sans-serif;display:flex;align-items:center;justify-content:center}
-.option.chosen-correct{border-color:var(--neon)!important;background:rgba(163,255,59,.22)!important;color:#fff!important}
-.option.chosen-wrong{border-color:var(--error)!important;background:rgba(255,79,123,.22)!important;color:#fff!important}
-.option.reveal{border:3px solid var(--neon)!important;background:rgba(163,255,59,.25)!important;color:#fff!important;font-weight:900;animation:revealPulse .9s ease-in-out infinite}
-@keyframes revealPulse{0%,100%{box-shadow:0 0 0 0 rgba(163,255,59,.7);transform:scale(1)}50%{box-shadow:0 0 34px 8px rgba(163,255,59,.5);transform:scale(1.035)}}
+#game-content{width:95%;max-width:900px;display:flex;flex-direction:column;justify-content:space-between;height:82vh;margin-top:52px}
+#turnText{font:600 .95rem var(--mono)!important;color:var(--eq)!important;letter-spacing:1px}
+#playerText{font:700 2rem Sora,sans-serif!important;color:var(--eq)!important;margin:4px 0!important}
+#timer{font:700 3.3rem var(--mono)!important}
+#q{font-family:Sora,sans-serif;font-size:1.6rem;font-weight:600;margin:10px 0;min-height:60px;line-height:1.3;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--eq);border-radius:14px;padding:16px 22px}
+.option{position:relative;margin:6px auto;padding:13px 62px;border:2px solid var(--line);font-size:1.2rem;font-weight:600;border-radius:12px;width:92%;background:var(--p2);cursor:pointer;transition:border-color .15s,background .15s}
+.option:hover{border-color:var(--eq);background:#1d2a44}
+.option .letra{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:8px;background:var(--eq);color:#081222;font:700 1.05rem var(--mono);display:flex;align-items:center;justify-content:center}
+.option.chosen-correct{border-color:var(--neon)!important;background:#123d2e!important;color:#fff!important}
+.option.chosen-wrong{border-color:var(--error)!important;background:#41191d!important;color:#fff!important}
+.option.reveal{border:2px solid var(--neon)!important;background:#123d2e!important;color:#fff!important;font-weight:800;animation:revealPulse .9s ease-in-out infinite}
+@keyframes revealPulse{0%,100%{box-shadow:0 0 0 0 rgba(62,227,159,.6);transform:scale(1)}50%{box-shadow:0 0 28px 6px rgba(62,227,159,.45);transform:scale(1.03)}}
 .option .ptr{position:absolute;left:-64px;top:50%;font-size:2.6rem;transform:translateY(-50%);animation:point .55s ease-in-out infinite alternate}
 @keyframes point{from{transform:translate(-8px,-50%)}to{transform:translate(8px,-50%)}}
-.option .okb{display:inline-block;margin-left:12px;font-size:.8rem;letter-spacing:1px;background:var(--neon);color:#1a0b3d;border-radius:20px;padding:2px 10px;vertical-align:middle}
-#inter-turn-msg{display:none;font:700 1.8rem Fredoka,sans-serif;color:var(--warning);margin:60px 0;animation:pulseWarn 1.5s infinite}
-#revealMsg{font-size:1.3rem;font-weight:900}
-#revealMsg .n{display:inline-block;min-width:1.4em;color:var(--warning);font-size:1.7rem}
-#btn-freeze,#btn-shield,#btn-skip{font-size:14px!important;padding:12px 22px}
-#btn-freeze{background:linear-gradient(90deg,#3b82ff,#35e0ff)!important;color:#fff!important}
-#btn-shield{background:linear-gradient(90deg,#14d8c4,#a3ff3b)!important;color:#1a0b3d!important}
-#btn-skip{background:linear-gradient(90deg,#7b5cff,#ff4fa3)!important;color:#fff!important}
+.option .okb{display:inline-block;margin-left:12px;font:700 .75rem var(--mono);letter-spacing:1px;background:var(--neon);color:#06231a;border-radius:6px;padding:3px 8px;vertical-align:middle}
+#inter-turn-msg{display:none;font:700 1.6rem var(--mono);color:var(--warning);margin:60px 0;animation:pulseWarn 1.5s infinite}
+#revealMsg{font-size:1.25rem;font-weight:800}
+#revealMsg .n{display:inline-block;min-width:1.4em;color:var(--warning);font:700 1.6rem var(--mono)}
+#btn-freeze,#btn-shield,#btn-skip{font-size:13px!important;padding:10px 18px;background:transparent!important}
+#btn-freeze{border-color:var(--cyan)!important;color:var(--cyan)!important}
+#btn-shield{border-color:var(--neon)!important;color:var(--neon)!important}
+#btn-skip{border-color:var(--violet)!important;color:var(--violet)!important}
 
 /* Pausa */
-.pause-btn{position:fixed;bottom:70px;right:20px;background:rgba(255,210,63,.12);border:2px solid var(--warning);color:var(--warning);padding:8px 14px;border-radius:999px;cursor:pointer;z-index:200;font:800 13px Nunito;box-shadow:none}
-.paused-overlay{position:fixed;inset:0;background:rgba(23,11,59,.92);backdrop-filter:blur(6px);z-index:1000;display:none;align-items:center;justify-content:center;flex-direction:column}
+.pause-btn{position:fixed;bottom:70px;right:20px;background:transparent;border:2px solid var(--warning);color:var(--warning);padding:8px 12px;border-radius:8px;cursor:pointer;z-index:200;font:600 12px var(--mono)}
+.paused-overlay{position:fixed;inset:0;background:rgba(10,15,28,.94);z-index:1000;display:none;align-items:center;justify-content:center;flex-direction:column}
 
 /* Tabla final */
-.rank-table{width:85%;max-width:680px;margin:8px auto;border-collapse:separate;border-spacing:0 6px}
-.rank-table th{background:rgba(255,255,255,.12);color:var(--neon);padding:10px;font:700 13px Fredoka,sans-serif;letter-spacing:1px}
-.rank-table th:first-child,.rank-table td:first-child{border-radius:14px 0 0 14px}
-.rank-table th:last-child,.rank-table td:last-child{border-radius:0 14px 14px 0}
-.rank-table td{background:rgba(255,255,255,.07);padding:9px;font-size:1rem;font-weight:700}
-#winner{font-family:Fredoka,sans-serif;font-size:3.6rem;margin:4px 0;text-transform:uppercase;background:linear-gradient(90deg,var(--cyan),var(--neon),var(--warning));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 5px 0 rgba(0,0,0,.35))}
-.rank-scroll{overflow-y:auto;max-height:32vh;width:85%;max-width:680px;margin:0 auto;border-radius:14px}
-#mvp-card{background:linear-gradient(135deg,rgba(255,210,63,.25),rgba(255,79,163,.18));border:3px solid var(--warning);border-radius:24px;padding:14px 28px;margin:8px auto;max-width:500px;width:90%;position:relative;overflow:hidden;box-shadow:0 8px 0 rgba(0,0,0,.3)}
-#mvp-card::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);animation:mvpShine 2s infinite}
+.rank-table{width:85%;max-width:680px;margin:8px auto;border-collapse:separate;border-spacing:0 4px}
+.rank-table th{background:var(--p2);color:var(--cyan);padding:10px;font:600 12.5px var(--mono);letter-spacing:1px}
+.rank-table td{background:var(--card);padding:9px;font-size:1rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+#winner{font-family:Sora,sans-serif;font-weight:800;font-size:3.4rem;margin:4px 0;text-transform:uppercase;background:linear-gradient(90deg,var(--neon),var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+.rank-scroll{overflow-y:auto;max-height:32vh;width:85%;max-width:680px;margin:0 auto;border-radius:10px}
+#mvp-card{background:linear-gradient(135deg,rgba(255,181,71,.14),rgba(17,26,46,.9));border:2px solid var(--warning);border-radius:14px;padding:14px 28px;margin:8px auto;max-width:500px;width:90%;position:relative;overflow:hidden}
+#mvp-card::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,181,71,.1),transparent);animation:mvpShine 2.4s infinite}
 @keyframes mvpShine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-#mvp-name{font:700 1.7rem Fredoka,sans-serif;color:var(--warning)}
-#mvp-pts{font-size:.95rem;color:#fff;margin-top:2px;font-weight:700}
-#mvp-badge{font-size:2.4rem;margin-bottom:4px}
+#mvp-name{font:700 1.6rem Sora,sans-serif;color:var(--warning)}
+#mvp-pts{font-size:.92rem;color:var(--mute);margin-top:2px}
+#mvp-badge{font-size:2.2rem;margin-bottom:4px}
 #fireworksCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
 
 /* Equipos */
-.team-box{background:var(--card);padding:18px;border-radius:24px;border:2px solid var(--line);min-width:250px;max-width:360px;flex:1;backdrop-filter:blur(6px)}
-.team-box:nth-child(1){border-top:6px solid var(--t1)}
-.team-box:nth-child(2){border-top:6px solid var(--t2)}
-.team-box input.tname{background:rgba(0,0,0,.25);border:2px solid var(--line);padding:10px;width:100%;border-radius:14px;font:700 1.05rem Fredoka,sans-serif;text-align:center;letter-spacing:1px}
+.team-box{background:var(--card);padding:18px;border-radius:14px;border:1px solid var(--line);min-width:250px;max-width:360px;flex:1}
+.team-box:nth-child(1){border-top:4px solid var(--t1)}
+.team-box:nth-child(2){border-top:4px solid var(--t2)}
+.team-box input.tname{background:#060a14;border:1px solid var(--line);padding:10px;width:100%;border-radius:8px;font:700 1rem Sora,sans-serif;text-align:center;letter-spacing:1px}
 #t1.tname{color:var(--t1)}#t2.tname{color:var(--t2)}
 .player-input-row{display:flex;gap:8px;margin-top:10px}
-.player-input-row input{flex:1;background:rgba(0,0,0,.25);color:#fff;border:2px solid var(--line);padding:9px 12px;border-radius:14px;font:700 14px Nunito}
-.player-input-row button{padding:8px 14px;margin:0;font-size:12px}
+.player-input-row input{flex:1;background:#060a14;color:var(--ink);border:1px solid var(--line);padding:9px 12px;border-radius:8px;font:500 14px Inter}
+.player-input-row button{padding:8px 12px;margin:0;font-size:12px;white-space:nowrap}
 .player-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:36px}
-.player-tag{background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.2);color:#fff;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.player-tag{background:var(--p2);border:1px solid var(--line);color:var(--ink);padding:4px 10px;border-radius:20px;font-size:13px;display:flex;align-items:center;gap:6px}
 .team-box:nth-child(1) .player-tag{border-color:var(--t1)}.team-box:nth-child(2) .player-tag{border-color:var(--t2)}
-.player-tag span.remove{cursor:pointer;color:var(--error);font-weight:900;font-size:15px;line-height:1}
-.pool{background:rgba(255,210,63,.08);border:2px dashed rgba(255,210,63,.5);border-radius:24px;padding:12px 14px;max-width:1000px;width:96%;margin-top:14px}
-.pool h4{margin:0 0 8px;color:var(--warning);letter-spacing:.5px;font-size:.95rem}
+.player-tag span.remove{cursor:pointer;color:var(--error);font-weight:bold;font-size:15px;line-height:1}
+.pool{background:rgba(17,26,46,.6);border:1px dashed var(--line);border-radius:14px;padding:12px 14px;max-width:1000px;width:96%;margin-top:14px}
+.pool h4{margin:0 0 8px;color:var(--warning);font:600 .82rem var(--mono);letter-spacing:1px}
 .pool-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.pchip{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.1);border:2px solid rgba(255,210,63,.45);border-radius:30px;padding:3px 4px;font-size:13px;color:#fff}
-.pchip b{padding:0 6px;font-weight:800}
-.pchip button{margin:0;padding:4px 10px;font-size:11px;border-radius:20px;box-shadow:none}
-.pchip button:first-child{background:var(--t1);color:#1a0b3d}.pchip button:last-child{background:var(--t2);color:#1a0b3d}
-.pool-empty{color:var(--soft);font-size:14px;font-weight:700}
+.pchip{display:flex;align-items:center;gap:4px;background:var(--p2);border:1px solid var(--line);border-radius:30px;padding:3px 4px;font-size:13px;color:#fff}
+.pchip b{padding:0 6px;font-weight:600}
+.pchip button{margin:0;padding:4px 9px;font-size:11px;border-radius:20px;background:transparent}
+.pchip button:first-child{border-color:var(--t1);color:var(--t1)}.pchip button:last-child{border-color:var(--t2);color:var(--t2)}
+.pool-empty{color:var(--mute);font-size:13px}
 
 /* Ajustes */
-.settings-box{background:var(--card);padding:18px 24px;border-radius:24px;border:2px solid var(--line);max-width:540px;width:93%;text-align:left;backdrop-filter:blur(6px)}
-.settings-box h3{color:var(--neon);margin:0 0 14px;text-align:center;letter-spacing:1px;font-size:1rem}
-.setting-row{display:flex;justify-content:space-between;align-items:center;margin:11px 0;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:11px}
+.settings-box{background:var(--card);padding:18px 24px;border-radius:14px;border:1px solid var(--line);max-width:540px;width:93%;text-align:left}
+.settings-box h3{color:var(--neon);margin:0 0 14px;text-align:center;font:600 .85rem var(--mono);letter-spacing:2px}
+.setting-row{display:flex;justify-content:space-between;align-items:center;margin:11px 0;border-bottom:1px solid var(--line);padding-bottom:11px}
 .setting-row:last-child{border-bottom:none;padding-bottom:0}
-.setting-label{color:#fff;font-size:14px;font-weight:800}
-.setting-label span{display:block;font-size:11px;color:var(--soft);margin-top:2px;font-weight:600}
+.setting-label{color:var(--ink);font-size:13.5px;font-weight:600}
+.setting-label span{display:block;font-size:11px;color:var(--mute);margin-top:2px;font-weight:400}
 .qty-control{display:flex;align-items:center;gap:10px}
-.qty-btn{background:rgba(255,255,255,.12);color:var(--neon);border:2px solid var(--line);border-radius:12px;width:36px;height:36px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;box-shadow:none}
-.qty-btn:hover{background:rgba(255,255,255,.2);box-shadow:none}
-.qty-val{font:700 20px Fredoka,sans-serif;color:#fff;min-width:24px;text-align:center}
-.toggle-switch{position:relative;width:52px;height:28px}
+.qty-btn{background:var(--p2);color:var(--neon);border:1px solid var(--line);border-radius:8px;width:34px;height:34px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0}
+.qty-btn:hover{background:#1d2a44;box-shadow:none}
+.qty-val{font:700 20px var(--mono);color:#fff;min-width:24px;text-align:center}
+.toggle-switch{position:relative;width:48px;height:26px}
 .toggle-switch input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;cursor:pointer;inset:0;background:rgba(255,255,255,.15);border-radius:28px;transition:.3s}
-.toggle-slider:before{position:absolute;content:"";height:20px;width:20px;left:4px;bottom:4px;background:#fff;border-radius:50%;transition:.3s}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--p2);border-radius:26px;transition:.3s;border:1px solid var(--line)}
+.toggle-slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:var(--mute);border-radius:50%;transition:.3s}
 input:checked+.toggle-slider{background:var(--neon)}
-input:checked+.toggle-slider:before{transform:translateX(24px);background:#1a0b3d}
-#muteFloatBtn{position:fixed;bottom:70px;left:20px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.25);color:#fff;padding:7px 12px;border-radius:999px;cursor:pointer;z-index:200;font-size:18px;box-shadow:none}
+input:checked+.toggle-slider:before{transform:translateX(22px);background:#06231a}
+#muteFloatBtn{position:fixed;bottom:70px;left:20px;background:transparent;border:2px solid var(--line);color:var(--mute);padding:7px 12px;border-radius:8px;cursor:pointer;z-index:200;font-size:18px}
 .scroll-panel{overflow-y:auto;max-height:65vh;padding-right:6px}
-.proto-card{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12);border-left:6px solid var(--neon);border-radius:18px;padding:14px 18px;margin-bottom:12px;text-align:left}
-.proto-card h4{color:var(--neon);margin:0 0 6px;font-size:1.05rem}
-.proto-card p{color:#e6e0ff;font-size:.95rem;margin:0;line-height:1.5}
+.proto-card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--neon);border-radius:12px;padding:14px 18px;margin-bottom:12px;text-align:left}
+.proto-card h4{color:var(--neon);margin:0 0 6px;font-size:1rem}
+.proto-card p{color:var(--mute);font-size:.92rem;margin:0;line-height:1.55}
 .proto-card.yellow{border-left-color:var(--warning)}.proto-card.yellow h4{color:var(--warning)}
 .proto-card.blue{border-left-color:var(--shield)}.proto-card.blue h4{color:var(--shield)}
 .proto-card.purple{border-left-color:var(--skip)}.proto-card.purple h4{color:var(--skip)}
 
 /* Overlays */
-#resultOverlay{position:fixed;inset:0;background:rgba(23,11,59,.9);z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column;pointer-events:none}
-#resultBigText{font-family:Fredoka,sans-serif;font-size:clamp(3.5rem,14vw,9rem);font-weight:700;letter-spacing:3px;text-transform:uppercase;text-align:center;line-height:1.1}
-@keyframes resultPop{0%{transform:scale(.5) rotate(-6deg);opacity:0}55%{transform:scale(1.1) rotate(2deg);opacity:1}80%{transform:scale(.97)}100%{transform:scale(1);opacity:1}}
+#resultOverlay{position:fixed;inset:0;background:rgba(10,15,28,.92);z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column;pointer-events:none}
+#resultBigText{font-family:Sora,sans-serif;font-size:clamp(3.5rem,14vw,9rem);font-weight:800;letter-spacing:4px;text-transform:uppercase;text-align:center;line-height:1.1}
+@keyframes resultPop{0%{transform:scale(.5);opacity:0}55%{transform:scale(1.08);opacity:1}80%{transform:scale(.97)}100%{transform:scale(1);opacity:1}}
 .resultAnim{animation:resultPop .45s ease-out forwards}
-#winner-announcement{display:none;position:fixed;inset:0;background:rgba(23,11,59,.94);z-index:999;align-items:center;justify-content:center;flex-direction:column;text-align:center}
-#winner-text{font-family:Fredoka,sans-serif;font-size:clamp(3rem,8vw,6rem);font-weight:700;color:var(--neon);text-transform:uppercase;text-shadow:0 6px 0 rgba(0,0,0,.35),0 0 40px var(--neon);animation:resultPop .6s ease-out forwards}
-#winner-sub{color:#fff;font-size:1.5rem;margin-top:20px;font-weight:800}
-#roundIntroOverlay{position:fixed;inset:0;background:rgba(23,11,59,.97);z-index:800;display:none;align-items:center;justify-content:center;flex-direction:column;pointer-events:none}
-#roundIntroText{font-family:Fredoka,sans-serif;font-size:clamp(4rem,18vw,11rem);font-weight:700;letter-spacing:4px;text-transform:uppercase;text-align:center;line-height:1}
-#roundIntroSub{font-size:clamp(1.2rem,4vw,2rem);letter-spacing:3px;margin-top:20px;opacity:.9;text-transform:uppercase;font-weight:900}
-@keyframes roundPop{0%{transform:scale(.3) rotate(-8deg);opacity:0}50%{transform:scale(1.12) rotate(2deg);opacity:1}75%{transform:scale(.96)}100%{transform:scale(1);opacity:1}}
+#winner-announcement{display:none;position:fixed;inset:0;background:rgba(10,15,28,.95);z-index:999;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+#winner-text{font-family:Sora,sans-serif;font-size:clamp(3rem,8vw,6rem);font-weight:800;color:var(--neon);letter-spacing:3px;text-transform:uppercase;text-shadow:0 0 25px rgba(62,227,159,.6);animation:resultPop .6s ease-out forwards}
+#winner-sub{color:var(--mute);font:600 1.3rem var(--mono);margin-top:20px;letter-spacing:2px}
+#roundIntroOverlay{position:fixed;inset:0;background:rgba(10,15,28,.97);z-index:800;display:none;align-items:center;justify-content:center;flex-direction:column;pointer-events:none}
+#roundIntroText{font-family:Sora,sans-serif;font-size:clamp(4rem,18vw,11rem);font-weight:800;letter-spacing:6px;text-transform:uppercase;text-align:center;line-height:1}
+#roundIntroSub{font:600 clamp(1.1rem,3.6vw,1.8rem) var(--mono);letter-spacing:4px;margin-top:20px;opacity:.85;text-transform:uppercase}
+@keyframes roundPop{0%{transform:scale(.3);opacity:0}50%{transform:scale(1.1);opacity:1}75%{transform:scale(.96)}100%{transform:scale(1);opacity:1}}
 .roundAnim{animation:roundPop .5s cubic-bezier(.175,.885,.32,1.275) forwards}
 @keyframes fightFlash{0%{opacity:0;transform:scale(.6)}30%{opacity:1;transform:scale(1.2)}60%{transform:scale(.95)}100%{transform:scale(1);opacity:1}}
 .fightAnim{animation:fightFlash .4s ease-out forwards}
 #freezeEffect{position:fixed;inset:0;pointer-events:none;z-index:700;display:none;align-items:center;justify-content:center}
-#freezeRipple{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(53,224,255,.38) 0%,rgba(123,92,255,.18) 50%,transparent 70%);animation:freezeRippleAnim .8s ease-out forwards}
-#freezeLabel{display:none;font:700 clamp(3rem,12vw,7rem) Fredoka,sans-serif;color:var(--cyan);text-shadow:0 0 30px var(--cyan);animation:freezeLabelPop 1.2s ease-out forwards;position:relative;z-index:1}
+#freezeRipple{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(76,201,240,.32) 0%,rgba(76,201,240,.12) 50%,transparent 70%);animation:freezeRippleAnim .8s ease-out forwards}
+#freezeLabel{display:none;font:800 clamp(3rem,12vw,7rem) Sora,sans-serif;color:var(--cyan);letter-spacing:4px;text-shadow:0 0 30px var(--cyan);animation:freezeLabelPop 1.2s ease-out forwards;position:relative;z-index:1}
 @keyframes freezeRippleAnim{0%{opacity:0;transform:scale(.5)}30%{opacity:1}100%{opacity:0;transform:scale(1.5)}}
 @keyframes freezeLabelPop{0%{transform:scale(.3);opacity:0}25%{transform:scale(1.15);opacity:1}60%{transform:scale(.95);opacity:1}85%{opacity:1}100%{transform:scale(1);opacity:0}}
 @keyframes timerFreeze{0%{transform:scale(1)}15%{transform:scale(1.4);color:var(--cyan);text-shadow:0 0 20px var(--cyan)}50%{transform:scale(1.1);color:var(--cyan)}100%{transform:scale(1)}}
 .timer-freeze-anim{animation:timerFreeze .8s ease-out forwards!important}
-.mode-selector{background:var(--card);padding:20px 26px;border-radius:24px;border:2px solid var(--line);margin:15px;display:inline-block;text-align:left;backdrop-filter:blur(6px)}
-.mode-selector label{font-size:1.15rem;font-weight:800;cursor:pointer;display:block;margin:8px 0;color:#fff}
-.mode-selector input[type="radio"]{accent-color:var(--neon);transform:scale(1.4);margin-right:10px}
-.round-selector{margin-top:14px;padding-top:12px;border-top:2px dashed rgba(255,255,255,.15);display:none;text-align:center}
+.mode-selector{background:var(--card);padding:20px 26px;border-radius:14px;border:1px solid var(--line);margin:15px;display:inline-block;text-align:left}
+.mode-selector label{font-size:1.1rem;cursor:pointer;display:block;margin:8px 0;color:var(--ink)}
+.mode-selector input[type="radio"]{accent-color:var(--neon);transform:scale(1.3);margin-right:8px}
+.round-selector{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);display:none;text-align:center}
 .round-option-btns{display:flex;gap:10px;justify-content:center;margin-top:6px}
-.round-opt-btn{padding:8px 22px;margin:0;font:700 1.1rem Fredoka,sans-serif;border-radius:14px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:var(--soft);box-shadow:none}
-.round-opt-btn.active{border-color:var(--warning);color:#1a0b3d;background:var(--warning)}
-#vsTitle{font-family:Fredoka,sans-serif}
-#vsTitle span{display:inline-block;padding:0 14px;border-radius:16px;background:var(--warning);color:#1a0b3d!important;transform:rotate(-4deg)}
-#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(23,11,59,.92);border:2px solid var(--neon);border-radius:999px;padding:10px 24px;font:800 14px Nunito;color:var(--neon);z-index:9999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
+.round-opt-btn{padding:8px 22px;margin:0;font:700 1.1rem var(--mono);border-radius:8px;border:2px solid var(--line);background:var(--p2);color:var(--mute)}
+.round-opt-btn.active{border-color:var(--warning);color:var(--warning);background:rgba(255,181,71,.1)}
+#vsTitle{font-family:Sora,sans-serif;font-weight:800}
+#vsTitle span{color:var(--neon)!important;font-family:var(--mono);padding:0 10px}
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(17,26,46,.95);border:1px solid var(--neon);border-radius:10px;padding:10px 24px;font:600 13.5px var(--mono);color:var(--neon);z-index:9999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #powerFx{position:fixed;inset:0;pointer-events:none;z-index:750;display:flex;align-items:center;justify-content:center}
-.pfx{text-align:center;background:rgba(23,11,59,.9);border:4px solid var(--c);border-radius:30px;padding:22px 46px;box-shadow:0 0 70px var(--c),0 10px 0 rgba(0,0,0,.35);animation:pfxRise 2.8s cubic-bezier(.2,.8,.2,1) forwards}
+.pfx{text-align:center;background:rgba(10,15,28,.92);border:3px solid var(--c);border-radius:20px;padding:22px 46px;box-shadow:0 0 60px var(--c);animation:pfxRise 2.8s cubic-bezier(.2,.8,.2,1) forwards}
 .pfx .i{font-size:5rem;line-height:1.1}
-.pfx .t{font:700 clamp(2.2rem,5.5vw,4rem) Fredoka,sans-serif;color:var(--c);letter-spacing:1px}
-.pfx .s{font-size:clamp(1.1rem,2.2vw,1.5rem);color:#fff;margin-top:6px;font-weight:800}
+.pfx .t{font:800 clamp(2.2rem,5.5vw,4rem) Sora,sans-serif;color:var(--c);letter-spacing:2px}
+.pfx .s{font-size:clamp(1.1rem,2.2vw,1.5rem);color:#fff;margin-top:6px}
 @keyframes pfxRise{0%{transform:translateY(80px) scale(.6);opacity:0}12%{transform:translateY(0) scale(1.08);opacity:1}20%{transform:translateY(0) scale(1)}62%{transform:translateY(-20px);opacity:1}100%{transform:translateY(-300px) scale(.9);opacity:0}}
-@media(max-width:700px){.team-name{font-size:.95rem}#q{font-size:1.25rem}.option{font-size:1rem;padding:11px 52px}.logo{letter-spacing:0}.blobs{display:none}#game-content{margin-top:84px}}
-@media(prefers-reduced-motion:reduce){.btn-main,.blobs i,.ticker-move{animation:none}}
+@media(max-width:700px){.team-name{font-size:.9rem}#q{font-size:1.2rem}.option{font-size:1rem;padding:11px 52px}#game-content{margin-top:80px}.credit{display:none}}
+@media(prefers-reduced-motion:reduce){.btn-main,.ticker-move{animation:none}}
 </style>
 </head>
 <body>
 
-<div class="blobs" aria-hidden="true"><i>💾</i><i>🎮</i><i>⚡</i><i>🧠</i><i>💻</i><i>🚀</i></div>
 <button id="muteFloatBtn" onclick="toggleMuteFloat()" title="Sonido">🔊</button>
 <div id="toast"></div>
 <div id="powerFx"></div>
@@ -240,47 +234,30 @@ input:checked+.toggle-slider:before{transform:translateX(24px);background:#1a0b3
 
 <!-- ═════════ INICIO ═════════ -->
 <div id="home" class="screen active">
+  <div class="hero-bg"></div>
   <canvas id="matrixL" class="matrix"></canvas>
   <canvas id="matrixR" class="matrix"></canvas>
 
-  <div style="display:flex;gap:26px;align-items:flex-end;justify-content:center;margin-bottom:12px;z-index:10;">
-    <!-- Chip que late -->
-    <svg width="124" height="124" viewBox="0 0 130 130" style="filter:drop-shadow(0 8px 0 rgba(0,0,0,.35));overflow:visible;transform:rotate(-6deg)">
-      <g stroke="#35e0ff" stroke-width="5" stroke-linecap="round"><line x1="40" y1="8" x2="40" y2="22"/><line x1="65" y1="8" x2="65" y2="22"/><line x1="90" y1="8" x2="90" y2="22"/><line x1="40" y1="108" x2="40" y2="122"/><line x1="65" y1="108" x2="65" y2="122"/><line x1="90" y1="108" x2="90" y2="122"/><line x1="8" y1="40" x2="22" y2="40"/><line x1="8" y1="65" x2="22" y2="65"/><line x1="8" y1="90" x2="22" y2="90"/><line x1="108" y1="40" x2="122" y2="40"/><line x1="108" y1="65" x2="122" y2="65"/><line x1="108" y1="90" x2="122" y2="90"/></g>
-      <rect x="22" y="22" width="86" height="86" rx="20" fill="#7b5cff"/>
-      <rect x="38" y="38" width="54" height="54" rx="12" fill="#35e0ff"><animate attributeName="fill" values="#35e0ff;#a3ff3b;#ffd23f;#ff4fa3;#35e0ff" dur="4s" repeatCount="indefinite"/></rect>
-      <text x="65" y="73" text-anchor="middle" font-family="Fredoka,sans-serif" font-size="22" font-weight="700" fill="#1a0b3d">CPU</text>
-    </svg>
-    <!-- Ventana de código -->
-    <svg width="150" height="124" viewBox="0 0 150 124" style="filter:drop-shadow(0 8px 0 rgba(0,0,0,.35));overflow:visible;transform:rotate(5deg)">
-      <rect x="2" y="2" width="146" height="120" rx="20" fill="#ff4fa3"/>
-      <rect x="10" y="26" width="130" height="88" rx="12" fill="#1a0b3d"/>
-      <circle cx="20" cy="14" r="5" fill="#ffd23f"/><circle cx="34" cy="14" r="5" fill="#a3ff3b"/><circle cx="48" cy="14" r="5" fill="#35e0ff"/>
-      <text x="22" y="56" font-family="monospace" font-size="20" font-weight="bold" fill="#a3ff3b">&lt;/&gt;</text>
-      <rect x="22" y="70" width="70" height="8" rx="4" fill="#35e0ff"><animate attributeName="width" values="20;90;20" dur="2.4s" repeatCount="indefinite"/></rect>
-      <rect x="22" y="86" width="50" height="8" rx="4" fill="#ffd23f"><animate attributeName="width" values="60;30;60" dur="2s" repeatCount="indefinite"/></rect>
-      <rect x="82" y="44" width="10" height="16" fill="#fff"><animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/></rect>
-    </svg>
-  </div>
-
   <div style="position:fixed;top:14px;left:14px;z-index:50;display:flex;gap:8px;">
-    <button title="Historia" onclick="nav('story')" style="background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);width:44px;height:44px;border-radius:50%;padding:0;margin:0;font-size:18px;box-shadow:none;">📖</button>
-    <button title="Reglas" onclick="nav('help')" style="background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);width:44px;height:44px;border-radius:50%;padding:0;margin:0;font-size:18px;box-shadow:none;">📋</button>
+    <button title="Historia" onclick="nav('story')" style="background:rgba(17,26,46,.85);border:1px solid var(--line);color:var(--mute);width:42px;height:42px;border-radius:50%;padding:0;margin:0;font-size:16px;">📖</button>
+    <button title="Reglas" onclick="nav('help')" style="background:rgba(17,26,46,.85);border:1px solid var(--line);color:var(--mute);width:42px;height:42px;border-radius:50%;padding:0;margin:0;font-size:16px;">📋</button>
   </div>
 
-  <h1 class="logo">BYTEBATTLE</h1>
-  <div class="tagline"><span>🔩 HARDWARE</span><span>💾 SOFTWARE</span><span>⚙️ SISTEMA OPERATIVO</span><span>🌐 HTML · CSS · JS</span></div>
+  <div class="kick">&gt; bytebattle.iniciar()</div>
+  <h1 class="logo">BYTE<em>BATTLE</em></h1>
+  <div class="tagline"><span>HARDWARE</span><span>SOFTWARE</span><span>SISTEMA OPERATIVO</span><span>HTML · CSS · JAVASCRIPT</span></div>
   <div class="story-card">
-    <h3 style="color:var(--warning);margin:0 0 6px;font-size:1.15rem;">🚨 ¡El virus GLITCH entró al laboratorio!</h3>
-    <p style="font-size:1rem;color:#efeaff;line-height:1.55;margin:0;font-weight:600">
-      Las computadoras se volvieron locas: la RAM olvida todo, las apps no piden permiso y nadie sabe dónde quedaron los archivos.<br>
-      Solo <strong style="color:var(--cyan)">dos equipos</strong> que entiendan cómo funciona la máquina por dentro pueden arreglarlo. ¿Cuál será?
+    <h3 style="color:var(--warning);margin:0 0 6px;font-size:1.05rem;">⚠ Alerta en el laboratorio: el virus GLITCH</h3>
+    <p style="font-size:1rem;color:var(--ink);line-height:1.6;margin:0;">
+      La memoria RAM olvida lo que hacemos, las apps no piden permiso y nadie encuentra los archivos.
+      Solo <strong style="color:var(--cyan)">dos equipos</strong> que entiendan cómo funciona la computadora por dentro pueden devolverle el orden.
     </p>
   </div>
-  <div style="z-index:10;display:flex;flex-wrap:wrap;justify-content:center;">
-    <button class="btn-main" onclick="nav('config')">🎮 ¡A JUGAR!</button>
-    <button class="secondary" onclick="nav('settings')">⚙️ AJUSTES</button>
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;">
+    <button class="btn-main" onclick="nav('config')">▶ INICIAR PARTIDA</button>
+    <button class="secondary" onclick="nav('settings')">⚙ CONFIGURACIÓN</button>
   </div>
+  <div class="credit">Foto: Martijn Boer · Dominio público · Wikimedia Commons</div>
   <div class="footer-bar"><div style="text-align:center;width:100%">Creado por: Jarlin Figueroa | ByteBattle · Fundamentos de Programación con VibeCoding | Info: 809-958-9611 | 2026</div></div>
 </div>
 
@@ -288,16 +265,16 @@ input:checked+.toggle-slider:before{transform:translateX(24px);background:#1a0b3
 <div id="story" class="screen">
   <button class="btn-back" onclick="nav('home')">← VOLVER</button>
   <div class="scroll-panel" style="max-width:800px;width:95%;">
-    <div style="background:rgba(255,255,255,.08);padding:28px 32px;border-radius:28px;border:2px solid rgba(255,255,255,.16);text-align:left;">
-      <h2 style="color:var(--neon);text-align:center;margin-top:0;font-size:1.9rem">👾 La invasión del virus GLITCH</h2>
+    <div style="background:var(--card);padding:28px 32px;border-radius:16px;border:1px solid var(--line);text-align:left;">
+      <h2 style="color:var(--neon);text-align:center;margin-top:0;font-size:1.8rem">👾 La invasión del virus GLITCH</h2>
       <p style="color:var(--warning);font-size:.9rem;font-weight:800;text-align:center;margin-top:-6px;">— REPORTE URGENTE DEL LABORATORIO —</p>
-      <p style="color:#efeaff;line-height:1.7;font-weight:600">Lunes, 7:30 a. m. Los estudiantes llegan al laboratorio y todo está al revés: la memoria RAM olvida lo que hacen, los juegos se congelan, las apps usan la cámara sin pedir permiso y los archivos no aparecen.</p>
-      <p style="color:#efeaff;line-height:1.7;font-weight:600">El culpable es <strong style="color:var(--error)">GLITCH</strong>, un virus que solo se puede vencer con conocimiento: quien entienda cómo trabaja la computadora por dentro podrá devolverle el orden.</p>
+      <p style="color:var(--ink);line-height:1.7;font-weight:600">Lunes, 7:30 a. m. Los estudiantes llegan al laboratorio y todo está al revés: la memoria RAM olvida lo que hacen, los juegos se congelan, las apps usan la cámara sin pedir permiso y los archivos no aparecen.</p>
+      <p style="color:var(--ink);line-height:1.7;font-weight:600">El culpable es <strong style="color:var(--error)">GLITCH</strong>, un virus que solo se puede vencer con conocimiento: quien entienda cómo trabaja la computadora por dentro podrá devolverle el orden.</p>
       <div style="display:flex;gap:16px;margin:16px 0;flex-wrap:wrap;">
-        <div style="flex:1;min-width:180px;background:rgba(53,224,255,.12);border:2px solid var(--t1);border-radius:18px;padding:14px;"><p style="color:var(--t1);font:700 1.1rem Fredoka,sans-serif;margin:0 0 6px;">🟦 EQUIPO PÍXEL</p><p style="color:#efeaff;font-size:.92rem;margin:0;line-height:1.5;">Expertos en el hardware. Su lema: <em>«Si se puede tocar, lo entendemos.»</em></p></div>
-        <div style="flex:1;min-width:180px;background:rgba(255,79,163,.12);border:2px solid var(--t2);border-radius:18px;padding:14px;"><p style="color:var(--t2);font:700 1.1rem Fredoka,sans-serif;margin:0 0 6px;">🟪 EQUIPO CÓDIGO</p><p style="color:#efeaff;font-size:.92rem;margin:0;line-height:1.5;">Expertos en el software. Su lema: <em>«Nosotros le decimos a la máquina qué hacer.»</em></p></div>
+        <div style="flex:1;min-width:180px;background:rgba(76,201,240,.08);border:2px solid var(--t1);border-radius:18px;padding:14px;"><p style="color:var(--t1);font:700 1.05rem Sora,sans-serif;margin:0 0 6px;">EQUIPO PÍXEL</p><p style="color:var(--ink);font-size:.92rem;margin:0;line-height:1.5;">Expertos en el hardware. Su lema: <em>«Si se puede tocar, lo entendemos.»</em></p></div>
+        <div style="flex:1;min-width:180px;background:rgba(177,151,252,.08);border:2px solid var(--t2);border-radius:18px;padding:14px;"><p style="color:var(--t2);font:700 1.05rem Sora,sans-serif;margin:0 0 6px;">EQUIPO CÓDIGO</p><p style="color:var(--ink);font-size:.92rem;margin:0;line-height:1.5;">Expertos en el software. Su lema: <em>«Nosotros le decimos a la máquina qué hacer.»</em></p></div>
       </div>
-      <p style="color:#efeaff;line-height:1.7;font-weight:600">Cada respuesta correcta borra un pedacito del virus. ¡El equipo que más sepa salvará el laboratorio!</p>
+      <p style="color:var(--ink);line-height:1.7;font-weight:600">Cada respuesta correcta borra un pedacito del virus. ¡El equipo que más sepa salvará el laboratorio!</p>
     </div>
   </div>
 </div>
@@ -305,7 +282,7 @@ input:checked+.toggle-slider:before{transform:translateX(24px);background:#1a0b3
 <!-- ═════════ REGLAS ═════════ -->
 <div id="help" class="screen">
   <button class="btn-back" onclick="nav('home')">← VOLVER</button>
-  <h2 style="color:var(--neon);margin:0 0 10px;font-size:1.9rem">📋 Reglas del juego</h2>
+  <h2 style="color:var(--neon);margin:0 0 10px;font-size:1.8rem">📋 Reglas del juego</h2>
   <div class="scroll-panel" style="max-width:780px;width:95%;">
     <div class="proto-card"><h4>🎯 Objetivo</h4><p>Dos equipos compiten respondiendo preguntas del Módulo 1: hardware, software, sistema operativo y lenguajes. Se juega por puntos (gana quien llegue primero a la meta) o por rounds.</p></div>
     <div class="proto-card yellow"><h4>🎤 El profesor modera</h4><p>Se juega en una sola pantalla. En cada turno responde el jugador indicado; el profesor toca la opción que elija el equipo.</p></div>
@@ -319,7 +296,7 @@ input:checked+.toggle-slider:before{transform:translateX(24px);background:#1a0b3
 <!-- ═════════ AJUSTES ═════════ -->
 <div id="settings" class="screen">
   <button class="btn-back" onclick="nav('home')">← VOLVER</button>
-  <h2 style="color:var(--neon);margin-bottom:14px;font-size:1.9rem">⚙️ Ajustes</h2>
+  <h2 style="color:var(--neon);margin-bottom:14px;font-size:1.8rem">⚙️ Ajustes</h2>
   <div class="settings-box">
     <h3>PARÁMETROS DE LA PARTIDA</h3>
     <div class="setting-row"><div class="setting-label">🔊 SONIDO<span>Activar o silenciar todo el audio</span></div><label class="toggle-switch"><input type="checkbox" id="soundToggle" checked onchange="toggleMuteSettings()"><span class="toggle-slider"></span></label></div>
@@ -335,7 +312,7 @@ input:checked+.toggle-slider:before{transform:translateX(24px);background:#1a0b3
 <!-- ═════════ EQUIPOS ═════════ -->
 <div id="config" class="screen" style="justify-content:flex-start;padding-top:22px;overflow-y:auto;">
   <button class="btn-back" onclick="nav('home')">← VOLVER</button>
-  <h2 style="color:var(--neon);margin:4px 0 12px;font-size:1.9rem">👥 Arma los equipos</h2>
+  <h2 style="color:var(--neon);margin:4px 0 12px;font-size:1.8rem">👥 Arma los equipos</h2>
   <div style="display:flex;gap:18px;z-index:10;flex-wrap:wrap;justify-content:center;width:100%;max-width:1000px;">
     <div class="team-box">
       <input id="t1" class="tname" value="EQUIPO PÍXEL">
@@ -401,7 +378,7 @@ input:checked+.toggle-slider:before{transform:translateX(24px);background:#1a0b3
     <div>
       <h2 id="turnText" style="margin:0;"></h2>
       <h3 id="playerText"></h3>
-      <div id="timer" style="color:#ff4f7b;"></div>
+      <div id="timer" style="color:#ff6b6b;"></div>
     </div>
     <div id="q"></div>
     <div id="options"></div>
@@ -430,60 +407,65 @@ input:checked+.toggle-slider:before{transform:translateX(24px);background:#1a0b3
 </div>
 
 <script>
-/* ══════════ BANCO DE PREGUNTAS (52) · Módulo 1: Hardware y Software pensando como programador. La correcta va en la posición 0 y se mezcla al mostrarla ══════════ */
+/* ══════════ BANCO DE PREGUNTAS (56) · Módulo 1: Hardware y Software pensando como programador.
+   Distractores del mismo tema y de largo parecido, para que haya que pensar. La correcta va en la posición 0 y se mezcla al mostrarla ══════════ */
 const QUESTIONS = [
-  {"q":"¿Qué pieza es el «cerebro» que hace las cuentas?","o":["El procesador (CPU)","La memoria RAM","El disco duro","La tarjeta de red"],"a":0},
-  {"q":"Se fue la luz. ¿Qué pasa con lo que estaba en la RAM?","o":["Se borra","Se guarda solo en el disco","Pasa a la tarjeta de video","Se queda guardado hasta que vuelva la luz"],"a":0},
-  {"q":"¿Dónde se quedan tus fotos aunque apagues la computadora?","o":["En el disco (almacenamiento)","En la memoria RAM","En el procesador","En los registros del procesador"],"a":0},
-  {"q":"¿Qué significa que un procesador tenga 8 núcleos?","o":["Tiene 8 cerebros que trabajan a la vez","Tiene 8 GB de memoria","Puede conectar 8 pantallas al mismo tiempo","Funciona a 8 GHz"],"a":0},
-  {"q":"Los GHz de un procesador indican…","o":["Qué tan rápido trabaja","Cuánta memoria tiene","Cuántos programas puede guardar en el disco","Su tamaño en centímetros"],"a":0},
-  {"q":"Un bit solo puede valer…","o":["0 o 1","De 0 a 9","De 0 a 100","Cualquier letra del alfabeto"],"a":0},
-  {"q":"¿Cuántos bits forman un byte?","o":["8","2","10","16"],"a":0},
-  {"q":"¿Qué es un transistor?","o":["Un interruptor diminuto","Un cable que lleva internet","Una memoria USB muy pequeña","Un programa que limpia virus de la computadora"],"a":0},
-  {"q":"¿Por qué la inteligencia artificial necesita una buena tarjeta de video?","o":["Hace miles de cuentas a la vez","Guarda más fotos que el disco","Hace que la pantalla brille más","Reemplaza al sistema operativo de la computadora"],"a":0},
-  {"q":"¿Cuál de estos discos es el más rápido?","o":["SSD NVMe","Disco duro HDD","SSD SATA","Memoria USB 2.0"],"a":0},
-  {"q":"¿Por qué un disco HDD es más lento?","o":["Tiene piezas que giran","Tiene menos colores","Solo guarda música","Usa menos electricidad que los demás discos"],"a":0},
-  {"q":"¿Cuál es la memoria más rápida de todas?","o":["Los registros del procesador","La memoria RAM","El disco SSD","Internet"],"a":0},
-  {"q":"¿Qué es la caché?","o":["Una memoria rapidísima dentro del procesador","Una carpeta de descargas","Un tipo de cable","El programa que apaga la computadora"],"a":0},
-  {"q":"¿Qué pieza une a todas las demás piezas?","o":["La placa madre","El monitor","La fuente de poder","El teclado"],"a":0},
-  {"q":"¿Qué es lo primero que se ejecuta al encender la computadora?","o":["La BIOS","Google Chrome","WhatsApp","El editor de código"],"a":0},
-  {"q":"El teclado y el mouse son dispositivos de…","o":["Entrada","Salida","Almacenamiento","Procesamiento"],"a":0},
-  {"q":"La pantalla y las bocinas son dispositivos de…","o":["Salida","Entrada","Almacenamiento","Red"],"a":0},
-  {"q":"¿Qué es una Raspberry Pi?","o":["Una computadora del tamaño de una tarjeta","Un postre de frambuesa","Un lenguaje de programación","Un antivirus gratuito para la escuela"],"a":0},
-  {"q":"¿Qué se conecta a los pines GPIO de una Raspberry Pi?","o":["Luces, sensores y motores","Solo audífonos","Monitores 4K","Discos duros grandes"],"a":0},
-  {"q":"Todo programa mueve datos entre…","o":["Entrada, procesador, memoria y salida","Solo el teclado y el mouse","Solo internet","Solo la pantalla"],"a":0},
-  {"q":"Windows, Android e iOS son…","o":["Sistemas operativos","Lenguajes de programación","Navegadores web","Piezas de hardware"],"a":0},
+  {"q":"¿Qué pieza ejecuta las instrucciones de un programa?","o":["El procesador (CPU)","La memoria RAM","La placa madre","La tarjeta de video"],"a":0},
+  {"q":"Se fue la luz y perdiste el trabajo que no guardaste. ¿Dónde estaba?","o":["En la memoria RAM","En el disco SSD","En la BIOS","En la memoria USB"],"a":0},
+  {"q":"¿Qué pieza conserva tus archivos aunque apagues la computadora?","o":["El SSD","La RAM","La caché","Los registros"],"a":0},
+  {"q":"¿Qué ventaja da tener más núcleos en el procesador?","o":["Hacer varias tareas a la vez","Guardar más archivos","Tener más memoria RAM","Navegar más rápido por internet"],"a":0},
+  {"q":"Un procesador de 4 GHz…","o":["Repite unos 4 000 millones de ciclos por segundo","Tiene 4 GB de memoria interna para sus datos","Trabaja con 4 núcleos al mismo tiempo","Puede tener abiertos solo 4 programas a la vez sin trabarse"],"a":0},
+  {"q":"¿Cuántos valores distintos puede tener un solo bit?","o":["2","8","10","256"],"a":0},
+  {"q":"¿Cuántos bits forman un byte?","o":["8","4","16","1 000"],"a":0},
+  {"q":"¿Qué hace un transistor dentro de un chip?","o":["Funciona como un interruptor de 0 y 1","Guarda los archivos del usuario","Regula la electricidad que llega desde la fuente de poder","Envía la imagen a la pantalla"],"a":0},
+  {"q":"¿Por qué la inteligencia artificial usa la tarjeta de video?","o":["Hace miles de cálculos iguales a la vez","Tiene más memoria que toda la RAM","Es más rápida que la CPU en cualquier tarea","Guarda los modelos aunque se apague"],"a":0},
+  {"q":"¿Cuál de estos almacenamientos es el más rápido?","o":["SSD NVMe","SSD SATA","Disco duro HDD","Memoria USB 3.0"],"a":0},
+  {"q":"¿Por qué un disco HDD es más lento que un SSD?","o":["Usa platos que giran y un brazo lector","Tiene menos capacidad de almacenamiento","Se conecta a la placa por un cable USB","Guarda una copia de todo en la nube"],"a":0},
+  {"q":"¿Qué memorias están DENTRO del procesador?","o":["Los registros y la caché","La RAM y la caché","La RAM y el SSD","La BIOS y la memoria de video"],"a":0},
+  {"q":"¿Para qué sirve la memoria caché?","o":["Tener a mano lo que se usó hace poco","Guardar copias de seguridad del disco","Acelerar las descargas de internet","Guardar los archivos que borraste"],"a":0},
+  {"q":"¿Qué pieza conecta el procesador, la RAM, los discos y la tarjeta de video?","o":["La placa madre","La fuente de poder","El procesador","El chipset de la tarjeta de video"],"a":0},
+  {"q":"Al encender la computadora, ¿qué se ejecuta primero?","o":["La BIOS","El kernel","El sistema operativo","El gestor de arranque"],"a":0},
+  {"q":"Durante el arranque, ¿qué parte se encarga de buscar el sistema operativo en el disco?","o":["El gestor de arranque","La prueba de la BIOS","El kernel, que todavía no ha despertado","El inicio de sesión"],"a":0},
+  {"q":"Un micrófono es un dispositivo de…","o":["Entrada","Salida","Almacenamiento","Procesamiento"],"a":0},
+  {"q":"Una impresora es un dispositivo de…","o":["Salida","Entrada","Almacenamiento","Procesamiento"],"a":0},
+  {"q":"Al calcular 2 + 3, ¿dónde anota el procesador los números mientras suma?","o":["En los registros","En el disco SSD","En la BIOS","En la tarjeta de video"],"a":0},
+  {"q":"¿Qué trae una Raspberry Pi?","o":["Procesador, memoria, puertos y pines","Solo un procesador y una batería","Una pantalla táctil y un teclado","Un disco duro grande y una fuente de poder propia"],"a":0},
+  {"q":"¿Para qué sirven los pines GPIO de una Raspberry Pi?","o":["Controlar luces y sensores","Conectar dos monitores al mismo tiempo","Cargar la placa por USB","Conectar un disco rápido"],"a":0},
+  {"q":"Windows, Android e iOS son…","o":["Sistemas operativos","Drivers","Programas de aplicación","Kernels"],"a":0},
   {"q":"¿Qué tipo de software es TikTok?","o":["De aplicación","De sistema","De programación","Un driver"],"a":0},
-  {"q":"¿Qué tipo de software es Visual Studio Code?","o":["De programación","De sistema","Un videojuego","Un driver de impresora"],"a":0},
-  {"q":"¿Qué tipo de software es Android?","o":["De sistema","De aplicación","De programación","Una red social"],"a":0},
-  {"q":"¿Qué hace el sistema operativo?","o":["Reparte la computadora entre las apps","Solo cambia el fondo de pantalla","Fabrica los chips del procesador","Navega por internet sin abrir ningún programa"],"a":0},
-  {"q":"Un juego se congela. ¿Quién puede cerrarlo a la fuerza?","o":["El sistema operativo","El monitor","La bocina","El teclado"],"a":0},
-  {"q":"¿Qué es el kernel?","o":["El corazón del sistema operativo","Un juego de computadora","Una tecla especial del teclado","La memoria de la tarjeta de video"],"a":0},
-  {"q":"Una app quiere usar la cámara. ¿A quién le pide permiso?","o":["Al kernel del sistema","A la memoria RAM","A otra app","Al disco duro"],"a":0},
-  {"q":"¿Qué hace un driver?","o":["Traduce las órdenes para un aparato","Maneja el autobús de la escuela","Borra los virus","Guarda las contraseñas del usuario en internet"],"a":0},
-  {"q":"¿Qué es una llamada al sistema?","o":["Un programa pidiendo permiso al sistema","Una llamada por WhatsApp","Un error de la pantalla","Reiniciar la computadora dos veces seguidas"],"a":0},
-  {"q":"¿Para qué sirve el Administrador de tareas?","o":["Para ver y cerrar programas abiertos","Para anotar las tareas del colegio","Para escribir código en JavaScript","Para guardar las fotos del celular en la nube"],"a":0},
-  {"q":"¿Qué hace un lenguaje de programación?","o":["Traduce tus órdenes para la máquina","Enfría el procesador","Aumenta la memoria RAM","Conecta la computadora a la electricidad"],"a":0},
-  {"q":"¿Qué lenguaje traduce en vivo, como un intérprete?","o":["Python","C","HTML","CSS"],"a":0},
-  {"q":"¿Qué lenguaje traduce todo antes y crea un archivo .exe?","o":["C","Python","JavaScript","HTML"],"a":0},
-  {"q":"¿Dónde funciona JavaScript sin instalar nada?","o":["En el navegador","Solo en servidores","Solo en celulares Android","Solo en la tarjeta de video"],"a":0},
-  {"q":"¿Cuál es el lenguaje de programación principal de este curso?","o":["JavaScript","C","Python","Java"],"a":0},
-  {"q":"En una página web, HTML es como…","o":["El esqueleto","La ropa","El movimiento","La electricidad de la computadora"],"a":0},
-  {"q":"¿Para qué sirve CSS?","o":["Para darle estilo: colores y letras","Para guardar archivos en el disco","Para hacer cuentas en el procesador","Para conectar la página a internet"],"a":0},
-  {"q":"¿Qué lenguaje hace que un botón responda al tocarlo?","o":["JavaScript","HTML","CSS","Ninguno, los botones responden solos"],"a":0},
-  {"q":"¿De qué lenguaje veremos solo lo básico en el curso?","o":["Python","HTML","CSS","JavaScript"],"a":0},
-  {"q":"¿Dónde escribiremos el código en este curso?","o":["En Visual Studio Code","En Paint","En la calculadora","En el Administrador de tareas"],"a":0},
-  {"q":"¿Qué es VibeCoding?","o":["Crear programas con ayuda de la IA","Programar escuchando música","Un antivirus","Un tipo de procesador"],"a":0},
-  {"q":"¿Qué es la ruta de un archivo?","o":["Su dirección dentro de las carpetas","Un cable de red","Un programa de mapas","La velocidad del disco duro"],"a":0},
-  {"q":"Un programa dice «No encuentro el archivo», pero existe. ¿Qué revisas?","o":["La carpeta y la ruta","La velocidad del procesador","El volumen de la bocina","El brillo de la pantalla"],"a":0},
-  {"q":"En una ruta, ¿qué significa «..»?","o":["Subir a la carpeta de arriba","Borrar la carpeta","Abrir un archivo oculto","Entrar a la carpeta de descargas del usuario"],"a":0},
-  {"q":"¿Qué indica la terminación .html?","o":["Que es una página web","Que es una foto","Que es una canción","Que es un documento de Word"],"a":0},
-  {"q":"¿Qué es la terminal?","o":["Hablarle a la computadora escribiendo","La última parada del autobús","Una pantalla táctil","Un cable de electricidad"],"a":0},
-  {"q":"En la terminal, ¿qué hace el comando dir?","o":["Muestra lo que hay en la carpeta","Borra la carpeta","Apaga la computadora","Abre internet en el navegador"],"a":0},
-  {"q":"En la terminal, ¿qué hace «cd curso»?","o":["Entra a la carpeta curso","Graba un CD","Copia la carpeta curso","Borra la carpeta curso"],"a":0},
-  {"q":"Si el procesador tardara 1 segundo en pensar, ¿cuánto tardaría en traer algo de internet?","o":["Unos 10 años","1 segundo","1 minuto","2 horas"],"a":0},
-  {"q":"¿Cuánta RAM se recomienda para programar con comodidad?","o":["16 GB","1 GB","2 GB","500 MB"],"a":0},
-  {"q":"¿Qué mejora barata hace la computadora mucho más rápida?","o":["Cambiar el HDD por un SSD","Cambiar el mouse","Poner un fondo de pantalla nuevo","Comprar una bocina más grande"],"a":0}
+  {"q":"¿Qué tipo de software es Python?","o":["De programación","De aplicación","De sistema","Un sistema operativo"],"a":0},
+  {"q":"El driver de una impresora es software…","o":["De sistema","De aplicación","De programación","De hardware"],"a":0},
+  {"q":"¿Qué hace el sistema operativo con el procesador?","o":["Lo reparte por turnos entre las apps","Lo apaga cuando no se está usando","Lo acelera cuando una app lo necesita","Lo divide en más núcleos"],"a":0},
+  {"q":"Un juego dice «No responde». ¿Con qué herramienta lo cierras a la fuerza?","o":["El Administrador de tareas","El Explorador de archivos","El Panel de control","La Configuración de Windows"],"a":0},
+  {"q":"¿Qué es el kernel?","o":["El núcleo del sistema operativo","Un núcleo del procesador","El driver de la tarjeta de video","La BIOS de la placa madre"],"a":0},
+  {"q":"Una app quiere usar la cámara. ¿Quién decide si tiene permiso?","o":["El kernel","El driver de la cámara","La propia app","El procesador"],"a":0},
+  {"q":"¿Qué hace un driver?","o":["Traduce las órdenes para un aparato","Da los permisos a las apps","Revisa el hardware al encender","Reparte el procesador entre las apps"],"a":0},
+  {"q":"¿Qué es una llamada al sistema?","o":["Un pedido de la app al kernel","Un aviso de error de Windows","Una orden escrita en la terminal","Una conexión entre dos computadoras"],"a":0},
+  {"q":"¿Por qué las apps no tocan el hardware directamente?","o":["Para proteger y compartir los aparatos","Porque el hardware es demasiado lento","Porque no existen drivers para todos los aparatos","Porque la RAM no tiene espacio"],"a":0},
+  {"q":"¿Qué hace un lenguaje de programación?","o":["Traduce tus órdenes a unos y ceros","Diseña las piezas del procesador","Organiza los archivos del disco","Reparte la memoria RAM entre todas las apps abiertas"],"a":0},
+  {"q":"¿Cómo traduce Python tu programa?","o":["Línea por línea, mientras se ejecuta","Completo, antes de ejecutarlo","Solo las partes que más se repiten","Solo cuando la computadora tiene conexión a internet"],"a":0},
+  {"q":"¿Qué lenguaje crea un archivo .exe ya traducido a unos y ceros?","o":["C","Python","JavaScript","HTML"],"a":0},
+  {"q":"¿Por qué un programa en C suele ser más rápido que uno en Python?","o":["Ya está traducido antes de ejecutarse","Usa todos los núcleos automáticamente","Ocupa menos espacio en el disco","Se ejecuta dentro del navegador"],"a":0},
+  {"q":"¿Qué tiene de especial la forma en que se traduce JavaScript?","o":["Acelera lo que más se repite","Se traduce completo antes, como C","Solo se traduce en los servidores","Nunca necesita ser traducido"],"a":0},
+  {"q":"¿Dónde se ejecuta JavaScript sin instalar nada?","o":["En el navegador","En la terminal de Windows","En Visual Studio Code","En la BIOS"],"a":0},
+  {"q":"¿Cuál es el lenguaje de programación principal de este curso?","o":["JavaScript","HTML","Python","Visual Studio Code"],"a":0},
+  {"q":"¿Cuál de estos NO es un lenguaje de programación?","o":["HTML","JavaScript","Python","C"],"a":0},
+  {"q":"En una página web, ¿de qué se encarga HTML?","o":["De las piezas: títulos, textos y botones","De los colores, las letras y los tamaños","De lo que pasa al tocar un botón","De guardar los datos del usuario"],"a":0},
+  {"q":"En una página web, ¿de qué se encarga CSS?","o":["De los colores, letras y posiciones","De los títulos, textos y botones","De lo que pasa al hacer clic","De la conexión entre la página y el servidor web"],"a":0},
+  {"q":"Una página se ve bonita, pero el botón no hace nada al tocarlo. ¿Qué falta?","o":["JavaScript","HTML","CSS","Un servidor web"],"a":0},
+  {"q":"¿Qué veremos de Python en este curso?","o":["Solo lo básico","Será el lenguaje principal","Lo usaremos para dar estilo","Lo usaremos en lugar de JavaScript"],"a":0},
+  {"q":"¿Qué es VibeCoding?","o":["Crear programas con ayuda de la IA","Programar sin entender la máquina","Un lenguaje de programación nuevo","Copiar y pegar código de otras páginas sin revisarlo"],"a":0},
+  {"q":"¿Qué es la ruta de un archivo?","o":["Su dirección dentro de las carpetas","Su nombre y su terminación","El programa que lo abre","El espacio que ocupa dentro del disco duro"],"a":0},
+  {"q":"Un programa está parado en la carpeta Ana y busca notas.txt, que está en la carpeta curso. ¿Qué pasa?","o":["Dice que no encuentra el archivo","Lo encuentra porque está en la misma PC","Revisa todas las carpetas hasta hallarlo","Crea un notas.txt nuevo en curso"],"a":0},
+  {"q":"En una ruta, ¿qué significa «..»?","o":["Subir una carpeta","Quedarse en la carpeta actual","Ir directo a la unidad C:","Abrir una carpeta oculta"],"a":0},
+  {"q":"¿Qué indica la terminación .html?","o":["Una página web","Un programa en Python","Una hoja de estilos","Un documento de texto"],"a":0},
+  {"q":"¿Qué es la terminal?","o":["Dar órdenes a la computadora escribiendo","Una ventana para ver los archivos","El Administrador de tareas de Windows","El editor donde se escribe el código de una página"],"a":0},
+  {"q":"En la terminal, ¿qué hace el comando dir?","o":["Muestra lo que hay en la carpeta","Cambia de carpeta","Crea una carpeta nueva","Muestra lo que está escrito dentro de un archivo"],"a":0},
+  {"q":"En la terminal, ¿qué hace «cd curso»?","o":["Entra a la carpeta curso","Crea la carpeta curso","Muestra lo que hay en curso","Copia la carpeta curso"],"a":0},
+  {"q":"Si el procesador tardara 1 segundo en pensar, ¿cuánto tardaría en traer un dato de la RAM?","o":["Unos 6 minutos","Unos 4 días","1 segundo","Unos 10 años"],"a":0},
+  {"q":"Con esa misma escala, ¿cuánto tardaría en traer un dato de internet?","o":["Unos 10 años","Unos 4 días","Unos 6 minutos","Unos 40 segundos"],"a":0},
+  {"q":"¿Cuánta RAM se recomienda para programar con comodidad?","o":["16 GB","4 GB","256 GB","1 TB"],"a":0},
+  {"q":"Todo programa mueve datos entre…","o":["Entrada, procesador, memoria y salida","Teclado, internet, nube y pantalla","BIOS, kernel, driver y aplicación","HTML, CSS, JavaScript y el lenguaje Python"],"a":0}
 ];
 
 /* ══════════ PARTICIPANTES PRECARGADOS ══════════ */
@@ -613,7 +595,7 @@ function selectRounds(n,btn){ selectedRounds=n; document.querySelectorAll('#roun
 function setup(){
   team1=document.getElementById('t1').value.trim()||'EQUIPO PÍXEL'; team2=document.getElementById('t2').value.trim()||'EQUIPO CÓDIGO';
   if(p1.length<1||p2.length<1) return alert('Cada equipo necesita al menos un jugador.');
-  document.getElementById('vsTitle').innerHTML=`🟦 ${esc(team1)} <span>VS</span> ${esc(team2)} 🟪`;
+  document.getElementById('vsTitle').innerHTML=`${esc(team1)} <span>VS</span> ${esc(team2)}`;
   nav('vs');
 }
 const shuffle=a=>{ a=[...a]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
@@ -651,7 +633,7 @@ function updateBars(){
 function currentPlayer(){ return turn===1?p1[pi1%p1.length]:p2[pi2%p2.length]; }
 function loadQ(){
   clearInterval(tInt); timeLeft=cfg.timeAnswer; activeHab=null; shieldUsed=false;
-  const tm=document.getElementById('timer'); tm.style.color='#ff4f7b'; tm.innerText=timeLeft;
+  const tm=document.getElementById('timer'); tm.style.color='#ff6b6b'; tm.innerText=timeLeft;
   document.getElementById('q').style.display='block';
   const od=document.getElementById('options'); od.style.display='flex'; od.style.flexDirection='column';
   document.getElementById('inter-turn-msg').style.display='none';
@@ -773,7 +755,7 @@ function useAbility(type){
   const h=turn===1?habs1:habs2; if((h[type]||0)<=0) return;
   if(type==='shield'&&activeHab==='shield') return;
   h[type]--; updHabsUI();
-  if(type==='freeze'){ timeLeft+=60; const t=document.getElementById('timer'); t.innerText=timeLeft; t.style.color='#35e0ff'; showFreezeEffect(); powerFx('⏱️','+1 MINUTO','Más tiempo para analizar la pregunta','#2196f3'); }
+  if(type==='freeze'){ timeLeft+=60; const t=document.getElementById('timer'); t.innerText=timeLeft; t.style.color='#4cc9f0'; showFreezeEffect(); powerFx('⏱️','+1 MINUTO','Más tiempo para analizar la pregunta','#2196f3'); }
   if(type==='shield'){ activeHab='shield'; shieldUsed=false; soundShield(); powerFx('🛡️','ESCUDO ACTIVADO','Si la respuesta es incorrecta, pueden intentarlo otra vez','#00bcd4'); }
   if(type==='skip'){ clearInterval(tInt); index++; activeHab=null; [500,700,900].forEach((f,i)=>playTone(f,'triangle',0.1,0.08,i*0.06)); powerFx('⏩','PREGUNTA SALTADA','Mismo equipo, nueva pregunta','#c86bff'); loadQ(); }
 }
@@ -796,17 +778,17 @@ function end(){
 
 /* ══════════ LLUVIA DE DATOS Y FUEGOS ══════════ */
 function matrix(c){
-  const ctx=c.getContext('2d'); c.width=150; c.height=window.innerHeight; const drops=Array(15).fill(1), chars='01<>{}/;=#';
-  setInterval(()=>{ ctx.fillStyle='rgba(0,0,0,0.08)'; ctx.fillRect(0,0,c.width,c.height); ctx.fillStyle='#a3ff3b'; ctx.font='15px monospace';
+  const ctx=c.getContext('2d'); c.width=150; c.height=window.innerHeight; const drops=Array(15).fill(1), chars='01';
+  setInterval(()=>{ ctx.fillStyle='rgba(0,0,0,0.08)'; ctx.fillRect(0,0,c.width,c.height); ctx.fillStyle='#3ee39f'; ctx.font='15px monospace';
     drops.forEach((y,i)=>{ ctx.fillText(chars[Math.floor(Math.random()*chars.length)],i*12,y*12); if(y*12>c.height&&Math.random()>0.975) drops[i]=0; drops[i]++; }); },70);
 }
 matrix(document.getElementById('matrixL')); matrix(document.getElementById('matrixR'));
 function startFireworks(){
   const canvas=document.getElementById('fireworksCanvas'); canvas.width=window.innerWidth; canvas.height=window.innerHeight;
-  const ctx=canvas.getContext('2d'), parts=[], COLORS=['#a3ff3b','#ffd23f','#ff4fa3','#35e0ff','#7b5cff','#ffffff','#ff8a3d'];
+  const ctx=canvas.getContext('2d'), parts=[], COLORS=['#3ee39f','#4cc9f0','#b197fc','#ffb547','#ffffff'];
   function burst(){ const x=Math.random()*canvas.width, y=Math.random()*canvas.height*0.65, color=COLORS[Math.floor(Math.random()*COLORS.length)], n=60+Math.floor(Math.random()*40);
     for(let i=0;i<n;i++){ const a=(Math.PI*2/n)*i+Math.random()*0.2, s=2+Math.random()*5; parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,alpha:1,color,r:1.5+Math.random()*2,decay:0.012+Math.random()*0.01}); } }
-  (function anim(){ ctx.fillStyle='rgba(23,11,59,0.2)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  (function anim(){ ctx.fillStyle='rgba(10,15,28,0.2)'; ctx.fillRect(0,0,canvas.width,canvas.height);
     for(let i=parts.length-1;i>=0;i--){ const p=parts[i]; p.x+=p.vx; p.y+=p.vy; p.vy+=0.06; p.vx*=0.98; p.alpha-=p.decay; if(p.alpha<=0){ parts.splice(i,1); continue; }
       ctx.globalAlpha=p.alpha; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); }
     ctx.globalAlpha=1; requestAnimationFrame(anim); })();
